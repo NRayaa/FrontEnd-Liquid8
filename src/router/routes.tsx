@@ -3,8 +3,9 @@ const Index = lazy(() => import('../pages/Index'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
 const ListData = lazy(() => import('../pages/Inbound/DataProcess/ListData'));
-const CheckProduct = lazy(() => import('../pages/Inbound/CheckProduct/CheckProduct'));
+const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
 const DetailListData = lazy(() => import('../pages/Inbound/DataProcess/DetailListData'));
+const RiwayatCheck = lazy(() => import('../pages/Inbound/RiwayarCheck/RiwayatCheck'));
 
 const routes = [
     // dashboard
@@ -37,8 +38,14 @@ const routes = [
     },
     // Check Product
     {
-        path: '/inbound/data_process/check_product',
-        element: <CheckProduct />,
+        path: '/inbound/check_product/multi_check',
+        element: <MultiCheck />,
+        layout: 'default',
+    },
+    // Riwayat Check
+    {
+        path: '/inbound/riwayat_check/riwayat_check',
+        element: <RiwayatCheck />,
         layout: 'default',
     },
 ];

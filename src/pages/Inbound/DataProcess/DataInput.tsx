@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 // import CodeHighlight from '../../../components/Highlight';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
@@ -9,6 +9,7 @@ import IconUser from '../../../components/Icon/IconUser';
 import IconThumbUp from '../../../components/Icon/IconThumbUp';
 import IconTrashLines from '../../../components/Icon/IconTrashLines';
 import IconPlus from '../../../components/Icon/IconPlus';
+import { Dialog, Transition } from '@headlessui/react';
 
 const tableData = [
     {
@@ -76,9 +77,47 @@ const DataInput = () => {
         }
     };
 
+    const [addData, setAddData] = useState(false);
     const [activeTab3, setActiveTab3] = useState<any>(1);
     return (
         <div>
+            <Transition appear show={addData} as={Fragment}>
+                <Dialog as="div" open={addData} onClose={() => setAddData(false)}>
+                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <div className="fixed inset-0" />
+                    </Transition.Child>
+                    <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                        <div className="flex items-center justify-center min-h-screen px-4">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel as="div" className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark">
+                                    <div className='flex justify-center'>
+                                    <h1 className='text-lg font-bold flex items-center'>Masukan Data Baru</h1>
+                                    </div>
+                                    <div className="p-5">
+                                        <input className='form-input'/>
+                                        <div className="flex justify-end items-center mt-8">
+                                            <button type="button" className="btn btn-outline-danger" onClick={() => setAddData(false)}>
+                                                Discard
+                                            </button>
+                                            <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => setAddData(false)}>
+                                                Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
             <ul className="flex space-x-2 rtl:space-x-reverse">
                 <li>
                     <Link to="#" className="text-primary hover:underline">
@@ -142,20 +181,20 @@ const DataInput = () => {
                                 </button>
                                 <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => setActiveTab3(activeTab3 === 1 ? 2 : 3)}>
                                     {activeTab3 === 3 ? (
-                                      <div>
-                                        <Link to="/inbound/data_process/list_data">
-                                          <button>
-                                            Finish
-                                          </button>
-                                        </Link>
-                                      </div>
-                                    )  : 'Next'}
+                                        <div>
+                                            <Link to="/inbound/data_process/list_data">
+                                                <button>Finish</button>
+                                            </Link>
+                                        </div>
+                                    ) : (
+                                        'Next'
+                                    )}
                                 </button>
                             </div>
                             <p className="mb-5">
                                 {activeTab3 === 1 && (
                                     <div>
-                                        <button type="button" className="btn btn-outline-info mb-6">
+                                        <button onClick={() => setAddData(true)} type="button" className="btn btn-outline-info mb-6">
                                             <IconPlus />
                                             Tambah
                                         </button>
