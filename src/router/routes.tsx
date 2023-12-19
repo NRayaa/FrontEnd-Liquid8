@@ -1,17 +1,18 @@
 import { lazy } from 'react';
-const Index = lazy(() => import('../pages/Index'));
+const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
 const ListData = lazy(() => import('../pages/Inbound/DataProcess/ListData'));
 const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
 const DetailListData = lazy(() => import('../pages/Inbound/DataProcess/DetailListData'));
-const RiwayatCheck = lazy(() => import('../pages/Inbound/RiwayarCheck/RiwayatCheck'));
+const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
+const DetailCheckHistory = lazy(() => import('../pages/Inbound/CheckHistory/Detail'));
 
 const routes = [
     // dashboard
     {
         path: '/',
-        element: <Index />,
+        element: <Dashboard />,
         layout: 'default',
     },
     //Inbound Data Process
@@ -42,10 +43,14 @@ const routes = [
         element: <MultiCheck />,
         layout: 'default',
     },
-    // Riwayat Check
     {
-        path: '/inbound/riwayat_check/riwayat_check',
-        element: <RiwayatCheck />,
+        path: '/inbound/check_history',
+        element: <CheckHistory />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_history/:id',
+        element: <DetailCheckHistory />,
         layout: 'default',
     },
 ];
