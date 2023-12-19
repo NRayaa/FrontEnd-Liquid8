@@ -1,19 +1,28 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { useDispatch } from 'react-redux';
-import IconBell from '../../../components/Icon/IconBell';
-import IconXCircle from '../../../components/Icon/IconXCircle';
+import { useDispatch, useSelector } from 'react-redux';
+// import IconBell from '../../../components/Icon/IconBell';
+// import IconXCircle from '../../../components/Icon/IconXCircle';
 import IconPencil from '../../../components/Icon/IconPencil';
 import IconTrashLines from '../../../components/Icon/IconTrashLines';
-import { Link, useNavigate } from 'react-router-dom';
-import IconPlus from '../../../components/Icon/IconPlus';
-import IconNotes from '../../../components/Icon/IconNotes';
+import { Link } from 'react-router-dom';
+// import { Dialog, Transition } from '@headlessui/react';
+// import IconPlus from '../../../components/Icon/IconPlus';
+// import IconNotes from '../../../components/Icon/IconNotes';
 import Swal from 'sweetalert2';
-import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
-import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
-import IconArrowForward from '../../../components/Icon/IconArrowForward';
+import IconSend from '../../../components/Icon/IconSend';
+import IconPlus from '../../../components/Icon/IconPlus';
+// import IconCircleCheck from '../../../components/Icon/IconCircleCheck';
+import IconTrendingUp from '../../../components/Icon/IconTrendingUp';
+import Dropdown from '../../../components/Dropdown';
+import IconHorizontalDots from '../../../components/Icon/IconHorizontalDots';
+import { IRootState } from '../../../store';
+import IconEye from '../../../components/Icon/IconEye';
+import IconCashBanknotes from '../../../components/Icon/IconCashBanknotes';
+// import * as Yup from 'yup';
+// import { Field, Form, Formik } from 'formik';
 
 const rowData = [
     {
@@ -22,6 +31,7 @@ const rowData = [
         lastName: 'Jensen',
         email: 'carolinejensen@zidant.com',
         dob: '2004-05-28',
+        status: 'Completed',
         address: {
             street: '529 Scholes Street',
             city: 'Temperanceville',
@@ -42,6 +52,7 @@ const rowData = [
         lastName: 'Grant',
         email: 'celestegrant@polarax.com',
         dob: '1989-11-19',
+        status: 'Pending',
         address: {
             street: '639 Kimball Street',
             city: 'Bascom',
@@ -62,6 +73,7 @@ const rowData = [
         lastName: 'Forbes',
         email: 'tillmanforbes@manglo.com',
         dob: '2016-09-05',
+        status: 'In Progress',
         address: {
             street: '240 Vandalia Avenue',
             city: 'Thynedale',
@@ -82,6 +94,7 @@ const rowData = [
         lastName: 'Whitley',
         email: 'daisywhitley@applideck.com',
         dob: '1987-03-23',
+        status: 'Canceled',
         address: {
             street: '350 Pleasant Place',
             city: 'Idledale',
@@ -102,6 +115,7 @@ const rowData = [
         lastName: 'Bowman',
         email: 'weberbowman@volax.com',
         dob: '1983-02-24',
+        status: 'Completed',
         address: {
             street: '154 Conway Street',
             city: 'Broadlands',
@@ -122,6 +136,7 @@ const rowData = [
         lastName: 'Townsend',
         email: 'buckleytownsend@orbaxter.com',
         dob: '2011-05-29',
+        status: 'Completed',
         address: {
             street: '131 Guernsey Street',
             city: 'Vallonia',
@@ -142,6 +157,7 @@ const rowData = [
         lastName: 'Bradshaw',
         email: 'latoyabradshaw@opportech.com',
         dob: '2010-11-23',
+        status: 'Canceled',
         address: {
             street: '668 Lenox Road',
             city: 'Lowgap',
@@ -162,6 +178,7 @@ const rowData = [
         lastName: 'Lindsay',
         email: 'katelindsay@gorganic.com',
         dob: '1987-07-02',
+        status: 'Pending',
         address: {
             street: '773 Harrison Avenue',
             city: 'Carlton',
@@ -182,6 +199,7 @@ const rowData = [
         lastName: 'Sandoval',
         email: 'marvasandoval@avit.com',
         dob: '2010-11-02',
+        status: 'Completed',
         address: {
             street: '200 Malta Street',
             city: 'Tuskahoma',
@@ -202,6 +220,7 @@ const rowData = [
         lastName: 'Russell',
         email: 'deckerrussell@quilch.com',
         dob: '1994-04-21',
+        status: 'In Progress',
         address: {
             street: '708 Bath Avenue',
             city: 'Coultervillle',
@@ -218,13 +237,69 @@ const rowData = [
     },
 ];
 
-const DetailListData = () => {
+const showAlert = async (type: number) => {
+    if (type === 11) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-secondary',
+                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                popup: 'sweet-alerts',
+            },
+            buttonsStyling: false,
+        });
+        swalWithBootstrapButtons
+            .fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                padding: '2em',
+            })
+            .then((result) => {
+                if (result.value) {
+                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                }
+            });
+    }
+    if (type === 15) {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: 'success',
+            title: 'Berhasil Dikirim',
+            padding: '10px 20px',
+        });
+    }
+    if (type == 20) {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: 'success',
+            title: 'Data Berhasil Ditambah',
+            padding: '10px 20px',
+        });
+    }
+};
+const RiwayatCheck = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Detail List'));
+        dispatch(setPageTitle('List Data'));
     });
     const [page, setPage] = useState(1);
-    const PAGE_SIZES = [10, 20, 30, 50, 100, 250, 500, 1000];
+    const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
     const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'firstName'));
     const [recordsData, setRecordsData] = useState(initialRecords);
@@ -251,7 +326,6 @@ const DetailListData = () => {
                 return (
                     item.id.toString().includes(search.toLowerCase()) ||
                     item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                    item.lastName.toLowerCase().includes(search.toLowerCase()) ||
                     item.dob.toLowerCase().includes(search.toLowerCase()) ||
                     item.email.toLowerCase().includes(search.toLowerCase()) ||
                     item.phone.toLowerCase().includes(search.toLowerCase())
@@ -277,6 +351,23 @@ const DetailListData = () => {
         return '';
     };
 
+    const [cost, setCost] = useState('');
+
+    // const handleCostChange = (e: { target: { value: any } }) => {
+    //     const inputValue = e.target.value;
+    //     let formatValue = '';
+
+    //     // Remove non-numeric characters
+    //     const numValue = inputValue.replace(/\D/g, '');
+
+    //     // Format the number with 'Rp.' prefix
+    //     if (numValue !== '') {
+    //         formatValue = `Rp. ${parseInt(numValue, 10).toLocaleString('id-ID')}`;
+    //     }
+
+    //     setCost(formatValue);
+    // };
+    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -285,67 +376,72 @@ const DetailListData = () => {
                         Home
                     </Link>
                 </li>
-                <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Data Process</span>
+                <li className=" before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                    <span>Check History</span>
                 </li>
-                <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span> Detail List Data </span>
-                </li>
+                {/* <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                    <span>Riwayat Check</span>
+                </li> */}
             </ul>
             {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
             </div> */}
-            <div className="panel mt-6">
-                <div className="flex flex-wrap w-full justify-start mb-5">
-                    <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
-                        <div className="bg-primary absolute text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
-                            <IconNotesEdit fill className="w-12 h-12" />
-                        </div>
-                        <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
-                            <div className="flex justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                                <div className="text-white-dark mr-2">Data Merged :</div>
-                                <div className="whitespace-nowrap">Document 002/2023</div>
-                            </div>
-                            <div className=" items-center text-lg w-full justify-between mb-2">
-                                <div className="text-white-dark">BASE DATA : </div>
-                                <ul className='space-y-3 list-inside list-disc font-semibold'>
-                                    <li>Data Excell 1</li>
-                                    <li>Data Excell 2</li>
-                                </ul>
-                            </div>
-                        </div>
+            <div className="panel mt-6 dark:text-white-light mb-5">
+                <h1 className="text-lg font-bold flex justify-start py-4">Check History</h1>
+                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
+                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                 </div>
-                <div className="flex md:items-center md:flex-row flex-col mb-5 mx-6 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto flex gap-6">
-                        <Link to="/inbound/data_process/list_data">
-                            <button type="button" className=" px-2 btn btn-outline-danger">
-                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
-                            </button>
-                        </Link>
-                        <Link to="/inbound/check_product/multi_check">
-                            <button type="button" className=" px-2 btn btn-outline-info">
-                                <IconArrowForward className="flex mx-2" fill={true} /> Continue
-                            </button>
-                        </Link>
-                    </div>
-                </div>
-                <h5 className="font-semibold text-lg dark:text-white-light mb-2">List Cabang</h5>
-                <div className="datatables">
+                <div className="datatables panel xl:col-span-2">
                     <DataTable
                         highlightOnHover
-                        className="whitespace-nowrap table-hover"
+                        className="whitespace-nowrap table-hover "
                         records={recordsData}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (e) => recordsData.indexOf(e) + 1 },
+                            { accessor: 'id', title: 'No', sortable: true },
                             { accessor: 'firstName', title: 'Nama Data', sortable: true },
+                            { accessor: 'dob', title: 'Tanggal', sortable: true },
+                            { accessor: 'age', title: 'Total Data', sortable: true },
+                            { accessor: 'age', title: 'Total Masuk', sortable: true },
                             {
-                                accessor: 'dob',
-                                title: 'Nomor Resi',
+                                accessor: 'status',
+                                title: 'Status',
                                 sortable: true,
+                                render: (data) => (
+                                    <span
+                                        className={`badge whitespace-nowrap ${
+                                            data.status === 'completed'
+                                                ? 'bg-primary'
+                                                : data.status === 'Pending'
+                                                ? 'bg-secondary'
+                                                : data.status === 'In Progress'
+                                                ? 'bg-success'
+                                                : data.status === 'Canceled'
+                                                ? 'bg-danger'
+                                                : 'bg-primary'
+                                        }`}
+                                    >
+                                        {data.status}
+                                    </span>
+                                ),
                             },
-                            { accessor: 'lastName', title: 'Nama Produk', sortable: true },
-                            { accessor: 'age', title: 'QTY', sortable: true },
-                            { accessor: 'phone', title: 'Harga', sortable: true },
+                            {
+                                accessor: 'action',
+                                title: 'Opsi',
+                                titleClassName: '!text-center',
+                                render: () => (
+                                    <div className="flex items-center w-max mx-auto gap-6">
+                                        <Link to="/inbound/data_process/detail_data" >
+                                        <button type="button" className="btn btn-outline-info">
+                                            Detail
+                                        </button>
+                                        </Link>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
+                                            Delete
+                                        </button>
+                                    </div>
+                                ),
+                            },
                         ]}
                         totalRecords={initialRecords.length}
                         recordsPerPage={pageSize}
@@ -364,4 +460,4 @@ const DetailListData = () => {
     );
 };
 
-export default DetailListData;
+export default RiwayatCheck;
