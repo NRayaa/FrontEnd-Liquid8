@@ -3,7 +3,7 @@ const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
 const ListData = lazy(() => import('../pages/Inbound/DataProcess/ListData'));
-const CheckProduct = lazy(() => import('../pages/Inbound/CheckProduct/CheckProduct'));
+const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
 const DetailListData = lazy(() => import('../pages/Inbound/DataProcess/DetailListData'));
 const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
 const DetailCheckHistory = lazy(() => import('../pages/Inbound/CheckHistory/Detail'));
@@ -39,8 +39,8 @@ const routes = [
     },
     // Check Product
     {
-        path: '/inbound/data_process/check_product',
-        element: <CheckProduct />,
+        path: '/inbound/check_product/multi_check',
+        element: <MultiCheck />,
         layout: 'default',
     },
     {

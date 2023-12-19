@@ -15,6 +15,7 @@
         "@fullcalendar/interaction": "^6.1.10",
         "@fullcalendar/react": "^6.1.10",
         "@fullcalendar/timegrid": "^6.1.10",
+        "@headlessui/react": "^1.7.17",
         "@mantine/core": "^5.10.5",
         "@mantine/hooks": "^5.10.5",
         "@popperjs/core": "^2.11.8",
