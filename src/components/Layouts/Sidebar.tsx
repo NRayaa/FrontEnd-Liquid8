@@ -187,7 +187,7 @@ const Sidebar = () => {
                                         </AnimateHeight>
                                     </li>
                                     <li className="nav-item">
-                                        <NavLink to="/apps/chat" className="group">
+                                        <NavLink to="/inbound/check_history" className="group">
                                             <div className="flex items-center">
                                                 <svg className="group-hover:!text-primary shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
