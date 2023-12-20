@@ -1,6 +1,6 @@
 // import React from 'react';
 import { Tab } from '@headlessui/react';
-import { Fragment } from 'react';
+import { Fragment, SetStateAction } from 'react';
 import { useState, useEffect } from 'react';
 import IconSearch from '../../../components/Icon/IconSearch';
 import { Link } from 'react-router-dom';
@@ -44,21 +44,34 @@ const items = [
 ];
 
 const MultiCheck = () => {
-    const checkboxData = Array.from({ length: 18 }, (_, index) => index + 1);
+    // const checkboxData = Array.from({ length: 18 }, (_, index) => index + 1);
     const [search, setSearch] = useState<string>('');
     const [filteredItems, setFilteredItems] = useState<any>(items);
 
-    const [checkedItems, setCheckedItems] = useState(Array(checkboxData.length).fill(false));
+    const radioData = Array.from({ length: 18 }, (_, index) => `Option ${index + 1}`);
+    const checkboxData1 = Array.from({ length: 1 }, (_, index) => `Option ${index + 1}`);
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
+    const [formData, setFormData] = useState<any>({});
 
-    const handleCheckboxChange = (index: number) => {
-        const updatedCheckedItems = [...checkedItems];
-        updatedCheckedItems[index] = !updatedCheckedItems[index];
-        setCheckedItems(updatedCheckedItems);
+    const checkboxData2 = ['Option 1', 'Option 2', 'Option 3'];
+
+    const handleRadioChange = (option: SetStateAction<string | null>) => {
+        if (typeof option === 'string') {
+            setSelectedOption(option);
+            setFormData({}); // Reset data ketika opsi berubah
+        }
+    };
+
+    const handleInputChange = (e: { target: { id: any; value: any; }; }) => {
+        const { id, value } = e.target;
+        setFormData((prevData: any) => ({
+            ...prevData,
+            [id]: value,
+        }));
     };
 
     const handleButtonClick = () => {
-        // Tambahkan logika untuk aksi yang ingin dilakukan ketika tombol ditekan
-        console.log('Button clicked!');
+        // Lakukan sesuatu ketika tombol diklik
     };
 
     useEffect(() => {
@@ -68,6 +81,20 @@ const MultiCheck = () => {
             });
         });
     }, [search]);
+
+    const renderForm = () => {
+        if (selectedOption) {
+            return (
+                <form className="space-y-5 col-span-1">
+                    <div>
+                        <label htmlFor="gridNama">Discount</label>
+                        <input id="gridNama" type="text" disabled placeholder="Enter Nama" className="form-input" />
+                    </div>
+                </form>
+            );
+        }
+        return null;
+    };
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse mb-8">
@@ -84,8 +111,9 @@ const MultiCheck = () => {
                 </li>
             </ul>
             <div className="flex gap-4">
-                <div className="panel xl:w-1/2 ss:w-full gap-4">
-                    <form className="w-full mb-5 col-span-2 gap-4 flex items-center">
+                <div className=" xl:w-1/2 ss:w-full gap-4">
+                    <h1 className="text-lg font-bold my-4">CHECK : DOCUMENT 002/2023</h1>
+                    <form className="w-full panel mb-5 col-span-2 gap-4 flex items-center">
                         <div className="relative w-full">
                             <input
                                 type="text"
@@ -104,55 +132,60 @@ const MultiCheck = () => {
                         </div>
                     </form>
                     <form className="space-y-5 col-span-2">
-                        <div className="grid grid-cols-1 ss:grid-cols-1 sm:grid-cols-2 gap-4">
-                            <h1 className="flex justify-center text-lg font-bold">OLD DATA</h1>
-                            <h1 className="flex justify-center text-lg font-bold">NEW DATA</h1>
-                            <div>
-                                <label htmlFor="gridBarcode">Barcode</label>
-                                <input id="gridBarcode" type="text" placeholder="Enter Barcode" className="form-input " />
+                        <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-4">
+                                <h1 className="flex justify-center text-lg font-bold">OLD DATA</h1>
+                                <div>
+                                    <label htmlFor="gridBarcode1">Barcode</label>
+                                    <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" />
+                                </div>
+                                <div>
+                                    <label htmlFor="gridNama1">Nama</label>
+                                    <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" />
+                                </div>
+                                <div>
+                                    <label htmlFor="gridNama3">Harga</label>
+                                    <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={formData.gridNama || ''} onChange={handleInputChange} />
+                                </div>
+                                <div>
+                                    <label htmlFor="gridQTY1">QTY</label>
+                                    <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" />
+                                </div>
                             </div>
-                            <div>
-                                <label htmlFor="gridBarcode">Barcode</label>
-                                <input id="gridBarcode" type="text" placeholder="Enter Barcode" className="form-input" />
+                            <div className="flex flex-col gap-4">
+                                <h1 className="flex justify-center text-lg font-bold">NEW DATA</h1>
+                                <div>
+                                    <label htmlFor="gridBarcode2">Barcode</label>
+                                    <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" />
+                                </div>
+                                <div hidden>
+                                    <label htmlFor="gridBarcode2">Tag</label>
+                                    <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" />
+                                </div>
+                                <div>
+                                    <label htmlFor="gridNama2">Nama</label>
+                                    <input id="gridNama2" type="text" disabled placeholder="Enter Nama" className="form-input" />
+                                </div>
+                                {renderForm()}
+                                <div>
+                                    <label htmlFor="gridNama4">Harga</label>
+                                    <input id="gridNama4" type="text" placeholder="Enter Nama" className="form-input" value={formData.gridNama || ''} onChange={handleInputChange} />
+                                </div>
+                                <div>
+                                    <label htmlFor="gridQTY2">QTY</label>
+                                    <input id="gridQTY2" disabled type="text" placeholder="Enter QTY" className="form-input" />
+                                </div>
                             </div>
-                            <div>
-                                <label htmlFor="gridNama">Nama</label>
-                                <input id="gridNama" type="text" placeholder="Enter Nama" className="form-input" />
-                            </div>
-                            <div>
-                                <label htmlFor="gridNama">Nama</label>
-                                <input id="gridNama" type="text" placeholder="Enter Nama" className="form-input" />
-                            </div>
-                            <div>
-                                <label htmlFor="gridHarga">Harga</label>
-                                <input id="gridHarga" type="number" placeholder="Enter Harga" className="form-input" />
-                            </div>
-                            <div>
-                                <label htmlFor="gridHarga">Harga</label>
-                                <input id="gridHarga" type="number" placeholder="Enter Harga" className="form-input" />
-                            </div>
-                            <div>
-                                <label htmlFor="gridQTY">QTY</label>
-                                <input id="gridQTY" type="text" placeholder="Enter QTY" className="form-input" />
-                            </div>
-                            <div>
-                                <label htmlFor="gridQTY">QTY</label>
-                                <input id="gridQTY" type="text" placeholder="Enter QTY" className="form-input" />
-                            </div>
-                            {/* <div>
-                            <label className="flex items-center mt-1 cursor-pointer">
-                                <input type="checkbox" className="form-checkbox" />
-                                <span className="text-white-dark">Check me out</span>
-                            </label>
-                        </div> */}
                         </div>
                         <button type="submit" className="btn btn-warning !mt-6">
                             DONE CHECK ALL
                         </button>
                     </form>
                 </div>
-                <div className="panel xl:w-1/2 ss:w-full gap-4">
-                    <div className="mb-5">
+                <div></div>
+                <div className="xl:w-1/2 ss:w-full gap-4">
+                    <h1 className="text-lg font-bold my-4">PRODUK CHECK</h1>
+                    <div className="mb-5 panel">
                         <Tab.Group>
                             <div className="mx-10 mb-5 sm:mb-0">
                                 <Tab.List className="mt-3 mb-6 flex border-b border-white-light gap-4 dark:border-[#191e3a]">
@@ -195,17 +228,69 @@ const MultiCheck = () => {
                             </div>
                             <Tab.Panels>
                                 <Tab.Panel>
-                                    <div className="grid grid-cols-3 gap-4">
-                                        {checkboxData.map((index) => (
+                                    {/* <div className="grid grid-cols-3 gap-4">
+                                        {radioData.map((option, index) => (
                                             <label key={index} className="flex items-center mt-1 cursor-pointer">
-                                                <input type="checkbox" className="form-checkbox outline-info w-6 h-6" checked={checkedItems[index]} onChange={() => handleCheckboxChange(index)} />
-                                                <span className="text-white-dark"> Fashion, Electronik {index}</span>
+                                                <input
+                                                    type="radio"
+                                                    className="form-radio text-info peer w-6 h-6"
+                                                    name="radioOption"
+                                                    value={option}
+                                                    checked={selectedOption === option}
+                                                    onChange={() => handleRadioChange(option)}
+                                                />
+                                                <span className="text-white-dark"> {option}</span>
                                             </label>
                                         ))}
                                         <button
                                             onClick={handleButtonClick}
-                                            disabled={!checkedItems.some((item) => item)}
-                                            className={`btn btn-info mt-4 col-span-3 ${checkedItems.some((item) => item) ? '' : 'opacity-50 pointer-events-none'}`}
+                                            disabled={!selectedOption}
+                                            className={`btn btn-info mt-4 col-span-3 ${selectedOption ? '' : 'opacity-50 pointer-events-none'}`}
+                                        >
+                                            SEND
+                                        </button>
+                                    </div> */}
+                                    {/* <div className="grid grid-cols-3 gap-4">
+                                        {checkboxData1.map((option, index) => (
+                                            <label key={index} className="flex items-center mt-1 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    className="form-radio text-danger peer w-6 h-6"
+                                                    name="radioOption"
+                                                    value={option}
+                                                    checked={selectedOption === option}
+                                                    onChange={() => handleRadioChange(option)}
+                                                />
+                                                <span className="text-white-dark"> {option}</span>
+                                            </label>
+                                        ))}
+                                        <button
+                                            onClick={handleButtonClick}
+                                            disabled={!selectedOption}
+                                            className={`btn btn-info mt-4 col-span-3 ${selectedOption ? '' : 'opacity-50 pointer-events-none'}`}
+                                        >
+                                            SEND
+                                        </button>
+                                    </div> */}
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {checkboxData2.map((option, index) => (
+                                            <label key={index} className="flex items-center mt-1 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    className="form-radio text-success peer w-6 h-6"
+                                                    name="radioOption"
+                                                    value={option}
+                                                    checked={selectedOption === option}
+                                                    onChange={() => handleRadioChange(option)}
+                                                />
+                                                <span className="text-white-dark"> {option}</span>
+                                            </label>
+                                        ))}
+
+                                        <button
+                                            onClick={handleButtonClick}
+                                            disabled={!selectedOption}
+                                            className={`btn btn-info mt-4 col-span-3 ${selectedOption ? '' : 'opacity-50 pointer-events-none'}`}
                                         >
                                             SEND
                                         </button>
