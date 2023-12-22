@@ -109,7 +109,8 @@ const Sidebar = () => {
                                 <span>{t('INBOUND')}</span>
                             </h2>
                             <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'data_process' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('data_process')}>
+                            <NavLink to="/inbound/data_process/data_input">
+                                {/* <button type="button" className={`${currentMenu === 'data_process' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('data_process')}> */}
                                     <div className="flex items-center">
                                         <svg className="group-hover:!text-primary shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -128,21 +129,22 @@ const Sidebar = () => {
                                         </svg>
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Data Process')}</span>
                                     </div>
-                                    <div className={currentMenu === 'data_process' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                    </NavLink>
+                                    {/* <div className={currentMenu === 'data_process' ? '!rotate-90' : 'rtl:rotate-180'}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
-                                    </div>
-                                </button>
+                                    </div> */}
+                                {/* </button> */}
 
                                 <AnimateHeight duration={300} height={currentMenu === 'data_process' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
                                             <NavLink to="/inbound/data_process/data_input">{'Data Input'}</NavLink>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                             <NavLink to="/inbound/data_process/list_data">{'List Data'}</NavLink>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </AnimateHeight>
                             </li>
@@ -178,7 +180,7 @@ const Sidebar = () => {
                                         <AnimateHeight duration={300} height={currentMenu === 'check_product' ? 'auto' : 0}>
                                             <ul className="sub-menu text-gray-500">
                                                 <li>
-                                                    <NavLink to="/inbound/check_product/multi_check">{'Multi Check'}</NavLink>
+                                                    <NavLink to="/inbound/check_product/list_data">{'List Data'}</NavLink>
                                                 </li>
                                                 <li>
                                                     <NavLink to="/inbound/check_product/single_check">{'Single Check'}</NavLink>
@@ -636,7 +638,7 @@ const Sidebar = () => {
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Kategori Setting')}</span>
                                     </div>
 
-                                    <div className={currentMenu === 'expired_product' ? 'rotate-90' : 'rtl:rotate-180'}>
+                                    <div className={currentMenu === 'category_setting' ? 'rotate-90' : 'rtl:rotate-180'}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>

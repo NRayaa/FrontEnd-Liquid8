@@ -24,42 +24,6 @@ const tableData = [
         position: 'Developer',
         office: 'London',
     },
-    {
-        id: 2,
-        name: 'Shaun Park',
-        email: 'shaunpark@gmail.com',
-        date: '11/08/2020',
-        sale: 400,
-        status: 'Pending',
-        register: '11 min ago',
-        progress: '23%',
-        position: 'Designer',
-        office: 'New York',
-    },
-    {
-        id: 3,
-        name: 'Alma Clarke',
-        email: 'alma@gmail.com',
-        date: '12/02/2020',
-        sale: 310,
-        status: 'In Progress',
-        register: '1 hour ago',
-        progress: '80%',
-        position: 'Accountant',
-        office: 'Amazon',
-    },
-    {
-        id: 4,
-        name: 'Vincent Carpenter',
-        email: 'vincent@gmail.com',
-        date: '13/08/2020',
-        sale: 100,
-        status: 'Canceled',
-        register: '1 day ago',
-        progress: '60%',
-        position: 'Data Scientist',
-        office: 'Canada',
-    },
 ];
 
 const DataInput = () => {
@@ -98,11 +62,11 @@ const DataInput = () => {
                                 leaveTo="opacity-0 scale-95"
                             >
                                 <Dialog.Panel as="div" className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark">
-                                    <div className='flex justify-center'>
-                                    <h1 className='text-lg font-bold flex items-center'>Masukan Data Baru</h1>
+                                    <div className="flex justify-center">
+                                        <h1 className="text-lg font-bold flex items-center">Masukan Data Baru</h1>
                                     </div>
                                     <div className="p-5">
-                                        <input className='form-input'/>
+                                        <input className="form-input" />
                                         <div className="flex justify-end items-center mt-8">
                                             <button type="button" className="btn btn-outline-danger" onClick={() => setAddData(false)}>
                                                 Discard
@@ -179,12 +143,22 @@ const DataInput = () => {
                                 <button type="button" className={`btn btn-primary ${activeTab3 === 1 ? 'hidden' : ''}`} onClick={() => setActiveTab3(activeTab3 === 3 ? 2 : 1)}>
                                     Back
                                 </button>
-                                <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => setActiveTab3(activeTab3 === 1 ? 2 : 3)}>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary ltr:ml-auto rtl:mr-auto"
+                                    onClick={() => {
+                                        if (activeTab3 === 1) {
+                                            setActiveTab3(2);
+                                        } else if (activeTab3 === 3) {
+                                            setActiveTab3(1);
+                                        } else {
+                                            setActiveTab3(3);
+                                        }
+                                    }}
+                                >
                                     {activeTab3 === 3 ? (
                                         <div>
-                                            <Link to="/inbound/data_process/list_data">
-                                                <button>Finish</button>
-                                            </Link>
+                                            <button>Done</button>
                                         </div>
                                     ) : (
                                         'Next'
@@ -193,12 +167,16 @@ const DataInput = () => {
                             </div>
                             <p className="mb-5">
                                 {activeTab3 === 1 && (
-                                    <div>
-                                        <button onClick={() => setAddData(true)} type="button" className="btn btn-outline-info mb-6">
-                                            <IconPlus />
-                                            Tambah
-                                        </button>
-                                        <div className="table-responsive mb-5">
+                                    <div className='flex gap-4 mt-6'>
+                                        <div className='w-1/5'>
+                                            <input
+                                                id="ctnFile"
+                                                type="file"
+                                                className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file-ml-5 file:text-white file:hover:bg-primary"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="table-responsive mb-5 w-full">
                                             <table>
                                                 <thead>
                                                     <tr>
@@ -232,11 +210,7 @@ const DataInput = () => {
                             <p className="mb-5">
                                 {activeTab3 === 2 && (
                                     <div>
-                                        <div className="flex justify-end">
-                                            <button type="button" className="btn btn-outline-info mb-6">
-                                                Merge
-                                            </button>
-                                        </div>
+                                        
                                         <h1 className="text-lg font-semibold mb-4">PICK HEADER</h1>
                                         <div className="table-responsive mb-5">
                                             <table>

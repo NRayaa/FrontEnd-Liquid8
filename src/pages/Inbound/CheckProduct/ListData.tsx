@@ -430,7 +430,12 @@ const ListData = () => {
                                 titleClassName: '!text-center',
                                 render: () => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/data_process/detail_data" >
+                                        <Link to="/inbound/check_product/multi_check" >
+                                        <button type="button" className="btn btn-outline-success">
+                                            Check
+                                        </button>
+                                        </Link>
+                                        <Link to="/inbound/check_product/detail_data" >
                                         <button type="button" className="btn btn-outline-info">
                                             Detail
                                         </button>
