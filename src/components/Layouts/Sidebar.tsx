@@ -110,7 +110,7 @@ const Sidebar = () => {
                                 </svg>
                                 <span>{t('INBOUND')}</span>
                             </h2>
-                            <li className="menu nav-item">
+                            <li className="nav-item ">
                                 <NavLink to="/inbound/data_process/data_input">
                                     {/* <button type="button" className={`${currentMenu === 'data_process' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('data_process')}> */}
                                     <div className="flex items-center">
@@ -139,21 +139,21 @@ const Sidebar = () => {
                                     </div> */}
                                 {/* </button> */}
 
-                                <AnimateHeight duration={300} height={currentMenu === 'data_process' ? 'auto' : 0}>
+                                {/* <AnimateHeight duration={300} height={currentMenu === 'data_process' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
                                             <NavLink to="/inbound/data_process/data_input">{'Data Input'}</NavLink>
                                         </li>
-                                        {/* <li>
+                                        <li>
                                             <NavLink to="/inbound/data_process/list_data">{'List Data'}</NavLink>
-                                        </li> */}
+                                        </li>
                                     </ul>
-                                </AnimateHeight>
+                                </AnimateHeight> */}
                             </li>
 
                             <li className="nav-item">
                                 <ul>
-                                    <li className="menu nav-item">
+                                    <li className="nav-item">
                                         <button type="button" className={`${currentMenu === 'check_product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('check_product')}>
                                             <div className="flex items-center">
                                                 <svg className="group-hover:!text-primary shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -182,7 +182,7 @@ const Sidebar = () => {
                                         <AnimateHeight duration={300} height={currentMenu === 'check_product' ? 'auto' : 0}>
                                             <ul className="sub-menu text-gray-500">
                                                 <li>
-                                                    <NavLink to="/inbound/check_product/list_data">{'List Data'}</NavLink>
+                                                    <NavLink to="/inbound/check_product/list_data">{'Multi Check'}</NavLink>
                                                 </li>
                                                 <li>
                                                     <NavLink to="/inbound/check_product/single_check">{'Single Check'}</NavLink>
@@ -650,7 +650,7 @@ const Sidebar = () => {
                                 <AnimateHeight duration={300} height={currentMenu === 'category_setting' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
-                                            <NavLink to="/storage/categorysetting">{'Sub Kategori'}</NavLink>
+                                            <NavLink to="/storage/categorysetting/sub_kategori">{'Sub Kategori'}</NavLink>
                                         </li>
                                         <li>
                                             <NavLink to="/storage/categorysetting/tag_warna">{'Tag Warna'}</NavLink>

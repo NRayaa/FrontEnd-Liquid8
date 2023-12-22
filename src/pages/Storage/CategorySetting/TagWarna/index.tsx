@@ -11,11 +11,11 @@ const TagWarna = () => {
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Tag Warna</h5>
                 <div className="mb-4 flex justify-between">
                     <div className="relative w-[220px]">
-                        <input
+                        {/* <input
                             type="text"
                             className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                             placeholder="Search..."
-                        />
+                        /> */}
                         <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
                             <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
@@ -29,9 +29,9 @@ const TagWarna = () => {
                             </svg>
                         </button>
                     </div>
-                    <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/storage/categorysetting/tag_warna/add')}>
+                    {/* <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/storage/categorysetting/tag_warna/add')}>
                         add data
-                    </button>
+                    </button> */}
                 </div>
                 <div className="datatables">
                     <table className="panel w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
@@ -72,9 +72,9 @@ const TagWarna = () => {
                                             Detail
                                         </button>
                                     </Link>
-                                    <button type="button" className="btn btn-outline-danger">
+                                    {/* <button type="button" className="btn btn-outline-danger">
                                         Delete
-                                    </button>
+                                    </button> */}
                                 </td>
                             </tr>
                             <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -91,9 +91,9 @@ const TagWarna = () => {
                                             Detail
                                         </button>
                                     </Link>
-                                    <button type="button" className="btn btn-outline-danger">
+                                    {/* <button type="button" className="btn btn-outline-danger">
                                         Delete
-                                    </button>
+                                    </button> */}
                                 </td>
                             </tr>
                         </tbody>
