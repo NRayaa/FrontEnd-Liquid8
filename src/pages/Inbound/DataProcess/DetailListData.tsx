@@ -329,7 +329,7 @@ const DetailListData = () => {
                         </Link>
                     </div>
                 </div>
-                <h5 className="font-semibold text-lg dark:text-white-light mb-2">List Cabang</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-2">List Data Proses</h5>
                 <div className="datatables">
                     <DataTable
                         highlightOnHover

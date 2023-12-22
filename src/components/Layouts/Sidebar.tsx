@@ -53,8 +53,8 @@ const Sidebar = () => {
                 <div className="bg-white dark:bg-black h-full">
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            <img className="w-8 ml-[5px] flex-none" src="/assets/images/logo.svg" alt="logo" />
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('VRISTO')}</span>
+                            <img className="w-44 ml-[5px] flex-none" src="/assets/images/liquid8.png" alt="logo" />
+                            {/* <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('VRISTO')}</span> */}
                         </NavLink>
 
                         <button
@@ -690,7 +690,10 @@ const Sidebar = () => {
                                             <NavLink to="/expired_product/list_product">{'List Product'}</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/expired_product/bundle_promo">{'Bundle Promo'}</NavLink>
+                                            <NavLink to="/expired_product/bundle_promo">{'Bundle Product'}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/expired_product/bundle_promo">{'Promo Product'}</NavLink>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
