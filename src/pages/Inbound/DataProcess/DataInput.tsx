@@ -10,6 +10,7 @@ import IconThumbUp from '../../../components/Icon/IconThumbUp';
 import IconTrashLines from '../../../components/Icon/IconTrashLines';
 import IconPlus from '../../../components/Icon/IconPlus';
 import { Dialog, Transition } from '@headlessui/react';
+import Swal from 'sweetalert2';
 
 const tableData = [
     {
@@ -25,6 +26,37 @@ const tableData = [
         office: 'London',
     },
 ];
+
+const showAlert = async (type: number) => {
+    if (type === 11) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-secondary',
+                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                popup: 'sweet-alerts',
+            },
+            buttonsStyling: false,
+        });
+        swalWithBootstrapButtons
+            .fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                padding: '2em',
+            })
+            .then((result) => {
+                if (result.value) {
+                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                }
+            });
+    }
+};
 
 const DataInput = () => {
     const dispatch = useDispatch();
@@ -167,8 +199,8 @@ const DataInput = () => {
                             </div>
                             <p className="mb-5">
                                 {activeTab3 === 1 && (
-                                    <div className='flex gap-4 mt-6'>
-                                        <div className='w-1/5'>
+                                    <div className="flex gap-4 mt-6">
+                                        <div className="w-1/5">
                                             <input
                                                 id="ctnFile"
                                                 type="file"
@@ -194,7 +226,7 @@ const DataInput = () => {
                                                                 </td>
                                                                 <td>{data.name}</td>
                                                                 <td className="text-center">
-                                                                    <button type="button" className="btn btn-outline-danger">
+                                                                    <button onClick={() => showAlert(11)} type="button" className="btn btn-outline-danger">
                                                                         Hapus
                                                                     </button>
                                                                 </td>
@@ -210,7 +242,6 @@ const DataInput = () => {
                             <p className="mb-5">
                                 {activeTab3 === 2 && (
                                     <div>
-                                        
                                         <h1 className="text-lg font-semibold mb-4">PICK HEADER</h1>
                                         <div className="table-responsive mb-5">
                                             <table>

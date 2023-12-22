@@ -72,7 +72,7 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/storage/categorysetting',
+        path: '/storage/categorysetting/sub_kategori',
         element: <CategorySetting />,
         layout: 'default',
     },
