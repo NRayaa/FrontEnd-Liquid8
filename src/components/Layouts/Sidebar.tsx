@@ -38,6 +38,9 @@ const Sidebar = () => {
         }
     }, []);
 
+    const lightImage = '/assets/images/liquid8.png';
+    const darkImage = '/assets/images/liquid8-light.png';
+
     useEffect(() => {
         if (window.innerWidth < 1024 && themeConfig.sidebar) {
             dispatch(toggleSidebar());
@@ -53,8 +56,7 @@ const Sidebar = () => {
                 <div className="bg-white dark:bg-black h-full">
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            <img className="w-44 ml-[5px] flex-none" src="/assets/images/liquid8.png" alt="logo" />
-                            {/* <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('VRISTO')}</span> */}
+                            <img className="w-52 flex-none" src={themeConfig.theme === 'dark' ? darkImage : lightImage} alt="logo" />
                         </NavLink>
 
                         <button
@@ -109,8 +111,8 @@ const Sidebar = () => {
                                 <span>{t('INBOUND')}</span>
                             </h2>
                             <li className="menu nav-item">
-                            <NavLink to="/inbound/data_process/data_input">
-                                {/* <button type="button" className={`${currentMenu === 'data_process' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('data_process')}> */}
+                                <NavLink to="/inbound/data_process/data_input">
+                                    {/* <button type="button" className={`${currentMenu === 'data_process' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('data_process')}> */}
                                     <div className="flex items-center">
                                         <svg className="group-hover:!text-primary shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -129,8 +131,8 @@ const Sidebar = () => {
                                         </svg>
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Data Process')}</span>
                                     </div>
-                                    </NavLink>
-                                    {/* <div className={currentMenu === 'data_process' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                </NavLink>
+                                {/* <div className={currentMenu === 'data_process' ? '!rotate-90' : 'rtl:rotate-180'}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
