@@ -128,7 +128,7 @@ const MultiCheck = () => {
                         </div>
                         <div className="flex gap-4 items-center w-full">
                             <label htmlFor="gridKeterangan">Keterangan</label>
-                            <input id="gridKeterangan" type="text" placeholder="Masukan Kenterangan" className="form-input w-full" />
+                            <input id="gridKeterangan" type="text" disabled className="form-input w-full" />
                         </div>
                     </form>
                     <form className="space-y-5 col-span-2">

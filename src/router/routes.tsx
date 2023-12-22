@@ -2,9 +2,9 @@ import { lazy } from 'react';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
-const ListData = lazy(() => import('../pages/Inbound/DataProcess/ListData'));
+const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
 const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
-const DetailListData = lazy(() => import('../pages/Inbound/DataProcess/DetailListData'));
+const DetailListData = lazy(() => import('../pages/Inbound/CheckProduct/DetailListData'));
 const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
 const DetailCheckHistory = lazy(() => import('../pages/Inbound/CheckHistory/Detail'));
 const Product = lazy(() => import('../pages/Storage/Product'));
@@ -36,12 +36,12 @@ const routes = [
     },
     //List Data
     {
-        path: '/inbound/data_process/list_data',
+        path: '/inbound/check_product/list_data',
         element: <ListData />,
         layout: 'default',
     },
     {
-        path: '/inbound/data_process/detail_data',
+        path: '/inbound/check_product/detail_data',
         element: <DetailListData />,
         layout: 'default',
     },
