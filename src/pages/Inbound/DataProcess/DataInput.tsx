@@ -200,7 +200,7 @@ const DataInput = () => {
                             <p className="mb-5">
                                 {activeTab3 === 1 && (
                                     <div className="flex gap-4 mt-6">
-                                        <div className="w-1/5">
+                                        <div className="w-1/2">
                                             <input
                                                 id="ctnFile"
                                                 type="file"
