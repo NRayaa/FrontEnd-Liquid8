@@ -1,4 +1,9 @@
 import { lazy } from 'react';
+import ListProduct from '../pages/Storage/ExpiredProduct/ListProduct/ListProduct';
+import DetailExpiredProduct from '../pages/Storage/ExpiredProduct/ListProduct/DetailExpiredProduct';
+import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
+import CreateBundle from '../pages/Storage/ExpiredProduct/BundleProduct/CreateBundle';
+import DetailBundle from '../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -99,6 +104,32 @@ const routes = [
     {
         path: '/storage/categorysetting/:id',
         element: <EditCategory />,
+        layout: 'default',
+    },
+    // Expired Product
+    {
+        path: '/storage/expired_product/list_product',
+        element: <ListProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/detail_product/:id',
+        element: <DetailExpiredProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/bundle_product',
+        element: <BundleProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/create_bundle',
+        element: <CreateBundle />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/detail_bundle/:id',
+        element: <DetailBundle />,
         layout: 'default',
     },
 ];
