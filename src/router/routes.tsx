@@ -20,6 +20,10 @@ const EditCategory = lazy(() => import('../pages/Storage/CategorySetting/EditCat
 const TagWarna = lazy(() => import('../pages/Storage/CategorySetting/TagWarna'));
 const AddTagWarna = lazy(() => import('../pages/Storage/CategorySetting/TagWarna/AddTagWarna'));
 const EditTagWarna = lazy(() => import('../pages/Storage/CategorySetting/TagWarna/EditTagWarna'));
+const Pallet = lazy(() => import('../pages/Storage/Pallet'));
+const CreatePallet = lazy(() => import('../pages/Storage/Pallet/CreatePallet'));
+const PalletGenerate = lazy(() => import('../pages/Storage/Pallet/PalletGenerate'));
+const PalletManual = lazy(() => import('../pages/Storage/Pallet/PalletManual'));
 
 const routes = [
     // dashboard
@@ -130,6 +134,26 @@ const routes = [
     {
         path: '/storage/expired_product/detail_bundle/:id',
         element: <DetailBundle />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/pallet/',
+        element: <Pallet />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/pallet/create_pallet',
+        element: <CreatePallet />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/pallet/create_pallet/generate',
+        element: <PalletGenerate />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/pallet/create_pallet/manual',
+        element: <PalletManual />,
         layout: 'default',
     },
 ];

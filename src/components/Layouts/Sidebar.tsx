@@ -293,7 +293,7 @@ const Sidebar = () => {
                             </li>
 
                             <li className="menu nav-item">
-                                <NavLink to="/storage/palet" className="group">
+                                <NavLink to="/storage/pallet" className="group">
                                     <div className="flex items-center">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -313,7 +313,7 @@ const Sidebar = () => {
                                             />
                                         </svg>
 
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Palet')}</span>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Pallet')}</span>
                                     </div>
                                 </NavLink>
                             </li>
