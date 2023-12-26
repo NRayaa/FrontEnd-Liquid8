@@ -12,6 +12,7 @@ module.exports = {
                     DEFAULT: '#1C9EFF',
                     light: '#eaf1ff',
                     'dark-light': 'rgba(67,97,238,.15)',
+                    dark: '#4361EE',
                 },
                 secondary: {
                     DEFAULT: '#805dca',

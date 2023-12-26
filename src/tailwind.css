@@ -280,6 +280,9 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
     .btn-primary {
         @apply border-primary bg-primary text-white shadow-primary/60;
     }
+    .btn-primary-dark {
+        @apply border-primary-dark bg-primary-dark text-white shadow-primary-dark/60;
+    }
     .btn-outline-primary {
         @apply border-primary text-primary shadow-none hover:bg-primary hover:text-white;
     }
