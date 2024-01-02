@@ -1,12 +1,4 @@
 import { lazy } from 'react';
-import ListProduct from '../pages/Storage/ExpiredProduct/ListProduct/ListProduct';
-import DetailExpiredProduct from '../pages/Storage/ExpiredProduct/ListProduct/DetailExpiredProduct';
-import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
-import CreateBundle from '../pages/Storage/ExpiredProduct/BundleProduct/CreateBundle';
-import DetailBundle from '../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle';
-import PromoProduct from '../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct';
-import CreatePromo from '../pages/Storage/ExpiredProduct/PromoProduct/CreatePromo';
-import DetailPromo from '../pages/Storage/ExpiredProduct/PromoProduct/DetailPromo';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -27,6 +19,14 @@ const Pallet = lazy(() => import('../pages/Storage/Pallet'));
 const CreatePallet = lazy(() => import('../pages/Storage/Pallet/CreatePallet'));
 const PalletGenerate = lazy(() => import('../pages/Storage/Pallet/PalletGenerate'));
 const PalletManual = lazy(() => import('../pages/Storage/Pallet/PalletManual'));
+const ListProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/ListProduct'));
+const DetailExpiredProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/DetailExpiredProduct'));
+const BundleProduct = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct'));
+const CreateBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/CreateBundle'));
+const DetailBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle'));
+const PromoProduct = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct'));
+const CreatePromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/CreatePromo'));
+const DetailPromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/DetailPromo'));
 
 const routes = [
     // dashboard
