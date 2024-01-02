@@ -286,7 +286,7 @@ const Sidebar = () => {
                                             <NavLink to="/storage/expired_product/bundle_product">{'Bundle Product'}</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/storage/expired_product/bundle_promo">{'Promo Product'}</NavLink>
+                                            <NavLink to="/storage/expired_product/promo_product">{'Promo Product'}</NavLink>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
