@@ -4,6 +4,9 @@ import DetailExpiredProduct from '../pages/Storage/ExpiredProduct/ListProduct/De
 import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
 import CreateBundle from '../pages/Storage/ExpiredProduct/BundleProduct/CreateBundle';
 import DetailBundle from '../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle';
+import PromoProduct from '../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct';
+import CreatePromo from '../pages/Storage/ExpiredProduct/PromoProduct/CreatePromo';
+import DetailPromo from '../pages/Storage/ExpiredProduct/PromoProduct/DetailPromo';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -136,6 +139,23 @@ const routes = [
         element: <DetailBundle />,
         layout: 'default',
     },
+    // promo Product
+    {
+        path: '/storage/expired_product/promo_product',
+        element: <PromoProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/create_promo',
+        element: <CreatePromo />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/detail_promo/:id',
+        element: <DetailPromo />,
+        layout: 'default',
+    },
+    // Pallet 
     {
         path: '/storage/pallet/',
         element: <Pallet />,

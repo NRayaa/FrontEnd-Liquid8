@@ -1,4 +1,3 @@
-import React from 'react';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
@@ -20,6 +19,8 @@ const rowData = [
         email: 'carolinejensen@zidant.com',
         status: 'Expired',
         QTY: '12',
+        hargaLama: 'Rp. 12.000',
+        hargaBaru: 'Rp. 14.000',
     },
     {
         id: 2,
@@ -32,8 +33,11 @@ const rowData = [
         dob: '1989-11-19',
         status: 'Expired',
         QTY: '34',
+        hargaLama: 'Rp. 10.000',
+        hargaBaru: 'Rp. 9.000',
     },
 ];
+
 const showAlert = async (type: number) => {
     if (type === 11) {
         const swalWithBootstrapButtons = Swal.mixin({
@@ -90,7 +94,7 @@ const showAlert = async (type: number) => {
         });
     }
 };
-const CreateBundle = () => {
+const CreatePromo = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
@@ -176,151 +180,153 @@ const CreateBundle = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <Link to="/storage/expired_product/bundle_product">
-                        <span>Expired Product</span>
-                    </Link>
+                    <span>Expired Product</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Create Bundle</span>
+                    <span>Create Promo</span>
                 </li>
             </ul>
-            <div>
-                <h1 className="text-lg font-semibold py-4">Create Bundle</h1>
-            </div>
-            <div>
+            {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
+            </div> */}
+            <div className="panel mt-6 dark:text-white-light mb-5">
+                <h1 className="text-lg font-bold flex justify-start py-4">Create Promo</h1>
                 <form className="w-[400px] mb-4 ">
-                    <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
-                    </button>
                     <div className="flex items-center  justify-between ">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Barcode Bundle :
+                            Barcode :
                         </label>
                         <input id="categoryName" type="text" className=" form-input w-[250px]" required />
                     </div>
-                    <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
+                    {/* <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span> */}
                     <div className="flex items-center justify-between mb-2 mt-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Bundle :
+                            Kategori :
                         </label>
                         <input id="categoryName" type="text" className=" form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Total Harga :
+                            QTY :
                         </label>
                         <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Custom Harga :
+                            Harga :
                         </label>
                         <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
                     </div>
+                    <div>
+                        <div className="flex items-center justify-between mb-2 mt-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Input Data Baru :
+                            </label>
+                            <input id="categoryName" type="text" className=" form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Discount Promo :
+                            </label>
+                            <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Harga Promo :
+                            </label>
+                            <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
+                        </div>
+                    </div>
+                    <button type="submit" className="btn btn-primary mt-4 px-16">
+                        Create Bundle
+                    </button>
                 </form>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    {/* <div>
+                        <Link to="/storage/expired_product/create_promo" >
+                        <button className="btn btn-outline-info">
+                            <IconPlus />
+                            Create
+                        </button>
+                        </Link>
+                    </div> */}
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                 </div>
-                <div>
-                    <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : 16 </span>
-                    <div className="grid grid-cols-5 gap-4">
-                        <div className="datatables xl:col-span-3">
-                            <DataTable
-                                highlightOnHover
-                                className="whitespace-nowrap table-hover "
-                                records={recordsData}
-                                columns={[
-                                    { accessor: 'id', title: 'No', sortable: true },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true },
-                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true },
-                                    { accessor: 'category', title: 'Kategori', sortable: true },
-                                    { accessor: 'totalMasuk', title: 'Total Masuk', sortable: true },
-                                    {
-                                        accessor: 'action',
-                                        title: 'Opsi',
-                                        titleClassName: '!text-center',
-                                        render: () => (
-                                            <div className="flex items-center w-max mx-auto gap-6">
-                                                {/* <Link to="/inbound/check_product/multi_check" >
+                <div className="datatables panel xl:col-span-2">
+                    <DataTable
+                        highlightOnHover
+                        className="whitespace-nowrap table-hover "
+                        records={recordsData}
+                        columns={[
+                            { accessor: 'id', title: 'No', sortable: true },
+                            // { accessor: 'barcode', title: 'Barcode LQD', sortable: true },
+                            { accessor: 'barcode', title: 'Barcode', sortable: true },
+                            { accessor: 'firstName', title: 'Nama Produk', sortable: true },
+                            { accessor: 'category', title: 'Kategori', sortable: true },
+                            { accessor: 'QTY', title: 'QTY', sortable: true },
+                            { accessor: 'totalMasuk', title: 'Harga', sortable: true },
+                            // { accessor: 'hargaLama', title: 'Harga Lama', sortable: true },
+                            {
+                                accessor: 'status',
+                                title: 'Status',
+                                sortable: true,
+                                render: (data) => (
+                                    <span
+                                        className={`badge whitespace-nowrap ${
+                                            data.status === 'completed'
+                                                ? 'bg-primary'
+                                                : data.status === 'Pending'
+                                                ? 'bg-secondary'
+                                                : data.status === 'In Progress'
+                                                ? 'bg-success'
+                                                : data.status === 'Expired'
+                                                ? 'bg-danger'
+                                                : 'bg-primary'
+                                        }`}
+                                    >
+                                        {data.status}
+                                    </span>
+                                ),
+                            },
+                            {
+                                accessor: 'action',
+                                title: 'Opsi',
+                                titleClassName: '!text-center',
+                                render: () => (
+                                    <div className="flex items-center w-max mx-auto gap-6">
+                                        {/* <Link to="/inbound/check_product/multi_check" >
                                         <button type="button" className="btn btn-outline-success">
                                             Check
                                         </button>
                                         </Link> */}
-                                                {/* <Link to="/storage/expired_product/detail_product/1"> */}
-                                                <button type="button" className="btn btn-outline-info">
-                                                    Add
-                                                </button>
-                                                {/* </Link> */}
-                                                {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
-                                                UNBUNDLE
-                                            </button> */}
-                                            </div>
-                                        ),
-                                    },
-                                ]}
-                                totalRecords={initialRecords.length}
-                                recordsPerPage={pageSize}
-                                page={page}
-                                onPageChange={(p) => setPage(p)}
-                                recordsPerPageOptions={PAGE_SIZES}
-                                onRecordsPerPageChange={setPageSize}
-                                sortStatus={sortStatus}
-                                onSortStatusChange={setSortStatus}
-                                minHeight={200}
-                                paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-                            />
-                        </div>
-                        <div className="datatables xl:col-span-2">
-                            <DataTable
-                                highlightOnHover
-                                className="whitespace-nowrap table-hover "
-                                records={recordsData}
-                                columns={[
-                                    { accessor: 'id', title: 'No', sortable: true },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true },
-                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true },
-                                    {
-                                        accessor: 'action',
-                                        title: 'Opsi',
-                                        titleClassName: '!text-center',
-                                        render: () => (
-                                            <div className="flex items-center w-max mx-auto gap-6">
-                                                {/* <Link to="/inbound/check_product/multi_check" >
-                                        <button type="button" className="btn btn-outline-success">
-                                            Check
+                                        <Link to="/storage/expired_product/detail_promo/1">
+                                            <button type="button" className="btn btn-outline-info">
+                                                DETAIL
+                                            </button>
+                                        </Link>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
+                                            UNBUNDLE
                                         </button>
-                                        </Link> */}
-                                                {/* <Link to="/storage/expired_product/detail_product/1">
-                                                <button type="button" className="btn btn-outline-info">
-                                                    DETAIL
-                                                </button>
-                                            </Link> */}
-                                                <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        ),
-                                    },
-                                ]}
-                                totalRecords={initialRecords.length}
-                                recordsPerPage={pageSize}
-                                page={page}
-                                onPageChange={(p) => setPage(p)}
-                                recordsPerPageOptions={PAGE_SIZES}
-                                onRecordsPerPageChange={setPageSize}
-                                sortStatus={sortStatus}
-                                onSortStatusChange={setSortStatus}
-                                minHeight={200}
-                                paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-                            />
-                        </div>
-                    </div>
+                                    </div>
+                                ),
+                            },
+                        ]}
+                        totalRecords={initialRecords.length}
+                        recordsPerPage={pageSize}
+                        page={page}
+                        onPageChange={(p) => setPage(p)}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        sortStatus={sortStatus}
+                        onSortStatusChange={setSortStatus}
+                        minHeight={200}
+                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                    />
                 </div>
             </div>
         </div>
     );
 };
 
-export default CreateBundle;
+export default CreatePromo;
