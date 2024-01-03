@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { MergeHeader, MergeHeaderBody } from './types';
+import { Barcode, MergeHeader, MergeHeaderBody } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const inboundDataProcessApi = createApi({
@@ -13,7 +13,10 @@ export const inboundDataProcessApi = createApi({
                 body,
             }),
         }),
+        getBarcode: builder.query<Barcode, string>({
+            query: (barcode) => `/barcode?barcode=${barcode}`,
+        }),
     }),
 });
 
-export const { useMergedHeaderMutation } = inboundDataProcessApi;
+export const { useMergedHeaderMutation, useGetBarcodeQuery } = inboundDataProcessApi;
