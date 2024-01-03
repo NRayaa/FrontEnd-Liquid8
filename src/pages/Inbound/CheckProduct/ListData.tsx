@@ -21,6 +21,8 @@ import IconHorizontalDots from '../../../components/Icon/IconHorizontalDots';
 import { IRootState } from '../../../store';
 import IconEye from '../../../components/Icon/IconEye';
 import IconCashBanknotes from '../../../components/Icon/IconCashBanknotes';
+import { useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
+import { CheckProductDocumentItem } from '../../../store/services/types';
 // import * as Yup from 'yup';
 // import { Field, Form, Formik } from 'formik';
 
@@ -298,76 +300,19 @@ const ListData = () => {
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const [page, setPage] = useState(1);
-    const PAGE_SIZES = [10, 20, 30, 50, 100];
-    const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'firstName'));
-    const [recordsData, setRecordsData] = useState(initialRecords);
 
-    const [search, setSearch] = useState('');
-    const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-        columnAccessor: 'id',
-        direction: 'asc',
-    });
+    const { data, isSuccess } = useDocumentsCheckProductsQuery(undefined);
+
+    const [search, setSearch] = useState<string>('');
+    const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
 
     useEffect(() => {
-        setPage(1);
-    }, [pageSize]);
-
-    useEffect(() => {
-        const from = (page - 1) * pageSize;
-        const to = from + pageSize;
-        setRecordsData([...initialRecords.slice(from, to)]);
-    }, [page, pageSize, initialRecords]);
-
-    useEffect(() => {
-        setInitialRecords(() => {
-            return rowData.filter((item) => {
-                return (
-                    item.id.toString().includes(search.toLowerCase()) ||
-                    item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                    item.dob.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.phone.toLowerCase().includes(search.toLowerCase())
-                );
-            });
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
-
-    useEffect(() => {
-        const data = sortBy(initialRecords, sortStatus.columnAccessor);
-        setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-        setPage(1);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sortStatus]);
-    const formatDate = (date: string | number | Date) => {
-        if (date) {
-            const dt = new Date(date);
-            const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-            const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-            return day + '/' + month + '/' + dt.getFullYear();
+        if (isSuccess && data.data.message) {
+            setListsData(data.data.resource.data);
         }
-        return '';
-    };
+    }, [data]);
 
-    const [cost, setCost] = useState('');
-
-    // const handleCostChange = (e: { target: { value: any } }) => {
-    //     const inputValue = e.target.value;
-    //     let formatValue = '';
-
-    //     // Remove non-numeric characters
-    //     const numValue = inputValue.replace(/\D/g, '');
-
-    //     // Format the number with 'Rp.' prefix
-    //     if (numValue !== '') {
-    //         formatValue = `Rp. ${parseInt(numValue, 10).toLocaleString('id-ID')}`;
-    //     }
-
-    //     setCost(formatValue);
-    // };
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+    console.log('lists data', listsData);
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -393,7 +338,7 @@ const ListData = () => {
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
-                    <DataTable
+                    {/* <DataTable
                         highlightOnHover
                         className="whitespace-nowrap table-hover "
                         records={recordsData}
@@ -430,15 +375,15 @@ const ListData = () => {
                                 titleClassName: '!text-center',
                                 render: () => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/check_product/multi_check" >
-                                        <button type="button" className="btn btn-outline-success">
-                                            Check
-                                        </button>
+                                        <Link to="/inbound/check_product/multi_check">
+                                            <button type="button" className="btn btn-outline-success">
+                                                Check
+                                            </button>
                                         </Link>
-                                        <Link to="/inbound/check_product/detail_data" >
-                                        <button type="button" className="btn btn-outline-info">
-                                            Detail
-                                        </button>
+                                        <Link to="/inbound/check_product/detail_data">
+                                            <button type="button" className="btn btn-outline-info">
+                                                Detail
+                                            </button>
                                         </Link>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
                                             Delete
@@ -457,7 +402,7 @@ const ListData = () => {
                         onSortStatusChange={setSortStatus}
                         minHeight={200}
                         paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-                    />
+                    /> */}
                 </div>
             </div>
         </div>

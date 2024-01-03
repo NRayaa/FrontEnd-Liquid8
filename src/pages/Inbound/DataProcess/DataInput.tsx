@@ -12,21 +12,6 @@ import { useProductOldsQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah, formatTimestamp } from '../../../helper/functions';
 import { useMergedHeaderMutation } from '../../../store/services/inboundDataProcessApi';
 
-const tableData = [
-    {
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@yahoo.com',
-        date: '10/08/2020',
-        sale: 120,
-        status: 'Complete',
-        register: '5 min ago',
-        progress: '40%',
-        position: 'Developer',
-        office: 'London',
-    },
-];
-
 const showAlert = async (type: number) => {
     if (type === 11) {
         const swalWithBootstrapButtons = Swal.mixin({
@@ -65,7 +50,7 @@ const DataInput = () => {
     });
 
     const [dataGenerates, setDataGenerates] = useState<GeneratesData | undefined>();
-    const { data, isSuccess } = useProductOldsQuery(undefined);
+    const { data } = useProductOldsQuery(undefined);
 
     const [barcode, setBarcode] = useState<string[]>();
     const [productName, setProductName] = useState<string[]>();
