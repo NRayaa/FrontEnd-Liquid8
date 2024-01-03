@@ -82,5 +82,21 @@ interface MergeHeaderBody {
         old_price_product: string[] | undefined;
     };
 }
+interface Barcode {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            code_document: string;
+            old_barcode_product: string;
+            old_name_product: string;
+            old_quantity_product: string;
+            old_price_product: string;
+            created_at: string;
+            updated_at: string;
+        };
+    };
+}
 
-export type { UserDataItem, GenerateInboundDataProcessResponse, ProductOlds, MergeHeader, MergeHeaderBody };
+export type { UserDataItem, GenerateInboundDataProcessResponse, ProductOlds, MergeHeader, MergeHeaderBody, Barcode };
