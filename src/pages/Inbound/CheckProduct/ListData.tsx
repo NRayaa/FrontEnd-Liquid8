@@ -1,55 +1,12 @@
 import { DataTable } from 'mantine-datatable';
-import { useEffect, useMemo, useState } from 'react';
-import sortBy from 'lodash/sortBy';
+import { useEffect, useState } from 'react';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { useDispatch, useSelector } from 'react-redux';
-// import IconBell from '../../../components/Icon/IconBell';
-// import IconXCircle from '../../../components/Icon/IconXCircle';
-import IconPencil from '../../../components/Icon/IconPencil';
-import IconTrashLines from '../../../components/Icon/IconTrashLines';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import { Dialog, Transition } from '@headlessui/react';
-// import IconPlus from '../../../components/Icon/IconPlus';
-// import IconNotes from '../../../components/Icon/IconNotes';
 import Swal from 'sweetalert2';
-import IconSend from '../../../components/Icon/IconSend';
-import IconPlus from '../../../components/Icon/IconPlus';
-// import IconCircleCheck from '../../../components/Icon/IconCircleCheck';
-import IconTrendingUp from '../../../components/Icon/IconTrendingUp';
-import Dropdown from '../../../components/Dropdown';
-import IconHorizontalDots from '../../../components/Icon/IconHorizontalDots';
-import { IRootState } from '../../../store';
-import IconEye from '../../../components/Icon/IconEye';
-import IconCashBanknotes from '../../../components/Icon/IconCashBanknotes';
 import { useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
 import { CheckProductDocumentItem } from '../../../store/services/types';
 import { formatDate } from '../../../helper/functions';
-// import * as Yup from 'yup';
-// import { Field, Form, Formik } from 'formik';
-
-const rowData = [
-    {
-        id: 1,
-        firstName: 'Caroline',
-        lastName: 'Jensen',
-        email: 'carolinejensen@zidant.com',
-        dob: '2004-05-28',
-        status: 'Completed',
-        address: {
-            street: '529 Scholes Street',
-            city: 'Temperanceville',
-            zipcode: 5235,
-            geo: {
-                lat: 23.806115,
-                lng: 164.677197,
-            },
-        },
-        phone: '+1 (821) 447-3782',
-        isActive: true,
-        age: 39,
-        company: 'POLARAX',
-    },
-];
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -151,6 +108,7 @@ const ListData = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
+                        withBorder={false}
                         highlightOnHover
                         className="whitespace-nowrap table-hover "
                         records={listsData}
@@ -158,27 +116,27 @@ const ListData = () => {
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item, index) => <span>{index + 1}</span>,
+                                render: (item: CheckProductDocumentItem, index: number) => <span>{index + 1}</span>,
                             },
                             {
                                 accessor: 'date_document',
                                 title: 'Nama Data',
-                                render: (item) => <span className="font-semibold">{item.code_document}</span>,
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.code_document}</span>,
                             },
                             {
                                 accessor: 'date_document',
                                 title: 'Tanggal',
-                                render: (item) => <span className="font-semibold">{formatDate(item.date_document)}</span>,
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.date_document)}</span>,
                             },
                             {
                                 accessor: 'total_column_document',
                                 title: 'Total Barang',
-                                render: (item) => <span className="font-semibold">{formatDate(item.total_column_document)}</span>,
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.total_column_document)}</span>,
                             },
                             {
                                 accessor: 'status_document',
                                 title: 'Status',
-                                render: (item) => (
+                                render: (item: CheckProductDocumentItem) => (
                                     <span
                                         className={`badge whitespace-nowrap ${
                                             item.status_document === 'completed'
@@ -199,7 +157,7 @@ const ListData = () => {
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item) => (
+                                render: (item: CheckProductDocumentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <Link to="/inbound/check_product/multi_check" state={{ codeDocument: item.code_document }}>
                                             <button type="button" className="btn btn-outline-success">

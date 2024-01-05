@@ -271,7 +271,7 @@ const CreatePromo = () => {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (data) => (
+                                render: (data: any) => (
                                     <span
                                         className={`badge whitespace-nowrap ${
                                             data.status === 'completed'
@@ -315,13 +315,13 @@ const CreatePromo = () => {
                         totalRecords={initialRecords.length}
                         recordsPerPage={pageSize}
                         page={page}
-                        onPageChange={(p) => setPage(p)}
+                        onPageChange={(p: number) => setPage(p)}
                         recordsPerPageOptions={PAGE_SIZES}
                         onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                        paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
                 </div>
             </div>

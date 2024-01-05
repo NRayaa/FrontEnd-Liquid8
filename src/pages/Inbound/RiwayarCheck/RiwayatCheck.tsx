@@ -407,7 +407,7 @@ const RiwayatCheck = () => {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (data) => (
+                                render: (data: any) => (
                                     <span
                                         className={`badge whitespace-nowrap ${
                                             data.status === 'completed'
@@ -431,10 +431,10 @@ const RiwayatCheck = () => {
                                 titleClassName: '!text-center',
                                 render: () => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/data_process/detail_data" >
-                                        <button type="button" className="btn btn-outline-info">
-                                            Detail
-                                        </button>
+                                        <Link to="/inbound/data_process/detail_data">
+                                            <button type="button" className="btn btn-outline-info">
+                                                Detail
+                                            </button>
                                         </Link>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
                                             Delete
@@ -446,13 +446,13 @@ const RiwayatCheck = () => {
                         totalRecords={initialRecords.length}
                         recordsPerPage={pageSize}
                         page={page}
-                        onPageChange={(p) => setPage(p)}
+                        onPageChange={(p: number) => setPage(p)}
                         recordsPerPageOptions={PAGE_SIZES}
                         onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                        paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
                 </div>
             </div>
