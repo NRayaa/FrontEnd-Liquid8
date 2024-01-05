@@ -6,11 +6,9 @@ import { toggleSidebar } from '../../store/themeConfigSlice';
 import AnimateHeight from 'react-animate-height';
 import { IRootState } from '../../store';
 import { useState, useEffect } from 'react';
-import IconMenuDocumentation from '../Icon/Menu/IconMenuDocumentation';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
-    const [errorSubMenu, setErrorSubMenu] = useState(false);
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
     const location = useLocation();
@@ -26,16 +24,28 @@ const Sidebar = () => {
         const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
         if (selector) {
             selector.classList.add('active');
-            const ul: any = selector.closest('ul.sub-menu');
+
+            const ul = selector.closest('ul.sub-menu');
             if (ul) {
-                let ele: any = ul.closest('li.menu').querySelectorAll('.nav-link') || [];
-                if (ele.length) {
-                    ele = ele[0];
-                    setTimeout(() => {
-                        ele.click();
-                    });
+                const menuElement = ul.closest('li.menu');
+                if (menuElement) {
+                    const navLinkElements = menuElement.querySelectorAll('.nav-link');
+                    if (navLinkElements.length > 0) {
+                        const ele: any = navLinkElements[0];
+                        setTimeout(() => {
+                            ele.click();
+                        });
+                    } else {
+                        console.error('No .nav-link elements found.');
+                    }
+                } else {
+                    console.error('No parent li.menu element found.');
                 }
+            } else {
+                console.error('No ul.sub-menu element found.');
             }
+        } else {
+            console.error('No matching selector found.');
         }
     }, []);
 

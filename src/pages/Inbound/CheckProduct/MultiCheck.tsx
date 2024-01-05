@@ -1,100 +1,39 @@
 // import React from 'react';
 import { Tab } from '@headlessui/react';
-import { Fragment, SetStateAction } from 'react';
+import { Fragment, SetStateAction, useMemo } from 'react';
 import { useState, useEffect } from 'react';
 import IconSearch from '../../../components/Icon/IconSearch';
-import { Link } from 'react-router-dom';
-
-const items = [
-    {
-        thumb: 'profile-5.jpeg',
-        name: 'Alan Green',
-        email: 'alan@mail.com',
-        status: 'Active',
-        statusClass: 'badge badge-outline-primary',
-    },
-    {
-        thumb: 'profile-11.jpeg',
-        name: 'Linda Nelson',
-        email: 'Linda@mail.com',
-        status: 'Busy',
-        statusClass: 'badge badge-outline-danger',
-    },
-    {
-        thumb: 'profile-12.jpeg',
-        name: 'Lila Perry',
-        email: 'Lila@mail.com',
-        status: 'Closed',
-        statusClass: 'badge badge-outline-warning',
-    },
-    {
-        thumb: 'profile-3.jpeg',
-        name: 'Andy King',
-        email: 'Andy@mail.com',
-        status: 'Active',
-        statusClass: 'badge badge-outline-primary',
-    },
-    {
-        thumb: 'profile-15.jpeg',
-        name: 'Jesse Cory',
-        email: 'Jesse@mail.com',
-        status: 'Busy',
-        statusClass: 'badge badge-outline-danger',
-    },
-];
+import { Link, useLocation } from 'react-router-dom';
+import { useLazyGetBarcodeQuery } from '../../../store/services/checkProduct';
 
 const MultiCheck = () => {
-    // const checkboxData = Array.from({ length: 18 }, (_, index) => index + 1);
-    const [search, setSearch] = useState<string>('');
-    const [filteredItems, setFilteredItems] = useState<any>(items);
+    const { state } = useLocation();
+    const [inputBarcode, setInputBarcode] = useState<string>('');
 
-    const radioData = Array.from({ length: 18 }, (_, index) => `Option ${index + 1}`);
-    const checkboxData1 = Array.from({ length: 1 }, (_, index) => `Option ${index + 1}`);
-    const [selectedOption, setSelectedOption] = useState<string | null>(null);
-    const [formData, setFormData] = useState<any>({});
+    const [getBarcode, results] = useLazyGetBarcodeQuery();
 
     const checkboxData2 = ['Option 1', 'Option 2', 'Option 3'];
 
-    const handleRadioChange = (option: SetStateAction<string | null>) => {
-        if (typeof option === 'string') {
-            setSelectedOption(option);
-            setFormData({}); // Reset data ketika opsi berubah
+    const handleInputBarcode = async () => {
+        try {
+            await getBarcode({ code_document: state?.codeDocument, old_barcode_product: inputBarcode });
+        } catch (err) {
+            console.log(err);
         }
-    };
-
-    const handleInputChange = (e: { target: { id: any; value: any; }; }) => {
-        const { id, value } = e.target;
-        setFormData((prevData: any) => ({
-            ...prevData,
-            [id]: value,
-        }));
-    };
-
-    const handleButtonClick = () => {
-        // Lakukan sesuatu ketika tombol diklik
     };
 
     useEffect(() => {
-        setFilteredItems(() => {
-            return items.filter((item) => {
-                return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
-            });
-        });
-    }, [search]);
-
-    const renderForm = () => {
-        if (selectedOption) {
-            return (
-                <form className="space-y-5 col-span-1">
-                    <div>
-                        <label htmlFor="gridNama">Discount</label>
-                        <input id="gridNama" type="text" disabled placeholder="Enter Nama" className="form-input" />
-                    </div>
-                </form>
-            );
+        if (results.isSuccess) {
+            console.log('RESOLOTOS', results);
         }
-        return null;
-    };
+    }, [results]);
+
+    const tagColor = useMemo(() => {
+        if (results?.data?.data?.resource?.length > 0) {
+            return results.data?.data.resource[1][0];
+        }
+    }, [results]);
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse mb-8">
@@ -112,17 +51,21 @@ const MultiCheck = () => {
             </ul>
             <div className="flex gap-4">
                 <div className=" xl:w-1/2 ss:w-full gap-4">
-                    <h1 className="text-lg font-bold my-4">CHECK : DOCUMENT 002/2023</h1>
+                    <h1 className="text-lg font-bold my-4">CHECK : {state?.codeDocument}</h1>
                     <form className="w-full panel mb-5 col-span-2 gap-4 flex items-center">
                         <div className="relative w-full">
                             <input
                                 type="text"
-                                value={search}
                                 placeholder="Search Attendees..."
+                                onChange={(e) => setInputBarcode(e.target.value)}
+                                value={inputBarcode}
                                 className="form-input shadow-[0_0_4px_2px_rgb(31_45_61_/_10%)] bg-white rounded-full h-11 placeholder:tracking-wider ltr:pr-11 rtl:pl-11"
-                                onChange={(e) => setSearch(e.target.value)}
                             />
-                            <button type="button" className="btn btn-info absolute ltr:right-1 rtl:left-1 inset-y-0 m-auto rounded-full w-9 h-9 p-0 flex items-center justify-center">
+                            <button
+                                onClick={handleInputBarcode}
+                                type="button"
+                                className="btn btn-info absolute ltr:right-1 rtl:left-1 inset-y-0 m-auto rounded-full w-9 h-9 p-0 flex items-center justify-center"
+                            >
                                 <IconSearch />
                             </button>
                         </div>
@@ -145,7 +88,7 @@ const MultiCheck = () => {
                                 </div>
                                 <div>
                                     <label htmlFor="gridNama3">Harga</label>
-                                    <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={formData.gridNama || ''} onChange={handleInputChange} />
+                                    <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" />
                                 </div>
                                 <div>
                                     <label htmlFor="gridQTY1">QTY</label>
@@ -166,10 +109,9 @@ const MultiCheck = () => {
                                     <label htmlFor="gridNama2">Nama</label>
                                     <input id="gridNama2" type="text" disabled placeholder="Enter Nama" className="form-input" />
                                 </div>
-                                {renderForm()}
                                 <div>
                                     <label htmlFor="gridNama4">Harga</label>
-                                    <input id="gridNama4" type="text" placeholder="Enter Nama" className="form-input" value={formData.gridNama || ''} onChange={handleInputChange} />
+                                    <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" />
                                 </div>
                                 <div>
                                     <label htmlFor="gridQTY2">QTY</label>
@@ -275,25 +217,12 @@ const MultiCheck = () => {
                                     <div className="grid grid-cols-3 gap-4">
                                         {checkboxData2.map((option, index) => (
                                             <label key={index} className="flex items-center mt-1 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    className="form-radio text-success peer w-6 h-6"
-                                                    name="radioOption"
-                                                    value={option}
-                                                    checked={selectedOption === option}
-                                                    onChange={() => handleRadioChange(option)}
-                                                />
+                                                <input type="radio" className="form-radio text-success peer w-6 h-6" name="radioOption" value={option} />
                                                 <span className="text-white-dark"> {option}</span>
                                             </label>
                                         ))}
 
-                                        <button
-                                            onClick={handleButtonClick}
-                                            disabled={!selectedOption}
-                                            className={`btn btn-info mt-4 col-span-3 ${selectedOption ? '' : 'opacity-50 pointer-events-none'}`}
-                                        >
-                                            SEND
-                                        </button>
+                                        <button className="btn btn-info mt-4 col-span-3 opacity-50 pointer-events-none">SEND</button>
                                     </div>
                                 </Tab.Panel>
                                 <Tab.Panel>

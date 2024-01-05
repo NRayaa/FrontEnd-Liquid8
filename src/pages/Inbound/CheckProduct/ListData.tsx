@@ -1,5 +1,5 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
+import { DataTable } from 'mantine-datatable';
+import { useEffect, useMemo, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +23,7 @@ import IconEye from '../../../components/Icon/IconEye';
 import IconCashBanknotes from '../../../components/Icon/IconCashBanknotes';
 import { useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
 import { CheckProductDocumentItem } from '../../../store/services/types';
+import { formatDate } from '../../../helper/functions';
 // import * as Yup from 'yup';
 // import { Field, Form, Formik } from 'formik';
 
@@ -47,195 +48,6 @@ const rowData = [
         isActive: true,
         age: 39,
         company: 'POLARAX',
-    },
-    {
-        id: 2,
-        firstName: 'Celeste',
-        lastName: 'Grant',
-        email: 'celestegrant@polarax.com',
-        dob: '1989-11-19',
-        status: 'Pending',
-        address: {
-            street: '639 Kimball Street',
-            city: 'Bascom',
-            zipcode: 8907,
-            geo: {
-                lat: 65.954483,
-                lng: 98.906478,
-            },
-        },
-        phone: '+1 (838) 515-3408',
-        isActive: false,
-        age: 32,
-        company: 'MANGLO',
-    },
-    {
-        id: 3,
-        firstName: 'Tillman',
-        lastName: 'Forbes',
-        email: 'tillmanforbes@manglo.com',
-        dob: '2016-09-05',
-        status: 'In Progress',
-        address: {
-            street: '240 Vandalia Avenue',
-            city: 'Thynedale',
-            zipcode: 8994,
-            geo: {
-                lat: -34.949388,
-                lng: -82.958111,
-            },
-        },
-        phone: '+1 (969) 496-2892',
-        isActive: false,
-        age: 26,
-        company: 'APPLIDECK',
-    },
-    {
-        id: 4,
-        firstName: 'Daisy',
-        lastName: 'Whitley',
-        email: 'daisywhitley@applideck.com',
-        dob: '1987-03-23',
-        status: 'Canceled',
-        address: {
-            street: '350 Pleasant Place',
-            city: 'Idledale',
-            zipcode: 9369,
-            geo: {
-                lat: -54.458809,
-                lng: -127.476556,
-            },
-        },
-        phone: '+1 (861) 564-2877',
-        isActive: true,
-        age: 21,
-        company: 'VOLAX',
-    },
-    {
-        id: 5,
-        firstName: 'Weber',
-        lastName: 'Bowman',
-        email: 'weberbowman@volax.com',
-        dob: '1983-02-24',
-        status: 'Completed',
-        address: {
-            street: '154 Conway Street',
-            city: 'Broadlands',
-            zipcode: 8131,
-            geo: {
-                lat: 54.501351,
-                lng: -167.47138,
-            },
-        },
-        phone: '+1 (962) 466-3483',
-        isActive: false,
-        age: 26,
-        company: 'ORBAXTER',
-    },
-    {
-        id: 6,
-        firstName: 'Buckley',
-        lastName: 'Townsend',
-        email: 'buckleytownsend@orbaxter.com',
-        dob: '2011-05-29',
-        status: 'Completed',
-        address: {
-            street: '131 Guernsey Street',
-            city: 'Vallonia',
-            zipcode: 6779,
-            geo: {
-                lat: -2.681655,
-                lng: 3.528942,
-            },
-        },
-        phone: '+1 (884) 595-2643',
-        isActive: true,
-        age: 40,
-        company: 'OPPORTECH',
-    },
-    {
-        id: 7,
-        firstName: 'Latoya',
-        lastName: 'Bradshaw',
-        email: 'latoyabradshaw@opportech.com',
-        dob: '2010-11-23',
-        status: 'Canceled',
-        address: {
-            street: '668 Lenox Road',
-            city: 'Lowgap',
-            zipcode: 992,
-            geo: {
-                lat: 36.026423,
-                lng: 130.412198,
-            },
-        },
-        phone: '+1 (906) 474-3155',
-        isActive: true,
-        age: 24,
-        company: 'GORGANIC',
-    },
-    {
-        id: 8,
-        firstName: 'Kate',
-        lastName: 'Lindsay',
-        email: 'katelindsay@gorganic.com',
-        dob: '1987-07-02',
-        status: 'Pending',
-        address: {
-            street: '773 Harrison Avenue',
-            city: 'Carlton',
-            zipcode: 5909,
-            geo: {
-                lat: 42.464724,
-                lng: -12.948403,
-            },
-        },
-        phone: '+1 (930) 546-2952',
-        isActive: true,
-        age: 24,
-        company: 'AVIT',
-    },
-    {
-        id: 9,
-        firstName: 'Marva',
-        lastName: 'Sandoval',
-        email: 'marvasandoval@avit.com',
-        dob: '2010-11-02',
-        status: 'Completed',
-        address: {
-            street: '200 Malta Street',
-            city: 'Tuskahoma',
-            zipcode: 1292,
-            geo: {
-                lat: -52.206169,
-                lng: 74.19452,
-            },
-        },
-        phone: '+1 (927) 566-3600',
-        isActive: false,
-        age: 28,
-        company: 'QUILCH',
-    },
-    {
-        id: 10,
-        firstName: 'Decker',
-        lastName: 'Russell',
-        email: 'deckerrussell@quilch.com',
-        dob: '1994-04-21',
-        status: 'In Progress',
-        address: {
-            street: '708 Bath Avenue',
-            city: 'Coultervillle',
-            zipcode: 1268,
-            geo: {
-                lat: -41.550295,
-                lng: -146.598075,
-            },
-        },
-        phone: '+1 (846) 535-3283',
-        isActive: false,
-        age: 27,
-        company: 'MEMORA',
     },
 ];
 
@@ -301,7 +113,8 @@ const ListData = () => {
         dispatch(setPageTitle('List Data'));
     });
 
-    const { data, isSuccess } = useDocumentsCheckProductsQuery(undefined);
+    const [page, setPage] = useState<number>(1);
+    const { data, isSuccess } = useDocumentsCheckProductsQuery(page);
 
     const [search, setSearch] = useState<string>('');
     const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
@@ -312,7 +125,6 @@ const ListData = () => {
         }
     }, [data]);
 
-    console.log('lists data', listsData);
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -338,44 +150,58 @@ const ListData = () => {
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
-                    {/* <DataTable
+                    <DataTable
                         highlightOnHover
                         className="whitespace-nowrap table-hover "
-                        records={recordsData}
+                        records={listsData}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true },
-                            { accessor: 'firstName', title: 'Nama Data', sortable: true },
-                            { accessor: 'dob', title: 'Tanggal', sortable: true },
-                            { accessor: 'age', title: 'Total Barang', sortable: true },
                             {
-                                accessor: 'status',
+                                accessor: 'id',
+                                title: 'No',
+                                render: (item, index) => <span>{index + 1}</span>,
+                            },
+                            {
+                                accessor: 'date_document',
+                                title: 'Nama Data',
+                                render: (item) => <span className="font-semibold">{item.code_document}</span>,
+                            },
+                            {
+                                accessor: 'date_document',
+                                title: 'Tanggal',
+                                render: (item) => <span className="font-semibold">{formatDate(item.date_document)}</span>,
+                            },
+                            {
+                                accessor: 'total_column_document',
+                                title: 'Total Barang',
+                                render: (item) => <span className="font-semibold">{formatDate(item.total_column_document)}</span>,
+                            },
+                            {
+                                accessor: 'status_document',
                                 title: 'Status',
-                                sortable: true,
-                                render: (data) => (
+                                render: (item) => (
                                     <span
                                         className={`badge whitespace-nowrap ${
-                                            data.status === 'completed'
+                                            item.status_document === 'completed'
                                                 ? 'bg-primary'
-                                                : data.status === 'Pending'
+                                                : item.status_document === 'Pending'
                                                 ? 'bg-secondary'
-                                                : data.status === 'In Progress'
+                                                : item.status_document === 'In Progress'
                                                 ? 'bg-success'
-                                                : data.status === 'Canceled'
+                                                : item.status_document === 'Canceled'
                                                 ? 'bg-danger'
                                                 : 'bg-primary'
                                         }`}
                                     >
-                                        {data.status}
+                                        {item.status_document}
                                     </span>
                                 ),
                             },
                             {
-                                accessor: 'action',
-                                title: 'Opsi',
-                                titleClassName: '!text-center',
-                                render: () => (
+                                accessor: 'Aksi',
+                                title: 'Aksi',
+                                render: (item) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/check_product/multi_check">
+                                        <Link to="/inbound/check_product/multi_check" state={{ codeDocument: item.code_document }}>
                                             <button type="button" className="btn btn-outline-success">
                                                 Check
                                             </button>
@@ -390,19 +216,14 @@ const ListData = () => {
                                         </button>
                                     </div>
                                 ),
+                                textAlignment: 'center',
                             },
                         ]}
-                        totalRecords={initialRecords.length}
-                        recordsPerPage={pageSize}
-                        page={page}
-                        onPageChange={(p) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
-                        sortStatus={sortStatus}
-                        onSortStatusChange={setSortStatus}
-                        minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-                    /> */}
+                        totalRecords={listsData.length}
+                        recordsPerPage={data?.data.resource.per_page}
+                        page={data?.data.resource.current_page}
+                        onPageChange={() => setPage((prevPage) => prevPage + 1)}
+                    />
                 </div>
             </div>
         </div>

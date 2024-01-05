@@ -6,8 +6,8 @@ export const productOldsApi = createApi({
     reducerPath: 'productOldsApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        productOlds: builder.query<ProductOlds, undefined>({
-            query: () => '/product_olds',
+        productOlds: builder.query<ProductOlds | undefined, number>({
+            query: (page) => `/product_olds?page=${page}`,
         }),
     }),
 });
