@@ -13,10 +13,7 @@ export const inboundDataProcessApi = createApi({
                 body,
             }),
         }),
-        getBarcode: builder.query<Barcode, string>({
-            query: (barcode) => `/barcode?barcode=${barcode}`,
-        }),
     }),
 });
 
-export const { useMergedHeaderMutation, useGetBarcodeQuery } = inboundDataProcessApi;
+export const { useMergedHeaderMutation } = inboundDataProcessApi;

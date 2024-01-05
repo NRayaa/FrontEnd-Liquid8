@@ -6,11 +6,9 @@ import { toggleSidebar } from '../../store/themeConfigSlice';
 import AnimateHeight from 'react-animate-height';
 import { IRootState } from '../../store';
 import { useState, useEffect } from 'react';
-import IconMenuDocumentation from '../Icon/Menu/IconMenuDocumentation';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
-    const [errorSubMenu, setErrorSubMenu] = useState(false);
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
     const location = useLocation();
@@ -26,16 +24,28 @@ const Sidebar = () => {
         const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
         if (selector) {
             selector.classList.add('active');
-            const ul: any = selector.closest('ul.sub-menu');
+
+            const ul = selector.closest('ul.sub-menu');
             if (ul) {
-                let ele: any = ul.closest('li.menu').querySelectorAll('.nav-link') || [];
-                if (ele.length) {
-                    ele = ele[0];
-                    setTimeout(() => {
-                        ele.click();
-                    });
+                const menuElement = ul.closest('li.menu');
+                if (menuElement) {
+                    const navLinkElements = menuElement.querySelectorAll('.nav-link');
+                    if (navLinkElements.length > 0) {
+                        const ele: any = navLinkElements[0];
+                        setTimeout(() => {
+                            ele.click();
+                        });
+                    } else {
+                        console.error('No .nav-link elements found.');
+                    }
+                } else {
+                    console.error('No parent li.menu element found.');
                 }
+            } else {
+                console.error('No ul.sub-menu element found.');
             }
+        } else {
+            console.error('No matching selector found.');
         }
     }, []);
 
@@ -80,11 +90,11 @@ const Sidebar = () => {
                                             <path
                                                 d="M2.75 8.24992L11 1.83325L19.25 8.24992V18.3333C19.25 18.8195 19.0568 19.2858 18.713 19.6296C18.3692 19.9734 17.9029 20.1666 17.4167 20.1666H4.58333C4.0971 20.1666 3.63079 19.9734 3.28697 19.6296C2.94315 19.2858 2.75 18.8195 2.75 18.3333V8.24992Z"
                                                 stroke="#888EA8"
-                                                stroke-width="1.5"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
                                             />
-                                            <path d="M8.25 20.1667V11H13.75V20.1667" stroke="#888EA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M8.25 20.1667V11H13.75V20.1667" stroke="#888EA8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
 
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
@@ -115,7 +125,7 @@ const Sidebar = () => {
                                 <NavLink to="/inbound/data_process/data_input" className="group">
                                     <div className="flex items-center">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clip-path="url(#clip0_40_1194)">
+                                            <g clipPath="url(#clip0_40_1194)">
                                                 <path
                                                     d="M15 0H6.25V7.5H7.125L7.375 8.375L7.5 8.5V1.25H13.75V6.25H18.75V17.5H11.25L11.625 18.125L11 18.75H20V5L15 0ZM15 5V1.25L18.75 5H15ZM6.875 14.375C6.875 14.7065 6.7433 15.0245 6.50888 15.2589C6.27446 15.4933 5.95652 15.625 5.625 15.625C5.29348 15.625 4.97554 15.4933 4.74112 15.2589C4.5067 15.0245 4.375 14.7065 4.375 14.375C4.375 14.0435 4.5067 13.7255 4.74112 13.4911C4.97554 13.2567 5.29348 13.125 5.625 13.125C5.95652 13.125 6.27446 13.2567 6.50888 13.4911C6.7433 13.7255 6.875 14.0435 6.875 14.375Z"
                                                     fill="#888EA8"
@@ -196,7 +206,7 @@ const Sidebar = () => {
                                 <NavLink to="/storage/product" className="group">
                                     <div className="flex items-center">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clip-path="url(#clip0_40_1201)">
+                                            <g clipPath="url(#clip0_40_1201)">
                                                 <path
                                                     d="M13.125 0.0195312L20 3.45703V11.123L18.75 10.498V4.85352L13.75 7.35352V9.87305L12.5 10.498V7.35352L7.5 4.85352V7.07031L6.25 6.44531V3.45703L13.125 0.0195312ZM13.125 6.26953L14.8535 5.40039L10.332 2.8125L8.27148 3.84766L13.125 6.26953ZM16.2012 4.73633L17.9785 3.84766L13.125 1.41602L11.6699 2.14844L16.2012 4.73633ZM11.25 11.123L10 11.748V11.7383L6.25 13.6133V18.0566L10 16.1719V17.5781L5.625 19.7656L0 16.9434V10.3418L5.625 7.5293L11.25 10.3418V11.123ZM5 18.0566V13.6133L1.25 11.7383V16.1719L5 18.0566ZM5.625 12.5293L9.22852 10.7324L5.625 8.92578L2.02148 10.7324L5.625 12.5293ZM11.25 12.5195L15.625 10.332L20 12.5195V17.666L15.625 19.8535L11.25 17.666V12.5195ZM15 18.1445V15.166L12.5 13.916V16.8945L15 18.1445ZM18.75 16.8945V13.916L16.25 15.166V18.1445L18.75 16.8945ZM15.625 14.082L17.9785 12.9004L15.625 11.7285L13.2715 12.9004L15.625 14.082Z"
                                                     fill="#888EA8"
@@ -221,9 +231,9 @@ const Sidebar = () => {
                                             <path
                                                 d="M14 17H20M17 14V20M4 4H10V10H4V4ZM14 4H20V10H14V4ZM4 14H10V20H4V14Z"
                                                 stroke="#888EA8"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
                                             />
                                         </svg>
 
@@ -299,17 +309,17 @@ const Sidebar = () => {
                                             <path
                                                 d="M3.86379 16.455C3.00579 13.023 2.57679 11.308 3.47779 10.154C4.37779 9 6.14779 9 9.68479 9H14.3148C17.8528 9 19.6208 9 20.5218 10.154C21.4228 11.307 20.9938 13.024 20.1358 16.455C19.5898 18.638 19.3178 19.729 18.5038 20.365C17.6898 21 16.5648 21 14.3148 21H9.68479C7.43479 21 6.30979 21 5.49579 20.365C4.68179 19.729 4.40879 18.638 3.86379 16.455Z"
                                                 stroke="#888EA8"
-                                                stroke-width="1.5"
+                                                strokeWidth="1.5"
                                             />
                                             <path
                                                 d="M19.5 9.5L18.79 6.895C18.516 5.89 18.379 5.388 18.098 5.009C17.8178 4.63246 17.4373 4.3424 17 4.172C16.56 4 16.04 4 15 4M4.5 9.5L5.21 6.895C5.484 5.89 5.621 5.388 5.902 5.009C6.18218 4.63246 6.56269 4.3424 7 4.172C7.44 4 7.96 4 9 4"
                                                 stroke="#888EA8"
-                                                stroke-width="1.5"
+                                                strokeWidth="1.5"
                                             />
                                             <path
                                                 d="M9 4C9 3.73478 9.10536 3.48043 9.29289 3.29289C9.48043 3.10536 9.73478 3 10 3H14C14.2652 3 14.5196 3.10536 14.7071 3.29289C14.8946 3.48043 15 3.73478 15 4C15 4.26522 14.8946 4.51957 14.7071 4.70711C14.5196 4.89464 14.2652 5 14 5H10C9.73478 5 9.48043 4.89464 9.29289 4.70711C9.10536 4.51957 9 4.26522 9 4Z"
                                                 stroke="#888EA8"
-                                                stroke-width="1.5"
+                                                strokeWidth="1.5"
                                             />
                                         </svg>
 
@@ -333,9 +343,9 @@ const Sidebar = () => {
                                                 <path
                                                     d="M7.79167 6.41663H13.2917M10.5417 12.8333V6.87496M9.23221 19.25H3.66667C3.42355 19.25 3.19039 19.1534 3.01849 18.9815C2.84658 18.8096 2.75 18.5764 2.75 18.3333V3.20829C2.75 2.96518 2.84658 2.73202 3.01849 2.56011C3.19039 2.3882 3.42355 2.29163 3.66667 2.29163H18.3333C18.5764 2.29163 18.8096 2.3882 18.9815 2.56011C19.1534 2.73202 19.25 2.96518 19.25 3.20829V7.66192M12.375 17.4166L17.1875 10.7708L19.25 12.375L14.2083 19.25H12.375V17.4166Z"
                                                     stroke="#888EA8"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
                                                 />
                                             </svg>
 
@@ -414,8 +424,8 @@ const Sidebar = () => {
                                                     fill="#888EA8"
                                                 />
                                                 <path
-                                                    fill-rule="evenodd"
-                                                    clip-rule="evenodd"
+                                                    fillRule="evenodd"
+                                                    clipRule="evenodd"
                                                     d="M3.89877 15.4286L5.83311 16.0732V21C5.83311 21.1213 5.87092 21.2396 5.94129 21.3384C6.01165 21.4372 6.11106 21.5116 6.22569 21.5512L13.8044 24.1745C13.9241 24.2175 14.0548 24.2198 14.1759 24.1809L14.1841 24.1786L14.1929 24.1757L21.7739 21.5512C21.8885 21.5116 21.9879 21.4372 22.0583 21.3384C22.1286 21.2396 22.1664 21.1213 22.1664 21V16.0732L24.1008 15.4286C24.19 15.3989 24.2707 15.3481 24.3361 15.2805C24.4014 15.2129 24.4495 15.1305 24.4761 15.0403C24.5028 14.9501 24.5072 14.8548 24.4891 14.7626C24.471 14.6703 24.4308 14.5838 24.372 14.5104L22.0387 11.5937C21.9695 11.5076 21.8772 11.4428 21.7727 11.4071L14.1905 8.78207C14.067 8.73931 13.9326 8.73931 13.809 8.78207L6.22686 11.4071C6.12228 11.4428 6.03003 11.5076 5.96086 11.5937L3.62752 14.5104C3.56875 14.5838 3.52858 14.6703 3.51045 14.7626C3.49233 14.8548 3.49677 14.9501 3.52341 15.0403C3.55005 15.1305 3.5981 15.2129 3.66346 15.2805C3.72882 15.3481 3.80955 15.3989 3.89877 15.4286ZM12.4359 17.8342L13.4164 16.4342V22.806L6.99977 20.5847V16.4617L11.7738 18.053C11.893 18.0926 12.0219 18.0927 12.1412 18.0532C12.2605 18.0136 12.3639 17.9372 12.4359 17.8342ZM8.19969 11.9583L13.9998 13.9662L19.7999 11.9583L13.9998 9.95049L8.19969 11.9583ZM15.5637 17.8348L14.5831 16.4337V22.806L20.9998 20.5847V16.4617L16.2258 18.053C16.1065 18.0926 15.9776 18.0927 15.8583 18.0532C15.739 18.0136 15.6357 17.9367 15.5637 17.8337M6.61477 12.6443L5.06136 14.5862L8.27611 15.6578L11.7294 16.8087L13.0787 14.882L12.9999 14.8546L6.61477 12.6443ZM22.9382 14.5862L21.3848 12.6437L14.9209 14.882L16.2701 16.8087L22.9382 14.5862Z"
                                                     fill="#888EA8"
                                                 />

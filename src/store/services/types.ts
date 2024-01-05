@@ -37,24 +37,30 @@ interface GenerateInboundDataProcessResponse {
         };
     };
 }
-
+interface ProductOldsItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    old_name_product: string;
+    old_quantity_product: string;
+    old_price_product: string;
+    created_at: string;
+    updated_at: string;
+}
 interface ProductOlds {
     data: {
         status: boolean;
         message: string;
         resource: {
             current_page: number;
-            data: {
-                id: number;
-                code_document: string;
-                old_barcode_product: string;
-                old_name_product: string;
-                old_quantity_product: string;
-                old_price_product: string;
-                created_at: string;
-                updated_at: string;
-            }[];
+            data: ProductOldsItem[];
         };
+        next_page_url: string;
+        path: string;
+        per_page: number;
+        prev_page_url: string;
+        to: number;
+        total: number;
     };
 }
 interface MergeHeader {
@@ -98,5 +104,87 @@ interface Barcode {
         };
     };
 }
+interface CheckProductDocumentLinks {
+    url: null;
+    label: string;
+    active: boolean;
+}
+interface CheckProductDocumentItem {
+    id: number;
+    code_document: string;
+    base_document: string;
+    total_column_document: string;
+    total_column_in_document: string;
+    date_document: string;
+    status_document: string;
+    created_at: string;
+    updated_at: string;
+}
+interface CheckProductDocument {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            per_page: number;
+            current_page: number;
+            data: CheckProductDocumentItem[];
+        };
+        first_page_url: string;
+        from: number;
+        last_page: number;
+        last_page_url: string;
+        links: CheckProductDocumentLinks[];
+        next_page_url: null;
+        path: string;
+        per_page: number;
+        prev_page_url: null;
+        to: number;
+        total: number;
+    };
+}
 
-export type { UserDataItem, GenerateInboundDataProcessResponse, ProductOlds, MergeHeader, MergeHeaderBody, Barcode };
+interface GetBarcodeBody {
+    code_document: string;
+    old_barcode_product: string;
+}
+interface Product {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    old_name_product: string;
+    old_quantity_product: string;
+    old_price_product: string;
+    created_at: string;
+    updated_at: string;
+}
+interface Color {
+    id: number;
+    hexa_code_color: string;
+    name_color: string;
+    min_price_color: string;
+    max_price_color: string;
+    fixed_price_color: string;
+    created_at: string;
+    updated_at: string;
+}
+interface GetBarcodeResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: any;
+    };
+}
+
+export type {
+    UserDataItem,
+    GenerateInboundDataProcessResponse,
+    ProductOlds,
+    MergeHeader,
+    MergeHeaderBody,
+    Barcode,
+    CheckProductDocument,
+    CheckProductDocumentItem,
+    ProductOldsItem,
+    GetBarcodeBody,
+    GetBarcodeResponse,
+};

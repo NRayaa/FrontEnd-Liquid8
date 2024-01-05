@@ -11,21 +11,8 @@ import { GeneratesData } from '../../../helper/types';
 import { useProductOldsQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah, formatTimestamp } from '../../../helper/functions';
 import { useMergedHeaderMutation } from '../../../store/services/inboundDataProcessApi';
-
-const tableData = [
-    {
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@yahoo.com',
-        date: '10/08/2020',
-        sale: 120,
-        status: 'Complete',
-        register: '5 min ago',
-        progress: '40%',
-        position: 'Developer',
-        office: 'London',
-    },
-];
+import { DataTable } from 'mantine-datatable';
+import { ProductOldsItem } from '../../../store/services/types';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -65,14 +52,18 @@ const DataInput = () => {
     });
 
     const [dataGenerates, setDataGenerates] = useState<GeneratesData | undefined>();
-    const { data, isSuccess } = useProductOldsQuery(undefined);
+
+    const [page, setPage] = useState<number>(1);
+
+    const { data, isSuccess } = useProductOldsQuery(page);
+    const [productOlds, setProductOlds] = useState<ProductOldsItem[] | []>([]);
 
     const [barcode, setBarcode] = useState<string[]>();
     const [productName, setProductName] = useState<string[]>();
     const [productQty, setProductQty] = useState<string[]>();
     const [productPrice, setProductPrice] = useState<string[]>();
 
-    const [mergedHeader, results] = useMergedHeaderMutation();
+    const [mergedHeader] = useMergedHeaderMutation();
 
     const getGeneratesData = (data: GeneratesData) => {
         setDataGenerates(data);
@@ -110,6 +101,12 @@ const DataInput = () => {
             console.log(err);
         }
     };
+
+    useEffect(() => {
+        if (isSuccess && data.data.status) {
+            setProductOlds(data.data.resource.data);
+        }
+    }, [data]);
 
     return (
         <div>
@@ -195,9 +192,9 @@ const DataInput = () => {
                                     }}
                                 >
                                     {activeTab3 === 3 ? (
-                                        <div>
+                                        <Link to="/inbound/check_product/list_data">
                                             <button>Done</button>
-                                        </div>
+                                        </Link>
                                     ) : (
                                         'Next'
                                     )}
@@ -274,59 +271,52 @@ const DataInput = () => {
                                 )}
                             </p>
 
-                            <p className="mb-5">
+                            <div className="mb-5">
                                 {activeTab3 === 3 && (
-                                    <div>
-                                        {/* <div className='flex justify-end'>
-                              <button type="button" className="btn btn-outline-info mb-6">
-                                    Merge
-                                </button>
-                              </div> */}
-                                        <h1 className="text-lg font-semibold mb-4">DATA MERGED : DOCUMENT 002/2023</h1>
-                                        <div className="table-responsive mb-5">
-                                            <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Nama Data</th>
-                                                        <th>Nomor Resi</th>
-                                                        <th>Nama Produk</th>
-                                                        <th>QTY</th>
-                                                        <th>Harga</th>
-                                                        {/* <th className="text-center">Action</th> */}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {data?.data.resource.data.length !== 0 &&
-                                                        data?.data.resource.data.map((item, index) => {
-                                                            return (
-                                                                <tr key={item.id}>
-                                                                    <td>
-                                                                        <div className="whitespace-nowrap">{index + 1}</div>
-                                                                    </td>
-                                                                    <td>{item.code_document}</td>
-                                                                    <td>{formatTimestamp(item.created_at)}</td>
-                                                                    <td>{item.old_name_product}</td>
-                                                                    <td>{item.old_quantity_product}</td>
-                                                                    <td>{formatRupiah(item.old_price_product)}</td>
-                                                                </tr>
-                                                            );
-                                                        })}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                    <DataTable
+                                        highlightOnHover
+                                        className="whitespace-nowrap table-hover"
+                                        records={productOlds}
+                                        columns={[
+                                            {
+                                                accessor: 'id',
+                                                title: 'No',
+                                                render: (item, index) => <span>{index + 1}</span>,
+                                            },
+                                            {
+                                                accessor: 'code_document',
+                                                title: 'Nama Data',
+                                                render: (item) => <span>{item.code_document}</span>,
+                                            },
+                                            {
+                                                accessor: 'old_barcode_product',
+                                                title: 'Nomor Resi',
+                                                render: (item) => <span>{item.old_barcode_product}</span>,
+                                            },
+                                            {
+                                                accessor: 'old_name_product',
+                                                title: 'Nama Produk',
+                                                render: (item) => <span>{item.old_name_product}</span>,
+                                            },
+                                            {
+                                                accessor: 'old_quantity_product',
+                                                title: 'QTY',
+                                                render: (item) => <span>{item.old_quantity_product}</span>,
+                                            },
+                                            {
+                                                accessor: 'old_price_product',
+                                                title: 'Harga',
+                                                render: (item) => <span>{formatRupiah(item.old_price_product)}</span>,
+                                            },
+                                        ]}
+                                        totalRecords={productOlds.length}
+                                        recordsPerPage={data?.data.per_page}
+                                        page={data?.data.resource.current_page}
+                                        onPageChange={() => setPage((prevPage) => prevPage + 1)}
+                                    />
                                 )}
-                            </p>
+                            </div>
                         </div>
-                        {/* <div className="flex justify-between mt-12">
-                            <button type="button" className={`btn btn-primary ${activeTab3 === 1 ? 'hidden' : ''}`} onClick={() => setActiveTab3(activeTab3 === 3 ? 2 : 1)}>
-                                Back
-                            </button>
-                            <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => setActiveTab3(activeTab3 === 1 ? 2 : 3)}>
-                                {activeTab3 === 3 ? 'Finish' : 'Next'}
-                            </button>
-                        </div> */}
                     </div>
                 </div>
             </div>
