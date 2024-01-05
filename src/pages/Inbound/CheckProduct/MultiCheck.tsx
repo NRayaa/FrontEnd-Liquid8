@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import IconSearch from '../../../components/Icon/IconSearch';
 import { Link, useLocation } from 'react-router-dom';
 import { useLazyGetBarcodeQuery } from '../../../store/services/checkProduct';
+import BarcodeData from './BarcodeData';
+import TagColorData from './TagColorData';
 
 const MultiCheck = () => {
     const { state } = useLocation();
@@ -13,6 +15,7 @@ const MultiCheck = () => {
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
     const checkboxData2 = ['Option 1', 'Option 2', 'Option 3'];
+    const [keterangan, setKeterangan] = useState<string>('');
 
     const handleInputBarcode = async () => {
         try {
@@ -24,13 +27,26 @@ const MultiCheck = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
-            console.log('RESOLOTOS', results);
+            if (Array.isArray(results.data?.data.resource)) {
+                setKeterangan('50K>');
+            } else {
+                setKeterangan('100K<');
+            }
+            setInputBarcode('');
         }
     }, [results]);
 
     const tagColor = useMemo(() => {
         if (results?.data?.data?.resource?.length > 0) {
             return results.data?.data.resource[1][0];
+        }
+    }, [results]);
+
+    const oldData = useMemo(() => {
+        if (Array.isArray(results.data?.data.resource)) {
+            return results.data?.data.resource[0];
+        } else {
+            return results.data?.data.resource;
         }
     }, [results]);
 
@@ -71,53 +87,17 @@ const MultiCheck = () => {
                         </div>
                         <div className="flex gap-4 items-center w-full">
                             <label htmlFor="gridKeterangan">Keterangan</label>
-                            <input id="gridKeterangan" type="text" disabled className="form-input w-full" />
+                            <input id="gridKeterangan" type="text" disabled className="form-input w-full" value={keterangan} />
                         </div>
                     </form>
                     <form className="space-y-5 col-span-2">
                         <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-4">
-                                <h1 className="flex justify-center text-lg font-bold">OLD DATA</h1>
-                                <div>
-                                    <label htmlFor="gridBarcode1">Barcode</label>
-                                    <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" />
-                                </div>
-                                <div>
-                                    <label htmlFor="gridNama1">Nama</label>
-                                    <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" />
-                                </div>
-                                <div>
-                                    <label htmlFor="gridNama3">Harga</label>
-                                    <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" />
-                                </div>
-                                <div>
-                                    <label htmlFor="gridQTY1">QTY</label>
-                                    <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-4">
-                                <h1 className="flex justify-center text-lg font-bold">NEW DATA</h1>
-                                <div>
-                                    <label htmlFor="gridBarcode2">Barcode</label>
-                                    <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" />
-                                </div>
-                                <div hidden>
-                                    <label htmlFor="gridBarcode2">Tag</label>
-                                    <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" />
-                                </div>
-                                <div>
-                                    <label htmlFor="gridNama2">Nama</label>
-                                    <input id="gridNama2" type="text" disabled placeholder="Enter Nama" className="form-input" />
-                                </div>
-                                <div>
-                                    <label htmlFor="gridNama4">Harga</label>
-                                    <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" />
-                                </div>
-                                <div>
-                                    <label htmlFor="gridQTY2">QTY</label>
-                                    <input id="gridQTY2" disabled type="text" placeholder="Enter QTY" className="form-input" />
-                                </div>
-                            </div>
+                            <BarcodeData barcode={oldData?.old_barcode_product} nama={oldData?.old_name_product} harga={oldData?.old_price_product} qty={oldData?.old_quantity_product} />
+                            {!tagColor || tagColor === undefined ? (
+                                <BarcodeData barcode={oldData?.old_barcode_product} nama={oldData?.old_name_product} harga={oldData?.old_price_product} qty={oldData?.old_quantity_product} />
+                            ) : (
+                                <TagColorData tag={tagColor.hexa_code_color} nama={tagColor.name_color} harga={tagColor.fixed_price_color} qty={oldData.old_quantity_product} />
+                            )}
                         </div>
                         <button type="submit" className="btn btn-warning !mt-6">
                             DONE CHECK ALL
@@ -133,7 +113,6 @@ const MultiCheck = () => {
                                 <Tab.List className="mt-3 mb-6 flex border-b border-white-light gap-4 dark:border-[#191e3a]">
                                     <Tab as={Fragment}>
                                         {({ selected }) => (
-                                            // <div className="flex-auto text-center !outline-none">
                                             <button
                                                 className={`${
                                                     selected ? 'bg-info text-white !outline-none' : ''
@@ -141,7 +120,6 @@ const MultiCheck = () => {
                                             >
                                                 Lolos
                                             </button>
-                                            // </div>
                                         )}
                                     </Tab>
                                     <Tab as={Fragment}>
@@ -170,50 +148,6 @@ const MultiCheck = () => {
                             </div>
                             <Tab.Panels>
                                 <Tab.Panel>
-                                    {/* <div className="grid grid-cols-3 gap-4">
-                                        {radioData.map((option, index) => (
-                                            <label key={index} className="flex items-center mt-1 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    className="form-radio text-info peer w-6 h-6"
-                                                    name="radioOption"
-                                                    value={option}
-                                                    checked={selectedOption === option}
-                                                    onChange={() => handleRadioChange(option)}
-                                                />
-                                                <span className="text-white-dark"> {option}</span>
-                                            </label>
-                                        ))}
-                                        <button
-                                            onClick={handleButtonClick}
-                                            disabled={!selectedOption}
-                                            className={`btn btn-info mt-4 col-span-3 ${selectedOption ? '' : 'opacity-50 pointer-events-none'}`}
-                                        >
-                                            SEND
-                                        </button>
-                                    </div> */}
-                                    {/* <div className="grid grid-cols-3 gap-4">
-                                        {checkboxData1.map((option, index) => (
-                                            <label key={index} className="flex items-center mt-1 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    className="form-radio text-danger peer w-6 h-6"
-                                                    name="radioOption"
-                                                    value={option}
-                                                    checked={selectedOption === option}
-                                                    onChange={() => handleRadioChange(option)}
-                                                />
-                                                <span className="text-white-dark"> {option}</span>
-                                            </label>
-                                        ))}
-                                        <button
-                                            onClick={handleButtonClick}
-                                            disabled={!selectedOption}
-                                            className={`btn btn-info mt-4 col-span-3 ${selectedOption ? '' : 'opacity-50 pointer-events-none'}`}
-                                        >
-                                            SEND
-                                        </button>
-                                    </div> */}
                                     <div className="grid grid-cols-3 gap-4">
                                         {checkboxData2.map((option, index) => (
                                             <label key={index} className="flex items-center mt-1 cursor-pointer">

@@ -171,7 +171,7 @@ interface GetBarcodeResponse {
     data: {
         status: boolean;
         message: string;
-        resource: (Product | Color)[];
+        resource: any;
     };
 }
 
