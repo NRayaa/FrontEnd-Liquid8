@@ -3,26 +3,9 @@ import { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch, useSelector } from 'react-redux';
-// import IconBell from '../../../components/Icon/IconBell';
-// import IconXCircle from '../../../components/Icon/IconXCircle';
-import IconPencil from '../../../components/Icon/IconPencil';
-import IconTrashLines from '../../../components/Icon/IconTrashLines';
 import { Link } from 'react-router-dom';
-// import { Dialog, Transition } from '@headlessui/react';
-// import IconPlus from '../../../components/Icon/IconPlus';
-// import IconNotes from '../../../components/Icon/IconNotes';
 import Swal from 'sweetalert2';
-import IconSend from '../../../components/Icon/IconSend';
-import IconPlus from '../../../components/Icon/IconPlus';
-// import IconCircleCheck from '../../../components/Icon/IconCircleCheck';
-import IconTrendingUp from '../../../components/Icon/IconTrendingUp';
-import Dropdown from '../../../components/Dropdown';
-import IconHorizontalDots from '../../../components/Icon/IconHorizontalDots';
 import { IRootState } from '../../../store';
-import IconEye from '../../../components/Icon/IconEye';
-import IconCashBanknotes from '../../../components/Icon/IconCashBanknotes';
-// import * as Yup from 'yup';
-// import { Field, Form, Formik } from 'formik';
 
 const rowData = [
     {

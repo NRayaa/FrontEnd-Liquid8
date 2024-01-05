@@ -1,9 +1,5 @@
-import React from 'react'
-
 const AddDataInput = () => {
-  return (
-    <div>AddDataInput</div>
-  )
-}
+    return <div>AddDataInput</div>;
+};
 
-export default AddDataInput
+export default AddDataInput;

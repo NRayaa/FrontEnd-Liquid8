@@ -1,16 +1,9 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
-import IconBell from '../../../components/Icon/IconBell';
-import IconXCircle from '../../../components/Icon/IconXCircle';
-import IconPencil from '../../../components/Icon/IconPencil';
-import IconTrashLines from '../../../components/Icon/IconTrashLines';
-import { Link, useNavigate } from 'react-router-dom';
-import IconPlus from '../../../components/Icon/IconPlus';
-import IconNotes from '../../../components/Icon/IconNotes';
-import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconArrowForward from '../../../components/Icon/IconArrowForward';

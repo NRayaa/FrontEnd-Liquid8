@@ -1,4 +1,3 @@
-import React from 'react';
 import TableHistoryCheckItem from './TableHistoryCheckItem';
 import PieChartItem from './PieChartItem';
 import TablePercentageItem from './TablePercentageItem';

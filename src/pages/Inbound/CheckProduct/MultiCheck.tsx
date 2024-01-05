@@ -1,7 +1,6 @@
-// import React from 'react';
 import { Tab } from '@headlessui/react';
-import { Fragment, SetStateAction, useMemo } from 'react';
-import { useState, useEffect } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
+import { useState } from 'react';
 import IconSearch from '../../../components/Icon/IconSearch';
 import { Link, useLocation } from 'react-router-dom';
 import { useLazyGetBarcodeQuery } from '../../../store/services/checkProduct';
