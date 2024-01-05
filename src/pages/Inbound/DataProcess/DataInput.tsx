@@ -281,32 +281,32 @@ const DataInput = () => {
                                             {
                                                 accessor: 'id',
                                                 title: 'No',
-                                                render: (item, index) => <span>{index + 1}</span>,
+                                                render: (item: ProductOldsItem, index: number) => <span>{index + 1}</span>,
                                             },
                                             {
                                                 accessor: 'code_document',
                                                 title: 'Nama Data',
-                                                render: (item) => <span>{item.code_document}</span>,
+                                                render: (item: ProductOldsItem) => <span>{item.code_document}</span>,
                                             },
                                             {
                                                 accessor: 'old_barcode_product',
                                                 title: 'Nomor Resi',
-                                                render: (item) => <span>{item.old_barcode_product}</span>,
+                                                render: (item: ProductOldsItem) => <span>{item.old_barcode_product}</span>,
                                             },
                                             {
                                                 accessor: 'old_name_product',
                                                 title: 'Nama Produk',
-                                                render: (item) => <span>{item.old_name_product}</span>,
+                                                render: (item: ProductOldsItem) => <span>{item.old_name_product}</span>,
                                             },
                                             {
                                                 accessor: 'old_quantity_product',
                                                 title: 'QTY',
-                                                render: (item) => <span>{item.old_quantity_product}</span>,
+                                                render: (item: ProductOldsItem) => <span>{item.old_quantity_product}</span>,
                                             },
                                             {
                                                 accessor: 'old_price_product',
                                                 title: 'Harga',
-                                                render: (item) => <span>{formatRupiah(item.old_price_product)}</span>,
+                                                render: (item: ProductOldsItem) => <span>{formatRupiah(item.old_price_product)}</span>,
                                             },
                                         ]}
                                         totalRecords={productOlds.length}

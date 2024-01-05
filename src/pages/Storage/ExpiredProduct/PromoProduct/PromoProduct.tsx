@@ -192,11 +192,11 @@ const PromoProduct = () => {
                 <h1 className="text-lg font-bold flex justify-start py-4">Promo Product</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div>
-                        <Link to="/storage/expired_product/create_promo" >
-                        <button className="btn btn-outline-info">
-                            <IconPlus />
-                            Create
-                        </button>
+                        <Link to="/storage/expired_product/create_promo">
+                            <button className="btn btn-outline-info">
+                                <IconPlus />
+                                Create
+                            </button>
                         </Link>
                     </div>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
@@ -221,7 +221,7 @@ const PromoProduct = () => {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (data) => (
+                                render: (data: any) => (
                                     <span
                                         className={`badge whitespace-nowrap ${
                                             data.status === 'completed'
@@ -265,13 +265,13 @@ const PromoProduct = () => {
                         totalRecords={initialRecords.length}
                         recordsPerPage={pageSize}
                         page={page}
-                        onPageChange={(p) => setPage(p)}
+                        onPageChange={(p: number) => setPage(p)}
                         recordsPerPageOptions={PAGE_SIZES}
                         onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                        paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
                 </div>
             </div>

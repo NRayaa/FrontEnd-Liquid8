@@ -301,13 +301,13 @@ const DetailListData = () => {
                             <IconNotesEdit fill className="w-12 h-12" />
                         </div>
                         <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
-                            <div className="flex justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
                                 <div className="text-white-dark mr-2">Data Merged :</div>
                                 <div className="whitespace-nowrap">Document 002/2023</div>
                             </div>
                             <div className=" items-center text-lg w-full justify-between mb-2">
                                 <div className="text-white-dark">BASE DATA : </div>
-                                <ul className='space-y-3 list-inside list-disc font-semibold'>
+                                <ul className="space-y-3 list-inside list-disc font-semibold">
                                     <li>Data Excell 1</li>
                                     <li>Data Excell 2</li>
                                 </ul>
@@ -336,7 +336,7 @@ const DetailListData = () => {
                         className="whitespace-nowrap table-hover"
                         records={recordsData}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (e) => recordsData.indexOf(e) + 1 },
+                            { accessor: 'id', title: 'No', render: (e: any) => recordsData.indexOf(e) + 1 },
                             { accessor: 'firstName', title: 'Nama Data', sortable: true },
                             {
                                 accessor: 'dob',
@@ -350,13 +350,13 @@ const DetailListData = () => {
                         totalRecords={initialRecords.length}
                         recordsPerPage={pageSize}
                         page={page}
-                        onPageChange={(p) => setPage(p)}
+                        onPageChange={(p: number) => setPage(p)}
                         recordsPerPageOptions={PAGE_SIZES}
                         onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                        paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
                 </div>
             </div>
