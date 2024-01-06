@@ -309,9 +309,9 @@ const DataInput = () => {
                                                 render: (item: ProductOldsItem) => <span>{formatRupiah(item.old_price_product)}</span>,
                                             },
                                         ]}
-                                        totalRecords={productOlds.length}
-                                        recordsPerPage={data?.data.per_page}
-                                        page={data?.data.resource.current_page}
+                                        totalRecords={productOlds.length ?? 0}
+                                        recordsPerPage={data?.data.per_page ?? 0}
+                                        page={data?.data.resource.current_page ?? 0}
                                         onPageChange={() => setPage((prevPage) => prevPage + 1)}
                                     />
                                 )}
