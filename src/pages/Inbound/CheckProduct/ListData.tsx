@@ -97,8 +97,7 @@ const ListData = () => {
                     <span>List Data</span>
                 </li>
             </ul>
-            {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
-            </div> */}
+
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -108,9 +107,6 @@ const ListData = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        withBorder={false}
-                        highlightOnHover
-                        className="whitespace-nowrap table-hover "
                         records={listsData}
                         columns={[
                             {
@@ -177,10 +173,6 @@ const ListData = () => {
                                 textAlignment: 'center',
                             },
                         ]}
-                        totalRecords={listsData.length}
-                        recordsPerPage={data?.data.resource.per_page}
-                        page={data?.data.resource.current_page}
-                        onPageChange={() => setPage((prevPage) => prevPage + 1)}
                     />
                 </div>
             </div>
