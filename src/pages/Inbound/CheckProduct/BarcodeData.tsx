@@ -5,12 +5,13 @@ interface BarcodeData {
     nama: string;
     harga: string;
     qty: string;
+    header: string;
 }
 
-const BarcodeData: React.FC<BarcodeData> = ({ barcode, nama, harga, qty }) => {
+const BarcodeData: React.FC<BarcodeData> = ({ barcode, nama, harga, qty, header }) => {
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="flex justify-center text-lg font-bold">OLD DATA</h1>
+            <h1 className="flex justify-center text-lg font-bold">{header}</h1>
             <div>
                 <label htmlFor="gridBarcode1">Barcode</label>
                 <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />

@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
+import { DataTable } from 'mantine-datatable';
+import { GetCategoriesItem } from '../../../store/services/types';
+import { useDeleteCategoryMutation, useGetCategoriesQuery } from '../../../store/services/categoriesApi';
+import { formatRupiah } from '../../../helper/functions';
 
 const CategorySetting = () => {
     const navigate = useNavigate();
+    const { data, refetch } = useGetCategoriesQuery(undefined);
+    const [deleteCategory, results] = useDeleteCategoryMutation();
+
+    const dataCategories = useMemo(() => {
+        return data?.data.resource;
+    }, [data]);
+
+    const handleDeleteCategory = async (id: number) => {
+        try {
+            await deleteCategory(id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (results) {
+            refetch();
+        }
+    }, [results]);
+
     return (
         <>
             <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/" current="SubKategori" />
@@ -34,47 +59,51 @@ const CategorySetting = () => {
                     </button>
                 </div>
                 <div className="datatables">
-                    <table className="panel w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    No
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Nama Kategori
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Discount
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Max Harga
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                <td className="px-6 py-4">1</td>
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Fashion
-                                </th>
-                                <td className="px-6 py-4">60%</td>
-                                <td className="px-6 py-4">Rp 1.000.000,-</td>
-                                <td className="px-6 py-4 flex items-center space-x-2">
-                                    <Link to="/storage/categorysetting/1">
-                                        <button type="button" className="btn btn-outline-primary">
-                                            Detail
+                    <DataTable
+                        records={dataCategories}
+                        columns={[
+                            {
+                                accessor: 'id',
+                                title: 'No',
+                                render: (item: GetCategoriesItem, index: number) => <span>{index + 1}</span>,
+                            },
+                            {
+                                accessor: 'Nama Kategori',
+                                title: 'Nama Kategori',
+                                render: (item: GetCategoriesItem) => <span>{item.name_category}</span>,
+                            },
+                            {
+                                accessor: 'Discount',
+                                title: 'Discount',
+                                render: (item: GetCategoriesItem) => <span>{item.discount_category + '%'}</span>,
+                            },
+                            {
+                                accessor: 'Max Harga',
+                                title: 'Max Harga',
+                                render: (item: GetCategoriesItem) => <span>{formatRupiah(item.max_price_category)}</span>,
+                            },
+                            {
+                                accessor: 'Aksi',
+                                title: 'Aksi',
+                                render: (item: GetCategoriesItem) => (
+                                    <div className="flex items-center w-max mx-auto gap-6">
+                                        <Link
+                                            to={`/storage/categorysetting/${item.id}`}
+                                            state={{ name_category: item.name_category, discount_category: item.discount_category, max_price_category: item.max_price_category }}
+                                        >
+                                            <button type="button" className="btn btn-outline-info">
+                                                Edit
+                                            </button>
+                                        </Link>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteCategory(item.id)}>
+                                            Delete
                                         </button>
-                                    </Link>
-                                    <button type="button" className="btn btn-outline-danger">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </div>
+                                ),
+                                textAlignment: 'center',
+                            },
+                        ]}
+                    />
                 </div>
             </div>
         </>
