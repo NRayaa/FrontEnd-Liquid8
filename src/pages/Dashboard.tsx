@@ -3,7 +3,6 @@ import { useGetUsersQuery } from '../store/services/usersApi';
 const Index = () => {
     const { data } = useGetUsersQuery('');
 
-    console.log(data);
     return (
         <div>
             <h1 className="text-5xl font-bold mb-4">Test api</h1>

@@ -1,19 +1,19 @@
-import { Tab } from '@headlessui/react';
-import { Fragment, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import IconSearch from '../../../components/Icon/IconSearch';
 import { Link, useLocation } from 'react-router-dom';
 import { useLazyGetBarcodeQuery } from '../../../store/services/checkProduct';
 import BarcodeData from './BarcodeData';
 import TagColorData from './TagColorData';
+import ProductCheck from './ProductCheck';
 
 const MultiCheck = () => {
     const { state } = useLocation();
     const [inputBarcode, setInputBarcode] = useState<string>('');
+    const [isProductCheck, setIsProductCheck] = useState<boolean>(false);
 
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
-    const checkboxData2 = ['Option 1', 'Option 2', 'Option 3'];
     const [keterangan, setKeterangan] = useState<string>('');
 
     const handleInputBarcode = async () => {
@@ -26,6 +26,7 @@ const MultiCheck = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            setIsProductCheck(true);
             if (Array.isArray(results.data?.data.resource)) {
                 setKeterangan('50K>');
             } else {
@@ -91,9 +92,21 @@ const MultiCheck = () => {
                     </form>
                     <form className="space-y-5 col-span-2">
                         <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
-                            <BarcodeData barcode={oldData?.old_barcode_product} nama={oldData?.old_name_product} harga={oldData?.old_price_product} qty={oldData?.old_quantity_product} />
+                            <BarcodeData
+                                header="OLD DATA"
+                                barcode={oldData?.old_barcode_product}
+                                nama={oldData?.old_name_product}
+                                harga={oldData?.old_price_product}
+                                qty={oldData?.old_quantity_product}
+                            />
                             {!tagColor || tagColor === undefined ? (
-                                <BarcodeData barcode={oldData?.old_barcode_product} nama={oldData?.old_name_product} harga={oldData?.old_price_product} qty={oldData?.old_quantity_product} />
+                                <BarcodeData
+                                    header="NEW DATA"
+                                    barcode={oldData?.old_barcode_product}
+                                    nama={oldData?.old_name_product}
+                                    harga={oldData?.old_price_product}
+                                    qty={oldData?.old_quantity_product}
+                                />
                             ) : (
                                 <TagColorData tag={tagColor.hexa_code_color} nama={tagColor.name_color} harga={tagColor.fixed_price_color} qty={oldData.old_quantity_product} />
                             )}
@@ -103,96 +116,7 @@ const MultiCheck = () => {
                         </button>
                     </form>
                 </div>
-                <div></div>
-                <div className="xl:w-1/2 ss:w-full gap-4">
-                    <h1 className="text-lg font-bold my-4">PRODUK CHECK</h1>
-                    <div className="mb-5 panel">
-                        <Tab.Group>
-                            <div className="mx-10 mb-5 sm:mb-0">
-                                <Tab.List className="mt-3 mb-6 flex border-b border-white-light gap-4 dark:border-[#191e3a]">
-                                    <Tab as={Fragment}>
-                                        {({ selected }) => (
-                                            <button
-                                                className={`${
-                                                    selected ? 'bg-info text-white !outline-none' : ''
-                                                } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
-                                            >
-                                                Lolos
-                                            </button>
-                                        )}
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) => (
-                                            <button
-                                                className={`${
-                                                    selected ? 'bg-info text-white !outline-none' : ''
-                                                } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
-                                            >
-                                                Damaged
-                                            </button>
-                                        )}
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) => (
-                                            <button
-                                                className={`${
-                                                    selected ? 'bg-info text-white !outline-none' : ''
-                                                } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
-                                            >
-                                                Abnormal
-                                            </button>
-                                        )}
-                                    </Tab>
-                                </Tab.List>
-                            </div>
-                            <Tab.Panels>
-                                <Tab.Panel>
-                                    <div className="grid grid-cols-3 gap-4">
-                                        {checkboxData2.map((option, index) => (
-                                            <label key={index} className="flex items-center mt-1 cursor-pointer">
-                                                <input type="radio" className="form-radio text-success peer w-6 h-6" name="radioOption" value={option} />
-                                                <span className="text-white-dark"> {option}</span>
-                                            </label>
-                                        ))}
-
-                                        <button className="btn btn-info mt-4 col-span-3 opacity-50 pointer-events-none">SEND</button>
-                                    </div>
-                                </Tab.Panel>
-                                <Tab.Panel>
-                                    <div>
-                                        <div className="flex items-start pt-5">
-                                            <div className="flex-auto">
-                                                <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
-                                                <textarea rows={4} className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"></textarea>
-                                                <div className="flex justify-end">
-                                                    <button type="submit" className="w-full btn btn-info mt-4">
-                                                        SEND
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Tab.Panel>
-                                <Tab.Panel>
-                                    <div>
-                                        <div className="flex items-start pt-5">
-                                            <div className="flex-auto">
-                                                <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
-                                                <textarea rows={4} className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"></textarea>
-                                                <div className="flex justify-end">
-                                                    <button type="submit" className="w-full btn btn-info mt-4">
-                                                        SEND
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Tab.Panel>
-                                <Tab.Panel>Disabled</Tab.Panel>
-                            </Tab.Panels>
-                        </Tab.Group>
-                    </div>
-                </div>
+                {isProductCheck && <ProductCheck oldData={oldData} tagColor={tagColor} />}
             </div>
         </div>
     );

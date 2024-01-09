@@ -160,7 +160,7 @@ const ListData = () => {
                                                 Check
                                             </button>
                                         </Link>
-                                        <Link to="/inbound/check_product/detail_data">
+                                        <Link to="/inbound/check_product/detail_data" state={{ codeDocument: item.code_document, baseDocument: item.base_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
