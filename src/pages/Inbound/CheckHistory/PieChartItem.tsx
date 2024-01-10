@@ -1,5 +1,3 @@
-import React from 'react';
-import IconCode from '../../../components/Icon/IconCode';
 import ReactApexChart from 'react-apexcharts';
 
 const PieChartItem = () => {

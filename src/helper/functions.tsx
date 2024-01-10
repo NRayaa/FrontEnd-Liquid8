@@ -31,4 +31,32 @@ function formatRupiah(amount: string) {
     return formattedAmount;
 }
 
-export { formatTimestamp, formatRupiah };
+function formatDate(tanggalString: string) {
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+    const options: any = { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' };
+    const tanggal = new Date(tanggalString);
+
+    const hari = days[tanggal.getDay()];
+    const tanggalFormat = tanggal.toLocaleDateString('id-ID', options);
+
+    // Mendapatkan format tanggal dd-mm-yyyy
+    const [tanggalPart, bulanPart, tahunPart] = tanggalFormat.split('/');
+    const formattedTanggal = `${tanggalPart}-${bulanPart.padStart(2, '0')}-${tahunPart}`;
+
+    return formattedTanggal;
+}
+
+function generateRandomString(length: number) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomString = '';
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomString += characters.charAt(randomIndex);
+    }
+
+    return randomString;
+}
+
+export { formatTimestamp, formatRupiah, formatDate, generateRandomString };

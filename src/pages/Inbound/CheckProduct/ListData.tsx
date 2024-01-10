@@ -1,241 +1,12 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
+import { DataTable } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
-import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { useDispatch, useSelector } from 'react-redux';
-// import IconBell from '../../../components/Icon/IconBell';
-// import IconXCircle from '../../../components/Icon/IconXCircle';
-import IconPencil from '../../../components/Icon/IconPencil';
-import IconTrashLines from '../../../components/Icon/IconTrashLines';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import { Dialog, Transition } from '@headlessui/react';
-// import IconPlus from '../../../components/Icon/IconPlus';
-// import IconNotes from '../../../components/Icon/IconNotes';
 import Swal from 'sweetalert2';
-import IconSend from '../../../components/Icon/IconSend';
-import IconPlus from '../../../components/Icon/IconPlus';
-// import IconCircleCheck from '../../../components/Icon/IconCircleCheck';
-import IconTrendingUp from '../../../components/Icon/IconTrendingUp';
-import Dropdown from '../../../components/Dropdown';
-import IconHorizontalDots from '../../../components/Icon/IconHorizontalDots';
-import { IRootState } from '../../../store';
-import IconEye from '../../../components/Icon/IconEye';
-import IconCashBanknotes from '../../../components/Icon/IconCashBanknotes';
-// import * as Yup from 'yup';
-// import { Field, Form, Formik } from 'formik';
-
-const rowData = [
-    {
-        id: 1,
-        firstName: 'Caroline',
-        lastName: 'Jensen',
-        email: 'carolinejensen@zidant.com',
-        dob: '2004-05-28',
-        status: 'Completed',
-        address: {
-            street: '529 Scholes Street',
-            city: 'Temperanceville',
-            zipcode: 5235,
-            geo: {
-                lat: 23.806115,
-                lng: 164.677197,
-            },
-        },
-        phone: '+1 (821) 447-3782',
-        isActive: true,
-        age: 39,
-        company: 'POLARAX',
-    },
-    {
-        id: 2,
-        firstName: 'Celeste',
-        lastName: 'Grant',
-        email: 'celestegrant@polarax.com',
-        dob: '1989-11-19',
-        status: 'Pending',
-        address: {
-            street: '639 Kimball Street',
-            city: 'Bascom',
-            zipcode: 8907,
-            geo: {
-                lat: 65.954483,
-                lng: 98.906478,
-            },
-        },
-        phone: '+1 (838) 515-3408',
-        isActive: false,
-        age: 32,
-        company: 'MANGLO',
-    },
-    {
-        id: 3,
-        firstName: 'Tillman',
-        lastName: 'Forbes',
-        email: 'tillmanforbes@manglo.com',
-        dob: '2016-09-05',
-        status: 'In Progress',
-        address: {
-            street: '240 Vandalia Avenue',
-            city: 'Thynedale',
-            zipcode: 8994,
-            geo: {
-                lat: -34.949388,
-                lng: -82.958111,
-            },
-        },
-        phone: '+1 (969) 496-2892',
-        isActive: false,
-        age: 26,
-        company: 'APPLIDECK',
-    },
-    {
-        id: 4,
-        firstName: 'Daisy',
-        lastName: 'Whitley',
-        email: 'daisywhitley@applideck.com',
-        dob: '1987-03-23',
-        status: 'Canceled',
-        address: {
-            street: '350 Pleasant Place',
-            city: 'Idledale',
-            zipcode: 9369,
-            geo: {
-                lat: -54.458809,
-                lng: -127.476556,
-            },
-        },
-        phone: '+1 (861) 564-2877',
-        isActive: true,
-        age: 21,
-        company: 'VOLAX',
-    },
-    {
-        id: 5,
-        firstName: 'Weber',
-        lastName: 'Bowman',
-        email: 'weberbowman@volax.com',
-        dob: '1983-02-24',
-        status: 'Completed',
-        address: {
-            street: '154 Conway Street',
-            city: 'Broadlands',
-            zipcode: 8131,
-            geo: {
-                lat: 54.501351,
-                lng: -167.47138,
-            },
-        },
-        phone: '+1 (962) 466-3483',
-        isActive: false,
-        age: 26,
-        company: 'ORBAXTER',
-    },
-    {
-        id: 6,
-        firstName: 'Buckley',
-        lastName: 'Townsend',
-        email: 'buckleytownsend@orbaxter.com',
-        dob: '2011-05-29',
-        status: 'Completed',
-        address: {
-            street: '131 Guernsey Street',
-            city: 'Vallonia',
-            zipcode: 6779,
-            geo: {
-                lat: -2.681655,
-                lng: 3.528942,
-            },
-        },
-        phone: '+1 (884) 595-2643',
-        isActive: true,
-        age: 40,
-        company: 'OPPORTECH',
-    },
-    {
-        id: 7,
-        firstName: 'Latoya',
-        lastName: 'Bradshaw',
-        email: 'latoyabradshaw@opportech.com',
-        dob: '2010-11-23',
-        status: 'Canceled',
-        address: {
-            street: '668 Lenox Road',
-            city: 'Lowgap',
-            zipcode: 992,
-            geo: {
-                lat: 36.026423,
-                lng: 130.412198,
-            },
-        },
-        phone: '+1 (906) 474-3155',
-        isActive: true,
-        age: 24,
-        company: 'GORGANIC',
-    },
-    {
-        id: 8,
-        firstName: 'Kate',
-        lastName: 'Lindsay',
-        email: 'katelindsay@gorganic.com',
-        dob: '1987-07-02',
-        status: 'Pending',
-        address: {
-            street: '773 Harrison Avenue',
-            city: 'Carlton',
-            zipcode: 5909,
-            geo: {
-                lat: 42.464724,
-                lng: -12.948403,
-            },
-        },
-        phone: '+1 (930) 546-2952',
-        isActive: true,
-        age: 24,
-        company: 'AVIT',
-    },
-    {
-        id: 9,
-        firstName: 'Marva',
-        lastName: 'Sandoval',
-        email: 'marvasandoval@avit.com',
-        dob: '2010-11-02',
-        status: 'Completed',
-        address: {
-            street: '200 Malta Street',
-            city: 'Tuskahoma',
-            zipcode: 1292,
-            geo: {
-                lat: -52.206169,
-                lng: 74.19452,
-            },
-        },
-        phone: '+1 (927) 566-3600',
-        isActive: false,
-        age: 28,
-        company: 'QUILCH',
-    },
-    {
-        id: 10,
-        firstName: 'Decker',
-        lastName: 'Russell',
-        email: 'deckerrussell@quilch.com',
-        dob: '1994-04-21',
-        status: 'In Progress',
-        address: {
-            street: '708 Bath Avenue',
-            city: 'Coultervillle',
-            zipcode: 1268,
-            geo: {
-                lat: -41.550295,
-                lng: -146.598075,
-            },
-        },
-        phone: '+1 (846) 535-3283',
-        isActive: false,
-        age: 27,
-        company: 'MEMORA',
-    },
-];
+import { useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
+import { CheckProductDocumentItem } from '../../../store/services/types';
+import { formatDate } from '../../../helper/functions';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -298,76 +69,19 @@ const ListData = () => {
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const [page, setPage] = useState(1);
-    const PAGE_SIZES = [10, 20, 30, 50, 100];
-    const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'firstName'));
-    const [recordsData, setRecordsData] = useState(initialRecords);
 
-    const [search, setSearch] = useState('');
-    const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-        columnAccessor: 'id',
-        direction: 'asc',
-    });
+    const [page, setPage] = useState<number>(1);
+    const { data, isSuccess } = useDocumentsCheckProductsQuery(page);
+
+    const [search, setSearch] = useState<string>('');
+    const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
 
     useEffect(() => {
-        setPage(1);
-    }, [pageSize]);
-
-    useEffect(() => {
-        const from = (page - 1) * pageSize;
-        const to = from + pageSize;
-        setRecordsData([...initialRecords.slice(from, to)]);
-    }, [page, pageSize, initialRecords]);
-
-    useEffect(() => {
-        setInitialRecords(() => {
-            return rowData.filter((item) => {
-                return (
-                    item.id.toString().includes(search.toLowerCase()) ||
-                    item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                    item.dob.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.phone.toLowerCase().includes(search.toLowerCase())
-                );
-            });
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
-
-    useEffect(() => {
-        const data = sortBy(initialRecords, sortStatus.columnAccessor);
-        setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-        setPage(1);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sortStatus]);
-    const formatDate = (date: string | number | Date) => {
-        if (date) {
-            const dt = new Date(date);
-            const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-            const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-            return day + '/' + month + '/' + dt.getFullYear();
+        if (isSuccess && data.data.message) {
+            setListsData(data.data.resource.data);
         }
-        return '';
-    };
+    }, [data]);
 
-    const [cost, setCost] = useState('');
-
-    // const handleCostChange = (e: { target: { value: any } }) => {
-    //     const inputValue = e.target.value;
-    //     let formatValue = '';
-
-    //     // Remove non-numeric characters
-    //     const numValue = inputValue.replace(/\D/g, '');
-
-    //     // Format the number with 'Rp.' prefix
-    //     if (numValue !== '') {
-    //         formatValue = `Rp. ${parseInt(numValue, 10).toLocaleString('id-ID')}`;
-    //     }
-
-    //     setCost(formatValue);
-    // };
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -383,8 +97,7 @@ const ListData = () => {
                     <span>List Data</span>
                 </li>
             </ul>
-            {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
-            </div> */}
+
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -394,69 +107,72 @@ const ListData = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        highlightOnHover
-                        className="whitespace-nowrap table-hover "
-                        records={recordsData}
+                        records={listsData}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true },
-                            { accessor: 'firstName', title: 'Nama Data', sortable: true },
-                            { accessor: 'dob', title: 'Tanggal', sortable: true },
-                            { accessor: 'age', title: 'Total Barang', sortable: true },
                             {
-                                accessor: 'status',
+                                accessor: 'id',
+                                title: 'No',
+                                render: (item: CheckProductDocumentItem, index: number) => <span>{index + 1}</span>,
+                            },
+                            {
+                                accessor: 'date_document',
+                                title: 'Nama Data',
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.code_document}</span>,
+                            },
+                            {
+                                accessor: 'date_document',
+                                title: 'Tanggal',
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.date_document)}</span>,
+                            },
+                            {
+                                accessor: 'total_column_document',
+                                title: 'Total Barang',
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.total_column_document)}</span>,
+                            },
+                            {
+                                accessor: 'status_document',
                                 title: 'Status',
-                                sortable: true,
-                                render: (data) => (
+                                render: (item: CheckProductDocumentItem) => (
                                     <span
                                         className={`badge whitespace-nowrap ${
-                                            data.status === 'completed'
+                                            item.status_document === 'completed'
                                                 ? 'bg-primary'
-                                                : data.status === 'Pending'
+                                                : item.status_document === 'Pending'
                                                 ? 'bg-secondary'
-                                                : data.status === 'In Progress'
+                                                : item.status_document === 'In Progress'
                                                 ? 'bg-success'
-                                                : data.status === 'Canceled'
+                                                : item.status_document === 'Canceled'
                                                 ? 'bg-danger'
                                                 : 'bg-primary'
                                         }`}
                                     >
-                                        {data.status}
+                                        {item.status_document}
                                     </span>
                                 ),
                             },
                             {
-                                accessor: 'action',
-                                title: 'Opsi',
-                                titleClassName: '!text-center',
-                                render: () => (
+                                accessor: 'Aksi',
+                                title: 'Aksi',
+                                render: (item: CheckProductDocumentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/check_product/multi_check" >
-                                        <button type="button" className="btn btn-outline-success">
-                                            Check
-                                        </button>
+                                        <Link to="/inbound/check_product/multi_check" state={{ codeDocument: item.code_document }}>
+                                            <button type="button" className="btn btn-outline-success">
+                                                Check
+                                            </button>
                                         </Link>
-                                        <Link to="/inbound/check_product/detail_data" >
-                                        <button type="button" className="btn btn-outline-info">
-                                            Detail
-                                        </button>
+                                        <Link to="/inbound/check_product/detail_data" state={{ codeDocument: item.code_document, baseDocument: item.base_document }}>
+                                            <button type="button" className="btn btn-outline-info">
+                                                Detail
+                                            </button>
                                         </Link>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
                                             Delete
                                         </button>
                                     </div>
                                 ),
+                                textAlignment: 'center',
                             },
                         ]}
-                        totalRecords={initialRecords.length}
-                        recordsPerPage={pageSize}
-                        page={page}
-                        onPageChange={(p) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
-                        sortStatus={sortStatus}
-                        onSortStatusChange={setSortStatus}
-                        minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
                 </div>
             </div>
