@@ -142,7 +142,7 @@ const Sidebar = () => {
                                             </defs>
                                         </svg>
 
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Data Prosess')}</span>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Inbound Process')}</span>
                                     </div>
                                 </NavLink>
                             </li>
@@ -170,10 +170,10 @@ const Sidebar = () => {
                                         <AnimateHeight duration={300} height={currentMenu === 'check_product' ? 'auto' : 0}>
                                             <ul className="sub-menu text-gray-500">
                                                 <li>
-                                                    <NavLink to="/inbound/check_product/list_data">{'Multi Check'}</NavLink>
+                                                    <NavLink to="/inbound/check_product/list_data">{'Manifest Inbound'}</NavLink>
                                                 </li>
                                                 <li>
-                                                    <NavLink to="/inbound/check_product/single_check">{'Single Check'}</NavLink>
+                                                    <NavLink to="/inbound/check_product/single_check">{'Quality Check'}</NavLink>
                                                 </li>
                                             </ul>
                                         </AnimateHeight>
@@ -277,7 +277,7 @@ const Sidebar = () => {
                                             />
                                         </svg>
 
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Expired Product')}</span>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Slow Moving Product')}</span>
                                     </div>
 
                                     <div className={currentMenu === 'expired_product' ? 'rotate-90' : 'rtl:rotate-180'}>
