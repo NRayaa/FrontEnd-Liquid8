@@ -1,4 +1,8 @@
-const TablePercentageItem = () => {
+import React from 'react';
+import { TableHistoryCheckItem } from './TableHistoryCheckItem';
+import { convertPercentage } from '../../../helper/functions';
+
+const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData }) => {
     return (
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -23,8 +27,8 @@ const TablePercentageItem = () => {
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Data
                     </th>
-                    <td className="px-6 py-4">700</td>
-                    <td className="px-6 py-4">100%</td>
+                    <td className="px-6 py-4">{detailCheckData?.total_data}</td>
+                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.precentage_total_data ?? '1')}</td>
                 </tr>
             </tbody>
         </table>

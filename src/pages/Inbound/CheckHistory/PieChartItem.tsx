@@ -1,8 +1,14 @@
 import ReactApexChart from 'react-apexcharts';
+import { TableHistoryCheckItem } from './TableHistoryCheckItem';
 
-const PieChartItem = () => {
+const PieChartItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData }) => {
     const pieChart: any = {
-        series: [44, 55, 13, 43],
+        series: [
+            Math.floor(parseInt(detailCheckData?.total_data_lolos ?? '0')),
+            Math.floor(parseInt(detailCheckData?.total_data_damaged ?? '0')),
+            Math.floor(parseInt(detailCheckData?.total_discrepancy ?? '0')),
+            Math.floor(parseInt(detailCheckData?.total_data_abnormal ?? '0')),
+        ],
         options: {
             chart: {
                 height: 300,
