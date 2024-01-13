@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
-import { generateRandomString } from '../../../helper/functions';
+import { formatYearToDay, generateRandomString } from '../../../helper/functions';
 
 interface ProductCheck {
     oldData: {
@@ -24,9 +24,11 @@ interface ProductCheck {
         name_color: string;
         updated_at: string;
     };
+    resetValueMultiCheck: () => void;
+    resetProductCheckShow: () => void;
 }
 
-const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor }) => {
+const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMultiCheck, resetProductCheckShow }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
     const [newProduct, results] = useNewProductMutation();
 
@@ -40,21 +42,37 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor }) => {
         }
     }, [data]);
 
+    const newPrice = useMemo(() => {
+        if (!tagColor) {
+            return oldData.old_price_product;
+        } else {
+            return tagColor.fixed_price_color;
+        }
+    }, [tagColor]);
+
+    const newDateProduct = useMemo(() => {
+        if (!tagColor) {
+            return formatYearToDay(oldData.created_at);
+        } else {
+            return formatYearToDay(tagColor.created_at);
+        }
+    }, [tagColor]);
+
     const handleSendLolos = async () => {
         try {
             const body = {
                 code_document: oldData.code_document,
-                old_barcode_product: generateRandomString(10),
+                old_barcode_product: oldData.old_barcode_product,
                 new_barcode_product: generateRandomString(10),
-                new_name_product: generateRandomString(10),
-                old_name_product: generateRandomString(10),
-                new_quantity_product: 3,
-                new_price_product: 100000,
-                new_date_in_product: '2023-12-20',
+                new_name_product: oldData.old_name_product,
+                old_name_product: oldData.old_name_product,
+                new_quantity_product: oldData.old_quantity_product,
+                new_price_product: newPrice,
+                new_date_in_product: newDateProduct,
                 new_status_product: 'display',
                 condition: 'lolos',
                 new_category_product: selectedOption,
-                new_tag_product: '',
+                new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: '',
             };
             await newProduct(body);
@@ -66,17 +84,17 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor }) => {
         try {
             const body = {
                 code_document: oldData.code_document,
-                old_barcode_product: generateRandomString(10),
+                old_barcode_product: oldData.old_barcode_product,
                 new_barcode_product: generateRandomString(10),
-                new_name_product: generateRandomString(10),
-                old_name_product: generateRandomString(10),
-                new_quantity_product: 3,
-                new_price_product: 100000,
-                new_date_in_product: '2023-12-20',
+                new_name_product: oldData.old_name_product,
+                old_name_product: oldData.old_name_product,
+                new_quantity_product: oldData.old_quantity_product,
+                new_price_product: newPrice,
+                new_date_in_product: newDateProduct,
                 new_status_product: 'display',
                 condition: 'damaged',
                 new_category_product: '',
-                new_tag_product: '',
+                new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: descriptionDamaged,
             };
             await newProduct(body);
@@ -90,15 +108,15 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor }) => {
                 code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
                 new_barcode_product: generateRandomString(10),
-                new_name_product: generateRandomString(10),
-                old_name_product: generateRandomString(10),
-                new_quantity_product: 3,
-                new_price_product: 100000,
-                new_date_in_product: '2023-12-20',
+                new_name_product: oldData.old_name_product,
+                old_name_product: oldData.old_name_product,
+                new_quantity_product: oldData.old_quantity_product,
+                new_price_product: newPrice,
+                new_date_in_product: newDateProduct,
                 new_status_product: 'display',
                 condition: 'abnormal',
                 new_category_product: '',
-                new_tag_product: tagColor.name_color,
+                new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: descriptionAbnormal,
             };
             await newProduct(body);
@@ -106,6 +124,13 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor }) => {
             console.log(err);
         }
     };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            resetValueMultiCheck();
+            resetProductCheckShow();
+        }
+    }, [results]);
 
     useEffect(() => {
         refetch();

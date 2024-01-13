@@ -1,16 +1,22 @@
 import { useEffect, useMemo } from 'react';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
+
 import IconSearch from '../../../components/Icon/IconSearch';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLazyGetBarcodeQuery } from '../../../store/services/checkProduct';
 import BarcodeData from './BarcodeData';
 import TagColorData from './TagColorData';
 import ProductCheck from './ProductCheck';
+import { useCheckAllDocumentMutation } from '../../../store/services/riwayatApi';
 
 const MultiCheck = () => {
     const { state } = useLocation();
     const [inputBarcode, setInputBarcode] = useState<string>('');
     const [isProductCheck, setIsProductCheck] = useState<boolean>(false);
+    const [isResetValue, setIsResetValue] = useState<boolean>(true);
+    const [checkAllDocument, checkResults] = useCheckAllDocumentMutation();
+    const navigate = useNavigate();
 
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
@@ -19,9 +25,17 @@ const MultiCheck = () => {
     const handleInputBarcode = async () => {
         try {
             await getBarcode({ code_document: state?.codeDocument, old_barcode_product: inputBarcode });
+            setIsResetValue(false);
         } catch (err) {
             console.log(err);
         }
+    };
+
+    const resetValueMultiCheck = () => {
+        setIsResetValue(true);
+    };
+    const resetProductCheckShow = () => {
+        setIsProductCheck(false);
     };
 
     useEffect(() => {
@@ -49,6 +63,28 @@ const MultiCheck = () => {
             return results.data?.data.resource;
         }
     }, [results]);
+
+    const handleCheckDoneAll = async () => {
+        const resAlert = await Swal.fire({
+            title: 'Yakin akan melakukan pengecekan semuanya?',
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: 'Yakin',
+            denyButtonText: `Tidak`,
+        });
+        if (resAlert.isConfirmed) {
+            const body = {
+                code_document: state?.codeDocument,
+            };
+            await checkAllDocument(body);
+        }
+    };
+
+    useEffect(() => {
+        if (checkResults.isSuccess) {
+            navigate('/inbound/check_history');
+        }
+    }, [checkResults]);
 
     return (
         <div>
@@ -87,36 +123,41 @@ const MultiCheck = () => {
                         </div>
                         <div className="flex gap-4 items-center w-full">
                             <label htmlFor="gridKeterangan">Keterangan</label>
-                            <input id="gridKeterangan" type="text" disabled className="form-input w-full" value={keterangan} />
+                            <input id="gridKeterangan" type="text" disabled className="form-input w-full" value={!isResetValue ? keterangan : ''} />
                         </div>
                     </form>
-                    <form className="space-y-5 col-span-2">
+                    <div className="space-y-5 col-span-2">
                         <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
                             <BarcodeData
                                 header="OLD DATA"
-                                barcode={oldData?.old_barcode_product}
-                                nama={oldData?.old_name_product}
-                                harga={oldData?.old_price_product}
-                                qty={oldData?.old_quantity_product}
+                                barcode={!isResetValue ? oldData?.old_barcode_product : ''}
+                                nama={!isResetValue ? oldData?.old_name_product : ''}
+                                harga={!isResetValue ? oldData?.old_price_product : ''}
+                                qty={!isResetValue ? oldData?.old_quantity_product : ''}
                             />
                             {!tagColor || tagColor === undefined ? (
                                 <BarcodeData
                                     header="NEW DATA"
-                                    barcode={oldData?.old_barcode_product}
-                                    nama={oldData?.old_name_product}
-                                    harga={oldData?.old_price_product}
-                                    qty={oldData?.old_quantity_product}
+                                    barcode={!isResetValue ? oldData?.old_barcode_product : ''}
+                                    nama={!isResetValue ? oldData?.old_name_product : ''}
+                                    harga={!isResetValue ? oldData?.old_price_product : ''}
+                                    qty={!isResetValue ? oldData?.old_quantity_product : ''}
                                 />
                             ) : (
-                                <TagColorData tag={tagColor.hexa_code_color} nama={tagColor.name_color} harga={tagColor.fixed_price_color} qty={oldData.old_quantity_product} />
+                                <TagColorData
+                                    tag={!isResetValue ? tagColor.hexa_code_color : ''}
+                                    nama={!isResetValue ? tagColor.name_color : ''}
+                                    harga={!isResetValue ? tagColor.fixed_price_color : ''}
+                                    qty={!isResetValue ? oldData.old_quantity_product : ''}
+                                />
                             )}
                         </div>
-                        <button type="submit" className="btn btn-warning !mt-6">
+                        <button className="btn btn-warning !mt-6" onClick={handleCheckDoneAll}>
                             DONE CHECK ALL
                         </button>
-                    </form>
+                    </div>
                 </div>
-                {isProductCheck && <ProductCheck oldData={oldData} tagColor={tagColor} />}
+                {isProductCheck && <ProductCheck oldData={oldData} tagColor={tagColor} resetValueMultiCheck={resetValueMultiCheck} resetProductCheckShow={resetProductCheckShow} />}
             </div>
         </div>
     );

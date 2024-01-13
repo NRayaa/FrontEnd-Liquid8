@@ -9,7 +9,7 @@ export const categoriesApi = createApi({
         getCategories: builder.query<GetCategories, undefined>({
             query: () => '/categories',
         }),
-        newProduct: builder.mutation<NewProduct, NewProductBody>({
+        newProduct: builder.mutation<NewProduct, any>({
             query: (body) => ({
                 url: '/new_products',
                 method: 'POST',

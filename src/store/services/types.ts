@@ -268,19 +268,19 @@ interface NewProduct {
     };
 }
 interface NewProductBody {
-    code_document: string;
-    old_barcode_product: string;
-    new_barcode_product: string;
-    new_name_product: string;
-    old_name_product: string;
-    new_quantity_product: number;
-    new_price_product: number;
-    new_date_in_product: string;
-    new_status_product: string;
-    condition: string;
-    new_category_product: string;
-    new_tag_product: string;
-    deskripsi: string;
+    code_document: string | undefined;
+    old_barcode_product: string | undefined;
+    new_barcode_product: string | undefined;
+    new_name_product: string | undefined;
+    old_name_product: string | undefined;
+    new_quantity_product: number | undefined;
+    new_price_product: number | undefined;
+    new_date_in_product: string | undefined;
+    new_status_product: string | undefined;
+    condition: string | undefined;
+    new_category_product: string | undefined;
+    new_tag_product: string | undefined;
+    deskripsi: string | undefined;
 }
 
 interface ColorTagItem {
@@ -314,6 +314,93 @@ interface ColorTag {
         };
     };
 }
+interface CheckAllProducts {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            code_document: string;
+            total_data: string;
+            total_data_in: number;
+            total_data_lolos: number;
+            total_data_damaged: number;
+            total_data_abnormal: number;
+            total_discrepancy: number;
+            precentage_total_data: number;
+            percentage_in: number;
+            percentage_lolos: number;
+            percentage_damaged: number;
+            percentage_abnormal: number;
+            percentage_discrepancy: number;
+            updated_at: string;
+            created_at: string;
+            id: number;
+        };
+    };
+}
+interface GetRiwayatcheckItem {
+    id: number;
+    code_document: string;
+    total_data: string;
+    total_data_in: string;
+    total_data_lolos: string;
+    total_data_damaged: string;
+    total_data_abnormal: string;
+    total_discrepancy: string;
+    precentage_total_data: string;
+    percentage_in: string;
+    percentage_lolos: string;
+    percentage_damaged: string;
+    percentage_abnormal: string;
+    percentage_discrepancy: string;
+    created_at: string;
+    updated_at: string;
+}
+interface DetailGetRiwayatcheck {
+    data: {
+        status: boolean;
+        message: string;
+        resource: GetRiwayatcheckItem;
+    };
+}
+interface GetRiwayatcheck {
+    data: {
+        status: true;
+        message: 'list riwayat';
+        resource: {
+            current_page: number;
+            data: GetRiwayatcheckItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: [
+                {
+                    url: string | null;
+                    label: string;
+                    active: boolean;
+                },
+                {
+                    url: string;
+                    label: string;
+                    active: boolean;
+                },
+                {
+                    url: string | null;
+                    label: 'Next &raquo;';
+                    active: boolean;
+                }
+            ];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -333,4 +420,8 @@ export type {
     ColorTag,
     ColorTagItem,
     GetCategoriesItem,
+    CheckAllProducts,
+    GetRiwayatcheck,
+    GetRiwayatcheckItem,
+    DetailGetRiwayatcheck,
 };
