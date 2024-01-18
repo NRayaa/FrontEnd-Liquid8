@@ -15,7 +15,10 @@ export const productNewApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        detailProductNew: builder.query<DeleteNewProductResponse, number | undefined | string>({
+            query: (id) => `new_products/${id}`,
+        }),
     }),
 });
 
-export const { useGetAllProductNewQuery, useDeleteProductNewMutation } = productNewApi;
+export const { useGetAllProductNewQuery, useDeleteProductNewMutation, useDetailProductNewQuery } = productNewApi;

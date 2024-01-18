@@ -459,4 +459,5 @@ export type {
     GetAllNewProduct,
     NewProductItem,
     DeleteNewProductResponse,
+    
 };
