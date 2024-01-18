@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
+import { DataTable } from 'mantine-datatable';
+import { useDeleteProductNewMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
+import { NewProductItem } from '../../../store/services/types';
+import { formatDate } from '../../../helper/functions';
 
 const Product = () => {
+    const [page, setPage] = useState<number>(1);
+    const { data, refetch } = useGetAllProductNewQuery(page);
+    const [deleteProductNew, results] = useDeleteProductNewMutation();
+
+    const productNewData = useMemo(() => {
+        return data?.data.resource.data;
+    }, [data]);
+
+    const handleDeleteProductNew = async (id: number) => {
+        try {
+            await deleteProductNew(id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            refetch();
+        }
+    }, [results]);
+
     return (
         <>
             <BreadCrumbs base="Storage" basePath="storage/product" current="Produk" />
@@ -28,59 +54,71 @@ const Product = () => {
                     </button>
                 </div>
                 <div className="datatables">
-                    <table className="panel w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    No
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Barcode LQD
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Nama Produk
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Kategori
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Total Masuk
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Status
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                <td className="px-6 py-4">1</td>
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    LQDFSH001
-                                </th>
-                                <td className="px-6 py-4">Setelan Baju Adat</td>
-                                <td className="px-6 py-4">Fashion</td>
-                                <td className="px-6 py-4">Rp 105.000,-</td>
-                                <td className="px-6 py-4">
-                                    <button disabled type="button" className="rounded-xl btn-sm px-4 bg-[#2EFF43] uppercase text-white">
-                                        Display
+                    <DataTable
+                        records={productNewData}
+                        columns={[
+                            {
+                                accessor: 'No',
+                                title: 'No',
+                                render: (item: NewProductItem, index: number) => <span>{index + 1}</span>,
+                            },
+                            {
+                                accessor: 'new barcode product',
+                                title: 'NEW BARCODE',
+                                render: (item: NewProductItem) => <span className="font-semibold">{item.new_barcode_product}</span>,
+                            },
+                            {
+                                accessor: 'old barcode product',
+                                title: 'OLD BARCODE',
+                                render: (item: NewProductItem) => <span className="font-semibold">{item.old_barcode_product}</span>,
+                            },
+                            {
+                                accessor: 'New Category Product',
+                                title: 'NEW CATEGORY',
+                                render: (item: NewProductItem) => <span className="font-semibold">{item.new_category_product}</span>,
+                            },
+                            {
+                                accessor: 'New Price Product',
+                                title: 'NEW PRICE',
+                                render: (item: NewProductItem) => <span className="font-semibold">{item.new_price_product}</span>,
+                            },
+                            {
+                                accessor: 'new date in product',
+                                title: 'NEW DATE',
+                                render: (item: NewProductItem) => <span className="font-semibold">{formatDate(item.new_date_in_product)}</span>,
+                            },
+                            {
+                                accessor: 'status_document',
+                                title: 'Status',
+                                render: (item) => (
+                                    <button type="button" className="rounded-xl btn-sm px-4 bg-[#2EFF43] uppercase text-white">
+                                        {item.new_status_product}
                                     </button>
-                                </td>
-                                <td className="px-6 py-4 flex items-center space-x-2">
-                                    <Link to="/storage/product/1">
-                                        <button type="button" className="btn btn-outline-primary">
-                                            Detail
+                                ),
+                            },
+                            {
+                                accessor: 'Aksi',
+                                title: 'Aksi',
+                                render: (item: NewProductItem) => (
+                                    <div className="flex items-center w-max mx-auto gap-6">
+                                        <Link to={`/inbound/check_history/${item.id}`}>
+                                            <button type="button" className="btn btn-outline-info">
+                                                Detail
+                                            </button>
+                                        </Link>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductNew(item.id)}>
+                                            Delete
                                         </button>
-                                    </Link>
-                                    <button type="button" className="btn btn-outline-danger">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </div>
+                                ),
+                                textAlignment: 'center',
+                            },
+                        ]}
+                        totalRecords={data?.data.resource.total ?? 0}
+                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
+                    />
                 </div>
             </div>
         </>

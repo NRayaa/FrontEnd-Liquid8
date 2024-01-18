@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../../components';
 import { DataTable } from 'mantine-datatable';
 import { useDeleteColorTagMutation, useGetAllColorTagQuery, useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
@@ -11,7 +11,7 @@ const TagWarna = () => {
     const [page, setPage] = useState<number>(1);
     const { data, refetch } = useGetAllColorTagQuery(page);
     const [deleteColorTag, deleteResults] = useDeleteColorTagMutation();
-    const [updateColorTag, updateResults] = useUpdateColorTagMutation();
+    // const [updateColorTag, updateResults] = useUpdateColorTagMutation();
 
     const dataColorTag = useMemo(() => {
         return data?.data.resource.data;
@@ -109,6 +109,10 @@ const TagWarna = () => {
                                 textAlignment: 'center',
                             },
                         ]}
+                        totalRecords={data?.data.resource.total ?? 0}
+                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>

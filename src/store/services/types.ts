@@ -128,21 +128,20 @@ interface CheckProductDocument {
         status: boolean;
         message: string;
         resource: {
-            per_page: number;
             current_page: number;
             data: CheckProductDocumentItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: CheckProductDocumentLinks[];
+            next_page_url: null;
+            path: string;
+            per_page: number;
+            prev_page_url: null;
+            to: number;
+            total: number;
         };
-        first_page_url: string;
-        from: number;
-        last_page: number;
-        last_page_url: string;
-        links: CheckProductDocumentLinks[];
-        next_page_url: null;
-        path: string;
-        per_page: number;
-        prev_page_url: null;
-        to: number;
-        total: number;
     };
 }
 
@@ -363,6 +362,11 @@ interface DetailGetRiwayatcheck {
         resource: GetRiwayatcheckItem;
     };
 }
+interface Links {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
 interface GetRiwayatcheck {
     data: {
         status: true;
@@ -374,23 +378,7 @@ interface GetRiwayatcheck {
             from: number;
             last_page: number;
             last_page_url: string;
-            links: [
-                {
-                    url: string | null;
-                    label: string;
-                    active: boolean;
-                },
-                {
-                    url: string;
-                    label: string;
-                    active: boolean;
-                },
-                {
-                    url: string | null;
-                    label: 'Next &raquo;';
-                    active: boolean;
-                }
-            ];
+            links: Links[];
             next_page_url: null | string;
             path: string;
             per_page: number;
@@ -398,6 +386,50 @@ interface GetRiwayatcheck {
             to: number;
             total: number;
         };
+    };
+}
+interface NewProductItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: null | string;
+    created_at: string;
+    updated_at: string;
+}
+interface GetAllNewProduct {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: NewProductItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface DeleteNewProductResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: NewProductItem;
     };
 }
 
@@ -424,4 +456,7 @@ export type {
     GetRiwayatcheck,
     GetRiwayatcheckItem,
     DetailGetRiwayatcheck,
+    GetAllNewProduct,
+    NewProductItem,
+    DeleteNewProductResponse,
 };

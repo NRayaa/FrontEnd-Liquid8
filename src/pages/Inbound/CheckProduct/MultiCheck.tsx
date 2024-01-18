@@ -9,6 +9,7 @@ import BarcodeData from './BarcodeData';
 import TagColorData from './TagColorData';
 import ProductCheck from './ProductCheck';
 import { useCheckAllDocumentMutation } from '../../../store/services/riwayatApi';
+import NewBarcodeData from './NewBarcodeData';
 
 const MultiCheck = () => {
     const { state } = useLocation();
@@ -17,6 +18,8 @@ const MultiCheck = () => {
     const [isResetValue, setIsResetValue] = useState<boolean>(true);
     const [checkAllDocument, checkResults] = useCheckAllDocumentMutation();
     const navigate = useNavigate();
+    const [newPricePercentage, setNewPricePercentage] = useState<string>('0');
+    const [percentageState, setPercentageState] = useState<string>('0');
 
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
@@ -32,6 +35,8 @@ const MultiCheck = () => {
     };
 
     const resetValueMultiCheck = () => {
+        setNewPricePercentage('0');
+        setPercentageState('0');
         setIsResetValue(true);
     };
     const resetProductCheckShow = () => {
@@ -42,9 +47,9 @@ const MultiCheck = () => {
         if (results.isSuccess) {
             setIsProductCheck(true);
             if (Array.isArray(results.data?.data.resource)) {
-                setKeterangan('50K>');
+                setKeterangan('<100K');
             } else {
-                setKeterangan('100K<');
+                setKeterangan('>100K');
             }
             setInputBarcode('');
         }
@@ -64,6 +69,12 @@ const MultiCheck = () => {
         }
     }, [results]);
 
+    const newPrice = useMemo(() => {
+        if (!Array.isArray(results.data?.data.resource)) {
+            return results.data?.data.resource.old_price_product;
+        }
+    }, [results]);
+
     const handleCheckDoneAll = async () => {
         const resAlert = await Swal.fire({
             title: 'Yakin akan melakukan pengecekan semuanya?',
@@ -79,6 +90,19 @@ const MultiCheck = () => {
             await checkAllDocument(body);
         }
     };
+
+    const countPercentage = (percentage: string) => {
+        setPercentageState(percentage);
+    };
+
+    useEffect(() => {
+        const percentageInt = parseInt(percentageState);
+        const newPriceInt = Math.floor(parseInt(newPrice ?? '0'));
+
+        const result = (newPriceInt * percentageInt) / 100;
+
+        setNewPricePercentage(JSON.stringify(result));
+    }, [percentageState]);
 
     useEffect(() => {
         if (checkResults.isSuccess) {
@@ -136,11 +160,11 @@ const MultiCheck = () => {
                                 qty={!isResetValue ? oldData?.old_quantity_product : ''}
                             />
                             {!tagColor || tagColor === undefined ? (
-                                <BarcodeData
+                                <NewBarcodeData
                                     header="NEW DATA"
                                     barcode={!isResetValue ? oldData?.old_barcode_product : ''}
                                     nama={!isResetValue ? oldData?.old_name_product : ''}
-                                    harga={!isResetValue ? oldData?.old_price_product : ''}
+                                    newPrice={!isResetValue ? newPricePercentage : ''}
                                     qty={!isResetValue ? oldData?.old_quantity_product : ''}
                                 />
                             ) : (
@@ -157,7 +181,16 @@ const MultiCheck = () => {
                         </button>
                     </div>
                 </div>
-                {isProductCheck && <ProductCheck oldData={oldData} tagColor={tagColor} resetValueMultiCheck={resetValueMultiCheck} resetProductCheckShow={resetProductCheckShow} />}
+                {isProductCheck && (
+                    <ProductCheck
+                        oldData={oldData}
+                        tagColor={tagColor}
+                        resetValueMultiCheck={resetValueMultiCheck}
+                        resetProductCheckShow={resetProductCheckShow}
+                        countPercentage={countPercentage}
+                        newPricePercentage={newPricePercentage}
+                    />
+                )}
             </div>
         </div>
     );

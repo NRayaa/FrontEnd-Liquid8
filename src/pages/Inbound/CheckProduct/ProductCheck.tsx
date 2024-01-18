@@ -26,9 +26,11 @@ interface ProductCheck {
     };
     resetValueMultiCheck: () => void;
     resetProductCheckShow: () => void;
+    countPercentage: (percentage: string) => void;
+    newPricePercentage: string;
 }
 
-const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMultiCheck, resetProductCheckShow }) => {
+const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMultiCheck, resetProductCheckShow, countPercentage, newPricePercentage }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
     const [newProduct, results] = useNewProductMutation();
 
@@ -43,12 +45,12 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
     }, [data]);
 
     const newPrice = useMemo(() => {
-        if (!tagColor) {
-            return oldData.old_price_product;
-        } else {
+        if (tagColor) {
             return tagColor.fixed_price_color;
+        } else {
+            return newPricePercentage;
         }
-    }, [tagColor]);
+    }, [tagColor, newPricePercentage]);
 
     const newDateProduct = useMemo(() => {
         if (!tagColor) {
@@ -125,6 +127,11 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
         }
     };
 
+    const handleSelectedLolosOption = ({ value, percentage }: { value: string; percentage: string }) => {
+        setSelectedOption(value);
+        countPercentage(percentage);
+    };
+
     useEffect(() => {
         if (results.isSuccess) {
             resetValueMultiCheck();
@@ -179,17 +186,18 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                                     productCheckData?.map((option) => (
                                         <label key={option.id} className="flex items-center mt-1 cursor-pointer">
                                             <input
+                                                disabled={tagColor && true}
                                                 type="radio"
                                                 className="form-radio text-success peer w-6 h-6"
                                                 name="radioOption"
                                                 value={option.name_category}
-                                                onChange={(e) => setSelectedOption(e.target.value)}
+                                                onChange={(e) => handleSelectedLolosOption({ value: e.target.value, percentage: option.discount_category })}
                                             />
                                             <span className="text-white-dark">{option.name_category}</span>
                                         </label>
                                     ))}
 
-                                <button disabled={selectedOption.length === 0} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
+                                <button disabled={false} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
                                     SEND
                                 </button>
                             </div>
