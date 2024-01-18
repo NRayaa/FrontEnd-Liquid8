@@ -13,8 +13,8 @@ export const riwayatApi = createApi({
                 body,
             }),
         }),
-        getRiwayatChecks: builder.query<GetRiwayatcheck, undefined>({
-            query: () => '/historys',
+        getRiwayatChecks: builder.query<GetRiwayatcheck, number>({
+            query: (page) => `/historys?page=${page}`,
         }),
         getDetailRiwayatCheck: builder.query<DetailGetRiwayatcheck, number | undefined | string>({
             query: (id) => `/historys/${id}`,

@@ -12,13 +12,13 @@ import { formatRupiah } from '../../../helper/functions';
 const DetailListData = () => {
     const { state } = useLocation();
 
-    const { data } = useDetailProductOldQuery(state.codeDocument);
+    const [page, setPage] = useState<number>(1);
+    const { data } = useDetailProductOldQuery({ codeDocument: state.codeDocument, page });
 
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Detail List'));
     });
-    const [page, setPage] = useState(1);
 
     const detailProductOlds = useMemo(() => {
         if (data?.data.resource !== null) {
@@ -118,10 +118,10 @@ const DetailListData = () => {
                                     render: (item) => <span>{formatRupiah(item.old_price_product)}</span>,
                                 },
                             ]}
-                            totalRecords={detailProductOlds?.length ?? 0}
-                            recordsPerPage={data?.data.resource.per_page ?? 0}
-                            page={data?.data.resource.current_page ?? 0}
-                            onPageChange={() => setPage((prevPage) => prevPage + 1)}
+                            totalRecords={data?.data.resource.total ?? 0}
+                            recordsPerPage={data?.data.resource.per_page ?? 10}
+                            page={page}
+                            onPageChange={(prevPage) => setPage(prevPage)}
                         />
                     )}
                 </div>

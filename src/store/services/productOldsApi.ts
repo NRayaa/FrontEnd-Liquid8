@@ -9,8 +9,8 @@ export const productOldsApi = createApi({
         productOlds: builder.query<ProductOlds | undefined, number>({
             query: (page) => `/product_olds?page=${page}`,
         }),
-        detailProductOld: builder.query<DetailProductOld, string>({
-            query: (codeDocument) => `/product_olds-search?search=${codeDocument}`,
+        detailProductOld: builder.query<DetailProductOld, { codeDocument: string; page: number }>({
+            query: ({ codeDocument, page }) => `/product_olds-search?search=${codeDocument}&page=${page}`,
         }),
     }),
 });

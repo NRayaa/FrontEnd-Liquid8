@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useGetRiwayatChecksQuery } from '../../../store/services/riwayatApi';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { GetRiwayatcheckItem } from '../../../store/services/types';
 import { formatDate } from '../../../helper/functions';
 
 const CheckHistory = () => {
-    const { data, refetch, isSuccess } = useGetRiwayatChecksQuery(undefined);
+    const [page, setPage] = useState<number>(1);
+    const { data, refetch, isSuccess } = useGetRiwayatChecksQuery(page);
 
     const riwayatCheckData = useMemo(() => {
         if (data?.data.status && isSuccess) {
@@ -76,6 +77,10 @@ const CheckHistory = () => {
                         textAlignment: 'center',
                     },
                 ]}
+                totalRecords={data?.data.resource.total ?? 0}
+                recordsPerPage={data?.data.resource.per_page ?? 10}
+                page={page}
+                onPageChange={(prevPage) => setPage(prevPage)}
             />
         </div>
     );

@@ -1,18 +1,19 @@
 import React, { useMemo } from 'react';
 import { formatRupiah } from '../../../helper/functions';
 
-interface BarcodeData {
+interface NewBarcodeData {
     barcode: string;
     nama: string;
-    harga: string;
+    newPrice: string;
     qty: string;
     header: string;
 }
 
-const BarcodeData: React.FC<BarcodeData> = ({ barcode, nama, harga, qty, header }) => {
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header }) => {
     const price = useMemo(() => {
-        return formatRupiah(harga);
-    }, [harga]);
+        return formatRupiah(newPrice);
+    }, [newPrice]);
+
     return (
         <div className="flex flex-col gap-4">
             <h1 className="flex justify-center text-lg font-bold">{header}</h1>
@@ -36,4 +37,4 @@ const BarcodeData: React.FC<BarcodeData> = ({ barcode, nama, harga, qty, header 
     );
 };
 
-export default BarcodeData;
+export default NewBarcodeData;
