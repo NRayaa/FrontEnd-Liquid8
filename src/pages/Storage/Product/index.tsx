@@ -101,7 +101,7 @@ const Product = () => {
                                 title: 'Aksi',
                                 render: (item: NewProductItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_history/${item.id}`}>
+                                        <Link to={`/storage/product/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
