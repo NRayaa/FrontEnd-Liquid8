@@ -34,6 +34,12 @@ const Product = () => {
             <BreadCrumbs base="Storage" basePath="storage/product" current="Produk" />
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product</h5>
+                {/* <input
+                        id="ctnFile"
+                        type="file"
+                        className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file-ml-5 w-72 file:text-white file:hover:bg-primary"
+                        required
+                    /> */}
                 <div className="relative w-[220px] ms-auto mb-4">
                     <input
                         type="text"
@@ -69,8 +75,8 @@ const Product = () => {
                             },
                             {
                                 accessor: 'old barcode product',
-                                title: 'OLD BARCODE',
-                                render: (item: NewProductItem) => <span className="font-semibold">{item.old_barcode_product}</span>,
+                                title: 'PRODUCT NAME',
+                                render: (item: NewProductItem) => <span className="font-semibold">{item.new_name_product}</span>,
                             },
                             {
                                 accessor: 'New Category Product',
