@@ -1,4 +1,6 @@
 import { lazy } from 'react';
+import Kasir from '../pages/Outbound/Sale/Kasir';
+import ListKasir from '../pages/Outbound/Sale/ListKasir';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -27,6 +29,12 @@ const DetailBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundlePr
 const PromoProduct = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct'));
 const CreatePromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/CreatePromo'));
 const DetailPromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/DetailPromo'));
+const ListProductRepair = lazy(() => import('../pages/RepairStation/ListProductRepair/ListProductRepair'));
+const RepairProduct = lazy(() => import('../pages/RepairStation/ListProductRepair/RepairProduct'));
+const ListDump = lazy(() => import('../pages/RepairStation/ListDump/ListDump'));
+const Migrate = lazy(() => import('../pages/Outbound/Migrate/Migrate'));
+const ListMigrate = lazy(() => import('../pages/Outbound/Migrate/ListMigrate'));
+const DetailMigrate = lazy(() => import('../pages/Outbound/Migrate/DetailMigrate'));
 
 const routes = [
     // dashboard
@@ -174,6 +182,48 @@ const routes = [
     {
         path: '/storage/pallet/create_pallet/manual',
         element: <PalletManual />,
+        layout: 'default',
+    },
+    // Repair Station
+    {
+        path: '/repair_station/list_product_repair',
+        element: <ListProductRepair />,
+        layout: 'default',
+    },
+    {
+        path: '/repair_station/list_repair_product/repair_product',
+        element: <RepairProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/repair_station/list_dump',
+        element: <ListDump />,
+        layout: 'default',
+    },
+    // Outbound
+    {
+        path: '/outbound/migrate/migrate',
+        element: <Migrate />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/migrate/list_migrate',
+        element: <ListMigrate />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/migrate/list_migrate/detail_migrate',
+        element: <DetailMigrate />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/sale/kasir',
+        element: <Kasir />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/sale/list_kasir',
+        element: <ListKasir />,
         layout: 'default',
     },
 ];

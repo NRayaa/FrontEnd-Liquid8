@@ -2,12 +2,13 @@ import React from 'react';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
-import { setPageTitle } from '../../../../store/themeConfigSlice';
+import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { IRootState } from '../../../../store';
-import IconPlus from '../../../../components/Icon/IconPlus';
+import { IRootState } from '../../../store';
+import IconPlus from '../../../components/Icon/IconPlus';
+import IconSend from '../../../components/Icon/IconSend';
 
 const rowData = [
     {
@@ -90,10 +91,10 @@ const showAlert = async (type: number) => {
         });
     }
 };
-const DetailBundle = () => {
+const DetailMigrate = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Detail Bundle'));
+        dispatch(setPageTitle('List Data'));
     });
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -177,47 +178,40 @@ const DetailBundle = () => {
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
                     <Link to="/storage/expired_product/bundle_product">
-                        <span>Expired Product</span>
+                        <span>Migrate</span>
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Detail Bundle</span>
+                    <span>Detail Migrate</span>
                 </li>
             </ul>
             <div>
-                <h1 className="text-lg font-semibold py-4">Detail Bundle</h1>
+                <h1 className="text-lg font-semibold py-4">Detail Migrate</h1>
             </div>
             <div>
-                <form className="w-[400px] mb-4 ">
-                    {/* <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
-                    </button> */}
-                    <div className="flex items-center justify-between ">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Barcode Bundle :
-                        </label>
-                        <input id="categoryName" disabled type="text" value="LQDF5H012" className=" form-input w-[250px]" required />
+            <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
+                        <div className="bg-primary absolute mt-2 text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
+                            <IconSend fill className="w-12 h-12" />
+                        </div>
+                        <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">DOC MIGRATE :</div>
+                                <div className="whitespace-nowrap">LQDF5H012</div>
+                            </div>
+                            <div className=" items-center text-lg w-full justify-between mb-2">
+                                <div className="text-white-dark">QTY :</div>
+                                <ul className="space-y-3 list-inside list-disc font-semibold">1</ul>
+                            </div>
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">PRICE TOTAL :</div>
+                                <div className="whitespace-nowrap">Rp.150.000</div>
+                            </div>
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">DESTINATION :</div>
+                                <div className="whitespace-nowrap">Jakarta</div>
+                            </div>
+                        </div>
                     </div>
-                    <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
-                    <div className="flex items-center justify-between mb-2 mt-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Bundle :
-                        </label>
-                        <input id="categoryName" disabled type="text" value="Bandle Otomotif" className=" form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Total Awal :
-                        </label>
-                        <input id="categoryName" disabled type="text" value="Rp. 100.000" placeholder="Rp" className=" form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Custom Display :
-                        </label>
-                        <input id="categoryName" disabled type="text" value="Rp. 50.000" placeholder="Rp" className=" form-input w-[250px]" required />
-                    </div>
-                </form>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -276,4 +270,4 @@ const DetailBundle = () => {
     );
 };
 
-export default DetailBundle;
+export default DetailMigrate;
