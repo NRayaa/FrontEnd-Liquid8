@@ -234,7 +234,7 @@ const ListMigrate = () => {
                         records={recordsData}
                         columns={[
                             { accessor: 'id', title: 'NO', sortable: true },
-                            { accessor: 'barcode', title: 'DOCUMENT MIGRATE', sortable: true },
+                            { accessor: 'barcode', title: 'DOC MIGRATE', sortable: true },
                             { accessor: 'dob', title: 'DATE', sortable: true },
                             { accessor: 'qty', title: 'QTY', sortable: true },
                             // { accessor: 'dob', title: 'Tanggal', sortable: true },

@@ -225,9 +225,9 @@ const DetailMigrate = () => {
                             records={recordsData}
                             columns={[
                                 { accessor: 'id', title: 'No', sortable: true },
-                                { accessor: 'barcode', title: 'Barcode LQD', sortable: true },
-                                { accessor: 'firstName', title: 'Nama Produk', sortable: true },
-                                { accessor: 'QTY', title: 'QTY', sortable: true },
+                                { accessor: 'category', title: 'DESC DOCUMENT', sortable: true },
+                                { accessor: 'barcode', title: 'BARCODE/TAG', sortable: true },
+                                // { accessor: 'QTY', title: 'QTY', sortable: true },
                                 { accessor: 'totalMasuk', title: 'Harga', sortable: true },
                                 // {
                                 //     accessor: 'action',

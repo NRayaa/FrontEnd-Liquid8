@@ -3,7 +3,64 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconSend from '../../../components/Icon/IconSend';
+import Swal from 'sweetalert2';
 
+const showAlert = async (type: number) => {
+    if (type === 11) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-secondary',
+                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                popup: 'sweet-alerts',
+            },
+            buttonsStyling: false,
+        });
+        swalWithBootstrapButtons
+            .fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                padding: '2em',
+            })
+            .then((result) => {
+                if (result.value) {
+                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                }
+            });
+    }
+    if (type === 15) {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: 'success',
+            title: 'Berhasil Ditambah',
+            padding: '10px 20px',
+        });
+    }
+    if (type == 20) {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: 'success',
+            title: 'Data Berhasil Ditambah',
+            padding: '10px 20px',
+        });
+    }
+};
 const Migrate = () => {
     const navigate = useNavigate();
     return (
@@ -85,7 +142,7 @@ const Migrate = () => {
                                     <td className="px-6 py-4">Baju Fashion</td>
                                     <td className="px-6 py-4">Rp 5.000.000,-</td>
                                     <td className="px-6 py-4 flex items-center space-x-2">
-                                        <button type="button" className="btn btn-outline-primary">
+                                        <button type="button" className="btn btn-outline-primary" onClick= {()=> (showAlert(15))}>
                                             ADD
                                         </button>
                                     </td>
@@ -132,7 +189,7 @@ const Migrate = () => {
                                     <td className="px-6 py-4">Baju Fashion</td>
                                     <td className="px-6 py-4">Rp 5.000.000,-</td>
                                     <td className="px-6 py-4 flex items-center space-x-2">
-                                        <button type="button" className="btn btn-outline-danger">
+                                        <button type="button" className="btn btn-outline-danger" onClick= {()=> (showAlert(11))}>
                                             DELETE
                                         </button>
                                     </td>

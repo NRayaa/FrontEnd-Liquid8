@@ -58,7 +58,7 @@ const rowData = [
     },
     {
         id: 3,
-        firstName: 'Celeste',
+        firstName: 'Batu',
         lastName: 'Grant',
         category: 'Accessories',
         barcode: 'LQDF6L020',

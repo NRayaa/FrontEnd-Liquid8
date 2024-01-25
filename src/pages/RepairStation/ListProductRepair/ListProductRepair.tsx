@@ -18,6 +18,7 @@ const rowData = [
         email: 'carolinejensen@zidant.com',
         dob: '2004-05-28',
         status: 'Broken',
+        qty: '1',
         address: {
             street: '529 Scholes Street',
             city: 'Temperanceville',
@@ -42,6 +43,7 @@ const rowData = [
         email: 'celestegrant@polarax.com',
         dob: '2023-07-21',
         status: 'Maintenance',
+        qty: '1',
         address: {
             street: '639 Kimball Street',
             city: 'Bascom',
@@ -66,6 +68,7 @@ const rowData = [
         email: 'celestegrant@polarax.com',
         dob: '2006-12-12',
         status: 'Fixed',
+        qty: '2',
         address: {
             street: '639 Kimball Street',
             city: 'Bascom',
@@ -176,6 +179,7 @@ const ListProductRepair = () => {
                     item.category.toLowerCase().includes(search.toLowerCase()) ||
                     item.totalMasuk.toLowerCase().includes(search.toLowerCase()) ||
                     item.barcode.toLowerCase().includes(search.toLowerCase()) ||
+                    item.qty.toLowerCase().includes(search.toLowerCase()) ||
                     item.phone.toLowerCase().includes(search.toLowerCase())
                 );
             });
@@ -233,7 +237,7 @@ const ListProductRepair = () => {
                             { accessor: 'id', title: 'NO', sortable: true },
                             { accessor: 'barcode', title: 'CODE DOCUMENT', sortable: true },
                             { accessor: 'dob', title: 'DATE IN', sortable: true },
-                            { accessor: 'category', title: 'QTY', sortable: true },
+                            { accessor: 'qty', title: 'QTY', sortable: true },
                             // { accessor: 'dob', title: 'Tanggal', sortable: true },
                             // { accessor: 'totalMasuk', title: 'Total Masuk', sortable: true },
                             {
