@@ -8,6 +8,7 @@ import { categoriesApi } from './services/categoriesApi';
 import { colorTagApi } from './services/colorTagApi';
 import { riwayatApi } from './services/riwayatApi';
 import { productNewApi } from './services/productNewApi';
+import { bundleProductApi } from './services/bundleProductApi';
 
 const rootReducer = combineReducers({
     themeConfig: themeConfigSlice,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     [colorTagApi.reducerPath]: colorTagApi.reducer,
     [riwayatApi.reducerPath]: riwayatApi.reducer,
     [productNewApi.reducerPath]: productNewApi.reducer,
+    [bundleProductApi.reducerPath]: bundleProductApi.reducer,
 });
 
 export default configureStore({
@@ -32,7 +34,8 @@ export default configureStore({
             .concat(categoriesApi.middleware)
             .concat(colorTagApi.middleware)
             .concat(riwayatApi.middleware)
-            .concat(productNewApi.middleware),
+            .concat(productNewApi.middleware)
+            .concat(bundleProductApi.middleware),
 });
 
 export type IRootState = ReturnType<typeof rootReducer>;

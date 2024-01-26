@@ -432,6 +432,174 @@ interface DeleteNewProductResponse {
         resource: NewProductItem;
     };
 }
+interface ProductExpiredItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: null | string;
+    new_name_product: null | string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: null | string;
+    new_tag_product: null | string;
+    created_at: string;
+    updated_at: string;
+}
+interface ProductExpired {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: ProductExpiredItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface DetailExpiredProduct {
+    data: {
+        status: boolean;
+        message: string;
+        resource: ProductExpiredItem;
+    };
+}
+interface BundleSubItem {
+    id: number;
+    bundle_id: string;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: null | string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
+interface BundleItem {
+    id: number;
+    name_bundle: string;
+    total_price_bundle: string;
+    total_price_custom_bundle: string;
+    total_product_bundle: string;
+    barcode_bundle: string;
+    created_at: string;
+    updated_at: string;
+    product_bundles: BundleSubItem[];
+}
+interface BundleResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: BundleItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface DetailBundleResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            name_bundle: string;
+            total_price_bundle: string;
+            total_price_custom_bundle: string;
+            total_product_bundle: string;
+            barcode_bundle: string;
+            created_at: string;
+            updated_at: string;
+        };
+    };
+}
+interface DeleteBundleResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: null;
+    };
+}
+interface FilterProduct {
+    status: boolean;
+    message: string;
+    resource: ProductExpiredItem;
+}
+interface GetFilterProductBundles {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            total_new_price: string;
+            data: {
+                current_page: number;
+                data: ProductExpiredItem[];
+                first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: null | string;
+                path: string;
+                per_page: number;
+                prev_page_url: null | string;
+                to: number;
+                total: number;
+            };
+        };
+    };
+}
+interface CreateBundle {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            name_bundle: string;
+            total_price_bundle: string;
+            total_price_custom_bundle: string;
+            total_product_bundle: string;
+            barcode_bundle: string;
+            updated_at: string;
+            created_at: string;
+            id: number;
+        };
+    };
+}
+interface CreateBundleBody {
+    name_bundle: string;
+    total_price_bundle: number;
+    total_price_custom_bundle: number;
+    total_product_bundle: number;
+    barcode_bundle: string;
+}
 
 export type {
     UserDataItem,
@@ -459,5 +627,15 @@ export type {
     GetAllNewProduct,
     NewProductItem,
     DeleteNewProductResponse,
-    
+    ProductExpired,
+    DetailExpiredProduct,
+    ProductExpiredItem,
+    BundleItem,
+    BundleResponse,
+    DetailBundleResponse,
+    DeleteBundleResponse,
+    FilterProduct,
+    GetFilterProductBundles,
+    CreateBundle,
+    CreateBundleBody,
 };

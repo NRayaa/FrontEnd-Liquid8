@@ -1,172 +1,106 @@
-import React from 'react';
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
-import sortBy from 'lodash/sortBy';
-import { setPageTitle } from '../../../../store/themeConfigSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { IRootState } from '../../../../store';
-import IconPlus from '../../../../components/Icon/IconPlus';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { DataTable } from 'mantine-datatable';
+import { Link, useNavigate } from 'react-router-dom';
+import { useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
+import { ProductExpiredItem } from '../../../../store/services/types';
+import { formatRupiah, generateRandomString } from '../../../../helper/functions';
+import {
+    useCreateBundleMutation,
+    useDeleteFilterProductBundlesMutation,
+    useFilterProductBundleMutation,
+    useGetBundleProductsQuery,
+    useGetFilterProductBundlesQuery,
+} from '../../../../store/services/bundleProductApi';
 
-const rowData = [
-    {
-        id: 1,
-        firstName: 'Caroline',
-        lastName: 'Jensen',
-        category: 'Fashion',
-        barcode: 'LQDF5H012',
-        totalMasuk: '105.000',
-        email: 'carolinejensen@zidant.com',
-        status: 'Expired',
-        QTY: '12',
-    },
-    {
-        id: 2,
-        firstName: 'Celeste',
-        lastName: 'Grant',
-        category: 'Otomotif',
-        barcode: 'LQDF5H013',
-        totalMasuk: '203.000',
-        email: 'celestegrant@polarax.com',
-        dob: '1989-11-19',
-        status: 'Expired',
-        QTY: '34',
-    },
-];
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-    if (type === 15) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Berhasil Dikirim',
-            padding: '10px 20px',
-        });
-    }
-    if (type == 20) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Data Berhasil Ditambah',
-            padding: '10px 20px',
-        });
-    }
-};
 const CreateBundle = () => {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setPageTitle('Create Bundle'));
-    });
-    const [page, setPage] = useState(1);
-    const PAGE_SIZES = [10, 20, 30, 50, 100];
-    const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'firstName'));
-    const [recordsData, setRecordsData] = useState(initialRecords);
+    const [leftTablePage, setLeftTablePage] = useState<number>(1);
+    const [rightTablePage, setRightTablePage] = useState<number>(1);
+    const { data, isSuccess, refetch } = useGetExpiredProductsQuery(leftTablePage);
+    const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
+    const [filterProductBundle, results] = useFilterProductBundleMutation();
+    const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
+    const [createBundle, resultsCreateBundle] = useCreateBundleMutation();
+    const navigate = useNavigate();
+    const bundleLists = useGetBundleProductsQuery(1);
 
-    const [search, setSearch] = useState('');
-    const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-        columnAccessor: 'id',
-        direction: 'asc',
-    });
+    const [nameBundle, setNameBundle] = useState<string>('');
+    const [totalPrice, setTotalPrice] = useState<string>('');
+    const [customPrice, setCustomPrice] = useState<string>('');
+    const [totalProductBundle, setTotalProductBundle] = useState<string>('');
 
-    useEffect(() => {
-        setPage(1);
-    }, [pageSize]);
-
-    useEffect(() => {
-        const from = (page - 1) * pageSize;
-        const to = from + pageSize;
-        setRecordsData([...initialRecords.slice(from, to)]);
-    }, [page, pageSize, initialRecords]);
-
-    useEffect(() => {
-        setInitialRecords(() => {
-            return rowData.filter((item) => {
-                return (
-                    item.id.toString().includes(search.toLowerCase()) ||
-                    item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.category.toLowerCase().includes(search.toLowerCase()) ||
-                    item.totalMasuk.toLowerCase().includes(search.toLowerCase()) ||
-                    item.QTY.toLowerCase().includes(search.toLowerCase()) ||
-                    item.barcode.toLowerCase().includes(search.toLowerCase())
-                );
-            });
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
-
-    useEffect(() => {
-        const data = sortBy(initialRecords, sortStatus.columnAccessor);
-        setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-        setPage(1);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sortStatus]);
-    const formatDate = (date: string | number | Date) => {
-        if (date) {
-            const dt = new Date(date);
-            const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-            const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-            return day + '/' + month + '/' + dt.getFullYear();
+    const expiredProducts = useMemo(() => {
+        if (isSuccess) {
+            return data.data.resource.data;
         }
-        return '';
+    }, [data]);
+
+    const filterBundlesProducts = useMemo(() => {
+        if (filterBundles.isSuccess) {
+            return filterBundles.data.data.resource.data.data;
+        }
+    }, [filterBundles.data]);
+
+    const handleAddFilterBundle = async (id: number) => {
+        try {
+            await filterProductBundle(id);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
-    const [cost, setCost] = useState('');
+    const handleDeleteProductBundle = async (id: number) => {
+        try {
+            await deleteFilterProductBundles(id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-    // const handleCostChange = (e: { target: { value: any } }) => {
-    //     const inputValue = e.target.value;
-    //     let formatValue = '';
+    const handlePickedProductBundle = (item: ProductExpiredItem) => {
+        setNameBundle(item.new_name_product ?? '');
+        setTotalPrice(item.new_price_product ?? '');
+        setCustomPrice(item.new_price_product ?? '');
+        setTotalProductBundle(item.new_quantity_product ?? '');
+    };
 
-    //     // Remove non-numeric characters
-    //     const numValue = inputValue.replace(/\D/g, '');
+    const handleCreateBundle = async (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+        try {
+            const body = {
+                name_bundle: nameBundle,
+                total_price_bundle: Number(totalPrice),
+                total_price_custom_bundle: Number(customPrice),
+                total_product_bundle: Number(totalProductBundle),
+                barcode_bundle: generateRandomString(8),
+            };
 
-    //     // Format the number with 'Rp.' prefix
-    //     if (numValue !== '') {
-    //         formatValue = `Rp. ${parseInt(numValue, 10).toLocaleString('id-ID')}`;
-    //     }
+            await createBundle(body);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-    //     setCost(formatValue);
-    // };
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+    useEffect(() => {
+        if (results.isSuccess) {
+            refetch();
+            filterBundles.refetch();
+        }
+    }, [results]);
+
+    useEffect(() => {
+        if (resultsDeleteBundle.isSuccess) {
+            refetch();
+            filterBundles.refetch();
+        }
+    }, [resultsDeleteBundle]);
+
+    useEffect(() => {
+        if (resultsCreateBundle.isSuccess) {
+            bundleLists?.refetch();
+            navigate('/storage/expired_product/bundle_product');
+        }
+    }, [resultsCreateBundle]);
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -188,132 +122,101 @@ const CreateBundle = () => {
                 <h1 className="text-lg font-semibold py-4">Create Bundle</h1>
             </div>
             <div>
-                <form className="w-[400px] mb-4 ">
+                <form className="w-[400px] mb-4 " onSubmit={handleCreateBundle}>
                     <button type="submit" className="btn btn-primary mb-4 px-16">
                         Create Bundle
                     </button>
-                    <div className="flex items-center  justify-between ">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Barcode Bundle :
-                        </label>
-                        <input id="categoryName" type="text" className=" form-input w-[250px]" required />
-                    </div>
-                    <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
                     <div className="flex items-center justify-between mb-2 mt-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama Bundle :
                         </label>
-                        <input id="categoryName" type="text" className=" form-input w-[250px]" required />
+                        <input id="categoryName" type="text" className=" form-input w-[250px]" required value={nameBundle} onChange={(e) => setNameBundle(e.target.value)} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga :
                         </label>
-                        <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
+                        <input disabled id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={totalPrice} onChange={(e) => setTotalPrice(e.target.value)} />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Custom Harga :
                         </label>
-                        <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
+                        <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={customPrice} onChange={(e) => setCustomPrice(e.target.value)} />
                     </div>
                 </form>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
+                    {/* <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
+                    </div> */}
                 </div>
                 <div>
-                    <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : 16 </span>
+                    <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterBundles.data?.data.resource.data.data.length} </span>
                     <div className="grid grid-cols-5 gap-4">
                         <div className="datatables xl:col-span-3">
                             <DataTable
                                 highlightOnHover
                                 className="whitespace-nowrap table-hover "
-                                records={recordsData}
+                                records={expiredProducts}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true },
-                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true },
-                                    { accessor: 'category', title: 'Kategori', sortable: true },
-                                    { accessor: 'totalMasuk', title: 'Total Masuk', sortable: true },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
+                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
+                                    { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_category_product}</span> },
+                                    {
+                                        accessor: 'totalMasuk',
+                                        title: 'Total Masuk',
+                                        sortable: true,
+                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product)}</span>,
+                                    },
                                     {
                                         accessor: 'action',
                                         title: 'Opsi',
                                         titleClassName: '!text-center',
-                                        render: () => (
+                                        render: (item: ProductExpiredItem) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                {/* <Link to="/inbound/check_product/multi_check" >
-                                        <button type="button" className="btn btn-outline-success">
-                                            Check
-                                        </button>
-                                        </Link> */}
-                                                {/* <Link to="/storage/expired_product/detail_product/1"> */}
-                                                <button type="button" className="btn btn-outline-info">
+                                                <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterBundle(item.id)}>
                                                     Add
                                                 </button>
-                                                {/* </Link> */}
-                                                {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
-                                                UNBUNDLE
-                                            </button> */}
                                             </div>
                                         ),
                                     },
                                 ]}
-                                totalRecords={initialRecords.length}
-                                recordsPerPage={pageSize}
-                                page={page}
-                                onPageChange={(p: number) => setPage(p)}
-                                recordsPerPageOptions={PAGE_SIZES}
-                                onRecordsPerPageChange={setPageSize}
-                                sortStatus={sortStatus}
-                                onSortStatusChange={setSortStatus}
-                                minHeight={200}
-                                paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                                totalRecords={data?.data.resource.total ?? 0}
+                                recordsPerPage={data?.data.resource.per_page ?? 10}
+                                page={leftTablePage}
+                                onPageChange={(prevPage) => setLeftTablePage(prevPage)}
                             />
                         </div>
                         <div className="datatables xl:col-span-2">
                             <DataTable
                                 highlightOnHover
                                 className="whitespace-nowrap table-hover "
-                                records={recordsData}
+                                records={filterBundlesProducts}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true },
-                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
+                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
                                     {
                                         accessor: 'action',
                                         title: 'Opsi',
                                         titleClassName: '!text-center',
-                                        render: () => (
-                                            <div className="flex items-center w-max mx-auto gap-6">
-                                                {/* <Link to="/inbound/check_product/multi_check" >
-                                        <button type="button" className="btn btn-outline-success">
-                                            Check
-                                        </button>
-                                        </Link> */}
-                                                {/* <Link to="/storage/expired_product/detail_product/1">
-                                                <button type="button" className="btn btn-outline-info">
-                                                    DETAIL
+                                        render: (item: ProductExpiredItem) => (
+                                            <div className="flex items-center space-x-2">
+                                                <button type="button" className="btn btn-outline-primary" onClick={() => handlePickedProductBundle(item)}>
+                                                    Pilih
                                                 </button>
-                                            </Link> */}
-                                                <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
+                                                <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductBundle(item.id)}>
                                                     Delete
                                                 </button>
                                             </div>
                                         ),
                                     },
                                 ]}
-                                totalRecords={initialRecords.length}
-                                recordsPerPage={pageSize}
-                                page={page}
-                                onPageChange={(p: number) => setPage(p)}
-                                recordsPerPageOptions={PAGE_SIZES}
-                                onRecordsPerPageChange={setPageSize}
-                                sortStatus={sortStatus}
-                                onSortStatusChange={setSortStatus}
-                                minHeight={200}
-                                paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                                totalRecords={data?.data.resource.total ?? 0}
+                                recordsPerPage={data?.data.resource.per_page ?? 10}
+                                page={rightTablePage}
+                                onPageChange={(prevPage) => setRightTablePage(prevPage)}
                             />
                         </div>
                     </div>
