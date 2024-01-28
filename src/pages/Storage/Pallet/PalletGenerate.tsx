@@ -51,6 +51,8 @@ const PalletGenerate = () => {
             await filterPallet(item.id);
             setInput((prevState: any) => ({
                 ...prevState,
+                category: item.new_category_product,
+                totalPrice: item.new_price_product,
                 totalProduct: item.new_quantity_product,
                 barcode: item.new_barcode_product,
             }));
@@ -84,6 +86,8 @@ const PalletGenerate = () => {
     const handleSelectedItem = (item: ProdcutItem) => {
         setInput((prevState: any) => ({
             ...prevState,
+            category: item.new_category_product,
+            totalPrice: item.new_price_product,
             totalProduct: item.new_quantity_product,
             barcode: item.new_barcode_product,
         }));
@@ -125,25 +129,25 @@ const PalletGenerate = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Kategori :
                         </label>
-                        <input onChange={handleInputChange} name="category" value={input.category} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input disabled onChange={handleInputChange} name="category" value={input.category} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga:
                         </label>
-                        <input onChange={handleInputChange} name="totalPrice" value={input.totalPrice} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input disabled onChange={handleInputChange} name="totalPrice" value={formatRupiah(input.totalPrice)} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Produk:
                         </label>
-                        <input onChange={handleInputChange} name="totalProduct" value={input.totalProduct} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input disabled onChange={handleInputChange} name="totalProduct" value={input.totalProduct} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Barcode Pallet :
                         </label>
-                        <input onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
 
                     <button type="submit" className="btn btn-primary mt-4 px-16 uppercase">
