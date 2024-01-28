@@ -212,23 +212,6 @@ interface ItemDetailOldsProduct {
     updated_at: string;
 }
 
-interface Pagination {
-    first_page_url: string;
-    from: number;
-    last_page: number;
-    last_page_url: string;
-    links: {
-        url: null | string;
-        label: string;
-        active: boolean;
-    }[];
-    next_page_url: string;
-    path: string;
-    per_page: number;
-    prev_page_url: null | number;
-    to: number;
-    total: number;
-}
 interface GetCategoriesItem {
     id: number;
     name_category: string;
@@ -244,26 +227,27 @@ interface GetCategories {
         resource: GetCategoriesItem[];
     };
 }
+interface ProdcutItem {
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: number;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_category_product: string;
+    new_tag_product: string;
+    new_quality: string;
+    updated_at: string;
+    created_at: string;
+    id: number;
+}
 interface NewProduct {
     data: {
         status: boolean;
         message: string;
-        resource: {
-            code_document: string;
-            old_barcode_product: string;
-            new_barcode_product: string;
-            new_name_product: string;
-            new_quantity_product: number;
-            new_price_product: number;
-            new_date_in_product: string;
-            new_status_product: string;
-            new_category_product: string;
-            new_tag_product: string;
-            new_quality: string;
-            updated_at: string;
-            created_at: string;
-            id: number;
-        };
+        resource: ProdcutItem;
     };
 }
 interface NewProductBody {
@@ -600,6 +584,210 @@ interface CreateBundleBody {
     total_product_bundle: number;
     barcode_bundle: string;
 }
+interface PromoListItem {
+    id: number;
+    new_product_id: string;
+    name_promo: string;
+    discount_promo: string;
+    price_promo: string;
+    created_at: string;
+    updated_at: string;
+    new_product: {
+        id: number;
+        code_document: string;
+        old_barcode_product: string;
+        new_barcode_product: null | string;
+        new_name_product: null | string;
+        new_quantity_product: string;
+        new_price_product: string;
+        new_date_in_product: string;
+        new_status_product: string;
+        new_quality: string;
+        new_category_product: null | string;
+        new_tag_product: null | string;
+        created_at: string;
+        updated_at: string;
+    };
+}
+interface PromoLists {
+    data: {
+        status: true;
+        message: 'list promo';
+        resource: {
+            current_page: 1;
+            data: PromoListItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface DetailPromo {
+    data: {
+        status: boolean;
+        message: string;
+        resource: PromoListItem;
+    };
+}
+interface EditPromoBody {
+    name_promo: string;
+    discount_promo: string;
+    price_promo: string;
+}
+interface EditPromoResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            new_product_id: string;
+            name_promo: string;
+            discount_promo: string;
+            price_promo: string;
+            created_at: string;
+            updated_at: string;
+        };
+    };
+}
+interface PaletListItemArray {
+    id: number;
+    palet_id: string;
+    code_document: string;
+    old_barcode_product: null | string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: null | string;
+    new_category_product: string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
+interface PaletListItem {
+    id: number;
+    name_palet: string;
+    category_palet: string;
+    total_price_palet: string;
+    total_product_palet: string;
+    palet_barcode: string;
+    created_at: string;
+    updated_at: string;
+    palet_products: PaletListItemArray[];
+}
+interface PaletLists {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: PaletListItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface DeletePaletList {
+    data: {
+        status: boolean;
+        message: string;
+        resource: null;
+    };
+}
+interface DisplayPallet {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: ProdcutItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface filterPalletLists {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            total_new_price: string;
+            data: {
+                current_page: number;
+                data: ProdcutItem[];
+                first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: null | string;
+                path: string;
+                per_page: number;
+                prev_page_url: null | string;
+                to: number;
+                total: number;
+            };
+        };
+    };
+}
+interface FilterDisplayPallet {
+    data: {
+        status: boolean;
+        message: string;
+        resource: ProdcutItem;
+    };
+}
+interface CreatePaletBody {
+    name_palet: string;
+    category_palet: string;
+    total_price_palet: string;
+    total_product_palet: string;
+    palet_barcode: string;
+}
+interface CreatePaletResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            name_palet: string;
+            category_palet: string;
+            total_price_palet: string;
+            total_product_palet: string;
+            palet_barcode: string;
+            updated_at: string;
+            created_at: string;
+            id: number;
+        };
+    };
+}
 
 export type {
     UserDataItem,
@@ -638,4 +826,18 @@ export type {
     GetFilterProductBundles,
     CreateBundle,
     CreateBundleBody,
+    PromoLists,
+    PromoListItem,
+    DetailPromo,
+    EditPromoBody,
+    EditPromoResponse,
+    FilterDisplayPallet,
+    filterPalletLists,
+    DisplayPallet,
+    DeletePaletList,
+    PaletLists,
+    PaletListItem,
+    ProdcutItem,
+    CreatePaletResponse,
+    CreatePaletBody,
 };

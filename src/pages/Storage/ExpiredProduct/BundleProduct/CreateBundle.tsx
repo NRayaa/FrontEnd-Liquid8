@@ -57,11 +57,20 @@ const CreateBundle = () => {
     };
 
     const handlePickedProductBundle = (item: ProductExpiredItem) => {
-        setNameBundle(item.new_name_product ?? '');
         setTotalPrice(item.new_price_product ?? '');
         setCustomPrice(item.new_price_product ?? '');
         setTotalProductBundle(item.new_quantity_product ?? '');
     };
+
+    const handleAddLeftTable = (item: ProductExpiredItem) => {
+        handleAddFilterBundle(item.id);
+
+        setTotalPrice(item.new_price_product ?? '');
+        setCustomPrice(item.new_price_product ?? '');
+        setTotalProductBundle(item.new_quantity_product ?? '');
+    };
+
+    const setDefaultInputValue = (item: ProductExpiredItem) => {};
 
     const handleCreateBundle = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -136,7 +145,16 @@ const CreateBundle = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga :
                         </label>
-                        <input disabled id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={totalPrice} onChange={(e) => setTotalPrice(e.target.value)} />
+                        <input
+                            disabled
+                            id="categoryName"
+                            type="text"
+                            placeholder="Rp"
+                            className=" form-input w-[250px]"
+                            required
+                            value={formatRupiah(totalPrice)}
+                            onChange={(e) => setTotalPrice(e.target.value)}
+                        />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -175,7 +193,7 @@ const CreateBundle = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductExpiredItem) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterBundle(item.id)}>
+                                                <button type="button" className="btn btn-outline-info" onClick={() => handleAddLeftTable(item)}>
                                                     Add
                                                 </button>
                                             </div>

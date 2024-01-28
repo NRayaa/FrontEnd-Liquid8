@@ -18,9 +18,7 @@ const TagWarna = lazy(() => import('../pages/Storage/CategorySetting/TagWarna'))
 const AddTagWarna = lazy(() => import('../pages/Storage/CategorySetting/TagWarna/AddTagWarna'));
 const EditTagWarna = lazy(() => import('../pages/Storage/CategorySetting/TagWarna/EditTagWarna'));
 const Pallet = lazy(() => import('../pages/Storage/Pallet'));
-const CreatePallet = lazy(() => import('../pages/Storage/Pallet/CreatePallet'));
 const PalletGenerate = lazy(() => import('../pages/Storage/Pallet/PalletGenerate'));
-const PalletManual = lazy(() => import('../pages/Storage/Pallet/PalletManual'));
 const ListProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/ListProduct'));
 const DetailExpiredProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/DetailExpiredProduct'));
 const BundleProduct = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct'));
@@ -163,25 +161,15 @@ const routes = [
         element: <DetailPromo />,
         layout: 'default',
     },
-    // Pallet 
+    // Pallet
     {
         path: '/storage/pallet/',
         element: <Pallet />,
         layout: 'default',
     },
     {
-        path: '/storage/pallet/create_pallet',
-        element: <CreatePallet />,
-        layout: 'default',
-    },
-    {
         path: '/storage/pallet/create_pallet/generate',
         element: <PalletGenerate />,
-        layout: 'default',
-    },
-    {
-        path: '/storage/pallet/create_pallet/manual',
-        element: <PalletManual />,
         layout: 'default',
     },
     // Repair Station

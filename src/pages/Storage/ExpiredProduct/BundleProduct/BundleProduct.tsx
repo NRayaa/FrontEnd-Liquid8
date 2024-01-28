@@ -128,23 +128,7 @@ const BundleProduct = () => {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (data: any) => (
-                                    <span
-                                        className={`badge whitespace-nowrap ${
-                                            data.status === 'completed'
-                                                ? 'bg-primary'
-                                                : data.status === 'Pending'
-                                                ? 'bg-secondary'
-                                                : data.status === 'In Progress'
-                                                ? 'bg-success'
-                                                : data.status === 'Expired'
-                                                ? 'bg-danger'
-                                                : 'bg-primary'
-                                        }`}
-                                    >
-                                        {data.status}
-                                    </span>
-                                ),
+                                render: (item: BundleItem) => <span className="badge whitespace-nowrap bg-primary">{item.product_bundles[0].new_status_product}</span>,
                             },
                             {
                                 accessor: 'action',
