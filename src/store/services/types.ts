@@ -789,6 +789,33 @@ interface CreatePaletResponse {
     };
 }
 
+interface GetListProductRepairItem {
+        id: number;
+        code_document: string;
+        old_barcode_product: string;
+        new_barcode_product: string;
+        new_name_product: string;
+        new_quantity_product: string;
+        new_price_product: string;
+        old_price_product: string;
+        new_date_in_product: string;
+        new_status_product: string;
+        new_quality: string;
+        new_category_product: string;
+        new_tag_product: string;
+        created_at: string;
+        updated_at: string;
+}
+
+interface GetListProductRepair {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            data: GetListProductRepairItem[]}
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -840,4 +867,6 @@ export type {
     ProdcutItem,
     CreatePaletResponse,
     CreatePaletBody,
+    GetListProductRepair,
+    GetListProductRepairItem,
 };
