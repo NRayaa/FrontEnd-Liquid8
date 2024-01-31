@@ -1,16 +1,44 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
+import { useDeletePalletMutation, usePalletListsQuery } from '../../../store/services/palletApi';
+import { PaletListItem } from '../../../store/services/types';
+import { formatRupiah } from '../../../helper/functions';
+import { DataTable } from 'mantine-datatable';
 
 const Pallet = () => {
     const navigate = useNavigate();
+    const [page, setPage] = useState<number>(1);
+    const { data, isSuccess, refetch } = usePalletListsQuery(page);
+    const [deletePallet, results] = useDeletePalletMutation();
+
+    const palletLists = useMemo(() => {
+        if (isSuccess) {
+            return data.data.resource.data;
+        }
+    }, [data]);
+
+    const handleDeletePallet = async (id: number) => {
+        try {
+            await deletePallet(id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            refetch();
+        }
+    }, [results]);
+
     return (
         <>
             <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/" current="SubKategori" />
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Pallet</h5>
                 <div className="mb-4 flex justify-between">
-                    <button type="button" className="btn btn-primary-dark uppercase px-6" onClick={() => navigate('/storage/pallet/create_pallet')}>
+                    <button type="button" className="btn btn-primary-dark uppercase px-6" onClick={() => navigate('/storage/pallet/create_pallet/generate')}>
                         Create Pallet
                     </button>
                     <div className="relative w-[220px]">
@@ -34,55 +62,41 @@ const Pallet = () => {
                     </div>
                 </div>
                 <div className="datatables">
-                    <table className="panel w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    No
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Barcode LQD Pallet
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Nama Pallet
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Kategori
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Total Harga
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Total Barang
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                <td className="px-6 py-4">1</td>
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    PLTFSH0001
-                                </th>
-                                <td className="px-6 py-4">Pallet Fashion</td>
-                                <td className="px-6 py-4">Fashion</td>
-                                <td className="px-6 py-4">Rp 5.000.000,-</td>
-                                <td className="px-6 py-4">17</td>
-                                <td className="px-6 py-4 flex items-center space-x-2">
-                                    <Link to="/storage/categorysetting/1">
-                                        <button type="button" className="btn btn-outline-primary">
-                                            Detail
+                    <DataTable
+                        highlightOnHover
+                        className="whitespace-nowrap table-hover "
+                        records={palletLists}
+                        columns={[
+                            { accessor: 'id', title: 'No', sortable: true, render: (item: PaletListItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: PaletListItem) => <span>{item.palet_barcode}</span> },
+                            { accessor: 'firstName', title: 'Nama Palet', sortable: true, render: (item: PaletListItem) => <span>{item.name_palet}</span> },
+                            { accessor: 'category', title: 'Ketegori', sortable: true, render: (item: PaletListItem) => <span>{item.category_palet}</span> },
+                            { accessor: 'totalMasuk', title: 'Total Harga', sortable: true, render: (item: PaletListItem) => <span>{formatRupiah(item.total_price_palet)}</span> },
+                            { accessor: 'totalMasuk', title: 'Total Barang', sortable: true, render: (item: PaletListItem) => <span>{item.total_product_palet}</span> },
+
+                            {
+                                accessor: 'action',
+                                title: 'Opsi',
+                                titleClassName: '!text-center',
+                                render: (item: PaletListItem) => (
+                                    <div className="flex items-center w-max mx-auto gap-6">
+                                        <Link to={`/storage/expired_product/detail_product/${item.id}`}>
+                                            <button type="button" className="btn btn-outline-info">
+                                                DETAIL
+                                            </button>
+                                        </Link>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeletePallet(item.id)}>
+                                            DELETE
                                         </button>
-                                    </Link>
-                                    <button type="button" className="btn btn-outline-danger">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </div>
+                                ),
+                            },
+                        ]}
+                        totalRecords={data?.data.resource.total ?? 0}
+                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
+                    />
                 </div>
             </div>
         </>

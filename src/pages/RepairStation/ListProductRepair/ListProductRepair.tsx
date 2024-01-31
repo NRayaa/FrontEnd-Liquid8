@@ -1,11 +1,15 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment, useMemo } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { IRootState } from '../../../store';
+import { useGetListProductRepairQuery } from '../../../store/services/listProductAPI';
+import { GetListProductRepairItem } from '../../../store/services/types';
+import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 
 const rowData = [
     {
@@ -13,7 +17,7 @@ const rowData = [
         firstName: 'Caroline',
         lastName: 'Jensen',
         category: 'Fashion',
-        barcode: 'LQDF5H012',
+        barcode: '8124-000289',
         totalMasuk: '105.000',
         email: 'carolinejensen@zidant.com',
         dob: '2004-05-28',
@@ -31,6 +35,7 @@ const rowData = [
         phone: '+1 (821) 447-3782',
         isActive: true,
         age: 39,
+        keterangan: 'rusak mohon segera diperbaiki',
         company: 'POLARAX',
     },
     {
@@ -38,7 +43,7 @@ const rowData = [
         firstName: 'Celeste',
         lastName: 'Grant',
         category: 'Otomotif',
-        barcode: 'LQDF5H013',
+        barcode: '8124-000822',
         totalMasuk: '203.000',
         email: 'celestegrant@polarax.com',
         dob: '2023-07-21',
@@ -56,6 +61,7 @@ const rowData = [
         phone: '+1 (838) 515-3408',
         isActive: false,
         age: 32,
+        keterangan: 'masih dalam tahap perbaikan',
         company: 'MANGLO',
     },
     {
@@ -63,7 +69,7 @@ const rowData = [
         firstName: 'Celeste',
         lastName: 'Grant',
         category: 'Accessories',
-        barcode: 'LQDF6L020',
+        barcode: '8124-001023',
         totalMasuk: '203.000',
         email: 'celestegrant@polarax.com',
         dob: '2006-12-12',
@@ -81,6 +87,7 @@ const rowData = [
         phone: '+1 (838) 515-3408',
         isActive: false,
         age: 32,
+        keterangan: 'barang ini sudah di fix',
         company: 'MANGLO',
     },
 ];
@@ -143,9 +150,14 @@ const showAlert = async (type: number) => {
 };
 const ListProductRepair = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { data: listProductData } = useGetListProductRepairQuery(undefined);
+    const { data: categoriesData } = useGetCategoriesQuery(undefined);
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
+    const [selectedItem, setSelectedItem] = useState<GetListProductRepairItem | null>(null);
+    const [repair, setRepair] = useState(false);
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
@@ -157,6 +169,19 @@ const ListProductRepair = () => {
         columnAccessor: 'id',
         direction: 'asc',
     });
+
+    const dataListProductRepair = useMemo(() => {
+        return listProductData?.data.resource.data;
+    }, [listProductData]);
+
+    const dataCategories = useMemo(() => {
+        return categoriesData?.data.resource;
+    }, [categoriesData]);
+
+    const handleButtonRepair = (selectedItem: GetListProductRepairItem | null) => {
+        // setSelectedItem(item);
+        setRepair(true);
+    };
 
     useEffect(() => {
         setPage(1);
@@ -204,6 +229,7 @@ const ListProductRepair = () => {
     };
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -221,6 +247,137 @@ const ListProductRepair = () => {
             </ul>
             {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
             </div> */}
+            <div className="mb-5">
+                <Transition appear show={repair} as={Fragment}>
+                    <Dialog as="div" open={repair} onClose={() => setRepair(false)}>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <div className="fixed inset-0" />
+                        </Transition.Child>
+                        <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                            <div className="flex items-start justify-center min-h-screen px-4">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel as="div" className="panel border-0 p-0 rounded-lg overflow-hidden my-8 w-full max-w-[2xl] text-black dark:text-white-dark">
+                                        <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                                            <div className="text-lg font-bold">Repair</div>
+                                        </div>
+                                        <div className="space-y-5 col-span-2">
+                                            <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div className="flex flex-col gap-4">
+                                                        <h1 className="flex justify-center text-lg font-bold">Old Data</h1>
+                                                        <div>
+                                                            <label htmlFor="gridBarcode1">Barcode</label>
+                                                            <input
+                                                                id="gridBarcode1"
+                                                                disabled
+                                                                type="text"
+                                                                placeholder="Enter Barcode"
+                                                                className="form-input"
+                                                                value={selectedItem?.old_barcode_product || ''}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="gridNama1">Nama</label>
+                                                            <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={selectedItem?.new_name_product || ''} />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="gridNama3">Harga</label>
+                                                            <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="gridQTY1">QTY</label>
+                                                            <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col gap-4">
+                                                        <h1 className="flex justify-center text-lg font-bold">New Data</h1>
+                                                        <div>
+                                                            <label htmlFor="gridBarcode1">Barcode</label>
+                                                            <input id="gridBarcode1"  type="text" placeholder="Enter Barcode" className="form-input" />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="gridNama1">Nama</label>
+                                                            <input id="gridNama1" type="text"  placeholder="Enter Nama" className="form-input" />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="gridNama3">Harga</label>
+                                                            <input id="gridNama3"  type="text" placeholder="Enter Nama" className="form-input" />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="gridQTY1">QTY</label>
+                                                            <input id="gridQTY1"  type="text" placeholder="Enter QTY" className="form-input" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-1">
+                                                    <div className="flex flex-col gap-4">
+                                                        <h1 className="flex justify-start text-lg font-bold">Category</h1>
+                                                        <form className="space-y-5 flex flex-wrap">
+                                                            {/* Map through categories and generate checkboxes */}
+                                                            {dataCategories?.map((category, index) => (
+                                                                <div key={category.id} className="flex items-center w-1/2">
+                                                                    {' '}
+                                                                    {/* Adjust the width based on your layout preference */}
+                                                                    <input type="checkbox" id={`category${category.id}`} name="category" className="mr-2" />
+                                                                    <label htmlFor={`category${category.id}`} className="mr-8">
+                                                                        {category.name_category}
+                                                                    </label>
+                                                                </div>
+                                                            ))}
+                                                        </form>
+                                                    </div>
+
+                                                    <div className="flex justify-end items-center mt-8">
+                                                        {/* <button type="button" className="btn btn-outline-danger">
+                                                            Discard
+                                                        </button> */}
+                                                        <Link to="/">
+                                                            <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4">
+                                                                Repair
+                                                            </button>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* <div>
+                                                <form className="space-y-5">
+                                                    <div>
+                                                        <input
+                                                            type="textfield"
+                                                            placeholder="Masukan Kategori"
+                                                            className="form-input"
+                                                            name="product_category_name"
+                                                            value= "test"
+                                                            // onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                </form>
+                                            </div> */}
+                                        </div>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </div>
+                        </div>
+                    </Dialog>
+                </Transition>
+            </div>
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">List Product Repair </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -232,45 +389,54 @@ const ListProductRepair = () => {
                     <DataTable
                         highlightOnHover
                         className="whitespace-nowrap table-hover "
-                        records={recordsData}
+                        records={dataListProductRepair}
                         columns={[
-                            { accessor: 'id', title: 'NO', sortable: true },
-                            { accessor: 'barcode', title: 'CODE DOCUMENT', sortable: true },
-                            { accessor: 'dob', title: 'DATE IN', sortable: true },
-                            { accessor: 'qty', title: 'QTY', sortable: true },
-                            // { accessor: 'dob', title: 'Tanggal', sortable: true },
-                            // { accessor: 'totalMasuk', title: 'Total Masuk', sortable: true },
+                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'barcode', title: 'Barcode', render: (item: GetListProductRepairItem) => <span>{item.old_barcode_product}</span> },
+                            { accessor: 'firstName', title: 'Nama', render: (item: GetListProductRepairItem) => <span>{item.new_name_product}</span> },
                             {
-                                accessor: 'status',
-                                title: 'STATUS',
-                                sortable: true,
-                                render: (data: any) => (
-                                    <span
-                                        className={`badge whitespace-nowrap ${
-                                            data.status === 'Fixed'
-                                                ? 'bg-success'
-                                                : data.status === 'Broken'
-                                                ? 'bg-danger'
-                                                : data.status === 'Maintenance'
-                                                ? 'bg-warning'
-                                                : 'bg-success'
-                                        }`}
-                                    >
-                                        {data.status}
-                                    </span>
-                                ),
+                                accessor: 'keterangan',
+                                title: 'Keterangan',
+                                render: (item: GetListProductRepairItem) => {
+                                    // Mengonversi teks JSON ke objek
+                                    const newQualityData = JSON.parse(item.new_quality);
+
+                                    // Mendapatkan keterangan dari atribut "abnormal"
+                                    const keterangan = newQualityData.abnormal;
+
+                                    return <span>{keterangan}</span>;
+                                },
                             },
+                            // { accessor: 'dob', title: 'Tanggal' },
+                            // { accessor: 'totalMasuk', title: 'Total Masuk' },
+                            // {
+                            //     accessor: 'status',
+                            //     title: 'Status',
+                            //     sortable: true,
+                            //     render: (data: any) => (
+                            //         <span
+                            //             className={`badge whitespace-nowrap ${
+                            //                 data.status === 'Fixed' ? 'bg-success' : data.status === 'Broken' ? 'bg-danger' : data.status === 'Maintenance' ? 'bg-warning' : 'bg-success'
+                            //             }`}
+                            //         >
+                            //             {data.status}
+                            //         </span>
+                            //     ),
+                            // },
                             {
                                 accessor: 'action',
-                                title: 'OPSI',
+                                title: 'Opsi',
                                 titleClassName: '!text-center',
                                 render: () => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/repair_station/list_repair_product/repair_product/">
-                                            <button type="button" className="btn btn-outline-info">
-                                                REPAIR
-                                            </button>
-                                        </Link>
+                                        {/* <Link to="/repair_station/list_repair_product/repair_product/"> */}
+                                        <button type="button" className="btn btn-outline-info" onClick={() => handleButtonRepair(selectedItem)}>
+                                            REPAIR
+                                        </button>
+                                        {/* </Link> */}
+                                        <button type="button" className="btn btn-outline-danger">
+                                            THROWS
+                                        </button>
                                         {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
                                             DELETE
                                         </button> */}

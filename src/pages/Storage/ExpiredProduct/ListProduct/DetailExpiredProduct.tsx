@@ -1,92 +1,19 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
-import sortBy from 'lodash/sortBy';
-import { setPageTitle } from '../../../../store/themeConfigSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { IRootState } from '../../../../store';
+import { useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useGetDetailExpiredProductQuery } from '../../../../store/services/productNewApi';
+import { formatRupiah, formatTimestamp } from '../../../../helper/functions';
 
-const rowData = [
-    {
-        id: 1,
-        keterangan: 'Barcode',
-        isi: 'LQDF5H012',
-    },
-    {
-        id: 2,
-        keterangan: 'Nama',
-        isi: 'Baju Baru',
-    },
-    {
-        id: 3,
-        keterangan: 'QTY',
-        isi: '1',
-    },
-    {
-        id: 4,
-        keterangan: 'Harga',
-        isi: 'Rp. 10000',
-    },
-    {
-        id: 5,
-        keterangan: 'Expired',
-        isi: '10 hari',
-    },
-];
 const DetailExpiredProduct = () => {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setPageTitle('List Data'));
-    });
-    const [page, setPage] = useState(1);
-    const PAGE_SIZES = [10, 20, 30, 50, 100];
-    const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'firstName'));
-    const [recordsData, setRecordsData] = useState(initialRecords);
+    const { id }: any = useParams();
+    const { data, isSuccess } = useGetDetailExpiredProductQuery(id);
 
-    const [search, setSearch] = useState('');
-    const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-        columnAccessor: 'id',
-        direction: 'asc',
-    });
-
-    useEffect(() => {
-        setPage(1);
-    }, [pageSize]);
-
-    useEffect(() => {
-        const from = (page - 1) * pageSize;
-        const to = from + pageSize;
-        setRecordsData([...initialRecords.slice(from, to)]);
-    }, [page, pageSize, initialRecords]);
-
-    useEffect(() => {
-        setInitialRecords(() => {
-            return rowData.filter((item) => {
-                return item.id.toString().includes(search.toLowerCase()) || item.keterangan.toLowerCase().includes(search.toLowerCase()) || item.isi.toLowerCase().includes(search.toLowerCase());
-            });
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
-
-    useEffect(() => {
-        const data = sortBy(initialRecords, sortStatus.columnAccessor);
-        setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-        setPage(1);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sortStatus]);
-    const formatDate = (date: string | number | Date) => {
-        if (date) {
-            const dt = new Date(date);
-            const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-            const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-            return day + '/' + month + '/' + dt.getFullYear();
+    const detailDataExpired = useMemo(() => {
+        if (isSuccess) {
+            return data.data.resource;
         }
-        return '';
-    };
+    }, [data]);
 
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -104,8 +31,7 @@ const DetailExpiredProduct = () => {
                     <span>Detail Product</span>
                 </li>
             </ul>
-            {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
-            </div> */}
+
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">Detail Product </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -119,26 +45,36 @@ const DetailExpiredProduct = () => {
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
-                    <DataTable
-                        highlightOnHover
-                        striped
-                        className="whitespace-nowrap table-striped table-bordered"
-                        records={recordsData}
-                        columns={[
-                            { accessor: 'keterangan', title: 'Keterangan', sortable: true },
-                            { accessor: 'isi', title: 'Value', sortable: true },
-                        ]}
-                        totalRecords={initialRecords.length}
-                        recordsPerPage={pageSize}
-                        page={page}
-                        onPageChange={(p: number) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
-                        sortStatus={sortStatus}
-                        onSortStatusChange={setSortStatus}
-                        minHeight={200}
-                        paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-                    />
+                    <table className="min-w-full bg-white border border-gray-300">
+                        <thead>
+                            <tr>
+                                <th className="py-2 px-4 border-b text-black font-bold">Keterangan</th>
+                                <th className="py-2 px-4 border-b text-black font-bold">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="bg-gray-300">
+                                <td className="py-2 px-4 border-b">Barcode</td>
+                                <td className="py-2 px-4 border-b">{detailDataExpired?.new_barcode_product}</td>
+                            </tr>
+                            <tr className="bg-white">
+                                <td className="py-2 px-4 border-b">Nama</td>
+                                <td className="py-2 px-4 border-b">{detailDataExpired?.new_name_product}</td>
+                            </tr>
+                            <tr className="bg-gray-300">
+                                <td className="py-2 px-4 border-b">QTY</td>
+                                <td className="py-2 px-4 border-b">{detailDataExpired?.new_quantity_product}</td>
+                            </tr>
+                            <tr className="bg-white">
+                                <td className="py-2 px-4 border-b">Harga</td>
+                                <td className="py-2 px-4 border-b">{formatRupiah(detailDataExpired?.new_price_product ?? '0')}</td>
+                            </tr>
+                            <tr className="bg-gray-300">
+                                <td className="py-2 px-4 border-b">Expired</td>
+                                <td className="py-2 px-4 border-b">{formatTimestamp(detailDataExpired?.created_at ?? '0')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
