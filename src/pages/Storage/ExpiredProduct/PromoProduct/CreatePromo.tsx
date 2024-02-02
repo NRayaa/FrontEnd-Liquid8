@@ -208,7 +208,7 @@ const CreatePromo = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             QTY :
                         </label>
-                        <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
+                        <input id="categoryName" type="text" className=" form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -227,7 +227,7 @@ const CreatePromo = () => {
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Discount Promo :
                             </label>
-                            <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required />
+                            <input id="categoryName" type="text" placeholder="%" className=" form-input w-[250px]" required />
                         </div>
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">

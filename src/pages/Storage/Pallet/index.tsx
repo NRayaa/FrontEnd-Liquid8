@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { useDeletePalletMutation, usePalletListsQuery } from '../../../store/services/palletApi';

@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { DataTable } from 'mantine-datatable';
 import { useDeleteProductNewMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
 import { NewProductItem } from '../../../store/services/types';
-import { formatDate } from '../../../helper/functions';
+import { formatDate, formatRupiah } from '../../../helper/functions';
 
 const Product = () => {
     const [page, setPage] = useState<number>(1);
@@ -86,7 +86,7 @@ const Product = () => {
                             {
                                 accessor: 'New Price Product',
                                 title: 'NEW PRICE',
-                                render: (item: NewProductItem) => <span className="font-semibold">{item.new_price_product}</span>,
+                                render: (item: NewProductItem) => <span className="font-semibold">{formatRupiah(item.new_price_product ?? '0')}</span>,
                             },
                             {
                                 accessor: 'new date in product',
