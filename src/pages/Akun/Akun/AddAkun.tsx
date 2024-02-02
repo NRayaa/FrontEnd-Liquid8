@@ -69,6 +69,12 @@ const AddAkun = () => {
                         </label>
                         <input id="categoryName" type="text" className="form-input w-[250px]" required name="max_price_category" />
                     </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                            Email :
+                        </label>
+                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="max_price_category" />
+                    </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Password :
