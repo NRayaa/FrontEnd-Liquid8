@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { DeleteNewProductResponse, DetailExpiredProduct, GetAllNewProduct, ProductExpired } from './types';
+import { DeleteNewProductResponse, DetailExpiredProduct, DetailNewProduct, GetAllNewProduct, ProductExpired } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const productNewApi = createApi({
@@ -15,7 +15,10 @@ export const productNewApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        detailProductNew: builder.query<DeleteNewProductResponse, number | undefined | string>({
+        // detailProductNew: builder.query<DeleteNewProductResponse, number | undefined | string>({
+        //     query: (id) => `new_products/${id}`,
+        // }),
+        detailProductNew: builder.query<DetailNewProduct, number | undefined | string>({
             query: (id) => `new_products/${id}`,
         }),
         getExpiredProducts: builder.query<ProductExpired, number>({

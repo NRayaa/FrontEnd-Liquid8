@@ -1,6 +1,9 @@
 import { lazy } from 'react';
 import Kasir from '../pages/Outbound/Sale/Kasir';
 import ListKasir from '../pages/Outbound/Sale/ListKasir';
+import ListAkun from '../pages/Akun/Akun/ListAkun';
+import ListRole from '../pages/Akun/Role/ListRole';
+import AddAkun from '../pages/Akun/Akun/AddAkun';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -212,6 +215,22 @@ const routes = [
     {
         path: '/outbound/sale/list_kasir',
         element: <ListKasir />,
+        layout: 'default',
+    },
+    // Akun
+    {
+        path: '/akun/akun/list_akun',
+        element: <ListAkun />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/akun/list_akun/add_akun',
+        element: <AddAkun />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/role/list_role',
+        element: <ListRole />,
         layout: 'default',
     },
 ];
