@@ -581,7 +581,7 @@ interface CreateBundleBody {
     name_bundle: string;
     total_price_bundle: number;
     total_price_custom_bundle: number;
-    total_product_bundle: number;
+    total_product_bundle: number | undefined;
     barcode_bundle: string;
 }
 interface PromoListItem {
@@ -769,7 +769,7 @@ interface CreatePaletBody {
     name_palet: string;
     category_palet: string;
     total_price_palet: string;
-    total_product_palet: string;
+    total_product_palet: number | undefined;
     palet_barcode: string;
 }
 interface CreatePaletResponse {
