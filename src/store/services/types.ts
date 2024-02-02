@@ -232,7 +232,8 @@ interface ProdcutItem {
     old_barcode_product: string;
     new_barcode_product: string;
     new_name_product: string;
-    new_quantity_product: number;
+    new_quantity_product: string;
+    old_price_product: string;
     new_price_product: string;
     new_date_in_product: string;
     new_status_product: string;
@@ -376,6 +377,7 @@ interface NewProductItem {
     id: number;
     code_document: string;
     old_barcode_product: string;
+    old_price_product: string;
     new_barcode_product: string;
     new_name_product: string;
     new_quantity_product: string;
@@ -410,6 +412,14 @@ interface GetAllNewProduct {
     };
 }
 interface DeleteNewProductResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: NewProductItem;
+    };
+}
+
+interface DetailNewProduct {
     data: {
         status: boolean;
         message: string;
@@ -816,6 +826,33 @@ interface GetListProductRepair {
     };
 }
 
+interface GetListDumpItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListDump {
+data: {
+    status: boolean;
+    message: string;
+    resource: {
+        data: GetListDumpItem[]}
+};
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -841,6 +878,7 @@ export type {
     DetailGetRiwayatcheck,
     GetAllNewProduct,
     NewProductItem,
+    DetailNewProduct,
     DeleteNewProductResponse,
     ProductExpired,
     DetailExpiredProduct,
@@ -869,4 +907,6 @@ export type {
     CreatePaletBody,
     GetListProductRepair,
     GetListProductRepairItem,
+    GetListDump,
+    GetListDumpItem,
 };

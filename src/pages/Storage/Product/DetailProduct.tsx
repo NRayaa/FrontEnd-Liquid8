@@ -29,7 +29,7 @@ const DetailProduct = () => {
                     <BarcodeData
                         header="Old Data"
                         barcode={dataDetailProduct?.old_barcode_product}
-                        harga={dataDetailProduct?.new_price_product}
+                        harga={dataDetailProduct?.old_price_product}
                         qty={dataDetailProduct?.new_quantity_product}
                         nama={dataDetailProduct?.new_name_product}
                     />
