@@ -15,9 +15,6 @@ export const productNewApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        // detailProductNew: builder.query<DeleteNewProductResponse, number | undefined | string>({
-        //     query: (id) => `new_products/${id}`,
-        // }),
         detailProductNew: builder.query<DetailNewProduct, number | undefined | string>({
             query: (id) => `new_products/${id}`,
         }),

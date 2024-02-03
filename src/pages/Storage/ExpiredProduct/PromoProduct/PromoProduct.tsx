@@ -119,6 +119,7 @@ const PromoProduct = () => {
                         records={promoLists}
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: PromoListItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'Promo Name', title: 'Nama Promo', sortable: true, render: (item: PromoListItem) => <span>{item.name_promo}</span> },
                             { accessor: 'barcode', title: 'Barcode', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_name_product}</span> },
                             { accessor: 'category', title: 'Kategori', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_category_product}</span> },
