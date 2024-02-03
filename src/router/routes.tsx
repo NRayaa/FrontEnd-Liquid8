@@ -29,6 +29,7 @@ const CreateBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundlePr
 const DetailBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle'));
 const PromoProduct = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct'));
 const CreatePromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/CreatePromo'));
+const EditExpiredToPromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/EditExpiredToPromo'));
 const DetailPromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/DetailPromo'));
 const ListProductRepair = lazy(() => import('../pages/RepairStation/ListProductRepair/ListProductRepair'));
 const RepairProduct = lazy(() => import('../pages/RepairStation/ListProductRepair/RepairProduct'));
@@ -157,6 +158,11 @@ const routes = [
     {
         path: '/storage/expired_product/create_promo',
         element: <CreatePromo />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/create_promo/:id',
+        element: <EditExpiredToPromo />,
         layout: 'default',
     },
     {

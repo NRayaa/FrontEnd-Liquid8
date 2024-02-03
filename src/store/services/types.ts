@@ -800,21 +800,21 @@ interface CreatePaletResponse {
 }
 
 interface GetListProductRepairItem {
-        id: number;
-        code_document: string;
-        old_barcode_product: string;
-        new_barcode_product: string;
-        new_name_product: string;
-        new_quantity_product: string;
-        new_price_product: string;
-        old_price_product: string;
-        new_date_in_product: string;
-        new_status_product: string;
-        new_quality: string;
-        new_category_product: string;
-        new_tag_product: string;
-        created_at: string;
-        updated_at: string;
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: string;
+    created_at: string;
+    updated_at: string;
 }
 
 interface GetListProductRepair {
@@ -822,7 +822,8 @@ interface GetListProductRepair {
         status: boolean;
         message: string;
         resource: {
-            data: GetListProductRepairItem[]}
+            data: GetListProductRepairItem[];
+        };
     };
 }
 
@@ -845,12 +846,34 @@ interface GetListDumpItem {
 }
 
 interface GetListDump {
-data: {
-    status: boolean;
-    message: string;
-    resource: {
-        data: GetListDumpItem[]}
-};
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            data: GetListDumpItem[];
+        };
+    };
+}
+interface CreatePromo {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            new_product_id: string;
+            name_promo: string;
+            discount_promo: string;
+            price_promo: string;
+            updated_at: string;
+            created_at: string;
+            id: number;
+        };
+    };
+}
+interface CreatePromoBody {
+    new_product_id: number | string | undefined;
+    name_promo: string | string;
+    discount_promo: number | string;
+    price_promo: number | string;
 }
 
 export type {
@@ -909,4 +932,6 @@ export type {
     GetListProductRepairItem,
     GetListDump,
     GetListDumpItem,
+    CreatePromo,
+    CreatePromoBody,
 };
