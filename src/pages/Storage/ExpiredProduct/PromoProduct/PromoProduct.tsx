@@ -9,7 +9,8 @@ import { PromoListItem } from '../../../../store/services/types';
 
 const PromoProduct = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess, refetch } = useGetPromotListsQuery(page);
+    const [search, setSearch] = useState<string>('');
+    const { data, isSuccess, refetch } = useGetPromotListsQuery({ page, q: search });
     const [deletePromo, results] = useDeletePromoMutation();
 
     const promoLists = useMemo(() => {
@@ -108,9 +109,9 @@ const PromoProduct = () => {
                             </button>
                         </Link>
                     </div>
-                    {/* <div className="ltr:ml-auto rtl:mr-auto mx-6">
+                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div> */}
+                    </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable

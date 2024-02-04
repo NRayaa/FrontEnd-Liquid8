@@ -6,8 +6,8 @@ export const promoApi = createApi({
     reducerPath: 'promoApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        getPromotLists: builder.query<PromoLists, number>({
-            query: (page) => `/promo?page=${page}`,
+        getPromotLists: builder.query<PromoLists, { page: number; q: string }>({
+            query: ({ page, q }) => `/promo?page=${page}&q=${q}`,
         }),
         detailPromo: builder.query<DetailPromo, number>({
             query: (id) => `/promo/${id}`,

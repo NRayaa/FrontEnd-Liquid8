@@ -29,7 +29,7 @@ const PalletGenerate = () => {
         barcode: '',
     });
     const navigate = useNavigate();
-    const palletLists = usePalletListsQuery(1);
+    const palletLists = usePalletListsQuery({ page: 1, q: '' });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInput((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));

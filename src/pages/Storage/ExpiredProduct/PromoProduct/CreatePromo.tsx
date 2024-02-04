@@ -99,7 +99,7 @@ const showAlert = async (type: number) => {
 };
 const CreatePromo = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess } = useGetExpiredProductsQuery(page);
+    const { data, isSuccess } = useGetExpiredProductsQuery({ page, q: '' });
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {

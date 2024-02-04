@@ -6,8 +6,8 @@ export const colorTagApi = createApi({
     reducerPath: 'colorTagApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        getAllColorTag: builder.query<ColorTag, number>({
-            query: (page) => `/color_tags?page=${page}`,
+        getAllColorTag: builder.query<ColorTag, { page: number; q: string }>({
+            query: ({ page, q }) => `/color_tags?page=${page}&q=${q}`,
         }),
         deleteColorTag: builder.mutation<any, number>({
             query: (id) => ({
