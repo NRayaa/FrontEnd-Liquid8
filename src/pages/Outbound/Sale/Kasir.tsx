@@ -62,7 +62,7 @@ const Kasir = () => {
                             </div>
                             <div className="mb-4">
                                 <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/akun/akun/list_akun/add_akun')}>
-                                    Add Akun
+                                    Add Sale
                                 </button>
                             </div>
                         </form>
@@ -75,6 +75,7 @@ const Kasir = () => {
                                     <th scope="col" className="px-6 py-3">
                                         NO
                                     </th>
+                                    
                                     <th scope="col" className="px-6 py-3">
                                         BARCODE
                                     </th>

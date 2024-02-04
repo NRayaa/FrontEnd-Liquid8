@@ -1,11 +1,8 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
+import { DataTable } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
-import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { IRootState } from '../../../store';
 import { useGetListDumpQuery } from '../../../store/services/listDumpApi';
 import { GetListDumpItem } from '../../../store/services/types';
 
