@@ -21,7 +21,6 @@ const ListProductRepair = () => {
     const [productData, setProductData] = useState<ProdcutItem | null>(null);
     const [selectedItem, setSelectedItem] = useState<number | null>(null);
     const [selectedCategory, setSelectedCategory] = useState(0);
-    // const [discount, setDiscount] = useState<string>('0');
     const [repair, setRepair] = useState(false);
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsMutation();

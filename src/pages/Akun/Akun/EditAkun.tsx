@@ -1,25 +1,27 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
-import { useNavigate } from 'react-router-dom';
-import { useCreateAccountMutation } from '../../../store/services/listAkunApi';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useUpdateAccountMutation } from '../../../store/services/listAkunApi';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import { GetListRoleItem } from '../../../store/services/types';
 
-const AddAkun = () => {
-    const [createAccount, results] = useCreateAccountMutation();
+const EditAkun = () => {
+    const { state } = useLocation();
+    const params = useParams();
+    const navigate = useNavigate();
+    const [updateAccount, results] = useUpdateAccountMutation();
     const { data } = useGetListRoleQuery(undefined);
     const dataListRole: GetListRoleItem[] = useMemo(() => {
         return (data?.data?.resource || []) as GetListRoleItem[];
     }, [data]);
 
     const [input, setInput] = useState({
-        name: '',
-        username: '',
-        email: '',
-        password: '',
-        role_id: 0,
+        name: state?.name,
+        username: state?.username,
+        email: state?.email,
+        password: state?.password,
+        role_id: state?.role_id,
     });
-    const navigate = useNavigate();
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setInput((prevState) => ({
@@ -28,9 +30,10 @@ const AddAkun = () => {
         }));
     };
 
-    const handleCreateAccount = async (e: { preventDefault: () => void }) => {
+    const handleUpdateAccount = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
+            const { id } = params;
             const body = {
                 name: input.name,
                 username: input.username,
@@ -38,7 +41,7 @@ const AddAkun = () => {
                 password: input.password,
                 role_id: input.role_id,
             };
-            await createAccount(body);
+            await updateAccount({id, body});
             console.log("DATA SENT", body)
         } catch (err) {}
     };
@@ -55,8 +58,8 @@ const AddAkun = () => {
             <BreadCrumbs base="Akun" basePath="akun/list_akun" sub="List Akun" subPath="akun/list_akun" current="Add Akun" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Add Akun</h5>
-                <form className="w-[400px]" onSubmit={handleCreateAccount}>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Edit Akun</h5>
+                <form className="w-[400px]" onSubmit={handleUpdateAccount}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
@@ -97,7 +100,7 @@ const AddAkun = () => {
                         <input id="password" type="text" className="form-input w-[250px]" required name="password" onChange={handleInputChange} value={input.password} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16">
-                        Create
+                        Update
                     </button>
                 </form>
             </div>
@@ -105,4 +108,4 @@ const AddAkun = () => {
     );
 };
 
-export default AddAkun;
+export default EditAkun;

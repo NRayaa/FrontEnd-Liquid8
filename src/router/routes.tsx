@@ -4,6 +4,7 @@ import ListKasir from '../pages/Outbound/Sale/ListKasir';
 import ListAkun from '../pages/Akun/Akun/ListAkun';
 import ListRole from '../pages/Akun/Role/ListRole';
 import AddAkun from '../pages/Akun/Akun/AddAkun';
+import EditAkun from '../pages/Akun/Akun/EditAkun';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -232,6 +233,11 @@ const routes = [
     {
         path: '/akun/akun/list_akun/add_akun',
         element: <AddAkun />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/akun/list_akun/edit_akun/:id',
+        element: <EditAkun />,
         layout: 'default',
     },
     {

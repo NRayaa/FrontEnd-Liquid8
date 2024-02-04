@@ -891,6 +891,40 @@ interface GetListRole {
     };
 }
 
+interface GetListAkunItem {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
+    email_verified_at: string;
+    password: string;
+    role_id: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListAkun {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListAkunItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -951,4 +985,6 @@ export type {
     CreatePromoBody,
     GetListRole,
     GetListRoleItem,
+    GetListAkun,
+    GetListAkunItem,
 };
