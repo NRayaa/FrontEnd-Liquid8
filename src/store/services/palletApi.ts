@@ -6,8 +6,8 @@ export const palletApi = createApi({
     reducerPath: 'palletApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        palletLists: builder.query<PaletLists, number>({
-            query: (page) => `/palet?page=${page}`,
+        palletLists: builder.query<PaletLists, { page: number; q: string }>({
+            query: ({ page, q }) => `/palet?page=${page}&q=${q}`,
         }),
         deletePallet: builder.mutation<DeletePaletList, number>({
             query: (id) => ({
