@@ -20,6 +20,8 @@ const ListProductRepair = () => {
     });
     const [productData, setProductData] = useState<ProdcutItem | null>(null);
     const [selectedItem, setSelectedItem] = useState<number | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState(0);
+    // const [discount, setDiscount] = useState<string>('0');
     const [repair, setRepair] = useState(false);
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsMutation();
@@ -38,7 +40,7 @@ const ListProductRepair = () => {
         new_barcode_product: '',
         new_name_product: '',
         new_price_product: '',
-        new_quantity_product: 0, 
+        new_quantity_product: 0,
         new_category_product: '',
         new_status_product: '',
     });
@@ -81,7 +83,7 @@ const ListProductRepair = () => {
                 new_status_product: productData?.new_status_product,
                 new_barcode_product: input.new_barcode_product,
                 new_name_product: input.new_name_product,
-                new_price_product: input.new_price_product,
+                new_price_product: calculatedPrice,
                 new_quantity_product: input.new_quantity_product,
                 new_category_product: input.new_category_product,
             };
@@ -112,6 +114,27 @@ const ListProductRepair = () => {
             setThrows(false);
         }
     };
+
+    const calculateDiscount = (): number => {
+        const selectedCategoryItem = dataCategories?.find((category) => category.id === selectedCategory);
+        return selectedCategoryItem ? parseFloat(selectedCategoryItem.discount_category) : 0;
+    };
+
+    const handleCategoryChange = (categoryId: number) => {
+        setSelectedCategory(categoryId);
+    };
+    const [discount, setDiscount] = useState<number>(0);
+    const [calculatedPrice, setCalculatedPrice] = useState<string>('0');
+
+    useEffect(() => {
+        const calculatedDiscount = calculateDiscount();
+        setDiscount(calculatedDiscount);
+
+        // Assuming you have other properties like old_price_product, update this part accordingly
+        const oldPrice = parseFloat(productData?.old_price_product || '0');
+        const discountedPrice = (oldPrice * (100 - calculatedDiscount)) / 100;
+        setCalculatedPrice(discountedPrice.toFixed(2));
+    }, [selectedCategory, productData]);
 
     useEffect(() => {
         if (results) {
@@ -230,8 +253,9 @@ const ListProductRepair = () => {
                                                                 placeholder="Enter Harga"
                                                                 className="form-input"
                                                                 name="new_price_product"
-                                                                value={input.new_price_product || ''}
+                                                                value={calculatedPrice}
                                                                 onChange={handleInputChange}
+                                                                readOnly
                                                             />
                                                         </div>
                                                         <div>
@@ -246,6 +270,18 @@ const ListProductRepair = () => {
                                                                 onChange={handleInputChange}
                                                             />
                                                         </div>
+                                                        {/* <div> */}
+                                                            {/* <label htmlFor="discount">Discount (%)</label> */}
+                                                            <input
+                                                                id="discount"
+                                                                type="hidden"
+                                                                placeholder="Enter Discount"
+                                                                className="form-input"
+                                                                name="discount"
+                                                                value={calculateDiscount()}
+                                                                onChange={handleInputChange}
+                                                            />
+                                                        {/* </div> */}
                                                     </div>
                                                 </div>
                                                 <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-1">
@@ -259,8 +295,11 @@ const ListProductRepair = () => {
                                                                         id={`category${category.id}`}
                                                                         name="new_category_product"
                                                                         className="mr-2"
-                                                                        value={input.new_category_product}
-                                                                        onChange={handleInputChange}
+                                                                        value={category.name_category}
+                                                                        onChange={(e) => {
+                                                                            handleInputChange(e);
+                                                                            setSelectedCategory(category.id);
+                                                                        }}
                                                                     />
                                                                     <label htmlFor={`category${category.id}`} className="mr-8">
                                                                         {category.name_category}

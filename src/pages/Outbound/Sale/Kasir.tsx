@@ -17,7 +17,6 @@ const Kasir = () => {
                             MIGRATE
                         </button>
                     </div> */}
-                    
                 </div>
                 <div className="relative w-[220px]">
                     {/* <input
@@ -26,25 +25,50 @@ const Kasir = () => {
                         placeholder="Search..."
                     /> */}
                 </div>
-                <div className="grid grid-cols-3 space-x-6 items-end">
-                <form className="w-[400px] cols-span-1 mb-4 ">
-                        {/* <button type="submit" className="btn btn-primary mb-4 px-16">
+                <div>
+                    <div className="mb-4 flex justify-end">
+                        <button type="button" className="btn btn-primary uppercase px-6">
+                            Sale
+                        </button>
+                    </div>
+                    <div className="grid grid-cols-2 space-x-6 items-end">
+                        <form className="w-[400px] cols-span-1 mb-4 ">
+                            {/* <button type="submit" className="btn btn-primary mb-4 px-16">
                         Create Bundle
                     </button> */}
-                        <div className="flex items-center justify-between ">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                BARCODE:
-                            </label>
-                            <input id="categoryName" type="text" value="LQDF5H012" className="mb-2 form-input w-[250px]" required />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                TOTAL :
-                            </label>
-                            <input id="categoryName" type="text" value="Jakarta" placeholder="Rp" className=" form-input w-[250px]" required />
-                        </div>
-                    </form>
-                    <div className="datatables col-span-2">
+                            <div className="flex items-center justify-between mb-2">
+                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                    Code Document:
+                                </label>
+                                <input id="categoryName" type="text" value="LQDF5H012" className="mb-2 form-input w-[250px]" required />
+                            </div>
+                            <div className="flex items-center justify-between mb-4">
+                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                    Buyer :
+                                </label>
+                                <input id="categoryName" type="text" value="John" placeholder="Rp" className=" form-input w-[250px]" required />
+                            </div>
+                            <div className="flex items-center justify-between mb-4">
+                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                    TOTAL :
+                                </label>
+                                <input id="categoryName" type="text" value="Rp. 200.000,00" placeholder="Rp" className=" form-input w-[250px]" required />
+                            </div>
+                            <div className="flex items-center justify-between mb-4">
+                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                    Scan Product :
+                                </label>
+                                <input id="categoryName" type="text" value="QR12565236" placeholder="Rp" className=" form-input w-[250px]" required />
+                            </div>
+                            <div className="mb-4">
+                                <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/akun/akun/list_akun/add_akun')}>
+                                    Add Akun
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="datatables col-span-1">
                         <table className="panel text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -56,9 +80,6 @@ const Kasir = () => {
                                     </th>
                                     <th scope="col" className="px-6 py-3">
                                         NAME
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        QTY
                                     </th>
                                     <th scope="col" className="px-6 py-3">
                                         PRICE
@@ -75,7 +96,6 @@ const Kasir = () => {
                                         PLTFSH0001
                                     </th>
                                     <td className="px-6 py-4">Baju Fashion</td>
-                                    <td className='px-6 py-4'>1</td>
                                     <td className="px-6 py-4">Rp 5.000.000,-</td>
                                     <td className="px-6 py-4 flex items-center space-x-2">
                                         <button type="button" className="btn btn-outline-danger">
