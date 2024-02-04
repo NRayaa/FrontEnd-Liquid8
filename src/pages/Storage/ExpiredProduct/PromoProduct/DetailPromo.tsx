@@ -75,7 +75,7 @@ const DetailPromo = () => {
     const [discount, setDiscount] = useState<string>('');
     const [price, setPrice] = useState<number>(0);
     const [editPromo, results] = useEditPromoMutation();
-    const { refetch } = useGetPromotListsQuery(1);
+    const { refetch } = useGetPromotListsQuery({ page: 1, q: '' });
 
     const detailPromo = useMemo(() => {
         if (isSuccess) {

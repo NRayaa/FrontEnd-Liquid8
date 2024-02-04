@@ -7,7 +7,7 @@ import { useCreatePromoMutation, useGetPromotListsQuery } from '../../../../stor
 const EditExpiredToPromo = () => {
     const params = useParams();
     const { data, isSuccess } = useDetailProductNewQuery(params.id);
-    const { refetch } = useGetPromotListsQuery(1);
+    const { refetch } = useGetPromotListsQuery({ page: 1, q: '' });
     const [createPromo, results] = useCreatePromoMutation();
     const navigate = useNavigate();
 

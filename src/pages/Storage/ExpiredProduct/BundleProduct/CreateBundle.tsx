@@ -15,13 +15,13 @@ import {
 const CreateBundle = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
-    const { data, isSuccess, refetch } = useGetExpiredProductsQuery(leftTablePage);
+    const { data, isSuccess, refetch } = useGetExpiredProductsQuery({ page: leftTablePage, q: '' });
     const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
     const [filterProductBundle, results] = useFilterProductBundleMutation();
     const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
     const [createBundle, resultsCreateBundle] = useCreateBundleMutation();
     const navigate = useNavigate();
-    const bundleLists = useGetBundleProductsQuery(1);
+    const bundleLists = useGetBundleProductsQuery({ page: 1, q: '' });
 
     const [nameBundle, setNameBundle] = useState<string>('');
     const [totalPrice, setTotalPrice] = useState<string>('');
