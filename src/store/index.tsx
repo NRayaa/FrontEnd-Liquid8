@@ -14,6 +14,7 @@ import { palletApi } from './services/palletApi';
 import { listProductApi } from './services/listProductAPI';
 import { listDumpApi } from './services/listDumpApi';
 import { listRoleApi } from './services/listRoleApi';
+import { listAkunApi } from './services/listAkunApi';
 
 const rootReducer = combineReducers({
     themeConfig: themeConfigSlice,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     [listProductApi.reducerPath]: listProductApi.reducer,
     [listDumpApi.reducerPath]: listDumpApi.reducer,
     [listRoleApi.reducerPath]: listRoleApi.reducer,
+    [listAkunApi.reducerPath]: listAkunApi.reducer,
 });
 
 export default configureStore({
@@ -50,6 +52,7 @@ export default configureStore({
             .concat(palletApi.middleware)
             .concat(listProductApi.middleware)
             .concat(listDumpApi.middleware)
+            .concat(listAkunApi.middleware)
             .concat(listRoleApi.middleware),
 });
 
