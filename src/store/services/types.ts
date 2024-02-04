@@ -876,6 +876,21 @@ interface CreatePromoBody {
     price_promo: number | string;
 }
 
+interface GetListRoleItem {
+    id: number;
+    role_name: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListRole {
+    data: {
+        status: boolean;
+        message: string;
+        resource: GetListRoleItem;
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -934,4 +949,6 @@ export type {
     GetListDumpItem,
     CreatePromo,
     CreatePromoBody,
+    GetListRole,
+    GetListRoleItem,
 };
