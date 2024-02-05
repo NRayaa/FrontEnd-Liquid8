@@ -15,6 +15,7 @@ import { listProductApi } from './services/listProductAPI';
 import { listDumpApi } from './services/listDumpApi';
 import { listRoleApi } from './services/listRoleApi';
 import { listAkunApi } from './services/listAkunApi';
+import { authApi } from './services/authApi';
 
 const rootReducer = combineReducers({
     themeConfig: themeConfigSlice,
@@ -33,6 +34,8 @@ const rootReducer = combineReducers({
     [listDumpApi.reducerPath]: listDumpApi.reducer,
     [listRoleApi.reducerPath]: listRoleApi.reducer,
     [listAkunApi.reducerPath]: listAkunApi.reducer,
+    [authApi.reducerPath]: authApi.reducer,
+
 });
 
 export default configureStore({
@@ -53,7 +56,9 @@ export default configureStore({
             .concat(listProductApi.middleware)
             .concat(listDumpApi.middleware)
             .concat(listAkunApi.middleware)
-            .concat(listRoleApi.middleware),
+            .concat(listRoleApi.middleware)
+            .concat(authApi.middleware),
+
 });
 
 export type IRootState = ReturnType<typeof rootReducer>;
