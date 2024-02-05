@@ -5,6 +5,7 @@ import ListAkun from '../pages/Akun/Akun/ListAkun';
 import ListRole from '../pages/Akun/Role/ListRole';
 import AddAkun from '../pages/Akun/Akun/AddAkun';
 import EditAkun from '../pages/Akun/Akun/EditAkun';
+import LoginBoxed from '../pages/Authentication/LoginBoxed';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -40,6 +41,12 @@ const ListMigrate = lazy(() => import('../pages/Outbound/Migrate/ListMigrate'));
 const DetailMigrate = lazy(() => import('../pages/Outbound/Migrate/DetailMigrate'));
 
 const routes = [
+    // Authentication
+    {
+        path: '/auth/boxed-signin',
+        element: <LoginBoxed />,
+        layout: 'blank',
+    },
     // dashboard
     {
         path: '/',
