@@ -1,11 +1,13 @@
 import React from 'react';
+import Barcode from 'react-barcode';
 
 interface BarcodePrint {
     oldPrice: string;
     newPrice: string;
+    barcode: string;
 }
 
-const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice }) => {
+const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode }) => {
     const handlePrint = () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
 
@@ -31,7 +33,7 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice }) => {
             <div style={{ width: '7cm', height: '4cm', display: 'flex', justifyContent: 'start', alignItems: 'start', fontFamily: 'sans-serif' }} className="print-container">
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src="/assets/images/contoh-barcoded.png" alt="barcode" width={150} />
+                        <Barcode value={barcode} width={3} height={48} />
                         <img src="/assets/images/Liquid.png" alt="barcode" style={{ marginTop: '-10px' }} width={70} />
                     </div>
                     <div>
