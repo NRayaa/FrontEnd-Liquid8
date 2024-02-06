@@ -9,10 +9,10 @@ export const productOldsApi = createApi({
         productOlds: builder.query<ProductOlds | undefined, number>({
             query: (page) => `/product_olds?page=${page}`,
         }),
-        detailProductOld: builder.query<DetailProductOld, { codeDocument: string; page: number }>({
+        detailProductOld: builder.query<DetailProductOld, { codeDocument: string | undefined; page: number }>({
             query: ({ codeDocument, page }) => `/product_olds-search?search=${codeDocument}&page=${page}`,
         }),
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery } = productOldsApi;
+export const { useProductOldsQuery, useDetailProductOldQuery, useLazyDetailProductOldQuery } = productOldsApi;

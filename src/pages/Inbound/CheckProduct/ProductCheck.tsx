@@ -1,7 +1,10 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Tab } from '@headlessui/react';
+import Barcode from 'react-barcode';
+
 import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
 import { formatYearToDay, generateRandomString } from '../../../helper/functions';
+import BarcodePrinted from './BarcodePrinted';
 
 interface ProductCheck {
     oldData: {
@@ -37,6 +40,7 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
     const [selectedOption, setSelectedOption] = useState<string>('');
     const [descriptionDamaged, setDescriptionDamaged] = useState<string>('');
     const [descriptionAbnormal, setDescriptionAbnormal] = useState<string>('');
+    const [isBarcode, setIsBarcode] = useState<boolean>(false);
 
     const productCheckData = useMemo(() => {
         if (isSuccess) {
@@ -139,6 +143,7 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
         if (results.isSuccess) {
             resetValueMultiCheck();
             resetProductCheckShow();
+            setIsBarcode(true);
         }
     }, [results]);
 
@@ -248,6 +253,7 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                     </Tab.Panels>
                 </Tab.Group>
             </div>
+            <BarcodePrinted />
         </div>
     );
 };

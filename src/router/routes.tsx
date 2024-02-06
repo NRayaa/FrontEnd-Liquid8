@@ -11,6 +11,7 @@ const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
 const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
+const BarcodePrinted = lazy(() => import('../pages/Inbound/CheckProduct/BarcodePrinted'));
 const DetailListData = lazy(() => import('../pages/Inbound/CheckProduct/DetailListData'));
 const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
 const DetailCheckHistory = lazy(() => import('../pages/Inbound/CheckHistory/Detail'));
@@ -79,6 +80,11 @@ const routes = [
     {
         path: '/inbound/check_product/multi_check',
         element: <MultiCheck />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/multi_check/print',
+        element: <BarcodePrinted />,
         layout: 'default',
     },
     {
