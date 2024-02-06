@@ -8,7 +8,7 @@ import IconThumbUp from '../../../components/Icon/IconThumbUp';
 import Swal from 'sweetalert2';
 import HomeItemTab from './HomeItemTab';
 import { GeneratesData } from '../../../helper/types';
-import { useProductOldsQuery } from '../../../store/services/productOldsApi';
+import { useLazyDetailProductOldQuery, useProductOldsQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah } from '../../../helper/functions';
 import { useMergedHeaderMutation } from '../../../store/services/inboundDataProcessApi';
 import { DataTable } from 'mantine-datatable';
@@ -55,15 +55,15 @@ const DataInput = () => {
 
     const [page, setPage] = useState<number>(1);
 
-    const { data, isSuccess } = useProductOldsQuery(page);
-    const [productOlds, setProductOlds] = useState<ProductOldsItem[] | []>([]);
+    const [productOlds, setProductOlds] = useState<any>([]);
+    const [detailProductOld, results] = useLazyDetailProductOldQuery();
 
     const [barcode, setBarcode] = useState<string[]>();
     const [productName, setProductName] = useState<string[]>();
     const [productQty, setProductQty] = useState<string[]>();
     const [productPrice, setProductPrice] = useState<string[]>();
 
-    const [mergedHeader] = useMergedHeaderMutation();
+    const [mergedHeader, mergeResults] = useMergedHeaderMutation();
 
     const getGeneratesData = (data: GeneratesData) => {
         setDataGenerates(data);
@@ -102,11 +102,30 @@ const DataInput = () => {
         }
     };
 
-    useEffect(() => {
-        if (isSuccess && data.data.status) {
-            setProductOlds(data.data.resource.data);
+    const handleNextButton = async () => {
+        try {
+            if (activeTab3 === 1) {
+                setActiveTab3(2);
+            } else if (activeTab3 === 3) {
+                setActiveTab3(1);
+            } else {
+                handlePickHeader();
+            }
+        } catch (err) {
+            console.log(err);
         }
-    }, [data]);
+    };
+
+    const fetchProductOlds = async () => {
+        await detailProductOld({ codeDocument: documentCode, page });
+    };
+
+    useEffect(() => {
+        if (mergeResults.isSuccess) {
+            setActiveTab3(3);
+            fetchProductOlds();
+        }
+    }, [mergeResults]);
 
     return (
         <div>
@@ -176,21 +195,7 @@ const DataInput = () => {
                                 <button type="button" className={`btn btn-primary ${activeTab3 === 1 ? 'hidden' : ''}`} onClick={() => setActiveTab3(activeTab3 === 3 ? 2 : 1)}>
                                     Back
                                 </button>
-                                <button
-                                    disabled={dataGenerates === undefined}
-                                    type="button"
-                                    className="btn btn-primary ltr:ml-auto rtl:mr-auto"
-                                    onClick={() => {
-                                        if (activeTab3 === 1) {
-                                            setActiveTab3(2);
-                                        } else if (activeTab3 === 3) {
-                                            setActiveTab3(1);
-                                        } else {
-                                            handlePickHeader();
-                                            setActiveTab3(3);
-                                        }
-                                    }}
-                                >
+                                <button disabled={dataGenerates === undefined} type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={handleNextButton}>
                                     {activeTab3 === 3 ? (
                                         <Link to="/inbound/check_product/list_data">
                                             <button>Done</button>
@@ -270,52 +275,53 @@ const DataInput = () => {
                                     </div>
                                 )}
                             </p>
-
-                            <div className="mb-5">
-                                {activeTab3 === 3 && (
-                                    <DataTable
-                                        highlightOnHover
-                                        className="whitespace-nowrap table-hover"
-                                        records={productOlds}
-                                        columns={[
-                                            {
-                                                accessor: 'id',
-                                                title: 'No',
-                                                render: (item: ProductOldsItem, index: number) => <span>{index + 1}</span>,
-                                            },
-                                            {
-                                                accessor: 'code_document',
-                                                title: 'Nama Data',
-                                                render: (item: ProductOldsItem) => <span>{item.code_document}</span>,
-                                            },
-                                            {
-                                                accessor: 'old_barcode_product',
-                                                title: 'Nomor Resi',
-                                                render: (item: ProductOldsItem) => <span>{item.old_barcode_product}</span>,
-                                            },
-                                            {
-                                                accessor: 'old_name_product',
-                                                title: 'Nama Produk',
-                                                render: (item: ProductOldsItem) => <span>{item.old_name_product}</span>,
-                                            },
-                                            {
-                                                accessor: 'old_quantity_product',
-                                                title: 'QTY',
-                                                render: (item: ProductOldsItem) => <span>{item.old_quantity_product}</span>,
-                                            },
-                                            {
-                                                accessor: 'old_price_product',
-                                                title: 'Harga',
-                                                render: (item: ProductOldsItem) => <span>{formatRupiah(item.old_price_product)}</span>,
-                                            },
-                                        ]}
-                                        totalRecords={data?.data.total ?? 0}
-                                        recordsPerPage={data?.data.per_page ?? 0}
-                                        page={page}
-                                        onPageChange={(prevPage) => setPage(prevPage)}
-                                    />
-                                )}
-                            </div>
+                            {results?.data?.data.resource.data !== null && (
+                                <div className="mb-5">
+                                    {activeTab3 === 3 && (
+                                        <DataTable
+                                            highlightOnHover
+                                            className="whitespace-nowrap table-hover"
+                                            records={results?.data?.data.resource.data}
+                                            columns={[
+                                                {
+                                                    accessor: 'id',
+                                                    title: 'No',
+                                                    render: (item: ProductOldsItem, index: number) => <span>{index + 1}</span>,
+                                                },
+                                                {
+                                                    accessor: 'code_document',
+                                                    title: 'Nama Data',
+                                                    render: (item: ProductOldsItem) => <span>{item.code_document}</span>,
+                                                },
+                                                {
+                                                    accessor: 'old_barcode_product',
+                                                    title: 'Nomor Resi',
+                                                    render: (item: ProductOldsItem) => <span>{item.old_barcode_product}</span>,
+                                                },
+                                                {
+                                                    accessor: 'old_name_product',
+                                                    title: 'Nama Produk',
+                                                    render: (item: ProductOldsItem) => <span>{item.old_name_product}</span>,
+                                                },
+                                                {
+                                                    accessor: 'old_quantity_product',
+                                                    title: 'QTY',
+                                                    render: (item: ProductOldsItem) => <span>{item.old_quantity_product}</span>,
+                                                },
+                                                {
+                                                    accessor: 'old_price_product',
+                                                    title: 'Harga',
+                                                    render: (item: ProductOldsItem) => <span>{formatRupiah(item.old_price_product)}</span>,
+                                                },
+                                            ]}
+                                            totalRecords={results.data?.data.resource.total ?? 0}
+                                            recordsPerPage={results.data?.data.resource.per_page ?? 0}
+                                            page={page}
+                                            onPageChange={(prevPage) => setPage(prevPage)}
+                                        />
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
