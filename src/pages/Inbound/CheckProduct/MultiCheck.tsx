@@ -25,6 +25,7 @@ const MultiCheck = () => {
     const [isBarcode, setIsBarcode] = useState<boolean>(false);
     const [newPriceBarcode, setNewPriceBarcode] = useState('');
     const [oldPriceBarcode, setOldPriceBarcode] = useState('');
+    const [codeBarcode, setCodeBarcode] = useState<string>('');
 
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
@@ -104,7 +105,6 @@ const MultiCheck = () => {
         const newPriceInt = Math.floor(parseInt(newPrice ?? '0'));
 
         const result = (newPriceInt * percentageInt) / 100;
-        console.log('NEW PRICE NI BOS', results);
 
         setNewPricePercentage(JSON.stringify(result));
     }, [percentageState]);
@@ -119,7 +119,6 @@ const MultiCheck = () => {
         if (results.isSuccess) {
             setIsProductCheck(true);
             hideBarcode();
-            console.log('OLD PRICE NI BOS', oldData);
             if (Array.isArray(results.data?.data.resource)) {
                 setKeterangan('<100K');
             } else {
@@ -131,7 +130,8 @@ const MultiCheck = () => {
 
     useEffect(() => {
         setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));
-    }, [oldData?.old_price_product]);
+        setCodeBarcode(oldData?.old_barcode_product);
+    }, [oldData?.old_price_product, oldData?.old_barcode_product]);
 
     return (
         <div>
@@ -216,7 +216,7 @@ const MultiCheck = () => {
                         handleSetNewPriceProduct={handleSetNewPriceProduct}
                     />
                 )}
-                {isBarcode && <BarcodePrinted newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}
+                {isBarcode && <BarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}
             </div>
         </div>
     );
