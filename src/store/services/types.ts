@@ -925,6 +925,70 @@ interface GetListAkun {
     };
 }
 
+interface GetListSaleItem {
+    id: number;
+    code_document_sale: string;
+    product_name_sale: string;
+    product_price_sale: string;
+    product_qty_sale: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListSale {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListSaleItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetListMigrateItem {
+    id: number;
+    code_document_migrate: string;
+    destiny_document_migrate: string;
+    total_product_document_migrate: string;
+    total_price_document_migrate: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListMigrate {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListMigrateItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -987,5 +1051,9 @@ export type {
     GetListRoleItem,
     GetListAkun,
     GetListAkunItem,
+    GetListSale,
+    GetListSaleItem,
+    GetListMigrate,
+    GetListMigrateItem,
     ItemDetailOldsProduct,
 };

@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
-import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
-import IconSend from '../../../components/Icon/IconSend';
+import { useGetListSaleQuery } from '../../../store/services/saleApi';
 
 const ListKasir = () => {
     const navigate = useNavigate();
+    const [page, setPage] = useState<number>(1);
+    const [search] = useState<string>('');
+    const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
+
+    const listSale = useMemo(() => {
+        return listSaleData?.data.resource.data;
+    }, [listSaleData]);
+
     return (
         <>
             <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/" current="List Cashier" />

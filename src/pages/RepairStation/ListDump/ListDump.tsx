@@ -53,7 +53,7 @@ const ListDump = () => {
                             { accessor: 'firstName', title: 'PRODUCT', render: (item: GetListDumpItem) => <span>{item.new_name_product}</span> },
                             { accessor: 'harga', title: 'HARGA', render: (item: GetListDumpItem) => <span>{item.new_price_product} </span> },
                         ]}
-                       />
+                    />
                 </div>
             </div>
         </div>

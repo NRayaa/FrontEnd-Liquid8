@@ -33,7 +33,7 @@ const LoginBoxed = () => {
                 password: input.password,
             };
             await login(body);
-            console.log("DATA SENT", body)
+            console.log('DATA SENT', body);
         } catch (err) {}
     };
 
@@ -65,7 +65,16 @@ const LoginBoxed = () => {
                                 <div>
                                     <label htmlFor="Email">Email</label>
                                     <div className="relative text-white-dark">
-                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input ps-10 placeholder:text-white-dark" required name="email" onChange={handleInputChange} value={input.email}/>
+                                        <input
+                                            id="Email"
+                                            type="email"
+                                            placeholder="Enter Email"
+                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            required
+                                            name="email"
+                                            onChange={handleInputChange}
+                                            value={input.email}
+                                        />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconMail fill={true} />
                                         </span>
@@ -74,7 +83,16 @@ const LoginBoxed = () => {
                                 <div>
                                     <label htmlFor="Password">Password</label>
                                     <div className="relative text-white-dark">
-                                        <input id="Password" type="password" placeholder="Enter Password" className="form-input ps-10 placeholder:text-white-dark" required name="password" onChange={handleInputChange} value={input.password}/>
+                                        <input
+                                            id="Password"
+                                            type="password"
+                                            placeholder="Enter Password"
+                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            required
+                                            name="password"
+                                            onChange={handleInputChange}
+                                            value={input.password}
+                                        />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconLockDots fill={true} />
                                         </span>
