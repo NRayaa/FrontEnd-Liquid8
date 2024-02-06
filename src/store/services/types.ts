@@ -925,14 +925,20 @@ interface GetListAkun {
     };
 }
 
-interface GetListSaleItem {
+interface GetListSaleItem 
+{
     id: number;
-    code_document_sale: string;
-    product_name_sale: string;
-    product_price_sale: string;
-    product_qty_sale: string;
+    code_document_sale?: string;
+    product_name_sale?: string;
+    product_price_sale?: string;
+    product_qty_sale?: string;
     created_at: string;
     updated_at: string;
+}
+
+interface GetTotalSaleItem 
+{
+    total_sale: string;
 }
 
 interface GetListSale {
@@ -941,7 +947,7 @@ interface GetListSale {
         message: string;
         resource: {
             current_page: number;
-            data: GetListSaleItem[];
+            data:(GetListSaleItem | GetTotalSaleItem)[];            
             first_page_url: string;
             from: null | string;
             last_page: number;
@@ -974,6 +980,39 @@ interface GetListMigrate {
         resource: {
             current_page: number;
             data: GetListMigrateItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetListSaleDocumentItem {
+    id: number;
+    code_document_sale: string;
+    buyer_name_document_sale: string;
+    total_product_document_sale: string;
+    total_price_document_sale: number;
+    status_document_sale: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListSaleDocument {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListSaleDocumentItem[];
             first_page_url: string;
             from: null | string;
             last_page: number;
@@ -1055,5 +1094,7 @@ export type {
     GetListSaleItem,
     GetListMigrate,
     GetListMigrateItem,
+    GetListSaleDocument,
+    GetListSaleDocumentItem,
     ItemDetailOldsProduct,
 };

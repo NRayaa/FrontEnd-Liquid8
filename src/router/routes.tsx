@@ -6,6 +6,7 @@ import ListRole from '../pages/Akun/Role/ListRole';
 import AddAkun from '../pages/Akun/Akun/AddAkun';
 import EditAkun from '../pages/Akun/Akun/EditAkun';
 import LoginBoxed from '../pages/Authentication/LoginBoxed';
+import DetailCashier from '../pages/Outbound/Sale/DetailCashier';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -229,6 +230,11 @@ const routes = [
     {
         path: '/outbound/sale/list_kasir',
         element: <ListKasir />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/sale/list_kasir/detail_kasir/:id',
+        element: <DetailCashier />,
         layout: 'default',
     },
     // Akun

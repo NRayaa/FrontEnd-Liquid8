@@ -148,9 +148,13 @@ const ListMigrate = () => {
                                 render: (item: GetListMigrateItem) => <span className="font-semibold">{item.code_document_migrate}</span>,
                             },
                             {
-                                accessor: 'updated_at',
+                                accessor: 'created_at',
                                 title: 'Date',
-                                render: (item: GetListMigrateItem) => <span className="font-semibold">{item.updated_at}</span>,
+                                render: (item: GetListMigrateItem) => {
+                                    const date = new Date(item.created_at);
+                                    const formattedDate = date.toISOString().slice(0, 10); // Ambil bagian tanggalnya saja (yyyy-mm-dd)
+                                    return <span className="font-semibold">{formattedDate}</span>;
+                                },
                             },
                             {
                                 accessor: 'total_product_document_migrate',
