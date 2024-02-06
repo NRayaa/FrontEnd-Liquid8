@@ -21,6 +21,7 @@ const MultiCheck = () => {
     const [checkAllDocument, checkResults] = useCheckAllDocumentMutation();
     const navigate = useNavigate();
     const [newPricePercentage, setNewPricePercentage] = useState<string>('0');
+    const [customQuantity, setCustomQuantity] = useState<string>('0');
     const [percentageState, setPercentageState] = useState<string>('0');
     const [isBarcode, setIsBarcode] = useState<boolean>(false);
     const [newPriceBarcode, setNewPriceBarcode] = useState('');
@@ -45,6 +46,13 @@ const MultiCheck = () => {
         } catch (err) {
             console.log(err);
         }
+    };
+
+    const handleSetNewPercentagePriceInput = (price: string) => {
+        setNewPricePercentage(price);
+    };
+    const handleSetCustomQuantityInput = (qty: string) => {
+        setCustomQuantity(qty);
     };
 
     const resetValueMultiCheck = () => {
@@ -101,7 +109,7 @@ const MultiCheck = () => {
     };
 
     useEffect(() => {
-        const percentageInt = parseInt(percentageState);
+        const percentageInt = 100 - parseInt(percentageState);
         const newPriceInt = Math.floor(parseInt(newPrice ?? '0'));
 
         const result = (newPriceInt * percentageInt) / 100;
@@ -130,7 +138,7 @@ const MultiCheck = () => {
 
     useEffect(() => {
         setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));
-        setCodeBarcode(oldData?.old_barcode_product);
+        setCodeBarcode(oldData?.new_barcode);
     }, [oldData?.old_price_product, oldData?.old_barcode_product]);
 
     return (
@@ -185,10 +193,12 @@ const MultiCheck = () => {
                             {!tagColor || tagColor === undefined ? (
                                 <NewBarcodeData
                                     header="NEW DATA"
-                                    barcode={!isResetValue ? oldData?.old_barcode_product : ''}
+                                    barcode={!isResetValue ? oldData?.new_barcode : ''}
                                     nama={!isResetValue ? oldData?.old_name_product : ''}
                                     newPrice={!isResetValue ? newPricePercentage : ''}
                                     qty={!isResetValue ? oldData?.old_quantity_product : ''}
+                                    handleSetNewPercentagePriceInput={handleSetNewPercentagePriceInput}
+                                    handleSetCustomQuantityInput={handleSetCustomQuantityInput}
                                 />
                             ) : (
                                 <TagColorData
@@ -214,6 +224,7 @@ const MultiCheck = () => {
                         newPricePercentage={newPricePercentage}
                         showBarcode={showBarcode}
                         handleSetNewPriceProduct={handleSetNewPriceProduct}
+                        customQuantity={customQuantity}
                     />
                 )}
                 {isBarcode && <BarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}
