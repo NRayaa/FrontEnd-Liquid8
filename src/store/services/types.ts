@@ -1096,4 +1096,5 @@ export type {
     GetListMigrateItem,
     GetListSaleDocument,
     GetListSaleDocumentItem,
+    ItemDetailOldsProduct,
 };

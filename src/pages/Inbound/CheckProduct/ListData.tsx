@@ -107,7 +107,7 @@ const ListData = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        records={listsData}
+                        records={data?.data.resource.data}
                         columns={[
                             {
                                 accessor: 'id',
@@ -119,6 +119,7 @@ const ListData = () => {
                                 title: 'Nama Data',
                                 render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.code_document}</span>,
                             },
+
                             {
                                 accessor: 'date_document',
                                 title: 'Tanggal',
@@ -127,7 +128,7 @@ const ListData = () => {
                             {
                                 accessor: 'total_column_document',
                                 title: 'Total Barang',
-                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.total_column_document)}</span>,
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.total_column_document}</span>,
                             },
                             {
                                 accessor: 'status_document',
