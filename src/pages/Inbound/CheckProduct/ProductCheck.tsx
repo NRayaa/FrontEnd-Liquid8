@@ -32,6 +32,7 @@ interface ProductCheck {
     countPercentage: (percentage: string) => void;
     newPricePercentage: string;
     showBarcode: () => void;
+    hideBarcode: () => void;
     handleSetNewPriceProduct: (newPrice: string) => void;
     customQuantity: string;
 }
@@ -44,6 +45,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     countPercentage,
     newPricePercentage,
     showBarcode,
+    hideBarcode,
     handleSetNewPriceProduct,
     customQuantity,
 }) => {
@@ -121,6 +123,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 deskripsi: descriptionDamaged,
             };
             await newProduct(body);
+            setBarcodeStatus('TIDAK LOLOS');
+            resetProductCheckShow();
+            hideBarcode();
         } catch (err) {
             console.log(err);
         }
@@ -144,6 +149,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 deskripsi: descriptionAbnormal,
             };
             await newProduct(body);
+            setBarcodeStatus('TIDAK LOLOS');
+            resetProductCheckShow();
+            hideBarcode();
         } catch (err) {
             console.log(err);
         }
