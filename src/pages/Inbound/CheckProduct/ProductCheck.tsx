@@ -3,7 +3,7 @@ import { Tab } from '@headlessui/react';
 import Barcode from 'react-barcode';
 
 import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
-import { formatYearToDay, generateRandomString } from '../../../helper/functions';
+import { formatRupiah, formatYearToDay, generateRandomString } from '../../../helper/functions';
 import BarcodePrinted from './BarcodePrinted';
 
 interface ProductCheck {
@@ -31,16 +31,18 @@ interface ProductCheck {
     resetProductCheckShow: () => void;
     countPercentage: (percentage: string) => void;
     newPricePercentage: string;
+    showBarcode: () => void;
+    handleSetNewPriceProduct: (newPrice: string) => void;
 }
 
-const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMultiCheck, resetProductCheckShow, countPercentage, newPricePercentage }) => {
+const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMultiCheck, resetProductCheckShow, countPercentage, newPricePercentage, showBarcode, handleSetNewPriceProduct }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
     const [newProduct, results] = useNewProductMutation();
 
     const [selectedOption, setSelectedOption] = useState<string>('');
     const [descriptionDamaged, setDescriptionDamaged] = useState<string>('');
     const [descriptionAbnormal, setDescriptionAbnormal] = useState<string>('');
-    const [isBarcode, setIsBarcode] = useState<boolean>(false);
+    const [barcodeStatus, setBarcodeStatus] = useState<'LOLOS' | 'TIDAK LOLOS'>('LOLOS');
 
     const productCheckData = useMemo(() => {
         if (isSuccess) {
@@ -82,6 +84,8 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                 new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: '',
             };
+            setBarcodeStatus('LOLOS');
+            handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
         } catch (err) {
             console.log(err);
@@ -142,8 +146,10 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
     useEffect(() => {
         if (results.isSuccess) {
             resetValueMultiCheck();
-            resetProductCheckShow();
-            setIsBarcode(true);
+            if (barcodeStatus === 'LOLOS') {
+                showBarcode();
+                resetProductCheckShow();
+            }
         }
     }, [results]);
 
@@ -253,7 +259,6 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                     </Tab.Panels>
                 </Tab.Group>
             </div>
-            <BarcodePrinted />
         </div>
     );
 };

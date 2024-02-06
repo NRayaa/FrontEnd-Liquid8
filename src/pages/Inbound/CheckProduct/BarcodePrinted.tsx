@@ -1,6 +1,11 @@
 import React from 'react';
 
-const BarcodePrinted = () => {
+interface BarcodePrint {
+    oldPrice: string;
+    newPrice: string;
+}
+
+const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice }) => {
     const handlePrint = () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
 
@@ -23,35 +28,27 @@ const BarcodePrinted = () => {
     };
     return (
         <div>
-            <div className="print-container w-[104mm] h-auto p-2 ">
+            <div style={{ width: '7cm', height: '4cm', display: 'flex', justifyContent: 'start', alignItems: 'start', fontFamily: 'sans-serif' }} className="print-container">
                 <div>
-                    <div className="flex items-center">
-                        <img src="/assets/images/contoh-barcoded.png" alt="barcode" width={200} />
-                        <img src="/assets/images/Liquid.png" alt="barcode" className="-mt-4" width={80} />
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <img src="/assets/images/contoh-barcoded.png" alt="barcode" width={150} />
+                        <img src="/assets/images/Liquid.png" alt="barcode" style={{ marginTop: '-10px' }} width={70} />
                     </div>
-                    <div className="mt-4">
-                        <table>
+                    <div>
+                        <table style={{ borderSpacing: 0 }}>
                             <tr>
-                                <td className="font-bold text-black">New barcode</td>
-                                <td className="font-bold text-black">0923-01106</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Old price</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'underline' }}>: {oldPrice}</td>
                             </tr>
                             <tr>
-                                <td className="font-bold text-black">Old price</td>
-                                <td className="font-bold text-black underline">Rp 105.000,00</td>
-                            </tr>
-                            <tr>
-                                <td className="font-bold text-black">New Price</td>
-                                <td className="font-bold text-black underline">Rp 52.500,00</td>
-                            </tr>
-                            <tr>
-                                <td className="font-bold text-black">New_Quality</td>
-                                <td className="font-bold text-black">Lolos</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>New Price</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'underline' }}>: {newPrice}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
             </div>
-            <button onClick={handlePrint} className="px-6 py-2 bg-primary rounded-full">
+            <button onClick={handlePrint} className="py-2 px-8 bg-primary text-white rounded-full mt-6">
                 Print
             </button>
         </div>
