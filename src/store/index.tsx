@@ -62,7 +62,7 @@ export default configureStore({
             .concat(listRoleApi.middleware)
             .concat(authApi.middleware)
             .concat(saleApi.middleware)
-            .concat(migrateApi.middleware),
+            .concat(migrateApi.middleware)
 });
 
 export type IRootState = ReturnType<typeof rootReducer>;

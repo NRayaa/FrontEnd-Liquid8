@@ -1,21 +1,87 @@
-import React, { useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconSend from '../../../components/Icon/IconSend';
-import { useGetListSaleQuery } from '../../../store/services/saleApi';
+import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery } from '../../../store/services/saleApi';
 import { GetListSaleItem } from '../../../store/services/types';
+import { useGetAllProductNewQuery } from '../../../store/services/productNewApi';
+
+interface GetTotalSaleItem {
+    total_sale: string;
+}
+interface GetCodeDocumentItem {
+    code_document_sale: string;
+}
 
 const Kasir = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
+    const [addSale] = useAddSaleMutation();
     const [search] = useState<string>('');
     const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
-
+    const { data: listProduct } = useGetAllProductNewQuery({ page, q: search });
+    const [deleteSale, results] = useDeleteSaleMutation();
+    
     const listSale = useMemo(() => {
-        return listSaleData?.data.resource.data;
+        const data = listSaleData?.data.resource.data;
+        if (data && Array.isArray(data)) {
+            const filteredData = data.slice(0, -2);
+            console.log('DATA RETURN', filteredData);
+            return filteredData as GetListSaleItem[];
+        }
+        return [];
     }, [listSaleData]);
+
+    const twolastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 2] as GetCodeDocumentItem;
+
+    const lastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 1] as GetTotalSaleItem;
+
+    const productNewData = useMemo(() => {
+        return listProduct?.data.resource.data;
+    }, [listProduct]);
+
+    const [input, setInput] = useState({
+        sale_barcode: '',
+        sale_buyer_name: '',
+    });
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setInput((prevState) => ({
+            ...prevState,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleAddSale = async (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+        try {
+            const body = {
+                sale_barcode: input.sale_barcode,
+                sale_buyer_name: input.sale_buyer_name,
+            };
+            await addSale(body);
+            console.log('DATA SENT', body);
+            refetch();
+        } catch (err) {}
+    };
+
+    const handleDeleteSale = async (id: number) => {
+        try {
+            await deleteSale(id);
+            refetch();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (results) {
+            navigate('/outbound/sale/kasir');
+        }
+        refetch();
+    }, [results, listSaleData, refetch]);
 
     return (
         <>
@@ -51,28 +117,56 @@ const Kasir = () => {
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     Code Document:
                                 </label>
-                                <input id="categoryName" type="text" value="LQDF5H012" className="mb-2 form-input w-[250px]" required />
+                                <input id="categoryName" type="text" value={twolastItem?.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     Buyer :
                                 </label>
-                                <input id="categoryName" type="text" value="John" placeholder="Rp" className=" form-input w-[250px]" required />
+                                <input
+                                    id="categoryName"
+                                    type="text"
+                                    name="sale_buyer_name"
+                                    onChange={handleInputChange}
+                                    value={input.sale_buyer_name}
+                                    placeholder="Nama"
+                                    className=" form-input w-[250px]"
+                                    required
+                                />
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     TOTAL :
                                 </label>
-                                <input id="categoryName" type="text" value="Rp. 200.000,00" placeholder="Rp" className=" form-input w-[250px]" required />
+                                <input id="categoryName" type="text" value={lastItem?.total_sale ?? ''} placeholder="Rp" className=" form-input w-[250px]" required />
                             </div>
-                            <div className="flex items-center justify-between mb-4">
-                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Scan Product :
-                                </label>
-                                <input id="categoryName" type="text" value="QR12565236" placeholder="Rp" className=" form-input w-[250px]" required />
+                            <div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                        Scan Product :
+                                    </label>
+                                    {/* <div className="relative w-[250px] ms-auto mb-4">
+                                        <input
+                                            type="text"
+                                            className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                            placeholder="Search..."
+                                            onChange={handleInputChange} value={input.sale_barcode}
+                                            name="sale_barcode"
+                                        />
+                                    </div> */}
+                                    <select id="productDropdown" name="sale_barcode" value={input.sale_barcode} onChange={handleInputChange} className="form-select w-[250px]">
+                                        <option value="">Select Product</option>
+                                        {productNewData &&
+                                            productNewData.map((product) => (
+                                                <option key={product.new_barcode_product} value={product.new_barcode_product}>
+                                                    {product.new_name_product}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </div>
                             </div>
                             <div className="mb-4">
-                                <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/akun/akun/list_akun/add_akun')}>
+                                <button type="button" className="btn btn-primary uppercase px-6" onClick={handleAddSale}>
                                     Add Sale
                                 </button>
                             </div>
@@ -109,11 +203,7 @@ const Kasir = () => {
                                     title: 'Opsi',
                                     render: (item: GetListSaleItem) => (
                                         <div className="flex items-center w-max mx-auto gap-6">
-                                            <button
-                                                type="button"
-                                                className="btn btn-outline-danger"
-                                                // onClick={() => handleDeleteAccount(item.id)}
-                                            >
+                                            <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteSale(item.id)}>
                                                 Delete
                                             </button>
                                         </div>
@@ -127,7 +217,6 @@ const Kasir = () => {
                             onPageChange={(prevPage) => setPage(prevPage)}
                         />
                     </div>
-
                 </div>
             </div>
         </>
