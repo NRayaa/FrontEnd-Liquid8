@@ -10,6 +10,8 @@ import TagColorData from './TagColorData';
 import ProductCheck from './ProductCheck';
 import { useCheckAllDocumentMutation } from '../../../store/services/riwayatApi';
 import NewBarcodeData from './NewBarcodeData';
+import BarcodePrinted from './BarcodePrinted';
+import { formatRupiah } from '../../../helper/functions';
 
 const MultiCheck = () => {
     const { state } = useLocation();
@@ -20,10 +22,20 @@ const MultiCheck = () => {
     const navigate = useNavigate();
     const [newPricePercentage, setNewPricePercentage] = useState<string>('0');
     const [percentageState, setPercentageState] = useState<string>('0');
+    const [isBarcode, setIsBarcode] = useState<boolean>(false);
+    const [newPriceBarcode, setNewPriceBarcode] = useState('');
+    const [oldPriceBarcode, setOldPriceBarcode] = useState('');
 
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
     const [keterangan, setKeterangan] = useState<string>('');
+
+    const showBarcode = () => {
+        setIsBarcode(true);
+    };
+    const hideBarcode = () => {
+        setIsBarcode(false);
+    };
 
     const handleInputBarcode = async () => {
         try {
@@ -42,18 +54,6 @@ const MultiCheck = () => {
     const resetProductCheckShow = () => {
         setIsProductCheck(false);
     };
-
-    useEffect(() => {
-        if (results.isSuccess) {
-            setIsProductCheck(true);
-            if (Array.isArray(results.data?.data.resource)) {
-                setKeterangan('<100K');
-            } else {
-                setKeterangan('>100K');
-            }
-            setInputBarcode('');
-        }
-    }, [results]);
 
     const tagColor = useMemo(() => {
         if (results?.data?.data?.resource?.length > 0) {
@@ -95,11 +95,16 @@ const MultiCheck = () => {
         setPercentageState(percentage);
     };
 
+    const handleSetNewPriceProduct = (newPrice: string) => {
+        setNewPriceBarcode(newPrice);
+    };
+
     useEffect(() => {
         const percentageInt = parseInt(percentageState);
         const newPriceInt = Math.floor(parseInt(newPrice ?? '0'));
 
         const result = (newPriceInt * percentageInt) / 100;
+        console.log('NEW PRICE NI BOS', results);
 
         setNewPricePercentage(JSON.stringify(result));
     }, [percentageState]);
@@ -109,6 +114,24 @@ const MultiCheck = () => {
             navigate('/inbound/check_history');
         }
     }, [checkResults]);
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            setIsProductCheck(true);
+            hideBarcode();
+            console.log('OLD PRICE NI BOS', oldData);
+            if (Array.isArray(results.data?.data.resource)) {
+                setKeterangan('<100K');
+            } else {
+                setKeterangan('>100K');
+            }
+            setInputBarcode('');
+        }
+    }, [results]);
+
+    useEffect(() => {
+        setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));
+    }, [oldData?.old_price_product]);
 
     return (
         <div>
@@ -189,8 +212,11 @@ const MultiCheck = () => {
                         resetProductCheckShow={resetProductCheckShow}
                         countPercentage={countPercentage}
                         newPricePercentage={newPricePercentage}
+                        showBarcode={showBarcode}
+                        handleSetNewPriceProduct={handleSetNewPriceProduct}
                     />
                 )}
+                {isBarcode && <BarcodePrinted newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}
             </div>
         </div>
     );
