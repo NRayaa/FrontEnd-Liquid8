@@ -217,7 +217,7 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/outbound/migrate/list_migrate/detail_migrate',
+        path: '/outbound/migrate/list_migrate/detail_migrate/:id',
         element: <DetailMigrate />,
         layout: 'default',
     },

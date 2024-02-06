@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
+import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconSend from '../../../components/Icon/IconSend';
+import { useGetListSaleQuery } from '../../../store/services/saleApi';
+import { GetListSaleItem } from '../../../store/services/types';
 
 const Kasir = () => {
     const navigate = useNavigate();
+    const [page, setPage] = useState<number>(1);
+    const [search] = useState<string>('');
+    const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
+
+    const listSale = useMemo(() => {
+        return listSaleData?.data.resource.data;
+    }, [listSaleData]);
+
     return (
         <>
             <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/" current="Cashier" />
@@ -68,45 +79,55 @@ const Kasir = () => {
                         </form>
                     </div>
 
-                    <div className="datatables col-span-1">
-                        <table className="panel text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        NO
-                                    </th>
-                                    
-                                    <th scope="col" className="px-6 py-3">
-                                        BARCODE
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        NAME
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        PRICE
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        OPSI
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td className="px-6 py-4">1</td>
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        PLTFSH0001
-                                    </th>
-                                    <td className="px-6 py-4">Baju Fashion</td>
-                                    <td className="px-6 py-4">Rp 5.000.000,-</td>
-                                    <td className="px-6 py-4 flex items-center space-x-2">
-                                        <button type="button" className="btn btn-outline-danger">
-                                            DELETE
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div className="datatables">
+                        <DataTable
+                            className="whitespace-nowrap table-hover"
+                            records={listSale}
+                            columns={[
+                                {
+                                    accessor: 'No',
+                                    title: 'No',
+                                    render: (item: GetListSaleItem, index: number) => <span>{index + 1}</span>,
+                                },
+                                {
+                                    accessor: 'Barcode',
+                                    title: 'Barcode',
+                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.code_document_sale}</span>,
+                                },
+                                {
+                                    accessor: 'name',
+                                    title: 'Name',
+                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_name_sale}</span>,
+                                },
+                                {
+                                    accessor: 'price',
+                                    title: 'Price',
+                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_price_sale}</span>,
+                                },
+                                {
+                                    accessor: 'Opsi',
+                                    title: 'Opsi',
+                                    render: (item: GetListSaleItem) => (
+                                        <div className="flex items-center w-max mx-auto gap-6">
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-danger"
+                                                // onClick={() => handleDeleteAccount(item.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    ),
+                                    textAlignment: 'center',
+                                },
+                            ]}
+                            totalRecords={listSaleData?.data.resource.total ?? 0}
+                            recordsPerPage={listSaleData?.data.resource.per_page ?? 10}
+                            page={page}
+                            onPageChange={(prevPage) => setPage(prevPage)}
+                        />
                     </div>
+
                 </div>
             </div>
         </>

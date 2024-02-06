@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { DeleteNewProductResponse, DetailExpiredProduct, DetailNewProduct, GetAllNewProduct, GetListAkun, ProductExpired } from './types';
+import { GetListAkun, } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const listAkunApi = createApi({
@@ -11,7 +11,7 @@ export const listAkunApi = createApi({
         }),
         createAccount: builder.mutation<any, any>({
             query: (body) => ({
-                url: '/users',
+                url: '/register',
                 method: 'POST',
                 body,
             }),

@@ -1,11 +1,11 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { IRootState } from '../../../store';
+import { useGetListMigrateQuery } from '../../../store/services/migrateApi';
+import { GetListMigrateItem } from '../../../store/services/types';
 
 const rowData = [
     {
@@ -85,124 +85,28 @@ const rowData = [
     },
 ];
 
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-    if (type === 15) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Berhasil Dikirim',
-            padding: '10px 20px',
-        });
-    }
-    if (type == 20) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Data Berhasil Ditambah',
-            padding: '10px 20px',
-        });
-    }
-};
 const ListMigrate = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState<number>(1);
+    const [search, setSearch] = useState('');
+    const { data: ListMigrateData, refetch } = useGetListMigrateQuery({ page, q: search });
+
+    const listMigrate = useMemo(() => {
+        return ListMigrateData?.data.resource.data;
+    }, [ListMigrateData]);
+
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
     const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'firstName'));
     const [recordsData, setRecordsData] = useState(initialRecords);
-
-    const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
         columnAccessor: 'id',
         direction: 'asc',
     });
 
-    useEffect(() => {
-        setPage(1);
-    }, [pageSize]);
-
-    useEffect(() => {
-        const from = (page - 1) * pageSize;
-        const to = from + pageSize;
-        setRecordsData([...initialRecords.slice(from, to)]);
-    }, [page, pageSize, initialRecords]);
-
-    useEffect(() => {
-        setInitialRecords(() => {
-            return rowData.filter((item) => {
-                return (
-                    item.id.toString().includes(search.toLowerCase()) ||
-                    item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                    item.dob.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.category.toLowerCase().includes(search.toLowerCase()) ||
-                    item.totalMasuk.toLowerCase().includes(search.toLowerCase()) ||
-                    item.barcode.toLowerCase().includes(search.toLowerCase()) ||
-                    item.phone.toLowerCase().includes(search.toLowerCase())
-                );
-            });
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
-
-    useEffect(() => {
-        const data = sortBy(initialRecords, sortStatus.columnAccessor);
-        setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-        setPage(1);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sortStatus]);
-    const formatDate = (date: string | number | Date) => {
-        if (date) {
-            const dt = new Date(date);
-            const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-            const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-            return day + '/' + month + '/' + dt.getFullYear();
-        }
-        return '';
-    };
-
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -212,16 +116,16 @@ const ListMigrate = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Repair Station</span>
+                    <span>Outbound</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>List Product Repair</span>
+                    <span>List Migrate</span>
                 </li>
             </ul>
             {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
             </div> */}
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">List Product Repair </h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">List Migrate </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:mr-auto rtl:ml-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -231,14 +135,38 @@ const ListMigrate = () => {
                     <DataTable
                         highlightOnHover
                         className="whitespace-nowrap table-hover "
-                        records={recordsData}
+                        records={listMigrate}
                         columns={[
-                            { accessor: 'id', title: 'NO', sortable: true },
-                            { accessor: 'barcode', title: 'DOCUMENT MIGRATE', sortable: true },
-                            { accessor: 'dob', title: 'DATE', sortable: true },
-                            { accessor: 'qty', title: 'QTY', sortable: true },
-                            // { accessor: 'dob', title: 'Tanggal', sortable: true },
-                            { accessor: 'totalMasuk', title: 'PRICE TOTAL', sortable: true },
+                            {
+                                accessor: 'No',
+                                title: 'No',
+                                render: (item: GetListMigrateItem, index: number) => <span>{index + 1}</span>,
+                            },
+                            {
+                                accessor: 'code_document_migrate',
+                                title: 'Document Migrate',
+                                render: (item: GetListMigrateItem) => <span className="font-semibold">{item.code_document_migrate}</span>,
+                            },
+                            {
+                                accessor: 'updated_at',
+                                title: 'Date',
+                                render: (item: GetListMigrateItem) => <span className="font-semibold">{item.updated_at}</span>,
+                            },
+                            {
+                                accessor: 'total_product_document_migrate',
+                                title: 'Qty',
+                                render: (item: GetListMigrateItem) => <span className="font-semibold">{item.total_product_document_migrate}</span>,
+                            },
+                            {
+                                accessor: 'total_price_document_migrate',
+                                title: 'Price Total',
+                                render: (item: GetListMigrateItem) => <span className="font-semibold">{item.total_price_document_migrate}</span>,
+                            },
+                            // { accessor: 'id', title: 'NO', sortable: true },
+                            // { accessor: 'barcode', title: 'DOCUMENT MIGRATE', sortable: true },
+                            // { accessor: 'dob', title: 'DATE', sortable: true },
+                            // { accessor: 'qty', title: 'QTY', sortable: true },
+                            // { accessor: 'totalMasuk', title: 'PRICE TOTAL', sortable: true },
                             // {
                             //     accessor: 'status',
                             //     title: 'STATUS',
@@ -260,14 +188,22 @@ const ListMigrate = () => {
                             //     ),
                             // },
                             {
-                                accessor: 'action',
-                                title: 'DETAIL',
+                                accessor: 'Detail',
+                                title: 'Detail',
                                 titleClassName: '!text-center',
-                                render: () => (
+                                render: (item: GetListMigrateItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/outbound/migrate/list_migrate/detail_migrate">
+                                        <Link
+                                            to={`/outbound/migrate/list_migrate/detail_migrate/${item.id}`}
+                                            state={{
+                                                code_document_migrate: item.code_document_migrate,
+                                                updated_at: item.updated_at,
+                                                total_product_document_migrate: item.total_product_document_migrate,
+                                                total_price_document_migrate: item.total_price_document_migrate,
+                                            }}
+                                        >
                                             <button type="button" className="btn btn-outline-info">
-                                                DETAIL
+                                                Detail
                                             </button>
                                         </Link>
                                         {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
@@ -277,16 +213,10 @@ const ListMigrate = () => {
                                 ),
                             },
                         ]}
-                        totalRecords={initialRecords.length}
-                        recordsPerPage={pageSize}
+                        totalRecords={ListMigrateData?.data.resource.total ?? 0}
+                        recordsPerPage={ListMigrateData?.data.resource.per_page ?? 10}
                         page={page}
-                        onPageChange={(p: number) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
-                        sortStatus={sortStatus}
-                        onSortStatusChange={setSortStatus}
-                        minHeight={200}
-                        paginationText={({ from, to, totalRecords }: any) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>

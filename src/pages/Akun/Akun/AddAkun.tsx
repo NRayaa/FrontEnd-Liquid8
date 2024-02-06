@@ -39,6 +39,7 @@ const AddAkun = () => {
                 role_id: input.role_id,
             };
             await createAccount(body);
+            console.log("DATA SENT", body)
         } catch (err) {}
     };
 
