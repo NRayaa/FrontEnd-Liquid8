@@ -987,4 +987,5 @@ export type {
     GetListRoleItem,
     GetListAkun,
     GetListAkunItem,
+    ItemDetailOldsProduct,
 };
