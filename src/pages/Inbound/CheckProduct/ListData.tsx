@@ -115,7 +115,7 @@ const ListData = () => {
                                 render: (item: CheckProductDocumentItem, index: number) => <span>{index + 1}</span>,
                             },
                             {
-                                accessor: 'date_document',
+                                accessor: 'Nama Data',
                                 title: 'Nama Data',
                                 render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.code_document}</span>,
                             },
