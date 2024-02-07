@@ -68,7 +68,7 @@ const MultiCheck = () => {
     };
 
     const tagColor = useMemo(() => {
-        if (results?.data?.data?.resource?.color_tags.length > 0) {
+        if (results?.data?.data?.resource?.color_tags !== undefined) {
             return results.data?.data.resource.color_tags[0];
         }
     }, [results]);
