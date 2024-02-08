@@ -30,6 +30,46 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td className="px-6 py-4">{detailCheckData?.total_data}</td>
                     <td className="px-6 py-4">{convertPercentage(detailCheckData?.precentage_total_data ?? '1')}</td>
                 </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">2</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Data In
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_data_in}</td>
+                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_in ?? '1')}</td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">3</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Data Lolos
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_data_lolos}</td>
+                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_lolos ?? '1')}</td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">4</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Data Damaged
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_data_damaged}</td>
+                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_damaged ?? '1')}</td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">5</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Data Abnormal
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_data_abnormal}</td>
+                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_abnormal ?? '1')}</td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">6</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Discrepancy
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_discrepancy}</td>
+                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_discrepancy ?? '1')}</td>
+                </tr>
             </tbody>
         </table>
     );

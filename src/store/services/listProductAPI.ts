@@ -6,8 +6,8 @@ export const listProductApi = createApi({
     reducerPath: 'listProductApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        GetListProductRepair: builder.query<GetListProductRepair, undefined>({
-            query: () => '/repair',
+        GetListProductRepair: builder.query<GetListProductRepair, { page: number; q: string }>({
+            query: ({ page, q }) => `/repair?page=${page}&q=${q}`,
         }),
         GetProductItem: builder.query<ProdcutItem, undefined>({
             query: (id) => `/new_products/${id}`,

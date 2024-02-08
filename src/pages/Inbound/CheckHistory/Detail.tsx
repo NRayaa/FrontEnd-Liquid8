@@ -14,6 +14,7 @@ const DetailCheckHistory = () => {
             return data.data.resource;
         }
     }, [data]);
+    
     return (
         <div className="panel px-2 lg:px-12 pt-5 pb-12">
             <div className="flex flex-col lg:flex-row items-end mb-8 justify-center lg:justify-start md:justify-start">

@@ -59,7 +59,7 @@ const AddCategory = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Max Price :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" required onChange={handleInputChange} name="max_price_category" value={input.max_price_category} />
+                        <input id="categoryName" type="text" className="form-input w-[250px]" onChange={handleInputChange} name="max_price_category" value={input.max_price_category} />
                     </div>
                     <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
                     <button type="submit" className="btn btn-primary mt-4 px-16">
