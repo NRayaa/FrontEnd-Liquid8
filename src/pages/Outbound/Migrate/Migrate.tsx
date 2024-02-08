@@ -3,7 +3,7 @@ import { BreadCrumbs } from '../../../components';
 import { useDeleteMigrateMutation, useGetIndexMigrateQuery, useMigrateFinishMutation, usePostMigrateMutation } from '../../../store/services/migrateApi';
 import { DataTable } from 'mantine-datatable';
 import { useNavigate } from 'react-router-dom';
-import { formatRupiah } from '../../../helper/functions';
+import { formatCurrency } from '../../../helper/functions';
 
 const Migrate = () => {
     const navigate = useNavigate();
@@ -145,7 +145,7 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_price_product',
                                     title: 'Price',
-                                    render: (e) => formatRupiah(e.new_price_product.toString() ?? '0'),
+                                    render: (e) => formatCurrency(e.new_price_product),
                                 },
                                 {
                                     accessor: 'opsi',
@@ -187,7 +187,7 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_price_product',
                                     title: 'Price',
-                                    render: (e) => formatRupiah(e.new_price_product.toString() ?? '0'),
+                                    render: (e) => formatCurrency(e.new_price_product),
                                 },
                                 {
                                     accessor: 'opsi',
