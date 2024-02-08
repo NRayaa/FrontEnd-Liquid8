@@ -10,6 +10,7 @@ import { useGetAllProductNewQuery } from '../../../store/services/productNewApi'
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import IconSearch from '../../../components/Icon/IconSearch';
+import { formatRupiah } from '../../../helper/functions';
 
 interface GetTotalSaleItem {
     total_sale: string;
@@ -251,7 +252,7 @@ const Kasir = () => {
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     TOTAL :
                                 </label>
-                                <input id="categoryName" type="text" value={lastItem?.total_sale ?? ''} placeholder="Rp" className=" form-input w-[250px]" required />
+                                <input id="categoryName" type="text" value={formatRupiah(lastItem?.total_sale ?? '')} placeholder="Rp" className=" form-input w-[250px]" required />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-4">
@@ -269,7 +270,7 @@ const Kasir = () => {
                                         />
                                         <button
                                             type="button"
-                                            className="h-7 w-7 border rounded-md absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
+                                            className="h-7 w-7 absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
                                             onClick={handleSearchButtonClick}
                                         >
                                             <IconSearch className="w-4 h-4" />
@@ -323,7 +324,7 @@ const Kasir = () => {
                                 {
                                     accessor: 'price',
                                     title: 'Price',
-                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_price_sale}</span>,
+                                    render: (item: GetListSaleItem) => <span className="font-semibold">{formatRupiah(item.product_price_sale)}</span>,
                                 },
                                 {
                                     accessor: 'Opsi',

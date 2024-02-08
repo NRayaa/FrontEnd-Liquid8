@@ -4,6 +4,7 @@ import { BreadCrumbs } from '../../../components';
 import { useGetListSaleDocumentQuery } from '../../../store/services/saleApi';
 import { GetListSaleDocumentItem } from '../../../store/services/types';
 import { DataTable } from 'mantine-datatable';
+import { formatRupiah } from '../../../helper/functions';
 
 const ListKasir = () => {
     const navigate = useNavigate();
@@ -76,7 +77,7 @@ const ListKasir = () => {
                             {
                                 accessor: 'price',
                                 title: 'Price',
-                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.total_price_document_sale}</span>,
+                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{formatRupiah(item.total_price_document_sale)}</span>,
                             },
                             {
                                 accessor: 'Opsi',
