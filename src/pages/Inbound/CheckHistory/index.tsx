@@ -8,7 +8,7 @@ import { formatDate } from '../../../helper/functions';
 const CheckHistory = () => {
     const [page, setPage] = useState<number>(1);
     const { data, refetch, isSuccess } = useGetRiwayatChecksQuery(page);
-    const [deleteRiwayatCheck, results] = useDeleteRiwayatCheckMutation();
+    const [deleteRiwayatCheck] = useDeleteRiwayatCheckMutation();
 
     const riwayatCheckData = useMemo(() => {
         if (data?.data.status && isSuccess) {
@@ -19,6 +19,7 @@ const CheckHistory = () => {
     const handleDeleteRiwayatCheck = async (id: number) => {
         try {
             await deleteRiwayatCheck(id);
+            refetch();
         } catch (err) {
             console.log(err);
         }

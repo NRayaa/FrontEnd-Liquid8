@@ -32,7 +32,7 @@ export const productNewApi = createApi({
             }),
         }),
         getDisplayExpired: builder.query<ProductExpired, { page: number; q: string }>({
-            query: ({ page, q }) => `/new_product/display-expired`,
+            query: ({ page, q }) => `/new_product/display-expired?page=${page}&q=${q}`,
         }),
     }),
 });

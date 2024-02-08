@@ -957,7 +957,7 @@ interface GetListSaleItem {
     id: number;
     code_document_sale?: string;
     product_name_sale?: string;
-    product_price_sale?: string;
+    product_price_sale: string;
     product_qty_sale?: string;
     created_at: string;
     updated_at: string;
@@ -1026,7 +1026,7 @@ interface GetListSaleDocumentItem {
     code_document_sale: string;
     buyer_name_document_sale: string;
     total_product_document_sale: string;
-    total_price_document_sale: number;
+    total_price_document_sale: string;
     status_document_sale: string;
     created_at: string;
     updated_at: string;
@@ -1050,6 +1050,36 @@ interface GetListSaleDocument {
             prev_page_url: null | string;
             to: number;
             total: number;
+        };
+    };
+}
+
+interface GetShowSaleDocumentItem {
+    id: number;
+    code_document_sale: string;
+    product_name_sale: string;
+    product_barcode_sale: string;
+    product_price_sale: string;
+    product_qty_sale: string;
+    status_sale: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetShowSaleDocument {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            code_document_sale: string;
+            buyer_name_document_sale: string;
+            total_product_document_sale: string;
+            total_price_document_sale: string;
+            status_document_sale: string;
+            created_at: string;
+            updated_at: string;
+            sales: GetShowSaleDocumentItem[];
         };
     };
 }
@@ -1123,4 +1153,6 @@ export type {
     GetListSaleDocument,
     GetListSaleDocumentItem,
     ItemDetailOldsProduct,
+    GetShowSaleDocument,
+    GetShowSaleDocumentItem,
 };
