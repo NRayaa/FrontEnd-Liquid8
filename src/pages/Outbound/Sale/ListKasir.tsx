@@ -71,12 +71,12 @@ const ListKasir = () => {
                             {
                                 accessor: 'qty',
                                 title: 'Qty',
-                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.total_price_document_sale}</span>,
+                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.total_product_document_sale}</span>,
                             },
                             {
                                 accessor: 'price',
                                 title: 'Price',
-                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.total_product_document_sale}</span>,
+                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.total_price_document_sale}</span>,
                             },
                             {
                                 accessor: 'Opsi',

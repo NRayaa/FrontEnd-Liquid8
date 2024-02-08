@@ -100,6 +100,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             setBarcodeStatus('LOLOS');
             handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
+            console.log("DATA SENT LOLOS", body)
         } catch (err) {
             console.log(err);
         }

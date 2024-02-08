@@ -11,95 +11,10 @@ import { useGetExpiredProductsQuery } from '../../../../store/services/productNe
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 
-const rowData = [
-    {
-        id: 1,
-        firstName: 'Caroline',
-        lastName: 'Jensen',
-        category: 'Fashion',
-        barcode: 'LQDF5H012',
-        totalMasuk: '105.000',
-        email: 'carolinejensen@zidant.com',
-        status: 'Expired',
-        QTY: '12',
-        hargaLama: 'Rp. 12.000',
-        hargaBaru: 'Rp. 14.000',
-    },
-    {
-        id: 2,
-        firstName: 'Celeste',
-        lastName: 'Grant',
-        category: 'Otomotif',
-        barcode: 'LQDF5H013',
-        totalMasuk: '203.000',
-        email: 'celestegrant@polarax.com',
-        dob: '1989-11-19',
-        status: 'Expired',
-        QTY: '34',
-        hargaLama: 'Rp. 10.000',
-        hargaBaru: 'Rp. 9.000',
-    },
-];
-
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-    if (type === 15) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Berhasil Dikirim',
-            padding: '10px 20px',
-        });
-    }
-    if (type == 20) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Data Berhasil Ditambah',
-            padding: '10px 20px',
-        });
-    }
-};
 const CreatePromo = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess } = useGetExpiredProductsQuery({ page, q: '' });
+    const [search, setSearch] = useState<string>('');
+    const { data, isSuccess } = useGetExpiredProductsQuery({ page, q: search });
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {
@@ -126,7 +41,15 @@ const CreatePromo = () => {
             </div> */}
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">Create Promo</h1>
-
+                <div className="relative w-[220px] ms-auto mb-4">
+                    <input
+                        type="text"
+                        className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     {/* <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />

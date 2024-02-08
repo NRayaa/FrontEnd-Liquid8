@@ -8,12 +8,12 @@ import { GetListDumpItem } from '../../../store/services/types';
 
 const ListDump = () => {
     const dispatch = useDispatch();
+    const [page, setPage] = useState<number>(1);
+    const [search, setSearch] = useState<string>('');
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const { data } = useGetListDumpQuery(undefined);
-    const [search, setSearch] = useState('');
-
+    const { data } = useGetListDumpQuery({ page, q: search });
     const dataListDump = useMemo(() => {
         return data?.data?.resource?.data;
     }, [data]);
@@ -53,6 +53,10 @@ const ListDump = () => {
                             { accessor: 'firstName', title: 'PRODUCT', render: (item: GetListDumpItem) => <span>{item.new_name_product}</span> },
                             { accessor: 'harga', title: 'HARGA', render: (item: GetListDumpItem) => <span>{item.new_price_product} </span> },
                         ]}
+                        totalRecords={data?.data.resource.total ?? 0}
+                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>
