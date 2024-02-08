@@ -388,6 +388,8 @@ interface NewProductItem {
     new_quality: string;
     new_category_product: string;
     new_tag_product: null | string;
+    condition?: string;
+    deskripsi?: string;
     created_at: string;
     updated_at: string;
 }
@@ -435,6 +437,7 @@ interface ProductExpiredItem {
     new_name_product: null | string;
     new_quantity_product: string;
     new_price_product: string;
+    old_price_product?: string;
     new_date_in_product: string;
     new_status_product: string;
     new_quality: string;
@@ -950,8 +953,7 @@ interface GetListAkun {
     };
 }
 
-interface GetListSaleItem 
-{
+interface GetListSaleItem {
     id: number;
     code_document_sale?: string;
     product_name_sale?: string;
@@ -961,8 +963,7 @@ interface GetListSaleItem
     updated_at: string;
 }
 
-interface GetTotalSaleItem 
-{
+interface GetTotalSaleItem {
     total_sale: string;
 }
 
@@ -972,7 +973,7 @@ interface GetListSale {
         message: string;
         resource: {
             current_page: number;
-            data:(GetListSaleItem | GetTotalSaleItem)[];            
+            data: (GetListSaleItem | GetTotalSaleItem)[];
             first_page_url: string;
             from: null | string;
             last_page: number;

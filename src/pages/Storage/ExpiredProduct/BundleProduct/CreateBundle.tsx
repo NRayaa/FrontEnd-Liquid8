@@ -1,7 +1,7 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
+import { useGetDisplayExpiredQuery, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah, generateRandomString } from '../../../../helper/functions';
 import {
@@ -16,7 +16,7 @@ const CreateBundle = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetExpiredProductsQuery({ page: leftTablePage, q: searchLeftTable });
+    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
     const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
     const [filterProductBundle, results] = useFilterProductBundleMutation();
     const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();

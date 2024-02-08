@@ -7,14 +7,14 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { IRootState } from '../../../../store';
 import IconPlus from '../../../../components/Icon/IconPlus';
-import { useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
+import { useGetDisplayExpiredQuery, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 
 const CreatePromo = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess } = useGetExpiredProductsQuery({ page, q: search });
+    const { data, isSuccess } = useGetDisplayExpiredQuery({ page, q: search });
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {
