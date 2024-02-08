@@ -74,13 +74,10 @@ const MultiCheck = () => {
     }, [results]);
 
     const oldData = useMemo(() => {
-        if (Array.isArray(results.data?.data.resource.product)) {
-            return results.data?.data.resource.color_tags[0];
-        } else {
+        if (results.isSuccess) {
             return results.data?.data.resource.product;
         }
     }, [results]);
-    console.log("OLD DATA",oldData);
 
     const newPrice = useMemo(() => {
         if (!Array.isArray(results.data?.data.resource.product)) {
