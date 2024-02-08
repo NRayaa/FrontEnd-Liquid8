@@ -21,10 +21,14 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
     const fetchData = async () => {
         if (file) {
             const formdata = new FormData();
+            const token = localStorage.getItem('token');
+            const header = new Headers();
             formdata.append('file', file, '[PROXY]');
 
+            header.append('Authorization', `Bearer ${token}`);
             const requestOptions = {
                 method: 'POST',
+                headers: header,
                 body: formdata,
                 redirect: 'follow' as RequestRedirect,
             };
