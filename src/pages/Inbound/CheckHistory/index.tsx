@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useGetRiwayatChecksQuery } from '../../../store/services/riwayatApi';
+import { useDeleteRiwayatCheckMutation, useGetRiwayatChecksQuery } from '../../../store/services/riwayatApi';
 import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { GetRiwayatcheckItem } from '../../../store/services/types';
@@ -8,12 +8,21 @@ import { formatDate } from '../../../helper/functions';
 const CheckHistory = () => {
     const [page, setPage] = useState<number>(1);
     const { data, refetch, isSuccess } = useGetRiwayatChecksQuery(page);
+    const [deleteRiwayatCheck, results] = useDeleteRiwayatCheckMutation();
 
     const riwayatCheckData = useMemo(() => {
         if (data?.data.status && isSuccess) {
             return data.data.resource.data;
         }
     }, [data]);
+
+    const handleDeleteRiwayatCheck = async (id: number) => {
+        try {
+            await deleteRiwayatCheck(id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useEffect(() => {
         refetch();
@@ -69,7 +78,7 @@ const CheckHistory = () => {
                                         Detail
                                     </button>
                                 </Link>
-                                <button type="button" className="btn btn-outline-danger" onClick={() => null}>
+                                <button type="button" className="btn btn-outline-danger"  onClick={() => handleDeleteRiwayatCheck(item.id)}>
                                     Delete
                                 </button>
                             </div>

@@ -6,16 +6,9 @@ export const listDumpApi = createApi({
     reducerPath: 'listDumpApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        GetListDump: builder.query<GetListDump, undefined>({
-            query: () => '/dumps',
+        GetListDump: builder.query<GetListDump, { page: number; q: string }>({
+            query: ({ page, q }) => `/dumps?page=${page}&q=${q}`,
         }),
-        // updateProductRepair: builder.mutation<any, any>({
-        //     query: ({ id, body }) => ({
-        //         url: `/repair/update/${id}`,
-        //         method: 'PUT',
-        //         body,
-        //     }),
-        // }),
     }),
 });
 

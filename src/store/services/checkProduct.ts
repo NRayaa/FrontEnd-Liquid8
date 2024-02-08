@@ -12,7 +12,13 @@ export const checkProduct = createApi({
         getBarcode: builder.query<GetBarcodeResponse | undefined, GetBarcodeBody>({
             query: ({ code_document, old_barcode_product }) => `/search_barcode_product?code_document=${code_document}&old_barcode_product=${old_barcode_product}`,
         }),
+        deleteDocument: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/documents/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery } = checkProduct;
+export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation } = checkProduct;

@@ -19,7 +19,13 @@ export const riwayatApi = createApi({
         getDetailRiwayatCheck: builder.query<DetailGetRiwayatcheck, number | undefined | string>({
             query: (id) => `/historys/${id}`,
         }),
+        deleteRiwayatCheck: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/historys/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery } = riwayatApi;
+export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery, useDeleteRiwayatCheckMutation } = riwayatApi;

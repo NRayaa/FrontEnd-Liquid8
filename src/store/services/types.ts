@@ -149,6 +149,7 @@ interface GetBarcodeBody {
     code_document: string;
     old_barcode_product: string;
 }
+
 interface Product {
     id: number;
     code_document: string;
@@ -825,7 +826,19 @@ interface GetListProductRepair {
         status: boolean;
         message: string;
         resource: {
+            current_page: number;
             data: GetListProductRepairItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
         };
     };
 }
@@ -853,7 +866,19 @@ interface GetListDump {
         status: boolean;
         message: string;
         resource: {
+            current_page: number;
             data: GetListDumpItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
         };
     };
 }

@@ -7,84 +7,6 @@ import { Link } from 'react-router-dom';
 import { useGetListMigrateQuery } from '../../../store/services/migrateApi';
 import { GetListMigrateItem } from '../../../store/services/types';
 
-const rowData = [
-    {
-        id: 1,
-        firstName: 'Caroline',
-        lastName: 'Jensen',
-        category: 'Fashion',
-        barcode: 'LQDF5H012',
-        totalMasuk: '105.000',
-        email: 'carolinejensen@zidant.com',
-        dob: '2004-05-28',
-        status: 'Broken',
-        qty: '2',
-        address: {
-            street: '529 Scholes Street',
-            city: 'Temperanceville',
-            zipcode: 5235,
-            geo: {
-                lat: 23.806115,
-                lng: 164.677197,
-            },
-        },
-        phone: '+1 (821) 447-3782',
-        isActive: true,
-        age: 39,
-        company: 'POLARAX',
-    },
-    {
-        id: 2,
-        firstName: 'Celeste',
-        lastName: 'Grant',
-        category: 'Otomotif',
-        barcode: 'LQDF5H013',
-        totalMasuk: '203.000',
-        email: 'celestegrant@polarax.com',
-        dob: '2023-07-21',
-        qty: '1',
-        status: 'Maintenance',
-        address: {
-            street: '639 Kimball Street',
-            city: 'Bascom',
-            zipcode: 8907,
-            geo: {
-                lat: 65.954483,
-                lng: 98.906478,
-            },
-        },
-        phone: '+1 (838) 515-3408',
-        isActive: false,
-        age: 32,
-        company: 'MANGLO',
-    },
-    {
-        id: 3,
-        firstName: 'Celeste',
-        lastName: 'Grant',
-        category: 'Accessories',
-        barcode: 'LQDF6L020',
-        totalMasuk: '203.000',
-        email: 'celestegrant@polarax.com',
-        dob: '2006-12-12',
-        status: 'Fixed',
-        qty: '2',
-        address: {
-            street: '639 Kimball Street',
-            city: 'Bascom',
-            zipcode: 8907,
-            geo: {
-                lat: 65.954483,
-                lng: 98.906478,
-            },
-        },
-        phone: '+1 (838) 515-3408',
-        isActive: false,
-        age: 32,
-        company: 'MANGLO',
-    },
-];
-
 const ListMigrate = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -98,14 +20,7 @@ const ListMigrate = () => {
         return ListMigrateData?.data.resource.data;
     }, [ListMigrateData]);
 
-    const PAGE_SIZES = [10, 20, 30, 50, 100];
-    const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'firstName'));
-    const [recordsData, setRecordsData] = useState(initialRecords);
-    const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-        columnAccessor: 'id',
-        direction: 'asc',
-    });
+    console.log(ListMigrateData);
 
     return (
         <div>
@@ -162,35 +77,9 @@ const ListMigrate = () => {
                                 render: (item: GetListMigrateItem) => <span className="font-semibold">{item.total_product_document_migrate}</span>,
                             },
                             {
-                                accessor: 'total_price_document_migrate',
-                                title: 'Price Total',
-                                render: (item: GetListMigrateItem) => <span className="font-semibold">{item.total_price_document_migrate}</span>,
+                                accessor: 'destiny_document_migrate',
+                                title: 'Destiny',
                             },
-                            // { accessor: 'id', title: 'NO', sortable: true },
-                            // { accessor: 'barcode', title: 'DOCUMENT MIGRATE', sortable: true },
-                            // { accessor: 'dob', title: 'DATE', sortable: true },
-                            // { accessor: 'qty', title: 'QTY', sortable: true },
-                            // { accessor: 'totalMasuk', title: 'PRICE TOTAL', sortable: true },
-                            // {
-                            //     accessor: 'status',
-                            //     title: 'STATUS',
-                            //     sortable: true,
-                            //     render: (data: any) => (
-                            //         <span
-                            //             className={`badge whitespace-nowrap ${
-                            //                 data.status === 'Fixed'
-                            //                     ? 'bg-success'
-                            //                     : data.status === 'Broken'
-                            //                     ? 'bg-danger'
-                            //                     : data.status === 'Maintenance'
-                            //                     ? 'bg-warning'
-                            //                     : 'bg-success'
-                            //             }`}
-                            //         >
-                            //             {data.status}
-                            //         </span>
-                            //     ),
-                            // },
                             {
                                 accessor: 'Detail',
                                 title: 'Detail',
@@ -210,9 +99,6 @@ const ListMigrate = () => {
                                                 Detail
                                             </button>
                                         </Link>
-                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
-                                            DELETE
-                                        </button> */}
                                     </div>
                                 ),
                             },
@@ -221,6 +107,7 @@ const ListMigrate = () => {
                         recordsPerPage={ListMigrateData?.data.resource.per_page ?? 10}
                         page={page}
                         onPageChange={(prevPage) => setPage(prevPage)}
+                        minHeight={200}
                     />
                 </div>
             </div>

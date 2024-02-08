@@ -15,8 +15,8 @@ export const palletApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        displayPalletLists: builder.query<DisplayPallet, number>({
-            query: (page) => `/palet/display?page=${page}`,
+        displayPalletLists: builder.query<DisplayPallet, { page: number; q: string }>({
+            query: ({ page, q }) => `/palet/display?page=${page}&q=${q}`,
         }),
         filterPallet: builder.mutation<FilterDisplayPallet, number>({
             query: (id) => ({

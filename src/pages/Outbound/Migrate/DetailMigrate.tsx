@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { IRootState } from '../../../store';
 import IconPlus from '../../../components/Icon/IconPlus';
 import IconSend from '../../../components/Icon/IconSend';
+import { useGetShowMigrateQuery } from '../../../store/services/migrateApi';
 
 const rowData = [
     {
@@ -41,6 +42,7 @@ const DetailMigrate = () => {
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
+    const { id } = useParams();
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
@@ -48,6 +50,12 @@ const DetailMigrate = () => {
     const [recordsData, setRecordsData] = useState(initialRecords);
 
     const [search, setSearch] = useState('');
+    const { data: ShowMigrateData } = useGetShowMigrateQuery(id);
+
+    const ShowMigrate = useMemo(() => {
+        return ShowMigrateData?.data.resource;
+    }, [ShowMigrateData]);
+    console.log(ShowMigrate);
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
         columnAccessor: 'id',
         direction: 'asc',
@@ -86,7 +94,7 @@ const DetailMigrate = () => {
         setPage(1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
-    
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -108,29 +116,29 @@ const DetailMigrate = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Migrate</h1>
             </div>
             <div>
-            <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
-                        <div className="bg-primary absolute mt-2 text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
-                            <IconSend fill className="w-12 h-12" />
+                <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
+                    <div className="bg-primary absolute mt-2 text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
+                        <IconSend fill className="w-12 h-12" />
+                    </div>
+                    <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
+                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                            <div className="text-white-dark mr-2">DOC MIGRATE :</div>
+                            <div className="whitespace-nowrap">LQDF5H012</div>
                         </div>
-                        <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
-                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                                <div className="text-white-dark mr-2">DOC MIGRATE :</div>
-                                <div className="whitespace-nowrap">LQDF5H012</div>
-                            </div>
-                            <div className=" items-center text-lg w-full justify-between mb-2">
-                                <div className="text-white-dark">QTY :</div>
-                                <ul className="space-y-3 list-inside list-disc font-semibold">1</ul>
-                            </div>
-                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                                <div className="text-white-dark mr-2">PRICE TOTAL :</div>
-                                <div className="whitespace-nowrap">Rp.150.000</div>
-                            </div>
-                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                                <div className="text-white-dark mr-2">DESTINATION :</div>
-                                <div className="whitespace-nowrap">Jakarta</div>
-                            </div>
+                        <div className=" items-center text-lg w-full justify-between mb-2">
+                            <div className="text-white-dark">QTY :</div>
+                            <ul className="space-y-3 list-inside list-disc font-semibold">1</ul>
+                        </div>
+                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                            <div className="text-white-dark mr-2">PRICE TOTAL :</div>
+                            <div className="whitespace-nowrap">Rp.150.000</div>
+                        </div>
+                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                            <div className="text-white-dark mr-2">DESTINATION :</div>
+                            <div className="whitespace-nowrap">Jakarta</div>
                         </div>
                     </div>
+                </div>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -141,13 +149,13 @@ const DetailMigrate = () => {
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
-                            records={recordsData}
+                            records={ShowMigrate?.migrates}
                             columns={[
                                 { accessor: 'id', title: 'No', sortable: true },
-                                { accessor: 'barcode', title: 'Barcode LQD', sortable: true },
-                                { accessor: 'firstName', title: 'Nama Produk', sortable: true },
-                                { accessor: 'QTY', title: 'QTY', sortable: true },
-                                { accessor: 'totalMasuk', title: 'Harga', sortable: true },
+                                { accessor: 'new_barcode_product', title: 'Barcode LQD', sortable: true },
+                                { accessor: 'new_name_product', title: 'Nama Produk', sortable: true },
+                                { accessor: 'new_qty_product', title: 'QTY', sortable: true },
+                                { accessor: 'new_price_product', title: 'Harga', sortable: true },
                                 // {
                                 //     accessor: 'action',
                                 //     title: 'Opsi',

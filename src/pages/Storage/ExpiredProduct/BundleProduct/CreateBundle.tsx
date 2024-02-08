@@ -15,7 +15,8 @@ import {
 const CreateBundle = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
-    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: '' });
+    const [searchLeftTable, setSearchLeftTable] = useState<string>('');
+    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
     const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
     const [filterProductBundle, results] = useFilterProductBundleMutation();
     const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
@@ -30,7 +31,7 @@ const CreateBundle = () => {
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {
-            return data.data.resource.data;
+            return data?.data.resource.data;
         }
     }, [data]);
 
@@ -38,7 +39,7 @@ const CreateBundle = () => {
         if (filterBundles.isSuccess) {
             return filterBundles.data.data.resource.data.data;
         }
-    }, [filterBundles.data]);
+    }, [filterBundles.data, data]);
 
     const handleAddFilterBundle = async (id: number) => {
         try {
@@ -150,6 +151,13 @@ const CreateBundle = () => {
                         </label>
                         <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={customPrice} onChange={(e) => setCustomPrice(e.target.value)} />
                     </div>
+                    <input
+                        type="text"
+                        className="mt-4 form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                        placeholder="Search..."
+                        value={searchLeftTable}
+                        onChange={(e) => setSearchLeftTable(e.target.value)}
+                    />
                 </form>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     {/* <div className="ltr:ml-auto rtl:mr-auto mx-6">

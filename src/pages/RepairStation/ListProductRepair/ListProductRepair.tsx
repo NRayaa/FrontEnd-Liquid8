@@ -13,7 +13,9 @@ import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 
 const ListProductRepair = () => {
     const dispatch = useDispatch();
-    const { data: listProductData, refetch } = useGetListProductRepairQuery(undefined);
+    const [page, setPage] = useState<number>(1);
+    const [search, setSearch] = useState<string>('');
+    const { data: listProductData, refetch } = useGetListProductRepairQuery({ page, q: search });
     const { data: categoriesData } = useGetCategoriesQuery(undefined);
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
@@ -24,7 +26,7 @@ const ListProductRepair = () => {
     const [repair, setRepair] = useState(false);
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsMutation();
-    const [search, setSearch] = useState('');
+
     const dataListProductRepair = useMemo(() => {
         return listProductData?.data?.resource?.data;
     }, [listProductData]);
@@ -80,8 +82,8 @@ const ListProductRepair = () => {
                 old_barcode_product: productData?.old_barcode_product,
                 old_price_product: productData?.old_price_product,
                 new_status_product: productData?.new_status_product,
-                new_barcode_product: input.new_barcode_product,
-                new_name_product: input.new_name_product,
+                new_barcode_product: productData?.new_barcode_product,
+                new_name_product: productData?.new_name_product,
                 new_price_product: calculatedPrice,
                 new_quantity_product: input.new_quantity_product,
                 new_category_product: input.new_category_product,
@@ -119,17 +121,12 @@ const ListProductRepair = () => {
         return selectedCategoryItem ? parseFloat(selectedCategoryItem.discount_category) : 0;
     };
 
-    const handleCategoryChange = (categoryId: number) => {
-        setSelectedCategory(categoryId);
-    };
     const [discount, setDiscount] = useState<number>(0);
     const [calculatedPrice, setCalculatedPrice] = useState<string>('0');
 
     useEffect(() => {
         const calculatedDiscount = calculateDiscount();
         setDiscount(calculatedDiscount);
-
-        // Assuming you have other properties like old_price_product, update this part accordingly
         const oldPrice = parseFloat(productData?.old_price_product || '0');
         const discountedPrice = (oldPrice * (100 - calculatedDiscount)) / 100;
         setCalculatedPrice(discountedPrice.toFixed(2));
@@ -228,7 +225,7 @@ const ListProductRepair = () => {
                                                                 placeholder="Enter Barcode"
                                                                 className="form-input"
                                                                 name="new_barcode_product"
-                                                                value={input.new_barcode_product || ''}
+                                                                value={productData?.new_barcode_product || ''}
                                                                 onChange={handleInputChange}
                                                             />
                                                         </div>
@@ -240,7 +237,7 @@ const ListProductRepair = () => {
                                                                 placeholder="Enter Nama"
                                                                 className="form-input"
                                                                 name="new_name_product"
-                                                                value={input.new_name_product || ''}
+                                                                value={productData?.new_name_product || ''}
                                                                 onChange={handleInputChange}
                                                             />
                                                         </div>
@@ -419,6 +416,10 @@ const ListProductRepair = () => {
                                 ),
                             },
                         ]}
+                        totalRecords={listProductData?.data?.resource?.total ?? 0}
+                        recordsPerPage={listProductData?.data?.resource?.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>

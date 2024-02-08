@@ -16,7 +16,8 @@ import { useNavigate } from 'react-router-dom';
 const PalletGenerate = () => {
     const [pageLeftTable, setPageLeftTable] = useState<number>(1);
     const [pageRightTable, setPageRightTable] = useState<number>(1);
-    const displayLists = useDisplayPalletListsQuery(pageLeftTable);
+    const [searchLeftTable, setSearchLeftTable] = useState<string>('');
+    const displayLists = useDisplayPalletListsQuery({ page: pageLeftTable, q: searchLeftTable });
     const filterLists = useFilterProductListsQuery(pageRightTable);
     const [filterPallet, results] = useFilterPalletMutation();
     const [deleteFilterProduct, deleteResults] = useDeleteFilterProductMutation();
@@ -154,6 +155,15 @@ const PalletGenerate = () => {
                 </form>
             </div>
             <div className="datatables mt-8">
+                <div className="relative w-[260px] mb-8">
+                    <input
+                        type="text"
+                        className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                        placeholder="Search..."
+                        value={searchLeftTable}
+                        onChange={(e) => setSearchLeftTable(e.target.value)}
+                    />
+                </div>
                 <div className="grid grid-cols-5 gap-4">
                     <div className="datatables xl:col-span-3">
                         <DataTable
