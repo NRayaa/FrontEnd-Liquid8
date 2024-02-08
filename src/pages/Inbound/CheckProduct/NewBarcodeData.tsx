@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react';
-import { formatRupiah } from '../../../helper/functions';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 interface NewBarcodeData {
     barcode: string;
@@ -7,30 +6,26 @@ interface NewBarcodeData {
     newPrice: string;
     qty: string;
     header: string;
-    onChangePrice: (price: string) => void;
-    onChangeQty: (qty: string) => void;
+    handleSetNewPercentagePriceInput: (price: string) => void;
+    handleSetCustomQuantityInput: (qty: string) => void;
 }
 
-const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header, onChangePrice, onChangeQty }) => {
-    const [editablePrice, setEditablePrice] = useState(newPrice);
-    const [editableQty, setEditableQty] = useState(qty);
-    // const price = useMemo(() => {
-    //     return formatRupiah(newPrice);
-    // }, [newPrice]);
-    const price = useMemo(() => {
-        return formatRupiah(editablePrice);
-    }, [editablePrice]);
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header, handleSetNewPercentagePriceInput, handleSetCustomQuantityInput }) => {
+    const [inputQuantity, setInputQuantity] = useState<string>('');
+    const [inputPrice, setInputPrice] = useState<string>('');
 
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
-        setEditablePrice(value);
-        onChangePrice(value);
+    useEffect(() => {
+        setInputPrice(newPrice);
+        setInputQuantity(qty);
+    }, [qty, newPrice]);
+
+    const handleInputQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputQuantity(e.target.value);
+        handleSetCustomQuantityInput(e.target.value);
     };
-
-    const handleQtyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
-        setEditableQty(value);
-        onChangeQty(value);
+    const handleInputPrice = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputPrice(e.target.value);
+        handleSetNewPercentagePriceInput(e.target.value);
     };
 
     return (
@@ -44,21 +39,13 @@ const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty
                 <label htmlFor="gridNama1">Nama</label>
                 <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
             </div>
-            {/* <div>
+            <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={price} />
+                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={inputPrice} onChange={handleInputPrice} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
-                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={qty} />
-            </div> */}
-            <div>
-                <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" value={editablePrice} onChange={handlePriceChange} />
-            </div>
-            <div>
-                <label htmlFor="gridQTY1">QTY</label>
-                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={editableQty} onChange={handleQtyChange} />
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={inputQuantity} onChange={handleInputQuantity} />
             </div>
         </div>
     );

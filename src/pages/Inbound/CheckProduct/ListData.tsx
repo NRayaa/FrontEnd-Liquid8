@@ -116,7 +116,7 @@ const ListData = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        records={data?.data.resource.data}
+                        records={listsData}
                         columns={[
                             {
                                 accessor: 'id',

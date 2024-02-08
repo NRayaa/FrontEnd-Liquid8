@@ -38,8 +38,6 @@ const Sidebar = () => {
                     } else {
                         console.error('No .nav-link elements found.');
                     }
-                } else {
-                    console.error('No parent li.menu element found.');
                 }
             } else {
                 console.error('No ul.sub-menu element found.');
