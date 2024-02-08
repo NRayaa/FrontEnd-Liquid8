@@ -80,6 +80,7 @@ const MultiCheck = () => {
             return results.data?.data.resource.product;
         }
     }, [results]);
+    console.log("OLD DATA",oldData);
 
     const newPrice = useMemo(() => {
         if (!Array.isArray(results.data?.data.resource.product)) {
@@ -193,10 +194,10 @@ const MultiCheck = () => {
                         <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
                             <BarcodeData
                                 header="OLD DATA"
-                                barcode={!isResetValue ? oldData?.old_barcode_product : ''}
-                                nama={!isResetValue ? oldData?.old_name_product : ''}
-                                harga={!isResetValue ? oldData?.old_price_product : ''}
-                                qty={!isResetValue ? oldData?.old_quantity_product : ''}
+                                barcode={!isResetValue ? oldData?.product.old_barcode_product : ''}
+                                nama={!isResetValue ? oldData?.product.old_name_product : ''}
+                                harga={!isResetValue ? oldData?.product.old_price_product : ''}
+                                qty={!isResetValue ? oldData?.product.old_quantity_product : ''}
                             />
                             {!tagColor || tagColor === undefined ? (
                                 <NewBarcodeData
@@ -224,7 +225,7 @@ const MultiCheck = () => {
                 </div>
                 {isProductCheck && (
                     <ProductCheck
-                        oldData={oldData}
+                        oldData={oldData.product}
                         tagColor={tagColor}
                         resetValueMultiCheck={resetValueMultiCheck}
                         resetProductCheckShow={resetProductCheckShow}

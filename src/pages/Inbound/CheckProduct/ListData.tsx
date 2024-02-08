@@ -4,7 +4,7 @@ import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
+import { useDeleteDocumentMutation, useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
 import { CheckProductDocumentItem } from '../../../store/services/types';
 import { formatDate } from '../../../helper/functions';
 
@@ -71,16 +71,25 @@ const ListData = () => {
     });
 
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess } = useDocumentsCheckProductsQuery(page);
-
+    const { data, isSuccess, refetch } = useDocumentsCheckProductsQuery(page);
+    const [deleteDocument] = useDeleteDocumentMutation();
     const [search, setSearch] = useState<string>('');
     const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
+    const handleDeleteDocument = async (id: number) => {
+        try {
+            await deleteDocument(id);
+            refetch();
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useEffect(() => {
         if (isSuccess && data.data.message) {
             setListsData(data.data.resource.data);
         }
-    }, [data]);
+        refetch()
+    }, [data, refetch]);
 
     return (
         <div>
@@ -115,9 +124,9 @@ const ListData = () => {
                                 render: (item: CheckProductDocumentItem, index: number) => <span>{index + 1}</span>,
                             },
                             {
-                                accessor: 'Nama Data',
+                                accessor: 'base_document',
                                 title: 'Nama Data',
-                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.code_document}</span>,
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.base_document}</span>,
                             },
 
                             {
@@ -166,7 +175,7 @@ const ListData = () => {
                                                 Detail
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert(11)}>
+                                        <button type="button" className="btn btn-outline-danger"onClick={() => handleDeleteDocument(item.id)}>
                                             Delete
                                         </button>
                                     </div>
