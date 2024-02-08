@@ -232,7 +232,8 @@ interface ProdcutItem {
     old_barcode_product: string;
     new_barcode_product: string;
     new_name_product: string;
-    new_quantity_product: number;
+    new_quantity_product: string;
+    old_price_product: string;
     new_price_product: string;
     new_date_in_product: string;
     new_status_product: string;
@@ -376,6 +377,7 @@ interface NewProductItem {
     id: number;
     code_document: string;
     old_barcode_product: string;
+    old_price_product: string;
     new_barcode_product: string;
     new_name_product: string;
     new_quantity_product: string;
@@ -410,6 +412,14 @@ interface GetAllNewProduct {
     };
 }
 interface DeleteNewProductResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: NewProductItem;
+    };
+}
+
+interface DetailNewProduct {
     data: {
         status: boolean;
         message: string;
@@ -581,7 +591,7 @@ interface CreateBundleBody {
     name_bundle: string;
     total_price_bundle: number;
     total_price_custom_bundle: number;
-    total_product_bundle: number;
+    total_product_bundle: number | undefined;
     barcode_bundle: string;
 }
 interface PromoListItem {
@@ -769,7 +779,7 @@ interface CreatePaletBody {
     name_palet: string;
     category_palet: string;
     total_price_palet: string;
-    total_product_palet: string;
+    total_product_palet: number | undefined;
     palet_barcode: string;
 }
 interface CreatePaletResponse {
@@ -814,7 +824,207 @@ interface GetListProductRepair {
         resource: {
             data: GetListProductRepairItem[];
         };
-        data: GetListProductRepairItem[];
+    };
+}
+
+interface GetListDumpItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListDump {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            data: GetListDumpItem[];
+        };
+    };
+}
+interface CreatePromo {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            new_product_id: string;
+            name_promo: string;
+            discount_promo: string;
+            price_promo: string;
+            updated_at: string;
+            created_at: string;
+            id: number;
+        };
+    };
+}
+interface CreatePromoBody {
+    new_product_id: number | string | undefined;
+    name_promo: string | string;
+    discount_promo: number | string;
+    price_promo: number | string;
+}
+
+interface GetListRoleItem {
+    id: number;
+    role_name: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListRole {
+    data: {
+        status: boolean;
+        message: string;
+        resource: GetListRoleItem;
+    };
+}
+
+interface GetListAkunItem {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
+    email_verified_at: string;
+    password: string;
+    role_id: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListAkun {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListAkunItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetListSaleItem 
+{
+    id: number;
+    code_document_sale?: string;
+    product_name_sale?: string;
+    product_price_sale?: string;
+    product_qty_sale?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetTotalSaleItem 
+{
+    total_sale: string;
+}
+
+interface GetListSale {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data:(GetListSaleItem | GetTotalSaleItem)[];            
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetListMigrateItem {
+    id: number;
+    code_document_migrate: string;
+    destiny_document_migrate: string;
+    total_product_document_migrate: string;
+    total_price_document_migrate: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListMigrate {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListMigrateItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetListSaleDocumentItem {
+    id: number;
+    code_document_sale: string;
+    buyer_name_document_sale: string;
+    total_product_document_sale: string;
+    total_price_document_sale: number;
+    status_document_sale: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListSaleDocument {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListSaleDocumentItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
     };
 }
 
@@ -843,6 +1053,7 @@ export type {
     DetailGetRiwayatcheck,
     GetAllNewProduct,
     NewProductItem,
+    DetailNewProduct,
     DeleteNewProductResponse,
     ProductExpired,
     DetailExpiredProduct,
@@ -871,6 +1082,19 @@ export type {
     CreatePaletBody,
     GetListProductRepair,
     GetListProductRepairItem,
-    
+    GetListDump,
+    GetListDumpItem,
+    CreatePromo,
+    CreatePromoBody,
+    GetListRole,
+    GetListRoleItem,
+    GetListAkun,
+    GetListAkunItem,
+    GetListSale,
+    GetListSaleItem,
+    GetListMigrate,
+    GetListMigrateItem,
+    GetListSaleDocument,
+    GetListSaleDocumentItem,
     ItemDetailOldsProduct,
 };
