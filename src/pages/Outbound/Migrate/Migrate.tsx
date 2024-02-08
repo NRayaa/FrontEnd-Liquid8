@@ -145,7 +145,7 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_price_product',
                                     title: 'Price',
-                                    render: (e) => formatRupiah(e.new_price_product.toString()),
+                                    render: (e) => formatRupiah(e.new_price_product.toString() ?? '0'),
                                 },
                                 {
                                     accessor: 'opsi',
@@ -187,7 +187,7 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_price_product',
                                     title: 'Price',
-                                    render: (e) => formatRupiah(e.new_price_product.toString()),
+                                    render: (e) => formatRupiah(e.new_price_product.toString() ?? '0'),
                                 },
                                 {
                                     accessor: 'opsi',
