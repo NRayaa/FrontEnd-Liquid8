@@ -6,12 +6,33 @@ interface GetListMigrateIndex {
     data: {
         resource: {
             code_document_migrate: string;
-            migrate: { id: number; new_barcode_product: number; new_name_product: string; new_price_product: number }[];
+            migrate: {
+                data: { id: number; new_barcode_product: number; new_name_product: string; new_price_product: number }[];
+            };
             new_product: {
-                id: number;
+                data: {
+                    id: number;
+                    new_barcode_product: number;
+                    new_name_product: string;
+                    new_price_product: number;
+                }[];
+            };
+        };
+    };
+}
+
+interface GetShowMigrateProps {
+    data: {
+        resource: {
+            code_document_migrate: string;
+            destiny_document_migrate: string;
+            total_price_document_migrate: number;
+            total_product_document_migrate: number;
+            migrates: {
                 new_barcode_product: number;
                 new_name_product: string;
                 new_price_product: number;
+                new_qty_product: number;
             }[];
         };
     };
@@ -22,10 +43,10 @@ export const migrateApi = createApi({
     baseQuery: baseQuery,
     endpoints: (builder) => ({
         getListMigrate: builder.query<GetListMigrate, { page: number; q: string }>({
-            query: ({ page, q }) => `/migrate-documents?page=${page}&q=${q}`,
+            query: ({ page, q }) => `/migrate-documents${page ? '?page=' + page : q ? '?q=' + q : page && q && '?page=' + page + '&q=' + q}`,
         }),
         getIndexMigrate: builder.query<GetListMigrateIndex, string>({
-            query: (q) => `/migrates?q=${q}`,
+            query: (q) => `/migrates${q && '?q=' + q}`,
         }),
         postMigrate: builder.mutation<any, any>({
             query: (id) => ({
@@ -46,7 +67,10 @@ export const migrateApi = createApi({
                 body,
             }),
         }),
+        getShowMigrate: builder.query<GetShowMigrateProps, string | undefined>({
+            query: (id) => `/migrate-documents/${id}`,
+        }),
     }),
 });
 
-export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation } = migrateApi;
+export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery } = migrateApi;

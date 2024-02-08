@@ -127,12 +127,13 @@ const Migrate = () => {
                         </svg>
                     </button>
                 </div>
-                <div className="grid grid-cols-2 space-x-6 items-end">
+                <div className="grid grid-cols-2 space-x-5 w-full">
                     <div className="datatables col-span-1">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
-                            records={IndexMigrate?.new_product}
+                            idAccessor="new_product"
+                            records={IndexMigrate?.new_product.data}
                             columns={[
                                 {
                                     accessor: 'id',
@@ -165,11 +166,12 @@ const Migrate = () => {
                             minHeight={200}
                         />
                     </div>
-                    <div className="datatables">
+                    <div className="datatables col-span-1">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
-                            records={IndexMigrate?.migrate}
+                            idAccessor="migrate"
+                            records={IndexMigrate?.migrate.data}
                             columns={[
                                 {
                                     accessor: 'id',
