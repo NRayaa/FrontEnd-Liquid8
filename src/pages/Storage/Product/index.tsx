@@ -1,47 +1,46 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { DataTable } from 'mantine-datatable';
 import { useDeleteProductNewMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
 import { NewProductItem } from '../../../store/services/types';
-import { formatDate } from '../../../helper/functions';
-// import ButtonInput from './ButtonInput';
-// import { ImportProduct } from '../../../helper/types';
-import Swal from 'sweetalert2';
+import { formatDate, formatRupiah } from '../../../helper/functions';
+// import Swal from 'sweetalert2';
 
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-};
+// const showAlert = async (type: number) => {
+//     if (type === 11) {
+//         const swalWithBootstrapButtons = Swal.mixin({
+//             customClass: {
+//                 confirmButton: 'btn btn-secondary',
+//                 cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+//                 popup: 'sweet-alerts',
+//             },
+//             buttonsStyling: false,
+//         });
+//         swalWithBootstrapButtons
+//             .fire({
+//                 title: 'Are you sure?',
+//                 text: "You won't be able to revert this!",
+//                 icon: 'warning',
+//                 showCancelButton: true,
+//                 confirmButtonText: 'Yes, delete it!',
+//                 cancelButtonText: 'No, cancel!',
+//                 reverseButtons: true,
+//                 padding: '2em',
+//             })
+//             .then((result) => {
+//                 if (result.value) {
+//                     swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+//                 } else if (result.dismiss === Swal.DismissReason.cancel) {
+//                     swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+//                 }
+//             });
+//     }
+// };
 const Product = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, refetch } = useGetAllProductNewQuery(page);
+    const [search, setSearch] = useState<string>('');
+    const { data, refetch } = useGetAllProductNewQuery({ page, q: search });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
     const productNewData = useMemo(() => {
@@ -80,11 +79,13 @@ const Product = () => {
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product</h5>
                 {/* <ButtonInput showAlert={showAlert} getImportData={(data) => getImportData(data)} DataImport={dataImport}/> */}
                 <div className="relative w-[220px] ms-auto mb-4">
-                    {/* <input
+                    <input
                         type="text"
                         className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                         placeholder="Search..."
-                    /> */}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                     <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
                         <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
@@ -125,7 +126,7 @@ const Product = () => {
                             {
                                 accessor: 'New Price Product',
                                 title: 'NEW PRICE',
-                                render: (item: NewProductItem) => <span className="font-semibold">{item.new_price_product}</span>,
+                                render: (item: NewProductItem) => <span className="font-semibold">{formatRupiah(item.new_price_product ?? '0')}</span>,
                             },
                             {
                                 accessor: 'new date in product',

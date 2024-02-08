@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
-import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
-import IconSend from '../../../components/Icon/IconSend';
+import { useGetListSaleDocumentQuery } from '../../../store/services/saleApi';
+import { GetListSaleDocumentItem } from '../../../store/services/types';
+import { DataTable } from 'mantine-datatable';
 
 const ListKasir = () => {
     const navigate = useNavigate();
+    const [page, setPage] = useState<number>(1);
+    const [search] = useState<string>('');
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const { data: listSaleDocumentData, refetch } = useGetListSaleDocumentQuery({ page, q: search });
+
+    const listSaleDocument = useMemo(() => {
+        return listSaleDocumentData?.data.resource.data;
+    }, [listSaleDocumentData]);
+
     return (
         <>
             <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/" current="List Cashier" />
@@ -17,7 +27,6 @@ const ListKasir = () => {
                             MIGRATE
                         </button>
                     </div> */}
-                    
                 </div>
                 <div className="relative w-[220px]">
                     {/* <input
@@ -38,7 +47,68 @@ const ListKasir = () => {
                         </svg>
                     </button>
                 </div>
-                <div className="grid grid-cols-1 space-x-6 items-end">
+
+                <div className="datatables">
+                    <DataTable
+                        className="whitespace-nowrap table-hover"
+                        records={listSaleDocument}
+                        columns={[
+                            {
+                                accessor: 'No',
+                                title: 'No',
+                                render: (item: GetListSaleDocumentItem, index: number) => <span>{index + 1}</span>,
+                            },
+                            {
+                                accessor: 'Barcode',
+                                title: 'Barcode',
+                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.code_document_sale}</span>,
+                            },
+                            {
+                                accessor: 'name',
+                                title: 'Name',
+                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.buyer_name_document_sale}</span>,
+                            },
+                            {
+                                accessor: 'qty',
+                                title: 'Qty',
+                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.total_price_document_sale}</span>,
+                            },
+                            {
+                                accessor: 'price',
+                                title: 'Price',
+                                render: (item: GetListSaleDocumentItem) => <span className="font-semibold">{item.total_product_document_sale}</span>,
+                            },
+                            {
+                                accessor: 'Opsi',
+                                title: 'Opsi',
+                                render: (item: GetListSaleDocumentItem) => (
+                                    <div className="flex items-center w-max mx-auto gap-6">
+                                        <Link
+                                            to={`/outbound/sale/list_kasir/detail_kasir/${item.id}`}
+                                            // state={{
+                                            //     code_document_migrate: item.code_document_migrate,
+                                            //     updated_at: item.updated_at,
+                                            //     total_product_document_migrate: item.total_product_document_migrate,
+                                            //     total_price_document_migrate: item.total_price_document_migrate,
+                                            // }}
+                                        >
+                                            <button type="button" className="btn btn-outline-info">
+                                                Detail
+                                            </button>
+                                        </Link>
+                                    </div>
+                                ),
+                                textAlignment: 'center',
+                            },
+                        ]}
+                        totalRecords={listSaleDocumentData?.data.resource.total ?? 0}
+                        recordsPerPage={listSaleDocumentData?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
+                    />
+                </div>
+
+                {/* <div className="grid grid-cols-1 space-x-6 items-end">
                     <div className="datatables col-span-2">
                         <table className="panel text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -81,7 +151,7 @@ const ListKasir = () => {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
     );

@@ -115,10 +115,11 @@ const ListData = () => {
                                 render: (item: CheckProductDocumentItem, index: number) => <span>{index + 1}</span>,
                             },
                             {
-                                accessor: 'date_document',
+                                accessor: 'Nama Data',
                                 title: 'Nama Data',
                                 render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.code_document}</span>,
                             },
+
                             {
                                 accessor: 'date_document',
                                 title: 'Tanggal',
@@ -127,7 +128,7 @@ const ListData = () => {
                             {
                                 accessor: 'total_column_document',
                                 title: 'Total Barang',
-                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.total_column_document)}</span>,
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.total_column_document}</span>,
                             },
                             {
                                 accessor: 'status_document',

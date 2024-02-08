@@ -1,7 +1,10 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Tab } from '@headlessui/react';
+import Barcode from 'react-barcode';
+
 import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
-import { formatYearToDay, generateRandomString } from '../../../helper/functions';
+import { formatRupiah, formatYearToDay, generateRandomString } from '../../../helper/functions';
+import BarcodePrinted from './BarcodePrinted';
 
 interface ProductCheck {
     oldData: {
@@ -28,15 +31,31 @@ interface ProductCheck {
     resetProductCheckShow: () => void;
     countPercentage: (percentage: string) => void;
     newPricePercentage: string;
+    showBarcode: () => void;
+    hideBarcode: () => void;
+    handleSetNewPriceProduct: (newPrice: string) => void;
+    customQuantity: string;
 }
 
-const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMultiCheck, resetProductCheckShow, countPercentage, newPricePercentage }) => {
+const ProductCheck: React.FC<ProductCheck> = ({
+    oldData,
+    tagColor,
+    resetValueMultiCheck,
+    resetProductCheckShow,
+    countPercentage,
+    newPricePercentage,
+    showBarcode,
+    hideBarcode,
+    handleSetNewPriceProduct,
+    customQuantity,
+}) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
     const [newProduct, results] = useNewProductMutation();
 
     const [selectedOption, setSelectedOption] = useState<string>('');
     const [descriptionDamaged, setDescriptionDamaged] = useState<string>('');
     const [descriptionAbnormal, setDescriptionAbnormal] = useState<string>('');
+    const [barcodeStatus, setBarcodeStatus] = useState<'LOLOS' | 'TIDAK LOLOS'>('LOLOS');
 
     const productCheckData = useMemo(() => {
         if (isSuccess) {
@@ -68,8 +87,9 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                 new_barcode_product: generateRandomString(10),
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
-                new_quantity_product: oldData.old_quantity_product,
+                new_quantity_product: customQuantity,
                 new_price_product: newPrice,
+                old_price_product: oldData.old_price_product,
                 new_date_in_product: newDateProduct,
                 new_status_product: 'display',
                 condition: 'lolos',
@@ -77,6 +97,8 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                 new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: '',
             };
+            setBarcodeStatus('LOLOS');
+            handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
         } catch (err) {
             console.log(err);
@@ -90,8 +112,9 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                 new_barcode_product: generateRandomString(10),
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
-                new_quantity_product: oldData.old_quantity_product,
+                new_quantity_product: customQuantity,
                 new_price_product: newPrice,
+                old_price_product: oldData.old_price_product,
                 new_date_in_product: newDateProduct,
                 new_status_product: 'display',
                 condition: 'damaged',
@@ -100,6 +123,9 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                 deskripsi: descriptionDamaged,
             };
             await newProduct(body);
+            setBarcodeStatus('TIDAK LOLOS');
+            resetProductCheckShow();
+            hideBarcode();
         } catch (err) {
             console.log(err);
         }
@@ -112,8 +138,9 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                 new_barcode_product: generateRandomString(10),
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
-                new_quantity_product: oldData.old_quantity_product,
+                new_quantity_product: customQuantity,
                 new_price_product: newPrice,
+                old_price_product: oldData.old_price_product,
                 new_date_in_product: newDateProduct,
                 new_status_product: 'display',
                 condition: 'abnormal',
@@ -122,6 +149,9 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
                 deskripsi: descriptionAbnormal,
             };
             await newProduct(body);
+            setBarcodeStatus('TIDAK LOLOS');
+            resetProductCheckShow();
+            hideBarcode();
         } catch (err) {
             console.log(err);
         }
@@ -135,7 +165,10 @@ const ProductCheck: React.FC<ProductCheck> = ({ oldData, tagColor, resetValueMul
     useEffect(() => {
         if (results.isSuccess) {
             resetValueMultiCheck();
-            resetProductCheckShow();
+            if (barcodeStatus === 'LOLOS') {
+                showBarcode();
+                resetProductCheckShow();
+            }
         }
     }, [results]);
 

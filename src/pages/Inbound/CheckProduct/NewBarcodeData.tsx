@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-import { formatRupiah } from '../../../helper/functions';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 interface NewBarcodeData {
     barcode: string;
@@ -7,12 +6,27 @@ interface NewBarcodeData {
     newPrice: string;
     qty: string;
     header: string;
+    handleSetNewPercentagePriceInput: (price: string) => void;
+    handleSetCustomQuantityInput: (qty: string) => void;
 }
 
-const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header }) => {
-    const price = useMemo(() => {
-        return formatRupiah(newPrice);
-    }, [newPrice]);
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header, handleSetNewPercentagePriceInput, handleSetCustomQuantityInput }) => {
+    const [inputQuantity, setInputQuantity] = useState<string>('');
+    const [inputPrice, setInputPrice] = useState<string>('');
+
+    useEffect(() => {
+        setInputPrice(newPrice);
+        setInputQuantity(qty);
+    }, [qty, newPrice]);
+
+    const handleInputQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputQuantity(e.target.value);
+        handleSetCustomQuantityInput(e.target.value);
+    };
+    const handleInputPrice = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputPrice(e.target.value);
+        handleSetNewPercentagePriceInput(e.target.value);
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -27,11 +41,11 @@ const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" value={price} />
+                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={inputPrice} onChange={handleInputPrice} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
-                <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={inputQuantity} onChange={handleInputQuantity} />
             </div>
         </div>
     );

@@ -10,7 +10,7 @@ import {
     usePalletListsQuery,
 } from '../../../store/services/palletApi';
 import { ProdcutItem } from '../../../store/services/types';
-import { formatRupiah } from '../../../helper/functions';
+import { formatRupiah, generateRandomString } from '../../../helper/functions';
 import { useNavigate } from 'react-router-dom';
 
 const PalletGenerate = () => {
@@ -29,7 +29,7 @@ const PalletGenerate = () => {
         barcode: '',
     });
     const navigate = useNavigate();
-    const palletLists = usePalletListsQuery(1);
+    const palletLists = usePalletListsQuery({ page: 1, q: '' });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInput((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
@@ -44,7 +44,7 @@ const PalletGenerate = () => {
         if (displayLists.isSuccess) {
             return filterLists.data?.data.resource;
         }
-    }, [filterLists.data]);
+    }, [filterLists.data?.data.resource.data]);
 
     const handleAddDisplay = async (item: ProdcutItem) => {
         try {
@@ -52,8 +52,6 @@ const PalletGenerate = () => {
             setInput((prevState: any) => ({
                 ...prevState,
                 category: item.new_category_product,
-                totalPrice: item.new_price_product,
-                totalProduct: item.new_quantity_product,
                 barcode: item.new_barcode_product,
             }));
         } catch (err) {
@@ -75,22 +73,13 @@ const PalletGenerate = () => {
                 name_palet: input.name,
                 category_palet: input.category,
                 total_price_palet: input.totalPrice,
-                total_product_palet: input.totalProduct,
-                palet_barcode: input.barcode,
+                total_product_palet: filterData?.data?.data.length,
+                palet_barcode: generateRandomString(10),
             };
             await createPallete(body);
         } catch (err) {
             console.log(err);
         }
-    };
-    const handleSelectedItem = (item: ProdcutItem) => {
-        setInput((prevState: any) => ({
-            ...prevState,
-            category: item.new_category_product,
-            totalPrice: item.new_price_product,
-            totalProduct: item.new_quantity_product,
-            barcode: item.new_barcode_product,
-        }));
     };
 
     useEffect(() => {
@@ -111,6 +100,15 @@ const PalletGenerate = () => {
             palletLists.refetch();
         }
     }, [createResults]);
+    useEffect(() => {
+        const totalAmount = filterData?.data?.data.reduce((accumulator: any, currentItem: any) => {
+            return accumulator + parseFloat(currentItem.new_price_product);
+        }, 0);
+        setInput((prevState) => ({
+            ...prevState,
+            totalPrice: totalAmount,
+        }));
+    }, [filterData?.data.data]);
 
     return (
         <>
@@ -135,13 +133,13 @@ const PalletGenerate = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga:
                         </label>
-                        <input disabled onChange={handleInputChange} name="totalPrice" value={formatRupiah(input.totalPrice)} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input disabled name="totalPrice" value={formatRupiah(input.totalPrice ?? '0')} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Produk:
                         </label>
-                        <input disabled onChange={handleInputChange} name="totalProduct" value={input.totalProduct} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input disabled onChange={handleInputChange} name="totalProduct" value={filterData?.data.data.length} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -197,7 +195,7 @@ const PalletGenerate = () => {
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
-                            records={filterData?.data?.data}
+                            records={filterData?.data.data}
                             columns={[
                                 { accessor: 'id', title: 'No', sortable: true, render: (item: ProdcutItem, index: number) => <span>{index + 1}</span> },
                                 {
@@ -218,9 +216,6 @@ const PalletGenerate = () => {
                                     titleClassName: '!text-center',
                                     render: (item: ProdcutItem) => (
                                         <div className="flex items-center space-x-2">
-                                            <button type="button" className="btn btn-outline-primary" onClick={() => handleSelectedItem(item)}>
-                                                Pilih
-                                            </button>
                                             <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteFilter(item.id)}>
                                                 Delete
                                             </button>

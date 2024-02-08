@@ -15,13 +15,13 @@ import {
 const CreateBundle = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
-    const { data, isSuccess, refetch } = useGetExpiredProductsQuery(leftTablePage);
+    const { data, isSuccess, refetch } = useGetExpiredProductsQuery({ page: leftTablePage, q: '' });
     const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
     const [filterProductBundle, results] = useFilterProductBundleMutation();
     const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
     const [createBundle, resultsCreateBundle] = useCreateBundleMutation();
     const navigate = useNavigate();
-    const bundleLists = useGetBundleProductsQuery(1);
+    const bundleLists = useGetBundleProductsQuery({ page: 1, q: '' });
 
     const [nameBundle, setNameBundle] = useState<string>('');
     const [totalPrice, setTotalPrice] = useState<string>('');
@@ -56,21 +56,10 @@ const CreateBundle = () => {
         }
     };
 
-    const handlePickedProductBundle = (item: ProductExpiredItem) => {
-        setTotalPrice(item.new_price_product ?? '');
-        setCustomPrice(item.new_price_product ?? '');
-        setTotalProductBundle(item.new_quantity_product ?? '');
-    };
-
     const handleAddLeftTable = (item: ProductExpiredItem) => {
         handleAddFilterBundle(item.id);
-
-        setTotalPrice(item.new_price_product ?? '');
-        setCustomPrice(item.new_price_product ?? '');
         setTotalProductBundle(item.new_quantity_product ?? '');
     };
-
-    const setDefaultInputValue = (item: ProductExpiredItem) => {};
 
     const handleCreateBundle = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -79,8 +68,8 @@ const CreateBundle = () => {
                 name_bundle: nameBundle,
                 total_price_bundle: Number(totalPrice),
                 total_price_custom_bundle: Number(customPrice),
-                total_product_bundle: Number(totalProductBundle),
-                barcode_bundle: generateRandomString(8),
+                total_product_bundle: filterBundlesProducts?.length,
+                barcode_bundle: generateRandomString(10),
             };
 
             await createBundle(body);
@@ -94,7 +83,7 @@ const CreateBundle = () => {
             refetch();
             filterBundles.refetch();
         }
-    }, [results]);
+    }, [results, filterBundles.isSuccess]);
 
     useEffect(() => {
         if (resultsDeleteBundle.isSuccess) {
@@ -109,6 +98,14 @@ const CreateBundle = () => {
             navigate('/storage/expired_product/bundle_product');
         }
     }, [resultsCreateBundle]);
+
+    useEffect(() => {
+        const totalAmount = filterBundles?.data?.data.resource.data.data.reduce((accumulator: any, currentItem: any) => {
+            return accumulator + parseFloat(currentItem.new_price_product);
+        }, 0);
+        setTotalPrice(JSON.stringify(totalAmount));
+        setCustomPrice(JSON.stringify(totalAmount));
+    }, [filterBundlesProducts]);
 
     return (
         <div>
@@ -145,16 +142,7 @@ const CreateBundle = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga :
                         </label>
-                        <input
-                            disabled
-                            id="categoryName"
-                            type="text"
-                            placeholder="Rp"
-                            className=" form-input w-[250px]"
-                            required
-                            value={formatRupiah(totalPrice)}
-                            onChange={(e) => setTotalPrice(e.target.value)}
-                        />
+                        <input disabled id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={formatRupiah(totalPrice ?? '0')} />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -221,9 +209,6 @@ const CreateBundle = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductExpiredItem) => (
                                             <div className="flex items-center space-x-2">
-                                                <button type="button" className="btn btn-outline-primary" onClick={() => handlePickedProductBundle(item)}>
-                                                    Pilih
-                                                </button>
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductBundle(item.id)}>
                                                     Delete
                                                 </button>

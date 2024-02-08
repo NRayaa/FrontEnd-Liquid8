@@ -6,8 +6,8 @@ export const bundleProductApi = createApi({
     reducerPath: 'bundleProductApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        getBundleProducts: builder.query<BundleResponse, number>({
-            query: (page) => `/bundle?page=${page}`,
+        getBundleProducts: builder.query<BundleResponse, { page: number; q: string }>({
+            query: ({ page, q }) => `/bundle?page=${page}&q=${q}`,
         }),
         detailBundleProduct: builder.query<DetailBundleResponse, number>({
             query: (id) => `/bundle/${id}`,

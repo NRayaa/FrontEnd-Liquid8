@@ -9,7 +9,8 @@ import { formatRupiah } from '../../../../helper/functions';
 
 const TagWarna = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, refetch } = useGetAllColorTagQuery(page);
+    const [search, setSearch] = useState<string>('');
+    const { data, refetch } = useGetAllColorTagQuery({ page, q: search });
     const [deleteColorTag, deleteResults] = useDeleteColorTagMutation();
     // const [updateColorTag, updateResults] = useUpdateColorTagMutation();
 
@@ -50,7 +51,7 @@ const TagWarna = () => {
                         </Link>
                     </div>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." />
+                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">

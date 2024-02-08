@@ -814,8 +814,10 @@ interface GetListProductRepair {
         resource: {
             data: GetListProductRepairItem[];
         };
+        data: GetListProductRepairItem[];
     };
 }
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -869,4 +871,6 @@ export type {
     CreatePaletBody,
     GetListProductRepair,
     GetListProductRepairItem,
+    
+    ItemDetailOldsProduct,
 };

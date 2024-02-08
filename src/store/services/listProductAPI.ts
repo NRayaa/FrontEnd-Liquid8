@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetListProductRepair } from './types';
+import { GetListProductRepair, NewProduct, ProdcutItem } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const listProductApi = createApi({
@@ -9,6 +9,9 @@ export const listProductApi = createApi({
         GetListProductRepair: builder.query<GetListProductRepair, undefined>({
             query: () => '/repair',
         }),
+        GetProductItem: builder.query<ProdcutItem, undefined>({
+            query: (id) => `/new_products/${id}`,
+        }),
         updateProductRepair: builder.mutation<any, any>({
             query: ({ id, body }) => ({
                 url: `/repair/update/${id}`,
@@ -16,7 +19,13 @@ export const listProductApi = createApi({
                 body,
             }),
         }),
+        updateThrows: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/update-dumps/${id}`,
+                method: 'PUT',
+            }),
+        }),
     }),
 });
 
-export const { useGetListProductRepairQuery, useUpdateProductRepairMutation} = listProductApi;
+export const { useGetListProductRepairQuery, useGetProductItemQuery, useUpdateProductRepairMutation, useUpdateThrowsMutation} = listProductApi;

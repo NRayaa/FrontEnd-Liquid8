@@ -1,6 +1,12 @@
 import { lazy } from 'react';
 import Kasir from '../pages/Outbound/Sale/Kasir';
 import ListKasir from '../pages/Outbound/Sale/ListKasir';
+import ListAkun from '../pages/Akun/Akun/ListAkun';
+import ListRole from '../pages/Akun/Role/ListRole';
+import AddAkun from '../pages/Akun/Akun/AddAkun';
+import EditAkun from '../pages/Akun/Akun/EditAkun';
+import LoginBoxed from '../pages/Authentication/LoginBoxed';
+import DetailCashier from '../pages/Outbound/Sale/DetailCashier';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -26,6 +32,7 @@ const CreateBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundlePr
 const DetailBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle'));
 const PromoProduct = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct'));
 const CreatePromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/CreatePromo'));
+const EditExpiredToPromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/EditExpiredToPromo'));
 const DetailPromo = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/DetailPromo'));
 const ListProductRepair = lazy(() => import('../pages/RepairStation/ListProductRepair/ListProductRepair'));
 const RepairProduct = lazy(() => import('../pages/RepairStation/ListProductRepair/RepairProduct'));
@@ -35,6 +42,12 @@ const ListMigrate = lazy(() => import('../pages/Outbound/Migrate/ListMigrate'));
 const DetailMigrate = lazy(() => import('../pages/Outbound/Migrate/DetailMigrate'));
 
 const routes = [
+    // Authentication
+    {
+        path: '/auth/boxed-signin',
+        element: <LoginBoxed />,
+        layout: 'blank',
+    },
     // dashboard
     {
         path: '/',
@@ -157,6 +170,11 @@ const routes = [
         layout: 'default',
     },
     {
+        path: '/storage/expired_product/create_promo/:id',
+        element: <EditExpiredToPromo />,
+        layout: 'default',
+    },
+    {
         path: '/storage/expired_product/detail_promo/:id',
         element: <DetailPromo />,
         layout: 'default',
@@ -200,7 +218,7 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/outbound/migrate/list_migrate/detail_migrate',
+        path: '/outbound/migrate/list_migrate/detail_migrate/:id',
         element: <DetailMigrate />,
         layout: 'default',
     },
@@ -212,6 +230,32 @@ const routes = [
     {
         path: '/outbound/sale/list_kasir',
         element: <ListKasir />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/sale/list_kasir/detail_kasir/:id',
+        element: <DetailCashier />,
+        layout: 'default',
+    },
+    // Akun
+    {
+        path: '/akun/akun/list_akun',
+        element: <ListAkun />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/akun/list_akun/add_akun',
+        element: <AddAkun />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/akun/list_akun/edit_akun/:id',
+        element: <EditAkun />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/role/list_role',
+        element: <ListRole />,
         layout: 'default',
     },
 ];

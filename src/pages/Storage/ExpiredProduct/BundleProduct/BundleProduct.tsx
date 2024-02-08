@@ -9,7 +9,8 @@ import { formatRupiah } from '../../../../helper/functions';
 
 const BundleProduct = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess, refetch } = useGetBundleProductsQuery(page);
+    const [search, setSearch] = useState<string>('');
+    const { data, isSuccess, refetch } = useGetBundleProductsQuery({ page, q: search });
     const [deleteBundleProduct, results] = useDeleteBundleProductMutation();
 
     const dataBundleProduct = useMemo(() => {
@@ -110,7 +111,7 @@ const BundleProduct = () => {
                         </Link>
                     </div>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value="" onChange={() => null} />
+                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
@@ -122,7 +123,7 @@ const BundleProduct = () => {
                             { accessor: 'id', title: 'No', sortable: true, render: (item: BundleItem, index: number) => <span>{index + 1}</span> },
                             { accessor: 'barcode', title: 'Barcode Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.barcode_bundle}</span> },
                             { accessor: 'firstName', title: 'Nama Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.name_bundle}</span> },
-                            { accessor: 'QTY', title: 'QTY', sortable: true, render: (item: BundleItem) => <span>{item?.total_product_bundle}</span> },
+                            { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: BundleItem) => <span>{item?.total_product_bundle}</span> },
                             { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: BundleItem) => <span>{formatRupiah(item?.total_price_bundle)}</span> },
                             {
                                 accessor: 'status',

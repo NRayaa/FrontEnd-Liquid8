@@ -9,7 +9,8 @@ import { PromoListItem } from '../../../../store/services/types';
 
 const PromoProduct = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess, refetch } = useGetPromotListsQuery(page);
+    const [search, setSearch] = useState<string>('');
+    const { data, isSuccess, refetch } = useGetPromotListsQuery({ page, q: search });
     const [deletePromo, results] = useDeletePromoMutation();
 
     const promoLists = useMemo(() => {
@@ -108,9 +109,9 @@ const PromoProduct = () => {
                             </button>
                         </Link>
                     </div>
-                    {/* <div className="ltr:ml-auto rtl:mr-auto mx-6">
+                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div> */}
+                    </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
@@ -119,6 +120,7 @@ const PromoProduct = () => {
                         records={promoLists}
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: PromoListItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'Promo Name', title: 'Nama Promo', sortable: true, render: (item: PromoListItem) => <span>{item.name_promo}</span> },
                             { accessor: 'barcode', title: 'Barcode', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_name_product}</span> },
                             { accessor: 'category', title: 'Kategori', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_category_product}</span> },
