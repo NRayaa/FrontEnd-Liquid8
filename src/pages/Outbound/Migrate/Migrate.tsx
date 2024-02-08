@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { useDeleteMigrateMutation, useGetIndexMigrateQuery, useMigrateFinishMutation, usePostMigrateMutation } from '../../../store/services/migrateApi';
 import { DataTable } from 'mantine-datatable';
@@ -13,9 +12,10 @@ const formatRupiah = (value: number) => {
     return formattedValue;
 };
 const Migrate = () => {
-    const navigate = useNavigate();
     const [search, setSearch] = useState<string>('');
-    const { data: IndexMigrateData, refetch } = useGetIndexMigrateQuery(search);
+    const [migratePage, setMigratePage] = useState<number>(1);
+    const [productPage, setProductPage] = useState<number>(1);
+    const { data: IndexMigrateData, refetch } = useGetIndexMigrateQuery({ q: search, migratePage, productPage });
     const [postData, resultPost] = usePostMigrateMutation();
     const [deleteData, resultDelete] = useDeleteMigrateMutation();
     const [migrateFinish, resultMigrate] = useMigrateFinishMutation();
@@ -164,6 +164,10 @@ const Migrate = () => {
                                 },
                             ]}
                             minHeight={200}
+                            page={migratePage}
+                            onPageChange={(prev) => setMigratePage(prev)}
+                            totalRecords={IndexMigrate?.migrate.total ?? 0}
+                            recordsPerPage={IndexMigrate?.migrate.per_page ?? 0}
                         />
                     </div>
                     <div className="datatables col-span-1">
@@ -202,6 +206,10 @@ const Migrate = () => {
                                 },
                             ]}
                             minHeight={200}
+                            page={productPage}
+                            onPageChange={(prev) => setProductPage(prev)}
+                            totalRecords={IndexMigrate?.new_product.total ?? 0}
+                            recordsPerPage={IndexMigrate?.new_product.per_page ?? 0}
                         />
                     </div>
                 </div>
