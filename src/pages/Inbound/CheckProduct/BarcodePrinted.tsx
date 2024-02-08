@@ -20,6 +20,7 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode })
                 printDocument.write(containerElement.innerHTML);
                 printDocument.write('</body></html>');
                 printDocument.close();
+                window.location.reload();
                 printWindow.print();
             } else {
                 console.error('Failed to open print window');

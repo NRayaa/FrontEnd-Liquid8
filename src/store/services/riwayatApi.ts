@@ -25,7 +25,10 @@ export const riwayatApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        exportToExcel: builder.query<any, any>({
+            query: () => '/history/exportToExcel',
+        }),
     }),
 });
 
-export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery, useDeleteRiwayatCheckMutation } = riwayatApi;
+export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery, useDeleteRiwayatCheckMutation, useExportToExcelQuery, useLazyExportToExcelQuery } = riwayatApi;
