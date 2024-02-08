@@ -1,11 +1,72 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
-import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
-import IconSend from '../../../components/Icon/IconSend';
+import { useDeleteMigrateMutation, useGetIndexMigrateQuery, useMigrateFinishMutation, usePostMigrateMutation } from '../../../store/services/migrateApi';
+import { DataTable } from 'mantine-datatable';
 
+const formatRupiah = (value: number) => {
+    const formattedValue = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+    }).format(value);
+
+    return formattedValue;
+};
 const Migrate = () => {
     const navigate = useNavigate();
+    const [search, setSearch] = useState<string>('');
+    const { data: IndexMigrateData, refetch } = useGetIndexMigrateQuery(search);
+    const [postData, resultPost] = usePostMigrateMutation();
+    const [deleteData, resultDelete] = useDeleteMigrateMutation();
+    const [migrateFinish, resultMigrate] = useMigrateFinishMutation();
+    const [formData, setFormData] = useState({
+        destiny: '',
+    });
+
+    const IndexMigrate = useMemo(() => {
+        return IndexMigrateData?.data.resource;
+    }, [IndexMigrateData]);
+
+    const handleAddProduct = async (id: number) => {
+        try {
+            await postData(id);
+            refetch();
+        } catch (error) {
+            console.log('ERROR SEND', error);
+        }
+    };
+
+    const handleDeleteProduct = async (id: number) => {
+        try {
+            await deleteData(id);
+            refetch();
+        } catch (error) {
+            console.log('ERROR SEND', error);
+        }
+    };
+
+    const handleMigrateFinish = async () => {
+        const body = {
+            destiny_document_migrate: formData.destiny,
+        };
+        try {
+            await migrateFinish(body);
+            refetch();
+        } catch (error) {
+            console.log('ERROR SEND', error);
+        }
+    };
+
+    console.log(IndexMigrate);
+
+    useEffect(() => {
+        if (resultMigrate.isSuccess || resultPost.isSuccess || resultDelete.isSuccess) {
+            console.log('Success');
+        } else if (resultMigrate.isSuccess || resultPost.isError || resultDelete.isError) {
+            console.log('Error');
+        }
+    }, [resultDelete, resultPost, resultMigrate]);
+
     return (
         <>
             <BreadCrumbs base="Storage" basePath="outbound/migrate" sub="Migrate" subPath="/" current="Migrate" />
@@ -13,25 +74,32 @@ const Migrate = () => {
                 <div className="mb-8">
                     <h5 className="font-semibold text-lg dark:text-white-light mb-2">Migrate</h5>
                     <div className="mb-4 flex justify-between">
-                        <button type="button" className="btn-lg btn-primary uppercase px-6 rounded-md">
+                        <button type="button" onClick={handleMigrateFinish} className="btn-lg btn-primary uppercase px-6 rounded-md">
                             MIGRATE
                         </button>
                     </div>
                     <form className="w-[400px] mb-4 ">
-                        {/* <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
-                    </button> */}
                         <div className="flex items-center justify-between ">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 CODE DOC :
                             </label>
-                            <input id="categoryName" type="text" value="LQDF5H012" className="mb-2 form-input w-[250px]" required />
+                            <input id="categoryName" type="text" value={IndexMigrate?.code_document_migrate} className="mb-2 form-input w-[250px]" disabled />
                         </div>
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 DESTINY :
                             </label>
-                            <input id="categoryName" type="text" value="Jakarta" placeholder="Rp" className=" form-input w-[250px]" required />
+                            <input
+                                id="categoryName"
+                                type="text"
+                                value={formData.destiny}
+                                onChange={(e) => {
+                                    e.preventDefault();
+                                    setFormData((prev) => ({ ...prev, destiny: e.target.value }));
+                                }}
+                                className=" form-input w-[250px]"
+                                required
+                            />
                         </div>
                     </form>
                 </div>
@@ -40,6 +108,11 @@ const Migrate = () => {
                         type="text"
                         className="mb-4 form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                         placeholder="Search..."
+                        value={search}
+                        onChange={(e) => {
+                            e.preventDefault();
+                            setSearch(e.target.value);
+                        }}
                     />
                     <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
                         <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,89 +129,78 @@ const Migrate = () => {
                 </div>
                 <div className="grid grid-cols-2 space-x-6 items-end">
                     <div className="datatables col-span-1">
-                        <table className="panel text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        NO
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        BARCODE
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        NAME
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        PRICE
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        OPSI
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td className="px-6 py-4">1</td>
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        PLTFSH0001
-                                    </th>
-                                    <td className="px-6 py-4">Baju Fashion</td>
-                                    <td className="px-6 py-4">Rp 5.000.000,-</td>
-                                    <td className="px-6 py-4 flex items-center space-x-2">
-                                        <button type="button" className="btn btn-outline-primary">
+                        <DataTable
+                            highlightOnHover
+                            className="whitespace-nowrap table-hover "
+                            records={IndexMigrate?.new_product}
+                            columns={[
+                                {
+                                    accessor: 'id',
+                                    title: 'No',
+                                    render: (e, index: number) => index + 1,
+                                },
+                                {
+                                    accessor: 'new_barcode_product',
+                                    title: 'Barcode',
+                                },
+                                {
+                                    accessor: 'new_name_product',
+                                    title: 'Name',
+                                },
+                                {
+                                    accessor: 'new_price_product',
+                                    title: 'Price',
+                                    render: (e) => formatRupiah(e.new_price_product),
+                                },
+                                {
+                                    accessor: 'opsi',
+                                    title: 'Opsi',
+                                    render: (e) => (
+                                        <button type="button" onClick={() => handleAddProduct(e.id)} className="btn btn-outline-primary">
                                             ADD
                                         </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    ),
+                                },
+                            ]}
+                            minHeight={200}
+                        />
                     </div>
                     <div className="datatables">
-                        {/* <div className="flex items-center justify-between">
-                            <p>Total : Rp 3.200.000,-</p>
-                            <p>Total Barang : 17</p>
-                            <div className="mb-4 flex justify-between">
-                                <button type="button" className="btn-sm btn-primary-dark uppercase px-6 rounded-md" onClick={() => navigate('/storage/pallet/create_pallet')}>
-                                    Create Pallet
-                                </button>
-                            </div>
-                        </div> */}
-                        <table className="panel text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-hidden">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        NO
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        BARCODE
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        NAME
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        PRICE
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        OPSI
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td className="px-6 py-4">1</td>
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        PLTFSH0001
-                                    </th>
-                                    <td className="px-6 py-4">Baju Fashion</td>
-                                    <td className="px-6 py-4">Rp 5.000.000,-</td>
-                                    <td className="px-6 py-4 flex items-center space-x-2">
-                                        <button type="button" className="btn btn-outline-danger">
+                        <DataTable
+                            highlightOnHover
+                            className="whitespace-nowrap table-hover "
+                            records={IndexMigrate?.migrate}
+                            columns={[
+                                {
+                                    accessor: 'id',
+                                    title: 'No',
+                                    render: (e, index: number) => index + 1,
+                                },
+                                {
+                                    accessor: 'new_barcode_product',
+                                    title: 'Barcode',
+                                },
+                                {
+                                    accessor: 'new_name_product',
+                                    title: 'Name',
+                                },
+                                {
+                                    accessor: 'new_price_product',
+                                    title: 'Price',
+                                    render: (e) => formatRupiah(e.new_price_product),
+                                },
+                                {
+                                    accessor: 'opsi',
+                                    title: 'Opsi',
+                                    render: (e) => (
+                                        <button type="button" onClick={() => handleDeleteProduct(e.id)} className="btn btn-outline-danger">
                                             DELETE
                                         </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    ),
+                                },
+                            ]}
+                            minHeight={200}
+                        />
                     </div>
                 </div>
             </div>
