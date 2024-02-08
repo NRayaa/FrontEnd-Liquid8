@@ -47,19 +47,10 @@ export const migrateApi = createApi({
     baseQuery: baseQuery,
     endpoints: (builder) => ({
         getListMigrate: builder.query<GetListMigrate, { page: number; q: string }>({
-            query: ({ page, q }) => `/migrate-documents${page ? '?page=' + page : q ? '?q=' + q : page && q && '?page=' + page + '&q=' + q}`,
+            query: ({ page, q }) => `/migrate-documents?page=${page}&q=${q}`,
         }),
         getIndexMigrate: builder.query<GetListMigrateIndex, { q: string; migratePage: number; productPage: number }>({
-            query: ({ q, migratePage, productPage }) =>
-                `/migrates${
-                    q && migratePage && productPage
-                        ? '?migrate_page=' + migratePage + '&product_page=' + productPage + '&q=' + q
-                        : migratePage
-                        ? '?migrate_page=' + migratePage
-                        : productPage
-                        ? '?product_page=' + productPage
-                        : q && '?q=' + q
-                }`,
+            query: ({ q, migratePage, productPage }) => `/migrates?migrate_page=${migratePage}&product_page=${productPage}&q=${q}`,
         }),
         postMigrate: builder.mutation<any, any>({
             query: (id) => ({

@@ -2,16 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import { useDeleteMigrateMutation, useGetIndexMigrateQuery, useMigrateFinishMutation, usePostMigrateMutation } from '../../../store/services/migrateApi';
 import { DataTable } from 'mantine-datatable';
+import { useNavigate } from 'react-router-dom';
+import { formatRupiah } from '../../../helper/functions';
 
-const formatRupiah = (value: number) => {
-    const formattedValue = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-    }).format(value);
-
-    return formattedValue;
-};
 const Migrate = () => {
+    const navigate = useNavigate();
     const [search, setSearch] = useState<string>('');
     const [migratePage, setMigratePage] = useState<number>(1);
     const [productPage, setProductPage] = useState<number>(1);
@@ -52,12 +47,11 @@ const Migrate = () => {
         try {
             await migrateFinish(body);
             refetch();
+            navigate('/outbound/migrate/list_migrate');
         } catch (error) {
             console.log('ERROR SEND', error);
         }
     };
-
-    console.log(IndexMigrate);
 
     useEffect(() => {
         if (resultMigrate.isSuccess || resultPost.isSuccess || resultDelete.isSuccess) {
@@ -151,7 +145,7 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_price_product',
                                     title: 'Price',
-                                    render: (e) => formatRupiah(e.new_price_product),
+                                    render: (e) => formatRupiah(e.new_price_product.toString()),
                                 },
                                 {
                                     accessor: 'opsi',
@@ -164,10 +158,10 @@ const Migrate = () => {
                                 },
                             ]}
                             minHeight={200}
-                            page={migratePage}
-                            onPageChange={(prev) => setMigratePage(prev)}
-                            totalRecords={IndexMigrate?.migrate.total ?? 0}
-                            recordsPerPage={IndexMigrate?.migrate.per_page ?? 0}
+                            page={productPage}
+                            onPageChange={(prev) => setProductPage(prev)}
+                            totalRecords={IndexMigrate?.new_product.total ?? 0}
+                            recordsPerPage={IndexMigrate?.new_product.per_page ?? 0}
                         />
                     </div>
                     <div className="datatables col-span-1">
@@ -193,7 +187,7 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_price_product',
                                     title: 'Price',
-                                    render: (e) => formatRupiah(e.new_price_product),
+                                    render: (e) => formatRupiah(e.new_price_product.toString()),
                                 },
                                 {
                                     accessor: 'opsi',
@@ -206,10 +200,10 @@ const Migrate = () => {
                                 },
                             ]}
                             minHeight={200}
-                            page={productPage}
-                            onPageChange={(prev) => setProductPage(prev)}
-                            totalRecords={IndexMigrate?.new_product.total ?? 0}
-                            recordsPerPage={IndexMigrate?.new_product.per_page ?? 0}
+                            page={migratePage}
+                            onPageChange={(prev) => setMigratePage(prev)}
+                            totalRecords={IndexMigrate?.migrate.total ?? 0}
+                            recordsPerPage={IndexMigrate?.migrate.per_page ?? 0}
                         />
                     </div>
                 </div>

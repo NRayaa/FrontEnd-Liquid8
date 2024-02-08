@@ -19,7 +19,6 @@ const DetailMigrate = () => {
     const ShowMigrate = useMemo(() => {
         return ShowMigrateData?.data.resource;
     }, [ShowMigrateData]);
-    console.log(ShowMigrate);
 
     return (
         <div>
@@ -42,7 +41,7 @@ const DetailMigrate = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Migrate</h1>
             </div>
             <div>
-                <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
+                <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 my-8 relative">
                     <div className="bg-primary absolute mt-2 text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
                         <IconSend fill className="w-12 h-12" />
                     </div>
