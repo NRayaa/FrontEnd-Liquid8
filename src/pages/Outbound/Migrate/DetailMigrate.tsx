@@ -29,8 +29,8 @@ const DetailMigrate = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <Link to="/storage/expired_product/bundle_product">
-                        <span>Migrate</span>
+                    <Link to="/outbound/migrate/list_migrate">
+                        <span>List Migrate</span>
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
@@ -71,13 +71,13 @@ const DetailMigrate = () => {
                             className="whitespace-nowrap table-hover "
                             records={ShowMigrate?.migrates}
                             columns={[
-                                { accessor: 'id', title: 'No' },
+                                { accessor: 'id', title: 'No', render: (e, index) => index + 1 },
                                 { accessor: 'new_barcode_product', title: 'Barcode LQD' },
                                 {
                                     accessor: 'new_name_product',
                                     title: 'Nama Produk',
                                     render: (e) => (
-                                        <p title={e.new_name_product} className="w-[calc(100vw-800px)] truncate overflow-hidden">
+                                        <p title={e.new_name_product} className="max-w-[calc(100vw-800px)] truncate overflow-hidden">
                                             {e.new_name_product}
                                         </p>
                                     ),

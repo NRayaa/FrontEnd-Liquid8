@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import { useDeleteMigrateMutation, useGetIndexMigrateQuery, useMigrateFinishMutation, usePostMigrateMutation } from '../../../store/services/migrateApi';
 import { DataTable } from 'mantine-datatable';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../../helper/functions';
+import toast from 'react-hot-toast';
 
 const Migrate = () => {
     const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Migrate = () => {
         try {
             await postData(id);
             refetch();
+            toast.success('Product updated');
         } catch (error) {
             console.log('ERROR SEND', error);
         }
@@ -35,6 +37,7 @@ const Migrate = () => {
         try {
             await deleteData(id);
             refetch();
+            toast.success('Product updated');
         } catch (error) {
             console.log('ERROR SEND', error);
         }
@@ -48,6 +51,7 @@ const Migrate = () => {
             await migrateFinish(body);
             refetch();
             navigate('/outbound/migrate/list_migrate');
+            toast.success('Migrate added');
         } catch (error) {
             console.log('ERROR SEND', error);
         }
@@ -63,7 +67,16 @@ const Migrate = () => {
 
     return (
         <>
-            <BreadCrumbs base="Storage" basePath="outbound/migrate" sub="Migrate" subPath="/" current="Migrate" />
+            <ul className="flex space-x-2 rtl:space-x-reverse">
+                <li>
+                    <Link to="/" className="text-primary hover:underline">
+                        Home
+                    </Link>
+                </li>
+                <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                    <span>Migrate</span>
+                </li>
+            </ul>
             <div className="panel mt-6 min-h-[450px] pr-12">
                 <div className="mb-8">
                     <h5 className="font-semibold text-lg dark:text-white-light mb-2">Migrate</h5>
@@ -141,6 +154,11 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_name_product',
                                     title: 'Name',
+                                    render: (e) => (
+                                        <p title={e.new_name_product} className="max-w-[calc(50vw-500px)] truncate overflow-hidden">
+                                            {e.new_name_product}
+                                        </p>
+                                    ),
                                 },
                                 {
                                     accessor: 'new_price_product',
@@ -183,6 +201,11 @@ const Migrate = () => {
                                 {
                                     accessor: 'new_name_product',
                                     title: 'Name',
+                                    render: (e) => (
+                                        <p title={e.new_name_product} className="max-w-[calc(50vw-500px)] truncate overflow-hidden">
+                                            {e.new_name_product}
+                                        </p>
+                                    ),
                                 },
                                 {
                                     accessor: 'new_price_product',
