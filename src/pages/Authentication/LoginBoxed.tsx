@@ -33,12 +33,12 @@ const LoginBoxed = () => {
                 password: input.password,
             };
             await login(body);
-            console.log('DATA SENT', body);
         } catch (err) {}
     };
 
     useEffect(() => {
         if (results.isSuccess) {
+            localStorage.setItem('token', results.data.data.resource[0]);
             navigate('/');
         }
     }, [results]);
