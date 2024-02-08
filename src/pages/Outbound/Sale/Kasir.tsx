@@ -111,7 +111,7 @@ const Kasir = () => {
 
     return (
         <>
-            <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/" current="Cashier" />
+            <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/outbound/sale/kasir" current="Cashier" />
             <div>
                 <Transition appear show={isModalOpen} as={Fragment}>
                     <Dialog as="div" open={isModalOpen} onClose={() => setIsModalOpen(false)}>

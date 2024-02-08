@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
+import { DataTable } from 'mantine-datatable';
+import { useEffect } from 'react';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import IconSend from '../../../components/Icon/IconSend';
 import { useGetShowSaleQuery } from '../../../store/services/saleApi';
 import { GetShowSaleDocumentItem } from '../../../store/services/types';
 import IconArchive from '../../../components/Icon/IconArchive';
@@ -16,8 +15,6 @@ const DetailCashier = () => {
         dispatch(setPageTitle('List Data'));
     });
     const { id } = useParams();
-    const [page, setPage] = useState(1);
-    const [search, setSearch] = useState<string>('');
     const { data: ShowSaleData } = useGetShowSaleQuery(id);
 
     const ShowSale = useMemo(() => {
@@ -34,7 +31,7 @@ const DetailCashier = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <Link to="/storage/expired_product/bundle_product">
+                    <Link to="/outbound/sale/kasir">
                         <span>Sale</span>
                     </Link>
                 </li>
@@ -69,11 +66,6 @@ const DetailCashier = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
-                </div> */}
                 <div>
                     <div className="datatables panel xl:col-span-3">
                         <DataTable

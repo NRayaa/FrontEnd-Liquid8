@@ -17,7 +17,7 @@ const ListKasir = () => {
 
     return (
         <>
-            <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/" current="List Cashier" />
+            <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/outbound/sale/kasir" current="List Cashier" />
             <div className="panel mt-6 min-h-[450px] pr-12">
                 <div className="mb-8">
                     <h5 className="font-semibold text-lg dark:text-white-light mb-2">Sale Cashier</h5>
