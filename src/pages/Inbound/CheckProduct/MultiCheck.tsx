@@ -232,6 +232,7 @@ const MultiCheck = () => {
                         hideBarcode={hideBarcode}
                         handleSetNewPriceProduct={handleSetNewPriceProduct}
                         customQuantity={customQuantity}
+                        codeBarcode={codeBarcode}
                     />
                 )}
                 {isBarcode && <BarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}
