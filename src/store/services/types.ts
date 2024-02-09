@@ -1083,6 +1083,13 @@ interface GetShowSaleDocument {
         };
     };
 }
+interface ExportToExcel {
+    data: {
+        status: boolean;
+        message: string;
+        resource: string;
+    };
+}
 
 export type {
     UserDataItem,
@@ -1155,4 +1162,5 @@ export type {
     ItemDetailOldsProduct,
     GetShowSaleDocument,
     GetShowSaleDocumentItem,
+    ExportToExcel,
 };

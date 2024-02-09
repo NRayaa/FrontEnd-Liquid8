@@ -23,7 +23,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
             const formdata = new FormData();
             const token = localStorage.getItem('token');
             const header = new Headers();
-            formdata.append('file', file, '[PROXY]');
+            formdata.append('file', file, file.name);
 
             header.append('Authorization', `Bearer ${token}`);
             const requestOptions = {
