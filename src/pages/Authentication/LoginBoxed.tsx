@@ -39,6 +39,7 @@ const LoginBoxed = () => {
     useEffect(() => {
         if (results.isSuccess) {
             localStorage.setItem('token', results.data.data.resource[0]);
+            localStorage.setItem('profile', JSON.stringify(results.data.data.resource[1]));
             navigate('/');
         }
     }, [results]);
