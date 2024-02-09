@@ -39,7 +39,6 @@ const AddAkun = () => {
                 role_id: input.role_id,
             };
             await createAccount(body);
-            console.log("DATA SENT", body)
         } catch (err) {}
     };
 
@@ -68,7 +67,7 @@ const AddAkun = () => {
                             Role :
                         </label>
                         <select id="roleSelect" className="form-select w-[250px]" required name="role_id" onChange={handleInputChange} value={input.role_id}>
-                            <option value="" disabled>
+                            <option value="">
                                 Pilih Role
                             </option>
                             {dataListRole.map((role) => (
