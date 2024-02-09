@@ -173,7 +173,7 @@ interface Color {
 interface GetBarcodeResponse {
     data: {
         status: boolean;
-        message: string;
+        message: string | undefined;
         resource: any;
     };
 }
