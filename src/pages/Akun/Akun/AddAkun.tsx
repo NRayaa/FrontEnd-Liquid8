@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateAccountMutation } from '../../../store/services/listAkunApi';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import { GetListRoleItem } from '../../../store/services/types';
+import toast from 'react-hot-toast';
 
 const AddAkun = () => {
     const [createAccount, results] = useCreateAccountMutation();
@@ -39,6 +40,7 @@ const AddAkun = () => {
                 role_id: input.role_id,
             };
             await createAccount(body);
+            toast.success('Success create account!');
         } catch (err) {}
     };
 
