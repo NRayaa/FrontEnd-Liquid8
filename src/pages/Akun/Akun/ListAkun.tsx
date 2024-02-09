@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteAccountMutation, useGetListAkunQuery } from '../../../store/services/listAkunApi';
 import { GetListAkunItem, GetListRoleItem } from '../../../store/services/types';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
+import toast from 'react-hot-toast';
 
 const ListAkun = () => {
     const navigate = useNavigate();
@@ -31,6 +32,7 @@ const ListAkun = () => {
     const handleDeleteAccount = async (id: number) => {
         try {
             await deleteAccount(id);
+            toast.success('Success delete account!');
         } catch (err) {
             console.log(err);
         }
