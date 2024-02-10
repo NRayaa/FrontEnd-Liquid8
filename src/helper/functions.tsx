@@ -91,4 +91,13 @@ function convertPercentage(angka: string): string {
     return hasil;
 }
 
-export { formatTimestamp, formatRupiah, formatDate, generateRandomString, formatYearToDay, convertPercentage };
+function formatCurrency(value: number) {
+    const formattedValue = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+    }).format(value);
+
+    return formattedValue;
+}
+
+export { formatTimestamp, formatRupiah, formatDate, generateRandomString, formatYearToDay, convertPercentage, formatCurrency };

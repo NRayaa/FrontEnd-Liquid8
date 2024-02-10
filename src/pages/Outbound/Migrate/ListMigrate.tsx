@@ -20,7 +20,9 @@ const ListMigrate = () => {
         return ListMigrateData?.data.resource.data;
     }, [ListMigrateData]);
 
-    console.log(ListMigrateData);
+    useEffect(() => {
+        refetch();
+    }, [listMigrate]);
 
     return (
         <div>
@@ -29,9 +31,6 @@ const ListMigrate = () => {
                     <Link to="/" className="text-primary hover:underline">
                         Home
                     </Link>
-                </li>
-                <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Outbound</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
                     <span>List Migrate</span>

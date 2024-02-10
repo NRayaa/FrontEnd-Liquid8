@@ -137,7 +137,7 @@ const Product = () => {
                                 accessor: 'status_document',
                                 title: 'Status',
                                 render: (item) => (
-                                    <button type="button" className="rounded-xl btn-sm px-4 bg-[#2EFF43] uppercase text-white">
+                                    <button type="button" className="rounded-xl btn-sm px-4 bg-green-500 uppercase text-white">
                                         {item.new_status_product}
                                     </button>
                                 ),
@@ -164,6 +164,7 @@ const Product = () => {
                         recordsPerPage={data?.data.resource.per_page ?? 10}
                         page={page}
                         onPageChange={(prevPage) => setPage(prevPage)}
+                        minHeight={200}
                     />
                 </div>
             </div>

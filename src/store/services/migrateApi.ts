@@ -7,9 +7,13 @@ interface GetListMigrateIndex {
         resource: {
             code_document_migrate: string;
             migrate: {
+                total: number;
+                per_page: number;
                 data: { id: number; new_barcode_product: number; new_name_product: string; new_price_product: number }[];
             };
             new_product: {
+                total: number;
+                per_page: number;
                 data: {
                     id: number;
                     new_barcode_product: number;
@@ -43,10 +47,10 @@ export const migrateApi = createApi({
     baseQuery: baseQuery,
     endpoints: (builder) => ({
         getListMigrate: builder.query<GetListMigrate, { page: number; q: string }>({
-            query: ({ page, q }) => `/migrate-documents${page ? '?page=' + page : q ? '?q=' + q : page && q && '?page=' + page + '&q=' + q}`,
+            query: ({ page, q }) => `/migrate-documents?page=${page}&q=${q}`,
         }),
-        getIndexMigrate: builder.query<GetListMigrateIndex, string>({
-            query: (q) => `/migrates${q && '?q=' + q}`,
+        getIndexMigrate: builder.query<GetListMigrateIndex, { q: string; migratePage: number; productPage: number }>({
+            query: ({ q, migratePage, productPage }) => `/migrates?migrate_page=${migratePage}&product_page=${productPage}&q=${q}`,
         }),
         postMigrate: builder.mutation<any, any>({
             query: (id) => ({

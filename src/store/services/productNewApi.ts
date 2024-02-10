@@ -24,7 +24,25 @@ export const productNewApi = createApi({
         getDetailExpiredProduct: builder.query<DetailExpiredProduct, number | undefined>({
             query: (id) => `/new_products/${id}`,
         }),
+        editDetailProduct: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/new_products/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        getDisplayExpired: builder.query<ProductExpired, { page: number; q: string }>({
+            query: ({ page, q }) => `/new_product/display-expired?page=${page}&q=${q}`,
+        }),
     }),
 });
 
-export const { useGetAllProductNewQuery, useDeleteProductNewMutation, useDetailProductNewQuery, useGetExpiredProductsQuery, useGetDetailExpiredProductQuery } = productNewApi;
+export const {
+    useGetAllProductNewQuery,
+    useDeleteProductNewMutation,
+    useDetailProductNewQuery,
+    useGetExpiredProductsQuery,
+    useGetDetailExpiredProductQuery,
+    useEditDetailProductMutation,
+    useGetDisplayExpiredQuery,
+} = productNewApi;

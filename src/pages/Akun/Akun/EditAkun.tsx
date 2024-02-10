@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUpdateAccountMutation } from '../../../store/services/listAkunApi';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import { GetListRoleItem } from '../../../store/services/types';
+import toast from 'react-hot-toast';
 
 const EditAkun = () => {
     const { state } = useLocation();
@@ -42,7 +43,7 @@ const EditAkun = () => {
                 role_id: input.role_id,
             };
             await updateAccount({id, body});
-            console.log("DATA SENT", body)
+            toast.success('Success update account');
         } catch (err) {}
     };
 

@@ -1,15 +1,14 @@
 import React, { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
-import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
-import IconSend from '../../../components/Icon/IconSend';
 import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation } from '../../../store/services/saleApi';
 import { GetListSaleItem, NewProductItem } from '../../../store/services/types';
 import { useGetAllProductNewQuery } from '../../../store/services/productNewApi';
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import IconSearch from '../../../components/Icon/IconSearch';
+import { formatRupiah } from '../../../helper/functions';
 
 interface GetTotalSaleItem {
     total_sale: string;
@@ -23,7 +22,6 @@ const Kasir = () => {
     const [page, setPage] = useState<number>(1);
     const [addSale] = useAddSaleMutation();
     const [saleFinish] = useSaleFinishMutation();
-    // const [search] = useState<string>('');
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
@@ -46,7 +44,6 @@ const Kasir = () => {
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
     }, [listProduct]);
-    console.log('PRODUCT', productNewData);
 
     const [input, setInput] = useState({
         sale_barcode: '',
@@ -68,16 +65,14 @@ const Kasir = () => {
                 sale_buyer_name: input.sale_buyer_name,
             };
             await addSale(body);
-            console.log('DATA SENT', body);
             refetch();
         } catch (err) {}
     };
 
     const handleFinishSale = async () => {
         try {
-            const response = await saleFinish(null);
-            refetch();
-            console.log('Sale finished:', response);
+            await saleFinish(null);
+            navigate('/outbound/sale/list_kasir');
         } catch (err) {
             console.error('Failed to finish sale:', err);
         }
@@ -86,7 +81,6 @@ const Kasir = () => {
     const handleDeleteSale = async (id: number) => {
         try {
             await deleteSale(id);
-            refetch();
         } catch (err) {
             console.log(err);
         }
@@ -117,7 +111,7 @@ const Kasir = () => {
 
     return (
         <>
-            <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/" current="Cashier" />
+            <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/outbound/sale/kasir" current="Cashier" />
             <div>
                 <Transition appear show={isModalOpen} as={Fragment}>
                     <Dialog as="div" open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -202,19 +196,8 @@ const Kasir = () => {
             <div className="panel mt-6 min-h-[450px] pr-12">
                 <div className="mb-8">
                     <h5 className="font-semibold text-lg dark:text-white-light mb-2">Sale Cashier</h5>
-                    {/* <div className="mb-4 flex justify-between">
-                        <button type="button" className="btn-lg btn-primary uppercase px-6 rounded-md">
-                            MIGRATE
-                        </button>
-                    </div> */}
                 </div>
-                <div className="relative w-[220px]">
-                    {/* <input
-                        type="text"
-                        className="mb-4 form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
-                        placeholder="Search..."
-                    /> */}
-                </div>
+                <div className="relative w-[220px]"></div>
                 <div>
                     <div className="mb-4 flex justify-end">
                         <button type="button" className="btn btn-primary uppercase px-6" onClick={handleFinishSale}>
@@ -223,9 +206,6 @@ const Kasir = () => {
                     </div>
                     <div className="grid grid-cols-2 space-x-6 items-end">
                         <form className="w-[400px] cols-span-1 mb-4 ">
-                            {/* <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
-                    </button> */}
                             <div className="flex items-center justify-between mb-2">
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     Code Document:
@@ -251,7 +231,7 @@ const Kasir = () => {
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     TOTAL :
                                 </label>
-                                <input id="categoryName" type="text" value={lastItem?.total_sale ?? ''} placeholder="Rp" className=" form-input w-[250px]" required />
+                                <input id="categoryName" type="text" value={formatRupiah(lastItem?.total_sale ?? '')} placeholder="Rp" className=" form-input w-[250px]" required />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-4">
@@ -269,27 +249,12 @@ const Kasir = () => {
                                         />
                                         <button
                                             type="button"
-                                            className="h-7 w-7 border rounded-md absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
+                                            className="h-7 w-7 absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
                                             onClick={handleSearchButtonClick}
                                         >
                                             <IconSearch className="w-4 h-4" />
                                         </button>
                                     </div>
-
-                                    {/* <select id="productDropdown" name="sale_barcode" value={input.sale_barcode} onChange={handleInputChange} className="form-select w-[250px]">
-                                        <option value="">Select Product</option>
-                                        {productNewData &&
-                                            productNewData.map((product) => (
-                                                <option key={product.new_barcode_product} value={product.new_barcode_product}>
-                                                    {product.new_name_product}
-                                                </option>
-                                            ))}
-                                    </select>
-                                    <div className="flex items-center w-max mx-auto gap-6">
-                                        <button type="button" className="btn btn-outline-danger" onClick={handleSearchButtonClick}>
-                                            search
-                                        </button>
-                                    </div> */}
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -323,7 +288,7 @@ const Kasir = () => {
                                 {
                                     accessor: 'price',
                                     title: 'Price',
-                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_price_sale}</span>,
+                                    render: (item: GetListSaleItem) => <span className="font-semibold">{formatRupiah(item.product_price_sale)}</span>,
                                 },
                                 {
                                     accessor: 'Opsi',

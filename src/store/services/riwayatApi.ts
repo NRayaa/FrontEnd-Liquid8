@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CheckAllProducts, DetailGetRiwayatcheck, GetRiwayatcheck } from './types';
+import { CheckAllProducts, DetailGetRiwayatcheck, GetRiwayatcheck, ExportToExcel } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const riwayatApi = createApi({
@@ -25,7 +25,14 @@ export const riwayatApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        exportToExcel: builder.mutation<ExportToExcel, { code_document: string | undefined }>({
+            query: (body) => ({
+                url: '/history/exportToExcel',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery, useDeleteRiwayatCheckMutation } = riwayatApi;
+export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery, useDeleteRiwayatCheckMutation, useExportToExcelMutation } = riwayatApi;

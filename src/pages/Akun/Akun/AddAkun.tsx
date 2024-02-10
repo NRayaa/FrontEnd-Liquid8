@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateAccountMutation } from '../../../store/services/listAkunApi';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import { GetListRoleItem } from '../../../store/services/types';
+import toast from 'react-hot-toast';
 
 const AddAkun = () => {
     const [createAccount, results] = useCreateAccountMutation();
@@ -39,7 +40,7 @@ const AddAkun = () => {
                 role_id: input.role_id,
             };
             await createAccount(body);
-            console.log("DATA SENT", body)
+            toast.success('Success create account!');
         } catch (err) {}
     };
 
@@ -68,7 +69,7 @@ const AddAkun = () => {
                             Role :
                         </label>
                         <select id="roleSelect" className="form-select w-[250px]" required name="role_id" onChange={handleInputChange} value={input.role_id}>
-                            <option value="" disabled>
+                            <option value="">
                                 Pilih Role
                             </option>
                             {dataListRole.map((role) => (

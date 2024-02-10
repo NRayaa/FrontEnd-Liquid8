@@ -173,7 +173,7 @@ interface Color {
 interface GetBarcodeResponse {
     data: {
         status: boolean;
-        message: string;
+        message: string | undefined;
         resource: any;
     };
 }
@@ -388,6 +388,8 @@ interface NewProductItem {
     new_quality: string;
     new_category_product: string;
     new_tag_product: null | string;
+    condition?: string;
+    deskripsi?: string;
     created_at: string;
     updated_at: string;
 }
@@ -435,6 +437,7 @@ interface ProductExpiredItem {
     new_name_product: null | string;
     new_quantity_product: string;
     new_price_product: string;
+    old_price_product?: string;
     new_date_in_product: string;
     new_status_product: string;
     new_quality: string;
@@ -950,19 +953,17 @@ interface GetListAkun {
     };
 }
 
-interface GetListSaleItem 
-{
+interface GetListSaleItem {
     id: number;
     code_document_sale?: string;
     product_name_sale?: string;
-    product_price_sale?: string;
+    product_price_sale: string;
     product_qty_sale?: string;
     created_at: string;
     updated_at: string;
 }
 
-interface GetTotalSaleItem 
-{
+interface GetTotalSaleItem {
     total_sale: string;
 }
 
@@ -972,7 +973,7 @@ interface GetListSale {
         message: string;
         resource: {
             current_page: number;
-            data:(GetListSaleItem | GetTotalSaleItem)[];            
+            data: (GetListSaleItem | GetTotalSaleItem)[];
             first_page_url: string;
             from: null | string;
             last_page: number;
@@ -1025,7 +1026,7 @@ interface GetListSaleDocumentItem {
     code_document_sale: string;
     buyer_name_document_sale: string;
     total_product_document_sale: string;
-    total_price_document_sale: number;
+    total_price_document_sale: string;
     status_document_sale: string;
     created_at: string;
     updated_at: string;
@@ -1050,6 +1051,43 @@ interface GetListSaleDocument {
             to: number;
             total: number;
         };
+    };
+}
+
+interface GetShowSaleDocumentItem {
+    id: number;
+    code_document_sale: string;
+    product_name_sale: string;
+    product_barcode_sale: string;
+    product_price_sale: string;
+    product_qty_sale: string;
+    status_sale: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetShowSaleDocument {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            code_document_sale: string;
+            buyer_name_document_sale: string;
+            total_product_document_sale: string;
+            total_price_document_sale: string;
+            status_document_sale: string;
+            created_at: string;
+            updated_at: string;
+            sales: GetShowSaleDocumentItem[];
+        };
+    };
+}
+interface ExportToExcel {
+    data: {
+        status: boolean;
+        message: string;
+        resource: string;
     };
 }
 
@@ -1122,4 +1160,7 @@ export type {
     GetListSaleDocument,
     GetListSaleDocumentItem,
     ItemDetailOldsProduct,
+    GetShowSaleDocument,
+    GetShowSaleDocumentItem,
+    ExportToExcel,
 };
