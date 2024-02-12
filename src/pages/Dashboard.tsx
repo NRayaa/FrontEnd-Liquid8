@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useGetUsersQuery } from '../store/services/usersApi';
 import { IRootState } from '../store';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Dropdown from '../components/Dropdown';
 import IconHorizontalDots from '../components/Icon/IconHorizontalDots';
 import ReactApexChart from 'react-apexcharts';
@@ -11,24 +11,53 @@ import IconNetflix from '../components/Icon/IconNetflix';
 import IconBolt from '../components/Icon/IconBolt';
 import IconPlus from '../components/Icon/IconPlus';
 import IconCaretDown from '../components/Icon/IconCaretDown';
+import { useGetDashboardQuery } from '../store/services/dashboardApi';
 
 const Index = () => {
-    const { data } = useGetUsersQuery('');
+    // const { data } = useGetUsersQuery('');
+    const { data, isLoading } = useGetDashboardQuery(undefined);
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
     const [loading] = useState(false);
+
+    const inboundData = useMemo(() => {
+        return data?.data.resource.chart_inbound_outbound.map((item) => item.inbound_count);
+    }, [data]);
+
+    console.log('INBOUND', inboundData);
+
+    const outboundData = useMemo(() => {
+        return data?.data.resource.chart_inbound_outbound.map((item) => item.outbound_count);
+    }, [data]);
+
+    console.log('OUTBOUND', outboundData);
+
+    const listInboundData = useMemo(() => {
+        return data?.data.resource.inbound_data.data;
+    }, [data]);
+
+    console.log('List INBOUND', listInboundData);
+
+    function formatDate(dateString: string) {
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    }
 
     //Revenue Chart
     const revenueChart: any = {
         series: [
             {
                 name: 'Inbound',
-                data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000, 14000, 17000],
+                data: inboundData,
+                // data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000, 14000, 17000],
             },
             {
                 name: 'Outbound',
-                data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000, 18000, 19000],
+                data: outboundData,
+
+                // data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000, 18000, 19000],
             },
         ],
         options: {
@@ -104,6 +133,7 @@ const Index = () => {
                 labels: {
                     formatter: (value: number) => {
                         return value / 1000 + 'K';
+                        // return value;
                     },
                     offsetX: isRtl ? -30 : -10,
                     offsetY: 0,
@@ -319,7 +349,7 @@ const Index = () => {
                 <div className="panel h-full">
                     <div className="flex items-center justify-between dark:text-white-light mb-5">
                         <h5 className="font-semibold text-lg">Inbound Data</h5>
-                        <div className="dropdown">
+                        {/* <div className="dropdown">
                             <Dropdown placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`} button={<IconHorizontalDots className="text-black/70 dark:text-white/70 hover:!text-primary" />}>
                                 <ul>
                                     <li>
@@ -333,19 +363,21 @@ const Index = () => {
                                     </li>
                                 </ul>
                             </Dropdown>
-                        </div>
+                        </div> */}
                     </div>
                     <div>
                         <div className="space-y-6">
-                            <div className="flex">
-                                <span className="shrink-0 grid place-content-center text-base w-9 h-9 rounded-md bg-success-light dark:bg-success text-success dark:text-success-light">SP</span>
-                                <div className="px-3 flex-1">
-                                    <div>Shaun Park</div>
-                                    <div className="text-xs text-white-dark dark:text-gray-500">10 Jan 1:00PM</div>
+                            {listInboundData?.map((item, index) => (
+                                <div key={index} className="flex">
+                                    <span className="shrink-0 grid place-content-center text-base w-9 h-9 rounded-md bg-success-light dark:bg-success text-success dark:text-success-light">ID</span>
+                                    <div className="px-3 flex-1">
+                                        <div>{item.base_document}</div>
+                                        <div className="text-xs text-white-dark dark:text-gray-500">{formatDate(item.created_at)}</div>
+                                    </div>
+                                    <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">{item.total_column_in_document}</span>
                                 </div>
-                                <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">34.000</span>
-                            </div>
-                            <div className="flex">
+                            ))}
+                            {/* <div className="flex">
                                 <span className="shrink-0 grid place-content-center w-9 h-9 rounded-md bg-warning-light dark:bg-warning text-warning dark:text-warning-light">
                                     <IconCashBanknotes />
                                 </span>
@@ -392,7 +424,7 @@ const Index = () => {
                                     <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
                                 </div>
                                 <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">20.000</span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
