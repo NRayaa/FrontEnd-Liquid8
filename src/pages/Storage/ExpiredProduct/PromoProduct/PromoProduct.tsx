@@ -6,6 +6,7 @@ import IconPlus from '../../../../components/Icon/IconPlus';
 import { useDeletePromoMutation, useGetPromotListsQuery } from '../../../../store/services/promoApi';
 import { formatRupiah } from '../../../../helper/functions';
 import { PromoListItem } from '../../../../store/services/types';
+import toast from 'react-hot-toast';
 
 const PromoProduct = () => {
     const [page, setPage] = useState<number>(1);
@@ -79,7 +80,10 @@ const PromoProduct = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 

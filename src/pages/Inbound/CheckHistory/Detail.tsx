@@ -4,6 +4,7 @@ import TablePercentageItem from './TablePercentageItem';
 import { useParams } from 'react-router-dom';
 import { useGetDetailRiwayatCheckQuery, useExportToExcelMutation } from '../../../store/services/riwayatApi';
 import { useEffect, useMemo } from 'react';
+import toast from 'react-hot-toast';
 
 const DetailCheckHistory = () => {
     const { id } = useParams();
@@ -29,7 +30,10 @@ const DetailCheckHistory = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             window.open(results.data.data.resource);
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? '');
         }
     }, [results]);
 

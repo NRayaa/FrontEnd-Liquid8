@@ -12,6 +12,7 @@ import {
 import { ProdcutItem } from '../../../store/services/types';
 import { formatRupiah, generateRandomString } from '../../../helper/functions';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const PalletGenerate = () => {
     const [pageLeftTable, setPageLeftTable] = useState<number>(1);
@@ -85,20 +86,29 @@ const PalletGenerate = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             displayLists.refetch();
             filterLists.refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
     useEffect(() => {
         if (deleteResults.isSuccess) {
+            toast.success(deleteResults.data.data.message);
             displayLists.refetch();
             filterLists.refetch();
+        } else if (deleteResults.isError) {
+            toast.error(deleteResults?.data?.data?.message ?? 'Error');
         }
     }, [deleteResults]);
     useEffect(() => {
         if (createResults.isSuccess) {
+            toast.success(createResults.data.data.message);
             navigate('/storage/pallet');
             palletLists.refetch();
+        } else if (createResults.isError) {
+            toast.error(createResults?.data?.data?.message ?? 'Error');
         }
     }, [createResults]);
     useEffect(() => {

@@ -5,6 +5,8 @@ import { useDeletePalletMutation, usePalletListsQuery } from '../../../store/ser
 import { PaletListItem } from '../../../store/services/types';
 import { formatRupiah } from '../../../helper/functions';
 import { DataTable } from 'mantine-datatable';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 const Pallet = () => {
     const navigate = useNavigate();
@@ -13,23 +15,76 @@ const Pallet = () => {
     const { data, isSuccess, refetch } = usePalletListsQuery({ page, q: search });
     const [deletePallet, results] = useDeletePalletMutation();
 
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    if (result.value) {
+                        await deletePallet(id);
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+        if (type === 15) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Berhasil Dikirim',
+                padding: '10px 20px',
+            });
+        }
+        if (type == 20) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Data Berhasil Ditambah',
+                padding: '10px 20px',
+            });
+        }
+    };
+
     const palletLists = useMemo(() => {
         if (isSuccess) {
             return data.data.resource.data;
         }
     }, [data]);
 
-    const handleDeletePallet = async (id: number) => {
-        try {
-            await deletePallet(id);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 
@@ -88,7 +143,7 @@ const Pallet = () => {
                                                 DETAIL
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeletePallet(item.id)}>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             DELETE
                                         </button>
                                     </div>

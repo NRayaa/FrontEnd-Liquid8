@@ -2,6 +2,7 @@ import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react
 import { BreadCrumbs } from '../../../../components';
 import { useCreateColorTagMutation } from '../../../../store/services/colorTagApi';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const AddTagWarna = () => {
     const [createColorTag, results] = useCreateColorTagMutation();
@@ -41,7 +42,10 @@ const AddTagWarna = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             navigate('/storage/categorysetting/tag_warna');
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
         }
     }, [results]);
 
