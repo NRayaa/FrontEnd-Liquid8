@@ -146,6 +146,8 @@ const MultiCheck = () => {
                 setKeterangan('>100K');
             }
             setInputBarcode('');
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? '');
         }
     }, [results]);
 

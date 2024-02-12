@@ -32,6 +32,8 @@ const DetailCheckHistory = () => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
             window.open(results.data.data.resource);
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? '');
         }
     }, [results]);
 

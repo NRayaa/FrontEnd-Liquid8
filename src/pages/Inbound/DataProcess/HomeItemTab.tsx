@@ -40,7 +40,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                     getGeneratesData(result);
                     toast.success(result.message ?? 'File berhasil ditambahkan');
                 })
-                .catch((error) => console.log('error', error));
+                .catch((error) => toast.error('Error!'));
         }
     };
 

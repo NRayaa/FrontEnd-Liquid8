@@ -173,6 +173,8 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 showBarcode();
                 resetProductCheckShow();
             }
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'error');
         }
     }, [results]);
 

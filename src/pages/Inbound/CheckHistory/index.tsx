@@ -84,6 +84,8 @@ const CheckHistory = () => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
         }
     }, [results]);
 

@@ -125,12 +125,16 @@ const DataInput = () => {
             toast.success(mergeResults.data.data.message);
             setActiveTab3(3);
             fetchProductOlds();
+        } else if (mergeResults.isError) {
+            toast.error(mergeResults?.data?.data?.message ?? 'Error');
         }
     }, [mergeResults]);
 
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 

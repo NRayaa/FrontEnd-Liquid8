@@ -547,9 +547,11 @@ interface DeleteBundleResponse {
     };
 }
 interface FilterProduct {
-    status: boolean;
-    message: string;
-    resource: ProductExpiredItem;
+    data: {
+        status: boolean;
+        message: string;
+        resource: ProductExpiredItem;
+    };
 }
 interface GetFilterProductBundles {
     data: {
