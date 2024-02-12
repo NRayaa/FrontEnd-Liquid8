@@ -2,13 +2,14 @@ import TableHistoryCheckItem from './TableHistoryCheckItem';
 import PieChartItem from './PieChartItem';
 import TablePercentageItem from './TablePercentageItem';
 import { useParams } from 'react-router-dom';
-import { useGetDetailRiwayatCheckQuery, useLazyExportToExcelQuery } from '../../../store/services/riwayatApi';
-import { useMemo } from 'react';
+import { useGetDetailRiwayatCheckQuery, useExportToExcelMutation } from '../../../store/services/riwayatApi';
+import { useEffect, useMemo } from 'react';
+import toast from 'react-hot-toast';
 
 const DetailCheckHistory = () => {
     const { id } = useParams();
     const { data, isSuccess } = useGetDetailRiwayatCheckQuery(id);
-    const [exportToExcel, results] = useLazyExportToExcelQuery();
+    const [exportToExcel, results] = useExportToExcelMutation();
 
     const detailCheckData = useMemo(() => {
         if (isSuccess && data.data.status) {
@@ -18,11 +19,23 @@ const DetailCheckHistory = () => {
 
     const handleExportData = async () => {
         try {
-            await exportToExcel(undefined);
+            const body = {
+                code_document: detailCheckData?.code_document,
+            };
+            await exportToExcel(body);
         } catch (err) {
             console.log(err);
         }
     };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+            window.open(results.data.data.resource);
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? '');
+        }
+    }, [results]);
 
     return (
         <div className="panel px-2 lg:px-12 pt-5 pb-12">

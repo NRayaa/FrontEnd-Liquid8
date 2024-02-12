@@ -173,7 +173,7 @@ interface Color {
 interface GetBarcodeResponse {
     data: {
         status: boolean;
-        message: string;
+        message: string | undefined;
         resource: any;
     };
 }
@@ -547,9 +547,11 @@ interface DeleteBundleResponse {
     };
 }
 interface FilterProduct {
-    status: boolean;
-    message: string;
-    resource: ProductExpiredItem;
+    data: {
+        status: boolean;
+        message: string;
+        resource: ProductExpiredItem;
+    };
 }
 interface GetFilterProductBundles {
     data: {
@@ -1083,6 +1085,13 @@ interface GetShowSaleDocument {
         };
     };
 }
+interface ExportToExcel {
+    data: {
+        status: boolean;
+        message: string;
+        resource: string;
+    };
+}
 
 interface GetProductSales {
     new_category_product: string;
@@ -1209,4 +1218,5 @@ export type {
     GetProductSales,
     GetShowChartInboundOutbound,
     GetInboundData,
+    ExportToExcel,
 };

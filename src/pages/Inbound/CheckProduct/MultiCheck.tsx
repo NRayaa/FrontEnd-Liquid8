@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 import IconSearch from '../../../components/Icon/IconSearch';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -74,19 +75,23 @@ const MultiCheck = () => {
     }, [results]);
 
     const oldData = useMemo(() => {
-        if (results.isSuccess) {
+        if (results.isSuccess && results.data.data.status) {
             return results.data?.data.resource.product;
         }
     }, [results]);
 
     const newPrice = useMemo(() => {
-        if (!Array.isArray(results.data?.data.resource.product)) {
-            return results.data?.data.resource.product.old_price_product;
+        if (results.isSuccess && results.data.data.status) {
+            if (!Array.isArray(results.data?.data.resource.product)) {
+                return results.data?.data.resource.product.old_price_product;
+            }
         }
     }, [results]);
     const newBarcode = useMemo(() => {
-        if (!Array.isArray(results.data?.data.resource.product)) {
-            return results.data?.data.resource.new_barcode;
+        if (results.isSuccess && results.data.data.status) {
+            if (!Array.isArray(results.data?.data.resource.product)) {
+                return results.data?.data.resource.new_barcode;
+            }
         }
     }, [results]);
 
@@ -125,12 +130,14 @@ const MultiCheck = () => {
 
     useEffect(() => {
         if (checkResults.isSuccess) {
+            toast.success(checkResults.data.data.message);
             navigate('/inbound/check_history');
         }
     }, [checkResults]);
 
     useEffect(() => {
-        if (results.isSuccess) {
+        if (results.isSuccess && results.data.data.status) {
+            toast.success(results?.data?.data?.message ?? '');
             setIsProductCheck(true);
             hideBarcode();
             if (Array.isArray(results.data?.data.resource.product)) {
@@ -139,8 +146,17 @@ const MultiCheck = () => {
                 setKeterangan('>100K');
             }
             setInputBarcode('');
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? '');
         }
     }, [results]);
+
+    useEffect(() => {
+        if (results.isSuccess && results.data?.data.status === false) {
+            setInputBarcode('');
+            toast.error(results?.data?.data.message ?? '');
+        }
+    }, [results?.data?.data.message]);
 
     useEffect(() => {
         setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));
@@ -232,6 +248,7 @@ const MultiCheck = () => {
                         hideBarcode={hideBarcode}
                         handleSetNewPriceProduct={handleSetNewPriceProduct}
                         customQuantity={customQuantity}
+                        codeBarcode={codeBarcode}
                     />
                 )}
                 {isBarcode && <BarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}
