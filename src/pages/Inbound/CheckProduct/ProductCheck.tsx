@@ -5,6 +5,7 @@ import Barcode from 'react-barcode';
 import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
 import { formatRupiah, formatYearToDay, generateRandomString } from '../../../helper/functions';
 import BarcodePrinted from './BarcodePrinted';
+import toast from 'react-hot-toast';
 
 interface ProductCheck {
     oldData: {
@@ -166,6 +167,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             resetValueMultiCheck();
             if (barcodeStatus === 'LOLOS') {
                 showBarcode();

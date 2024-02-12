@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
 import { GeneratesData } from '../../../helper/types';
 
 interface HomeItemTab {
@@ -35,7 +36,10 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
 
             fetch('https://apiliquid8.digitalindustryagency.com/api/generate', requestOptions)
                 .then((response) => response.json())
-                .then((result) => getGeneratesData(result))
+                .then((result) => {
+                    getGeneratesData(result);
+                    toast.success(result.message ?? 'File berhasil ditambahkan');
+                })
                 .catch((error) => console.log('error', error));
         }
     };

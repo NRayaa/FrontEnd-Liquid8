@@ -7,63 +7,8 @@ import Swal from 'sweetalert2';
 import { useDeleteDocumentMutation, useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
 import { CheckProductDocumentItem } from '../../../store/services/types';
 import { formatDate } from '../../../helper/functions';
+import toast from 'react-hot-toast';
 
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-    if (type === 15) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Berhasil Dikirim',
-            padding: '10px 20px',
-        });
-    }
-    if (type == 20) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Data Berhasil Ditambah',
-            padding: '10px 20px',
-        });
-    }
-};
 const ListData = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -72,24 +17,81 @@ const ListData = () => {
 
     const [page, setPage] = useState<number>(1);
     const { data, isSuccess, refetch } = useDocumentsCheckProductsQuery(page);
-    const [deleteDocument] = useDeleteDocumentMutation();
+    const [deleteDocument, results] = useDeleteDocumentMutation();
     const [search, setSearch] = useState<string>('');
     const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
-    const handleDeleteDocument = async (id: number) => {
-        try {
-            await deleteDocument(id);
-            refetch();
-        } catch (err) {
-            console.log(err);
+
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menhapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    await deleteDocument(id);
+                    if (result.value) {
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+        if (type === 15) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Berhasil Dikirim',
+                padding: '10px 20px',
+            });
+        }
+        if (type == 20) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Data Berhasil Ditambah',
+                padding: '10px 20px',
+            });
         }
     };
 
     useEffect(() => {
-        if (isSuccess && data.data.message) {
+        if (isSuccess && data.data.status) {
             setListsData(data.data.resource.data);
         }
-        refetch()
+        refetch();
     }, [data, refetch]);
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+            refetch();
+        }
+    }, [results]);
 
     return (
         <div>
@@ -175,7 +177,7 @@ const ListData = () => {
                                                 Detail
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger"onClick={() => handleDeleteDocument(item.id)}>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
                                         </button>
                                     </div>

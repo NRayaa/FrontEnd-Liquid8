@@ -8,11 +8,12 @@ import IconThumbUp from '../../../components/Icon/IconThumbUp';
 import Swal from 'sweetalert2';
 import HomeItemTab from './HomeItemTab';
 import { GeneratesData } from '../../../helper/types';
-import { useLazyDetailProductOldQuery, useProductOldsQuery } from '../../../store/services/productOldsApi';
+import { useLazyDetailProductOldQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah } from '../../../helper/functions';
 import { useMergedHeaderMutation } from '../../../store/services/inboundDataProcessApi';
 import { DataTable } from 'mantine-datatable';
 import { ProductOldsItem } from '../../../store/services/types';
+import toast from 'react-hot-toast';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -55,7 +56,6 @@ const DataInput = () => {
 
     const [page, setPage] = useState<number>(1);
 
-    const [productOlds, setProductOlds] = useState<any>([]);
     const [detailProductOld, results] = useLazyDetailProductOldQuery();
 
     const [barcode, setBarcode] = useState<string[]>();
@@ -122,10 +122,17 @@ const DataInput = () => {
 
     useEffect(() => {
         if (mergeResults.isSuccess) {
+            toast.success(mergeResults.data.data.message);
             setActiveTab3(3);
             fetchProductOlds();
         }
     }, [mergeResults]);
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+        }
+    }, [results]);
 
     return (
         <div>
