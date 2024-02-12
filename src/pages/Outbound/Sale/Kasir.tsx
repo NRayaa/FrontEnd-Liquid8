@@ -9,6 +9,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import IconSearch from '../../../components/Icon/IconSearch';
 import { formatRupiah } from '../../../helper/functions';
+import toast from 'react-hot-toast';
 
 interface GetTotalSaleItem {
     total_sale: string;
@@ -31,13 +32,13 @@ const Kasir = () => {
     const listSale = useMemo(() => {
         const data = listSaleData?.data.resource.data;
         if (data && Array.isArray(data)) {
-            const filteredData = data.slice(0, -2);
+            const filteredData = data.slice(0, -3);
             return filteredData as GetListSaleItem[];
         }
         return [];
     }, [listSaleData]);
 
-    const twolastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 2] as GetCodeDocumentItem;
+    const twolastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 3] as GetCodeDocumentItem;
 
     const lastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 1] as GetTotalSaleItem;
 
@@ -65,6 +66,7 @@ const Kasir = () => {
                 sale_buyer_name: input.sale_buyer_name,
             };
             await addSale(body);
+            toast.success("Success add sale")
             refetch();
         } catch (err) {}
     };
@@ -72,6 +74,7 @@ const Kasir = () => {
     const handleFinishSale = async () => {
         try {
             await saleFinish(null);
+            toast.success("Success finish sale")
             navigate('/outbound/sale/list_kasir');
         } catch (err) {
             console.error('Failed to finish sale:', err);
@@ -81,6 +84,8 @@ const Kasir = () => {
     const handleDeleteSale = async (id: number) => {
         try {
             await deleteSale(id);
+            toast.success("Success delete product sale");
+            refetch();
         } catch (err) {
             console.log(err);
         }
@@ -111,7 +116,7 @@ const Kasir = () => {
 
     return (
         <>
-            <BreadCrumbs base="Outbound" basePath="outbound/sales" sub="Sales" subPath="/outbound/sale/kasir" current="Cashier" />
+            <BreadCrumbs base="Home" basePath="/" sub="Sales" subPath="/outbound/sale/kasir" current="Cashier" />
             <div>
                 <Transition appear show={isModalOpen} as={Fragment}>
                     <Dialog as="div" open={isModalOpen} onClose={() => setIsModalOpen(false)}>

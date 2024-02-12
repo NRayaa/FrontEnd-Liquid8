@@ -1084,6 +1084,56 @@ interface GetShowSaleDocument {
     };
 }
 
+interface GetProductSales {
+    new_category_product: string;
+    total: number;
+    all_total: number;
+}
+
+interface GetShowChartInboundOutbound {
+    month: number;
+    outbound_count: number;
+    inbound_count: number;
+}
+
+interface GetInboundData {
+    base_document: string;
+    created_at: string;
+    total_column_in_document: number;
+}
+
+interface GetDashboard {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            chart_inbound_outbound: GetShowChartInboundOutbound[];
+            product_sales: GetProductSales[];
+            inbound_data: {
+                current_page: number;
+                data: GetInboundData[];
+                first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: string | null;
+                path: string;
+                per_page: number;
+                prev_page_url: string | null;
+                to: number;
+                total: number;
+            };
+            expired_data: { all_total: number }[];
+            product_data: {
+                new_category_product: string;
+                total: number;
+            }[];
+        };
+    };
+}
+
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -1155,4 +1205,8 @@ export type {
     ItemDetailOldsProduct,
     GetShowSaleDocument,
     GetShowSaleDocumentItem,
+    GetDashboard,
+    GetProductSales,
+    GetShowChartInboundOutbound,
+    GetInboundData,
 };
