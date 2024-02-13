@@ -1124,11 +1124,8 @@ interface GetDashboard {
                 to: number;
                 total: number;
             };
-            expired_data: { all_total: number }[];
-            product_data: {
-                new_category_product: string;
-                total: number;
-            }[];
+            expired_data: GetProductSales[];
+            product_data: GetProductSales[];
         };
     };
 }
