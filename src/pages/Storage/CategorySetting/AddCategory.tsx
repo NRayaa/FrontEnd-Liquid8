@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import { useCreateCategoryMutation } from '../../../store/services/categoriesApi';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const AddCategory = () => {
     const [createCategory, results] = useCreateCategoryMutation();
@@ -33,7 +34,10 @@ const AddCategory = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             navigate('/storage/categorysetting/sub_kategori');
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
         }
     }, [results]);
     return (

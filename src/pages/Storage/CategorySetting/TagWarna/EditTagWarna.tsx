@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { BreadCrumbs } from '../../../../components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
+import toast from 'react-hot-toast';
 
 const EditTagWarna = () => {
     const { state } = useLocation();
@@ -42,7 +43,10 @@ const EditTagWarna = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             navigate('/storage/categorysetting/tag_warna');
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
         }
     }, [results]);
 

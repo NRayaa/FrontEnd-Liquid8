@@ -4,26 +4,12 @@ import BarcodeData from './BarcodeData';
 import { useDetailProductNewQuery, useEditDetailProductMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import NewBarcodeData from './NewBarcodeData';
-
-// code_document: "",
-//         old_barcode_product: "",
-//         new_barcode_product: "",
-//         new_name_product: "",
-//         old_name_product: "",
-//         new_quantity_product: "",
-//         new_price_product: "",
-//         old_price_product: "",
-//         new_date_in_product: "",
-//         new_status_product: "",
-//         condition: "",
-//         new_category_product: "",
-//         new_tag_product: "",
-//         deskripsi: ""
+import toast from 'react-hot-toast';
 
 const DetailProduct = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data, isSuccess } = useDetailProductNewQuery(id);
+    const { data, isSuccess, refetch } = useDetailProductNewQuery(id);
     const productNew = useGetAllProductNewQuery({ page: 1, q: '' });
     const [editDetailProduct, results] = useEditDetailProductMutation();
     const [input, setInput] = useState({
@@ -33,9 +19,7 @@ const DetailProduct = () => {
     });
 
     const dataDetailProduct = useMemo(() => {
-        if (isSuccess) {
-            return data?.data.resource;
-        }
+        return data?.data.resource;
     }, [data]);
 
     const condition = useMemo(() => {
@@ -90,6 +74,7 @@ const DetailProduct = () => {
                 _method: 'PUT',
             };
             await editDetailProduct({ id, body });
+            refetch();
         } catch (err) {
             console.log(err);
         }
@@ -97,8 +82,11 @@ const DetailProduct = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message ?? 'Product updated');
             navigate('/storage/product');
             productNew.refetch();
+        } else if (results.isError) {
+            toast.error('Product updated failed');
         }
     }, [results]);
 

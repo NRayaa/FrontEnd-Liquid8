@@ -5,27 +5,82 @@ import { DataTable } from 'mantine-datatable';
 import { GetCategoriesItem } from '../../../store/services/types';
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import { formatRupiah } from '../../../helper/functions';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 const CategorySetting = () => {
     const navigate = useNavigate();
     const { data, refetch } = useGetCategoriesQuery(undefined);
     const [deleteCategory, results] = useDeleteCategoryMutation();
 
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menhapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    await deleteCategory(id);
+                    if (result.value) {
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+        if (type === 15) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Berhasil Dikirim',
+                padding: '10px 20px',
+            });
+        }
+        if (type == 20) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Data Berhasil Ditambah',
+                padding: '10px 20px',
+            });
+        }
+    };
+
     const dataCategories = useMemo(() => {
         return data?.data.resource;
     }, [data]);
 
-    const handleDeleteCategory = async (id: number) => {
-        try {
-            await deleteCategory(id);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     useEffect(() => {
-        if (results) {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
         }
     }, [results]);
 
@@ -95,7 +150,7 @@ const CategorySetting = () => {
                                                 Edit
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteCategory(item.id)}>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
                                         </button>
                                     </div>

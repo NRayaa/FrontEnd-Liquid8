@@ -5,6 +5,7 @@ import Barcode from 'react-barcode';
 import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
 import { formatRupiah, formatYearToDay, generateRandomString } from '../../../helper/functions';
 import BarcodePrinted from './BarcodePrinted';
+import toast from 'react-hot-toast';
 
 interface ProductCheck {
     oldData: {
@@ -35,6 +36,7 @@ interface ProductCheck {
     hideBarcode: () => void;
     handleSetNewPriceProduct: (newPrice: string) => void;
     customQuantity: string;
+    codeBarcode: string;
 }
 
 const ProductCheck: React.FC<ProductCheck> = ({
@@ -48,6 +50,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     hideBarcode,
     handleSetNewPriceProduct,
     customQuantity,
+    codeBarcode,
 }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
     const [newProduct, results] = useNewProductMutation();
@@ -84,7 +87,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             const body = {
                 code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: generateRandomString(10),
+                new_barcode_product: codeBarcode,
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
                 new_quantity_product: customQuantity,
@@ -100,7 +103,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
             setBarcodeStatus('LOLOS');
             handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
-            console.log("DATA SENT LOLOS", body)
         } catch (err) {
             console.log(err);
         }
@@ -110,7 +112,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             const body = {
                 code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: generateRandomString(10),
+                new_barcode_product: codeBarcode,
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
                 new_quantity_product: customQuantity,
@@ -136,7 +138,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             const body = {
                 code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: generateRandomString(10),
+                new_barcode_product: codeBarcode,
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
                 new_quantity_product: customQuantity,
@@ -165,11 +167,14 @@ const ProductCheck: React.FC<ProductCheck> = ({
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             resetValueMultiCheck();
             if (barcodeStatus === 'LOLOS') {
                 showBarcode();
                 resetProductCheckShow();
             }
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'error');
         }
     }, [results]);
 

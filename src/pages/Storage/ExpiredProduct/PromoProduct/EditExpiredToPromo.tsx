@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDetailProductNewQuery } from '../../../../store/services/productNewApi';
 import { formatRupiah } from '../../../../helper/functions';
 import { useCreatePromoMutation, useGetPromotListsQuery } from '../../../../store/services/promoApi';
+import toast from 'react-hot-toast';
 
 const EditExpiredToPromo = () => {
     const params = useParams();
@@ -48,8 +49,11 @@ const EditExpiredToPromo = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results?.data.data.message);
             navigate('/storage/expired_product/promo_product');
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 
