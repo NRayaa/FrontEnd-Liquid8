@@ -5,55 +5,80 @@ import { DataTable } from 'mantine-datatable';
 import { useDeleteProductNewMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
 import { NewProductItem } from '../../../store/services/types';
 import { formatDate, formatRupiah } from '../../../helper/functions';
-// import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
-// const showAlert = async (type: number) => {
-//     if (type === 11) {
-//         const swalWithBootstrapButtons = Swal.mixin({
-//             customClass: {
-//                 confirmButton: 'btn btn-secondary',
-//                 cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-//                 popup: 'sweet-alerts',
-//             },
-//             buttonsStyling: false,
-//         });
-//         swalWithBootstrapButtons
-//             .fire({
-//                 title: 'Are you sure?',
-//                 text: "You won't be able to revert this!",
-//                 icon: 'warning',
-//                 showCancelButton: true,
-//                 confirmButtonText: 'Yes, delete it!',
-//                 cancelButtonText: 'No, cancel!',
-//                 reverseButtons: true,
-//                 padding: '2em',
-//             })
-//             .then((result) => {
-//                 if (result.value) {
-//                     swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-//                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-//                     swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-//                 }
-//             });
-//     }
-// };
 const Product = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, refetch } = useGetAllProductNewQuery({ page, q: search });
+    const { data, refetch, isSuccess } = useGetAllProductNewQuery({ page, q: search });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
+
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menhapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    await deleteProductNew(id);
+                    if (result.value) {
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+        if (type === 15) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Berhasil Dikirim',
+                padding: '10px 20px',
+            });
+        }
+        if (type == 20) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Data Berhasil Ditambah',
+                padding: '10px 20px',
+            });
+        }
+    };
 
     const productNewData = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
-    const handleDeleteProductNew = async (id: number) => {
-        try {
-            await deleteProductNew(id);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    useEffect(() => {
+        refetch();
+    }, [data, refetch]);
 
     // const [dataImport, setDataImport] = useState<ImportProduct | undefined>();
     // const getImportData = (data: ImportProduct) => {
@@ -68,7 +93,10 @@ const Product = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 
@@ -77,7 +105,6 @@ const Product = () => {
             <BreadCrumbs base="Storage" basePath="storage/product" current="Produk" />
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product</h5>
-                {/* <ButtonInput showAlert={showAlert} getImportData={(data) => getImportData(data)} DataImport={dataImport}/> */}
                 <div className="relative w-[220px] ms-auto mb-4">
                     <input
                         type="text"
@@ -152,7 +179,7 @@ const Product = () => {
                                                 Detail
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductNew(item.id)}>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
                                         </button>
                                     </div>

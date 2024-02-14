@@ -9,6 +9,7 @@ import { IRootState } from '../../../../store';
 import IconPlus from '../../../../components/Icon/IconPlus';
 import { useDetailPromoQuery, useEditPromoMutation, useGetPromotListsQuery } from '../../../../store/services/promoApi';
 import { formatRupiah } from '../../../../helper/functions';
+import toast from 'react-hot-toast';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -97,8 +98,11 @@ const DetailPromo = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
             navigate('/storage/expired_product/promo_product');
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 

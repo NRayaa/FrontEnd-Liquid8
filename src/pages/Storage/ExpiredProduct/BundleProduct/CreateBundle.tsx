@@ -11,6 +11,7 @@ import {
     useGetBundleProductsQuery,
     useGetFilterProductBundlesQuery,
 } from '../../../../store/services/bundleProductApi';
+import toast from 'react-hot-toast';
 
 const CreateBundle = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
@@ -81,22 +82,31 @@ const CreateBundle = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
             filterBundles.refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results, filterBundles.isSuccess]);
 
     useEffect(() => {
         if (resultsDeleteBundle.isSuccess) {
+            toast.success(resultsDeleteBundle?.data.data.message);
             refetch();
             filterBundles.refetch();
+        } else if (resultsDeleteBundle.isError) {
+            toast.error(resultsDeleteBundle?.data?.data?.message ?? 'Error');
         }
     }, [resultsDeleteBundle]);
 
     useEffect(() => {
         if (resultsCreateBundle.isSuccess) {
+            toast.success(resultsCreateBundle?.data.data.message);
             bundleLists?.refetch();
             navigate('/storage/expired_product/bundle_product');
+        } else if (resultsCreateBundle.isError) {
+            toast.error(resultsCreateBundle?.data?.data?.message ?? 'Error');
         }
     }, [resultsCreateBundle]);
 

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useDeleteBundleProductMutation, useGetBundleProductsQuery } from '../../../../store/services/bundleProductApi';
 import { BundleItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
+import toast from 'react-hot-toast';
 
 const BundleProduct = () => {
     const [page, setPage] = useState<number>(1);
@@ -79,7 +80,10 @@ const BundleProduct = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 

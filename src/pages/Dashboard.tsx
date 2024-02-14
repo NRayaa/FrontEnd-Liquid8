@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useGetUsersQuery } from '../store/services/usersApi';
 import { IRootState } from '../store';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Dropdown from '../components/Dropdown';
 import IconHorizontalDots from '../components/Icon/IconHorizontalDots';
 import ReactApexChart from 'react-apexcharts';
@@ -11,24 +11,46 @@ import IconNetflix from '../components/Icon/IconNetflix';
 import IconBolt from '../components/Icon/IconBolt';
 import IconPlus from '../components/Icon/IconPlus';
 import IconCaretDown from '../components/Icon/IconCaretDown';
+import { useGetDashboardQuery } from '../store/services/dashboardApi';
 
 const Index = () => {
-    const { data } = useGetUsersQuery('');
+    // const { data } = useGetUsersQuery('');
+    const { data, isLoading } = useGetDashboardQuery(undefined);
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
     const [loading] = useState(false);
+
+    const inboundData = useMemo(() => {
+        return data?.data.resource.chart_inbound_outbound.map((item) => item.inbound_count);
+    }, [data]);
+
+    const outboundData = useMemo(() => {
+        return data?.data.resource.chart_inbound_outbound.map((item) => item.outbound_count);
+    }, [data]);
+
+    const listInboundData = useMemo(() => {
+        return data?.data.resource.inbound_data.data;
+    }, [data]);
+
+    function formatDate(dateString: string) {
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    }
 
     //Revenue Chart
     const revenueChart: any = {
         series: [
             {
                 name: 'Inbound',
-                data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000, 14000, 17000],
+                data: inboundData,
+                // data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000, 14000, 17000],
             },
             {
                 name: 'Outbound',
-                data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000, 18000, 19000],
+                data: outboundData,
+                // data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000, 18000, 19000],
             },
         ],
         options: {
@@ -103,7 +125,8 @@ const Index = () => {
                 tickAmount: 7,
                 labels: {
                     formatter: (value: number) => {
-                        return value / 1000 + 'K';
+                        return value / 1 + '';
+                        // return value;
                     },
                     offsetX: isRtl ? -30 : -10,
                     offsetY: 0,
@@ -169,9 +192,28 @@ const Index = () => {
         },
     };
 
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
+
+    const productSales = useMemo(() => {
+        return data?.data?.resource?.product_sales || [];
+    }, [data]);
+
+    const totalSales = productSales?.find((item) => item.all_total)?.all_total || 0; 
+    const productCategories = productSales.filter((item) => !item.all_total); 
+    const randomColors = useMemo(() => {
+        return data?.data?.resource?.product_sales.map(() => getRandomColor()) || [];
+    }, [data]);
+
     //Sales By Category
     const salesByCategory: any = {
-        series: [985, 737, 270],
+        series: productCategories.map((item) => parseInt(String(item.total), 10)),
         options: {
             chart: {
                 type: 'donut',
@@ -183,10 +225,10 @@ const Index = () => {
             },
             stroke: {
                 show: true,
-                width: 25,
-                colors: isDark ? '#0e1726' : '#fff',
+                width: 0,
+                colors: isDark ? '#888ea8' : randomColors,
             },
-            colors: isDark ? ['#5c1ac3', '#e2a03f', '#e7515a', '#e2a03f'] : ['#e2a03f', '#5c1ac3', '#e7515a'],
+            colors: randomColors,
             legend: {
                 position: 'bottom',
                 horizontalAlign: 'center',
@@ -202,19 +244,19 @@ const Index = () => {
             plotOptions: {
                 pie: {
                     donut: {
-                        size: '65%',
+                        size: '85%',
                         background: 'transparent',
                         labels: {
                             show: true,
                             name: {
                                 show: true,
                                 fontSize: '29px',
-                                offsetY: -10,
+                                offsetY: 10,
                             },
                             value: {
                                 show: true,
                                 fontSize: '26px',
-                                color: isDark ? '#bfc9d4' : undefined,
+                                color: isDark ? 'randomColors' : randomColors,
                                 offsetY: 16,
                                 formatter: (val: any) => {
                                     return val;
@@ -225,17 +267,192 @@ const Index = () => {
                                 label: 'Total',
                                 color: '#888ea8',
                                 fontSize: '29px',
-                                formatter: (w: any) => {
-                                    return w.globals.seriesTotals.reduce(function (a: any, b: any) {
-                                        return a + b;
-                                    }, 0);
-                                },
+                                formatter: () => totalSales,
                             },
                         },
                     },
                 },
             },
-            labels: ['Apparel', 'Sports', 'Others'],
+            labels: productCategories.map((item) => item.new_category_product),
+            states: {
+                hover: {
+                    filter: {
+                        type: 'none',
+                        value: 0.15,
+                    },
+                },
+                active: {
+                    filter: {
+                        type: 'none',
+                        value: 0.15,
+                    },
+                },
+            },
+        },
+    };
+
+    const productData = useMemo(() => {
+        return data?.data?.resource?.product_data || [];
+    }, [data]);
+
+    const totalProductData = productData?.find((item) => item.all_total)?.all_total || 0;
+    const productCategoriesData = productData.filter((item) => !item.all_total); 
+    const randomColorsProductData = useMemo(() => {
+        return data?.data?.resource?.product_data.map(() => getRandomColor()) || [];
+    }, [data]);
+
+    //Product By Category
+    const productByCategory: any = {
+        series: productCategoriesData.map((item) => parseInt(String(item.total), 10)),
+        options: {
+            chart: {
+                type: 'donut',
+                height: 460,
+                fontFamily: 'Nunito, sans-serif',
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                show: true,
+                width: 0,
+                colors: isDark ? '#888ea8' : randomColorsProductData,
+            },
+            colors: randomColorsProductData,
+            legend: {
+                position: 'bottom',
+                horizontalAlign: 'center',
+                fontSize: '14px',
+                markers: {
+                    width: 10,
+                    height: 10,
+                    offsetX: -2,
+                },
+                height: 50,
+                offsetY: 20,
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '85%',
+                        background: 'transparent',
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                fontSize: '29px',
+                                offsetY: 10,
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '26px',
+                                color: isDark ? 'randomColorsProductData' : randomColorsProductData,
+                                offsetY: 16,
+                                formatter: (val: any) => {
+                                    return val;
+                                },
+                            },
+                            total: {
+                                show: true,
+                                label: 'Total',
+                                color: '#888ea8',
+                                fontSize: '29px',
+                                formatter: () => totalProductData,
+                            },
+                        },
+                    },
+                },
+            },
+            labels: productCategoriesData.map((item) => item.new_category_product),
+            states: {
+                hover: {
+                    filter: {
+                        type: 'none',
+                        value: 0.15,
+                    },
+                },
+                active: {
+                    filter: {
+                        type: 'none',
+                        value: 0.15,
+                    },
+                },
+            },
+        },
+    };
+
+    const productExpired = useMemo(() => {
+        return data?.data?.resource?.expired_data || [];
+    }, [data]);
+    const totalProductExpired = productExpired?.find((item) => item.all_total)?.all_total || 0;
+    const productCategoriesExpired = productExpired.filter((item) => !item.all_total);
+    const randomColorsProductExpired = useMemo(() => {
+        return data?.data?.resource?.expired_data.map(() => getRandomColor()) || [];
+    }, [data]);
+
+    //Expired By Category
+    const expiredByCategory: any = {
+        series: productCategoriesExpired.map((item) => Math.round((item.total / totalProductExpired) * 10)),
+        options: {
+            chart: {
+                type: 'donut',
+                height: 460,
+                fontFamily: 'Nunito, sans-serif',
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                show: true,
+                width: 0,
+                colors: isDark ? '#888ea8' : randomColorsProductExpired,
+            },
+            colors: randomColorsProductExpired,
+            legend: {
+                position: 'bottom',
+                horizontalAlign: 'center',
+                fontSize: '14px',
+                markers: {
+                    width: 10,
+                    height: 10,
+                    offsetX: -2,
+                },
+                height: 50,
+                offsetY: 20,
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '85%',
+                        background: 'transparent',
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                fontSize: '29px',
+                                offsetY: 10,
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '26px',
+                                color: isDark ? 'randomColorsProductExpired' : randomColorsProductExpired,
+                                offsetY: 16,
+                                formatter: (val: any) => {
+                                    return val;
+                                },
+                            },
+                            total: {
+                                show: true,
+                                label: 'Total',
+                                color: '#888ea8',
+                                fontSize: '29px',
+                                formatter: () => totalProductExpired,
+                            },
+                        },
+                    },
+                },
+            },
+            labels: productCategoriesExpired.map((item) => item.new_category_product),
             states: {
                 hover: {
                     filter: {
@@ -261,25 +478,6 @@ const Index = () => {
                 <div className="panel h-full xl:col-span-2">
                     <div className="flex items-center justify-between dark:text-white-light mb-5">
                         <h5 className="font-semibold text-lg">Inbound Outbound </h5>
-                        <div className="dropdown">
-                            <Dropdown
-                                offset={[0, 1]}
-                                placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                button={<IconHorizontalDots className="text-black/70 dark:text-white/70 hover:!text-primary" />}
-                            >
-                                <ul>
-                                    <li>
-                                        <button type="button">Weekly</button>
-                                    </li>
-                                    <li>
-                                        <button type="button">Monthly</button>
-                                    </li>
-                                    <li>
-                                        <button type="button">Yearly</button>
-                                    </li>
-                                </ul>
-                            </Dropdown>
-                        </div>
                     </div>
                     <p className="text-lg dark:text-white-light/90">
                         <span className="text-primary ml-2"></span>
@@ -319,33 +517,20 @@ const Index = () => {
                 <div className="panel h-full">
                     <div className="flex items-center justify-between dark:text-white-light mb-5">
                         <h5 className="font-semibold text-lg">Inbound Data</h5>
-                        <div className="dropdown">
-                            <Dropdown placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`} button={<IconHorizontalDots className="text-black/70 dark:text-white/70 hover:!text-primary" />}>
-                                <ul>
-                                    <li>
-                                        <button type="button">View Report</button>
-                                    </li>
-                                    <li>
-                                        <button type="button">Edit Report</button>
-                                    </li>
-                                    <li>
-                                        <button type="button">Mark as Done</button>
-                                    </li>
-                                </ul>
-                            </Dropdown>
-                        </div>
                     </div>
                     <div>
                         <div className="space-y-6">
-                            <div className="flex">
-                                <span className="shrink-0 grid place-content-center text-base w-9 h-9 rounded-md bg-success-light dark:bg-success text-success dark:text-success-light">SP</span>
-                                <div className="px-3 flex-1">
-                                    <div>Shaun Park</div>
-                                    <div className="text-xs text-white-dark dark:text-gray-500">10 Jan 1:00PM</div>
+                            {listInboundData?.map((item, index) => (
+                                <div key={index} className="flex">
+                                    <span className="shrink-0 grid place-content-center text-base w-9 h-9 rounded-md bg-success-light dark:bg-success text-success dark:text-success-light">ID</span>
+                                    <div className="px-3 flex-1">
+                                        <div>{item.base_document}</div>
+                                        <div className="text-xs text-white-dark dark:text-gray-500">{formatDate(item.created_at)}</div>
+                                    </div>
+                                    <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">{item.total_column_in_document}</span>
                                 </div>
-                                <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">34.000</span>
-                            </div>
-                            <div className="flex">
+                            ))}
+                            {/* <div className="flex">
                                 <span className="shrink-0 grid place-content-center w-9 h-9 rounded-md bg-warning-light dark:bg-warning text-warning dark:text-warning-light">
                                     <IconCashBanknotes />
                                 </span>
@@ -392,7 +577,7 @@ const Index = () => {
                                     <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
                                 </div>
                                 <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">20.000</span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -408,7 +593,7 @@ const Index = () => {
                                     <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
                                 </div>
                             ) : (
-                                <ReactApexChart series={salesByCategory.series} options={salesByCategory.options} type="donut" height={460} />
+                                <ReactApexChart series={expiredByCategory.series} options={expiredByCategory.options} type="donut" height={460} />
                             )}
                         </div>
                     </div>
@@ -424,7 +609,7 @@ const Index = () => {
                                     <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
                                 </div>
                             ) : (
-                                <ReactApexChart series={salesByCategory.series} options={salesByCategory.options} type="donut" height={460} />
+                                <ReactApexChart series={productByCategory.series} options={productByCategory.options} type="donut" height={460} />
                             )}
                         </div>
                     </div>

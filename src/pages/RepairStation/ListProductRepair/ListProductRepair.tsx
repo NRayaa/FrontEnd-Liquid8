@@ -10,6 +10,7 @@ import { IRootState } from '../../../store';
 import { useGetListProductRepairQuery, useUpdateProductRepairMutation, useUpdateThrowsMutation } from '../../../store/services/listProductAPI';
 import { GetListProductRepairItem, ProdcutItem } from '../../../store/services/types';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
+import toast from 'react-hot-toast';
 
 const ListProductRepair = () => {
     const dispatch = useDispatch();
@@ -89,8 +90,8 @@ const ListProductRepair = () => {
                 new_category_product: input.new_category_product,
             };
             await updateProductRepair({ id, body });
-            console.log('DATA SENT', body);
             setRepair(false);
+            toast.success("Success repair product")
             refetch();
         } catch (err) {
             console.error(err);
@@ -100,14 +101,12 @@ const ListProductRepair = () => {
     const handleThrows = (id: number) => {
         setSelectedItem(id);
         setThrows(true);
-        console.log(id);
     };
 
     const handleThrowsConfirmation = async (id: number) => {
         try {
-            console.log('Sending request to updateThrows with id:', id);
             await updateThrows(id);
-            console.log('Update request successful for id:', id);
+            toast.success("Success throws product")
             refetch();
         } catch (err) {
             console.error('Error updating throws:', err);

@@ -5,6 +5,7 @@ import { setPageTitle, toggleRTL } from '../../store/themeConfigSlice';
 import IconMail from '../../components/Icon/IconMail';
 import IconLockDots from '../../components/Icon/IconLockDots';
 import { useLoginMutation } from '../../store/services/authApi';
+import toast from 'react-hot-toast';
 
 const LoginBoxed = () => {
     const dispatch = useDispatch();
@@ -41,6 +42,9 @@ const LoginBoxed = () => {
             localStorage.setItem('token', results.data.data.resource[0]);
             localStorage.setItem('profile', JSON.stringify(results.data.data.resource[1]));
             navigate('/');
+            toast.success(results?.data?.data?.message);
+        } else if (results.isError) {
+            toast.error(results?.data?.message ?? '');
         }
     }, [results]);
 

@@ -9,6 +9,7 @@ import { IRootState } from '../../../../store';
 import { useDeleteProductNewMutation, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
+import toast from 'react-hot-toast';
 
 const ListProduct = () => {
     const [page, setPage] = useState<number>(1);
@@ -82,7 +83,10 @@ const ListProduct = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
 

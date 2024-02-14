@@ -82,11 +82,10 @@ const DetailProduct = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
-            toast.success('Product updated');
+            toast.success(results.data.data.message ?? 'Product updated');
             navigate('/storage/product');
             productNew.refetch();
-        }
-        if (results.isError) {
+        } else if (results.isError) {
             toast.error('Product updated failed');
         }
     }, [results]);

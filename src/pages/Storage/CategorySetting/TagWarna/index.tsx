@@ -6,33 +6,87 @@ import { useDeleteColorTagMutation, useGetAllColorTagQuery, useUpdateColorTagMut
 import { ColorTagItem } from '../../../../store/services/types';
 import IconPlus from '../../../../components/Icon/IconPlus';
 import { formatRupiah } from '../../../../helper/functions';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 const TagWarna = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const { data, refetch } = useGetAllColorTagQuery({ page, q: search });
     const [deleteColorTag, deleteResults] = useDeleteColorTagMutation();
-    // const [updateColorTag, updateResults] = useUpdateColorTagMutation();
+
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menhapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    await deleteColorTag(id);
+                    if (result.value) {
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+        if (type === 15) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Berhasil Dikirim',
+                padding: '10px 20px',
+            });
+        }
+        if (type == 20) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Data Berhasil Ditambah',
+                padding: '10px 20px',
+            });
+        }
+    };
 
     const dataColorTag = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
-    const handleDeleteColorTag = async (id: number) => {
-        try {
-            await deleteColorTag(id);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     useEffect(() => {
         refetch();
-    }, []);
+    }, [data, refetch]);
 
     useEffect(() => {
         if (deleteResults.isSuccess) {
+            toast.success(deleteResults.data.data.message);
             refetch();
+        } else if (deleteResults.isError) {
+            toast.error(deleteResults.data.data.message);
         }
     }, [deleteResults]);
 
@@ -102,7 +156,7 @@ const TagWarna = () => {
                                                 Edit
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteColorTag(item.id)}>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
                                         </button>
                                     </div>

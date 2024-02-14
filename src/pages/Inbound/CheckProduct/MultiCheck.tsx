@@ -130,12 +130,14 @@ const MultiCheck = () => {
 
     useEffect(() => {
         if (checkResults.isSuccess) {
+            toast.success(checkResults.data.data.message);
             navigate('/inbound/check_history');
         }
     }, [checkResults]);
 
     useEffect(() => {
         if (results.isSuccess && results.data.data.status) {
+            toast.success(results?.data?.data?.message ?? '');
             setIsProductCheck(true);
             hideBarcode();
             if (Array.isArray(results.data?.data.resource.product)) {
@@ -144,6 +146,8 @@ const MultiCheck = () => {
                 setKeterangan('>100K');
             }
             setInputBarcode('');
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message ?? '');
         }
     }, [results]);
 
