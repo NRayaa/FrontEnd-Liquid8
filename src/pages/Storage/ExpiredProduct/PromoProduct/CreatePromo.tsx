@@ -63,7 +63,7 @@ const CreatePromo = () => {
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
                             { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
-                            { accessor: 'firstName', title: 'Nama Data', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
+                            { accessor: 'nama data', title: 'Nama Data', sortable: true, width: 220, render: (item: ProductExpiredItem) => <p className="truncate">{item.new_name_product}</p> },
                             { accessor: 'category', title: 'Ketegori', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_category_product}</span> },
                             { accessor: 'totalMasuk', title: 'Total Masuk', sortable: true, render: (item: ProductExpiredItem) => <span>{formatRupiah(item.new_price_product)}</span> },
                             {
@@ -74,7 +74,7 @@ const CreatePromo = () => {
                             },
                             {
                                 accessor: 'action',
-                                title: 'Opsi',
+                                title: 'Aksi',
                                 titleClassName: '!text-center',
                                 render: (item: ProductExpiredItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
