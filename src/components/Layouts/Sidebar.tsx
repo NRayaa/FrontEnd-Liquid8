@@ -197,7 +197,7 @@ const Sidebar = () => {
                                 <svg className="w-4 h-5 flex-none hidden" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
                                 </svg>
-                                <span>{t('STORAGE')}</span>
+                                <span>{t('Inventory')}</span>
                             </h2>
 
                             <li className="menu nav-item">

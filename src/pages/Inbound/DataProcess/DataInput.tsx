@@ -77,10 +77,9 @@ const DataInput = () => {
         }
     }, [dataGenerates]);
 
-    const dataHeaders = useMemo(() => {
+    const dataHeaders: any = useMemo(() => {
         if (dataGenerates) {
-            const fileName = dataGenerates?.data?.resource?.file_name;
-            return dataGenerates?.data?.resource?.headers[fileName];
+            return dataGenerates?.data?.resource.headers;
         }
     }, [dataGenerates]);
 
@@ -243,7 +242,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setBarcode(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>
@@ -253,7 +252,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setProductName(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>
@@ -263,7 +262,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setProductQty(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>
@@ -273,7 +272,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setProductPrice(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>

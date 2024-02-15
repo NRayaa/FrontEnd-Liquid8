@@ -183,8 +183,8 @@ const PalletGenerate = () => {
                             columns={[
                                 { accessor: 'id', title: 'No', sortable: true, render: (item: ProdcutItem, index: number) => <span>{index + 1}</span> },
                                 { accessor: 'barcode', title: 'New Barcode', sortable: true, render: (item: ProdcutItem) => <span>{item?.new_barcode_product}</span> },
-                                { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProdcutItem) => <span className="truncate">{item?.new_name_product}</span> },
-                                { accessor: 'barcode', title: 'Harga', sortable: true, render: (item: ProdcutItem) => <span>{formatRupiah(item?.new_price_product ?? '0')}</span> },
+                                { accessor: 'nama produk', title: 'Nama Produk', sortable: true, width: 220, render: (item: ProdcutItem) => <p className="truncate">{item?.new_name_product}</p> },
+                                { accessor: 'harga', title: 'Harga', sortable: true, render: (item: ProdcutItem) => <span>{formatRupiah(item?.new_price_product ?? '0')}</span> },
                                 { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProdcutItem) => <span>{item.new_category_product}</span> },
                                 {
                                     accessor: 'status',
@@ -225,14 +225,14 @@ const PalletGenerate = () => {
                                     render: (item: ProdcutItem) => <span className="text-ellipsis overflow-hidden">{item.new_barcode_product}</span>,
                                 },
                                 {
-                                    accessor: 'firstName',
+                                    accessor: 'nama',
                                     title: 'Nama Produk',
                                     sortable: true,
                                     render: (item: ProdcutItem) => <span className="text-ellipsis overflow-hidden">{item.new_name_product}</span>,
                                 },
                                 {
                                     accessor: 'action',
-                                    title: 'Opsi',
+                                    title: 'Aksi',
                                     titleClassName: '!text-center',
                                     render: (item: ProdcutItem) => (
                                         <div className="flex items-center space-x-2">
