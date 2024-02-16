@@ -7,6 +7,9 @@ import AddAkun from '../pages/Akun/Akun/AddAkun';
 import EditAkun from '../pages/Akun/Akun/EditAkun';
 import LoginBoxed from '../pages/Authentication/LoginBoxed';
 import DetailCashier from '../pages/Outbound/Sale/DetailCashier';
+import ListBuyer from '../pages/Outbound/Buyer/ListBuyer';
+import AddBuyer from '../pages/Outbound/Buyer/Addbuyer';
+import DetailBuyer from '../pages/Outbound/Buyer/DetailBuyer';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -253,9 +256,26 @@ const routes = [
         element: <EditAkun />,
         layout: 'default',
     },
+    // Role
     {
         path: '/akun/role/list_role',
         element: <ListRole />,
+        layout: 'default',
+    },
+    // Buyer
+    {
+        path: '/buyer/buyer/list_buyer',
+        element: <ListBuyer />,
+        layout: 'default',
+    },
+    {
+        path: '/buyer/buyer/list_buyer/add_buyer',
+        element: <AddBuyer />,
+        layout: 'default',
+    },
+    {
+        path: '/buyer/buyer/list_buyer/detail_buyer/:id',
+        element: <DetailBuyer />,
         layout: 'default',
     },
 ];
