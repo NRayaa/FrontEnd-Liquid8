@@ -7,11 +7,12 @@ import { useDeleteBundleProductMutation, useGetBundleProductsQuery } from '../..
 import { BundleItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const BundleProduct = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetBundleProductsQuery({ page, q: search });
+    const { data, isSuccess, refetch, isError } = useGetBundleProductsQuery({ page, q: search });
     const [deleteBundleProduct, results] = useDeleteBundleProductMutation();
 
     const dataBundleProduct = useMemo(() => {
@@ -86,6 +87,10 @@ const BundleProduct = () => {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

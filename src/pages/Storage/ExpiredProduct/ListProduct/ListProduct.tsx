@@ -10,11 +10,12 @@ import { useDeleteProductNewMutation, useGetExpiredProductsQuery } from '../../.
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const ListProduct = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetExpiredProductsQuery({ page, q: search });
+    const { data, isSuccess, refetch, isError } = useGetExpiredProductsQuery({ page, q: search });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
     const expiredProducts = useMemo(() => {
@@ -89,6 +90,10 @@ const ListProduct = () => {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
