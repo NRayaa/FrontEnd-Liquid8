@@ -40,20 +40,22 @@ const AddAkun = () => {
                 role_id: input.role_id,
             };
             await createAccount(body);
-            toast.success('Success create account!');
+            // toast.success('Success create account!');
         } catch (err) {}
     };
 
-
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results.data.data.message);
             navigate('/akun/akun/list_akun');
+        } else if (results.isError) {
+            toast.error(results.data?.data?.message);
         }
     }, [results]);
 
     return (
         <>
-            <BreadCrumbs base="Akun" basePath="akun/list_akun" sub="List Akun" subPath="akun/list_akun" current="Add Akun" />
+            <BreadCrumbs base="Akun" basePath="/akun/akun/list_akun" sub="List Akun" subPath="/akun/akun/list_akun" current="Add Akun" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Add Akun</h5>
@@ -69,9 +71,7 @@ const AddAkun = () => {
                             Role :
                         </label>
                         <select id="roleSelect" className="form-select w-[250px]" required name="role_id" onChange={handleInputChange} value={input.role_id}>
-                            <option value="">
-                                Pilih Role
-                            </option>
+                            <option value="">Pilih Role</option>
                             {dataListRole.map((role) => (
                                 <option key={role.id} value={role.id}>
                                     {role.role_name}

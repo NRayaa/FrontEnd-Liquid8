@@ -171,6 +171,11 @@ const Kasir = () => {
                                                         render: (item: NewProductItem) => <span className="font-semibold">{item.new_name_product}</span>,
                                                     },
                                                     {
+                                                        accessor: 'new_category_product',
+                                                        title: 'Kategori',
+                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_category_product}</span>,
+                                                    },
+                                                    {
                                                         accessor: 'action',
                                                         title: 'Opsi',
                                                         titleClassName: '!text-center',

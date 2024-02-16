@@ -2,55 +2,48 @@ import { useSelector } from 'react-redux';
 import { useGetUsersQuery } from '../store/services/usersApi';
 import { IRootState } from '../store';
 import { useMemo, useState } from 'react';
-import Dropdown from '../components/Dropdown';
-import IconHorizontalDots from '../components/Icon/IconHorizontalDots';
 import ReactApexChart from 'react-apexcharts';
-import IconCashBanknotes from '../components/Icon/IconCashBanknotes';
-import IconUser from '../components/Icon/IconUser';
-import IconNetflix from '../components/Icon/IconNetflix';
-import IconBolt from '../components/Icon/IconBolt';
-import IconPlus from '../components/Icon/IconPlus';
-import IconCaretDown from '../components/Icon/IconCaretDown';
 import { useGetDashboardQuery } from '../store/services/dashboardApi';
 
 const Index = () => {
-    // const { data } = useGetUsersQuery('');
-    const { data, isLoading } = useGetDashboardQuery(undefined);
+    const { data } = useGetDashboardQuery(undefined);
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-
     const [loading] = useState(false);
 
+    const chartData = useMemo(() => {
+        return data?.data.resource.chart_inbound_outbound || [];
+    }, [data]);
     const inboundData = useMemo(() => {
         return data?.data.resource.chart_inbound_outbound.map((item) => item.inbound_count);
     }, [data]);
-
     const outboundData = useMemo(() => {
         return data?.data.resource.chart_inbound_outbound.map((item) => item.outbound_count);
     }, [data]);
-
+    const months = chartData.map(item => {
+        const monthIndex = parseInt(item.month) - 1;
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return monthNames[monthIndex];
+    });
     const listInboundData = useMemo(() => {
         return data?.data.resource.inbound_data.data;
     }, [data]);
-
     function formatDate(dateString: string) {
         const date = new Date(dateString);
         const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
         return date.toLocaleDateString('en-US', options);
     }
 
-    //Revenue Chart
-    const revenueChart: any = {
+    //Inbound Outbound Chart
+    const inboundOutboundChart: any = {
         series: [
             {
                 name: 'Inbound',
                 data: inboundData,
-                // data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000, 14000, 17000],
             },
             {
                 name: 'Outbound',
                 data: outboundData,
-                // data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000, 18000, 19000],
             },
         ],
         options: {
@@ -101,7 +94,7 @@ const Index = () => {
                     },
                 ],
             },
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: months,
             xaxis: {
                 axisBorder: {
                     show: false,
@@ -200,13 +193,15 @@ const Index = () => {
         }
         return color;
     };
-
     const productSales = useMemo(() => {
         return data?.data?.resource?.product_sales || [];
     }, [data]);
-
-    const totalSales = productSales?.find((item) => item.all_total)?.all_total || 0; 
-    const productCategories = productSales.filter((item) => !item.all_total); 
+    const productSalesFiltered = productSales.slice(0, -1);
+    const totalSales = productSales?.find((item) => item.all_total)?.all_total || 0;
+    const productCategories = productSalesFiltered.map((item) => ({
+        new_category_product: item.new_category_product !== null ? item.new_category_product : 'Unknown',
+        total: item.total,
+    }));
     const randomColors = useMemo(() => {
         return data?.data?.resource?.product_sales.map(() => getRandomColor()) || [];
     }, [data]);
@@ -294,9 +289,12 @@ const Index = () => {
     const productData = useMemo(() => {
         return data?.data?.resource?.product_data || [];
     }, [data]);
-
+    const productDataFiltered = productData.slice(0, -1);
     const totalProductData = productData?.find((item) => item.all_total)?.all_total || 0;
-    const productCategoriesData = productData.filter((item) => !item.all_total); 
+    const productCategoriesData = productDataFiltered.map((item) => ({
+        new_category_product: item.new_category_product !== null ? item.new_category_product : 'Unknown',
+        total: item.total,
+    }));
     const randomColorsProductData = useMemo(() => {
         return data?.data?.resource?.product_data.map(() => getRandomColor()) || [];
     }, [data]);
@@ -346,7 +344,7 @@ const Index = () => {
                             value: {
                                 show: true,
                                 fontSize: '26px',
-                                color: isDark ? 'randomColorsProductData' : randomColorsProductData,
+                                color: isDark ? '#888ea8' : randomColorsProductData,
                                 offsetY: 16,
                                 formatter: (val: any) => {
                                     return val;
@@ -384,8 +382,12 @@ const Index = () => {
     const productExpired = useMemo(() => {
         return data?.data?.resource?.expired_data || [];
     }, [data]);
+    const productExpiredFiltered = productExpired.slice(0, -1);
     const totalProductExpired = productExpired?.find((item) => item.all_total)?.all_total || 0;
-    const productCategoriesExpired = productExpired.filter((item) => !item.all_total);
+    const productCategoriesExpired = productExpiredFiltered.map((item) => ({
+        new_category_product: item.new_category_product !== null ? item.new_category_product : 'Unknown',
+        total: item.total,
+    }));
     const randomColorsProductExpired = useMemo(() => {
         return data?.data?.resource?.expired_data.map(() => getRandomColor()) || [];
     }, [data]);
@@ -489,7 +491,7 @@ const Index = () => {
                                     <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
                                 </div>
                             ) : (
-                                <ReactApexChart series={revenueChart.series} options={revenueChart.options} type="area" height={325} />
+                                <ReactApexChart series={inboundOutboundChart.series} options={inboundOutboundChart.options} type="area" height={325} />
                             )}
                         </div>
                     </div>
@@ -505,6 +507,8 @@ const Index = () => {
                                 <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
                                     <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
                                 </div>
+                            ) : salesByCategory.series.length === 0 || salesByCategory.options === null ? (
+                                <p>Tidak ada data</p>
                             ) : (
                                 <ReactApexChart series={salesByCategory.series} options={salesByCategory.options} type="donut" height={460} />
                             )}
@@ -530,54 +534,6 @@ const Index = () => {
                                     <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">{item.total_column_in_document}</span>
                                 </div>
                             ))}
-                            {/* <div className="flex">
-                                <span className="shrink-0 grid place-content-center w-9 h-9 rounded-md bg-warning-light dark:bg-warning text-warning dark:text-warning-light">
-                                    <IconCashBanknotes />
-                                </span>
-                                <div className="px-3 flex-1">
-                                    <div>Cash withdrawal</div>
-                                    <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
-                                </div>
-                                <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">12.000</span>
-                            </div>
-                            <div className="flex">
-                                <span className="shrink-0 grid place-content-center w-9 h-9 rounded-md bg-danger-light dark:bg-danger text-danger dark:text-danger-light">
-                                    <IconUser className="w-6 h-6" />
-                                </span>
-                                <div className="px-3 flex-1">
-                                    <div>Amy Diaz</div>
-                                    <div className="text-xs text-white-dark dark:text-gray-500">10 Jan 1:00PM</div>
-                                </div>
-                                <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">43.000</span>
-                            </div>
-                            <div className="flex">
-                                <span className="shrink-0 grid place-content-center w-9 h-9 rounded-md bg-secondary-light dark:bg-secondary text-secondary dark:text-secondary-light">
-                                    <IconNetflix />
-                                </span>
-                                <div className="px-3 flex-1">
-                                    <div>Netflix</div>
-                                    <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
-                                </div>
-                                <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">25.000</span>
-                            </div>
-                            <div className="flex">
-                                <span className="shrink-0 grid place-content-center text-base w-9 h-9 rounded-md bg-info-light dark:bg-info text-info dark:text-info-light">DA</span>
-                                <div className="px-3 flex-1">
-                                    <div>Daisy Anderson</div>
-                                    <div className="text-xs text-white-dark dark:text-gray-500">10 Jan 1:00PM</div>
-                                </div>
-                                <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">50.000</span>
-                            </div>
-                            <div className="flex">
-                                <span className="shrink-0 grid place-content-center w-9 h-9 rounded-md bg-primary-light dark:bg-primary text-primary dark:text-primary-light">
-                                    <IconBolt />
-                                </span>
-                                <div className="px-3 flex-1">
-                                    <div>Electricity Bill</div>
-                                    <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
-                                </div>
-                                <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">20.000</span>
-                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -592,12 +548,15 @@ const Index = () => {
                                 <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
                                     <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
                                 </div>
+                            ) : expiredByCategory.series.length === 0 || expiredByCategory.options === null ? (
+                                <p>Tidak ada data</p>
                             ) : (
                                 <ReactApexChart series={expiredByCategory.series} options={expiredByCategory.options} type="donut" height={460} />
                             )}
                         </div>
                     </div>
                 </div>
+
                 <div className="panel h-full">
                     <div className="flex items-center mb-5">
                         <h5 className="font-semibold text-lg dark:text-white-light">Product By Category</h5>
@@ -608,6 +567,8 @@ const Index = () => {
                                 <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
                                     <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
                                 </div>
+                            ) : productByCategory.series.length === 0 || productByCategory.options === null ? (
+                                <p>Tidak ada data</p>
                             ) : (
                                 <ReactApexChart series={productByCategory.series} options={productByCategory.options} type="donut" height={460} />
                             )}

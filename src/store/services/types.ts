@@ -1100,9 +1100,9 @@ interface GetProductSales {
 }
 
 interface GetShowChartInboundOutbound {
-    month: number;
-    outbound_count: number;
-    inbound_count: number;
+    month: string;
+    outbound_count: string;
+    inbound_count: string;
 }
 
 interface GetInboundData {

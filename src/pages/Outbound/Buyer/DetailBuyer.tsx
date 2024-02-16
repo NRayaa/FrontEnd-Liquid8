@@ -6,7 +6,7 @@ import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import { GetListRoleItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
 
-const EditAkun = () => {
+const DetailBuyer = () => {
     const { state } = useLocation();
     const params = useParams();
     const navigate = useNavigate();
@@ -50,16 +50,16 @@ const EditAkun = () => {
 
     useEffect(() => {
         if (results.isSuccess) {
-            navigate('/akun/akun/list_akun');
+            navigate('/buyer/buyer/list_buyer');
         }
     }, [results]);
 
     return (
         <>
-            <BreadCrumbs base="Akun" basePath="/akun/akun/list_akun" sub="List Akun" subPath="/akun/akun/list_akun" current="Add Akun" />
+            <BreadCrumbs base="Buyer" basePath="/buyer/buyer/list_buyer" sub="List Buyer" subPath="/buyer/buyer/list_buyer" current="Add Akun" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Edit Akun</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Detail Buyer</h5>
                 <form className="w-[400px]" onSubmit={handleUpdateAccount}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -68,37 +68,16 @@ const EditAkun = () => {
                         <input id="categoryName" type="text" className="form-input w-[250px]" required name="name" onChange={handleInputChange} value={input.name} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="roleSelect" className="text-[15px] font-semibold whitespace-nowrap">
-                            Role :
-                        </label>
-                        <select id="roleSelect" className="form-select w-[250px]" required name="role_id" onChange={handleInputChange} value={input.role_id}>
-                            <option value="" disabled>
-                                Pilih Role
-                            </option>
-                            {dataListRole.map((role) => (
-                                <option key={role.id} value={role.id}>
-                                    {role.role_name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex items-center justify-between mb-2">
                         <label htmlFor="username" className="text-[15px] font-semibold whitespace-nowrap">
-                            Username :
+                            No. Hp :
                         </label>
                         <input id="username" type="text" className="form-input w-[250px]" required name="username" onChange={handleInputChange} value={input.username} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
-                            Email :
+                            Alamat :
                         </label>
                         <input id="email" type="text" className="form-input w-[250px]" required name="email" onChange={handleInputChange} value={input.email} />
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="password" className="text-[15px] font-semibold whitespace-nowrap">
-                            Password :
-                        </label>
-                        <input id="password" type="text" className="form-input w-[250px]" required name="password" onChange={handleInputChange} value={input.password} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16">
                         Update
@@ -109,4 +88,4 @@ const EditAkun = () => {
     );
 };
 
-export default EditAkun;
+export default DetailBuyer;
