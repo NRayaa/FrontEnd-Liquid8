@@ -13,6 +13,7 @@ import { ProdcutItem } from '../../../store/services/types';
 import { formatRupiah, generateRandomString } from '../../../helper/functions';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const PalletGenerate = () => {
     const [pageLeftTable, setPageLeftTable] = useState<number>(1);
@@ -120,6 +121,10 @@ const PalletGenerate = () => {
             totalPrice: totalAmount,
         }));
     }, [filterData?.data.data]);
+
+    if (createResults.isError && !createResults.data?.data.status) {
+        return <Alert message={createResults.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>

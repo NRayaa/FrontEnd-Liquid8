@@ -12,12 +12,13 @@ import {
     useGetFilterProductBundlesQuery,
 } from '../../../../store/services/bundleProductApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const CreateBundle = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
+    const { data, isSuccess, refetch, isError } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
     const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
     const [filterProductBundle, results] = useFilterProductBundleMutation();
     const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
@@ -117,6 +118,10 @@ const CreateBundle = () => {
         setTotalPrice(JSON.stringify(totalAmount));
         setCustomPrice(JSON.stringify(totalAmount));
     }, [filterBundlesProducts]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

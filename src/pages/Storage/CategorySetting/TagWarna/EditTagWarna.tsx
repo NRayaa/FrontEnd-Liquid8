@@ -3,6 +3,7 @@ import { BreadCrumbs } from '../../../../components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const EditTagWarna = () => {
     const { state } = useLocation();
@@ -49,6 +50,10 @@ const EditTagWarna = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    if (results.isError) {
+        return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>

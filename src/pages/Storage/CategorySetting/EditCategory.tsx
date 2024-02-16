@@ -3,6 +3,7 @@ import { BreadCrumbs } from '../../../components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUpdateCategoryMutation } from '../../../store/services/categoriesApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const EditCategory = () => {
     const { state } = useLocation();
@@ -46,6 +47,10 @@ const EditCategory = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    if (results.isError) {
+        return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>
