@@ -13,6 +13,7 @@ import { useCheckAllDocumentMutation } from '../../../store/services/riwayatApi'
 import NewBarcodeData from './NewBarcodeData';
 import BarcodePrinted from './BarcodePrinted';
 import { formatRupiah } from '../../../helper/functions';
+import { Alert } from '../../../commons';
 
 const MultiCheck = () => {
     const { state } = useLocation();
@@ -162,6 +163,10 @@ const MultiCheck = () => {
         setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));
         setCodeBarcode(newBarcode);
     }, [oldData?.old_price_product, oldData?.old_barcode_product]);
+
+    if ((results.isError && !results.data?.data.status) || checkResults.isError) {
+        return <Alert message={results.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

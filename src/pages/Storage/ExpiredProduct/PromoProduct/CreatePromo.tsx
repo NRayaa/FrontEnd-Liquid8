@@ -10,17 +10,22 @@ import IconPlus from '../../../../components/Icon/IconPlus';
 import { useGetDisplayExpiredQuery, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
+import { Alert } from '../../../../commons';
 
 const CreatePromo = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess } = useGetDisplayExpiredQuery({ page, q: search });
+    const { data, isSuccess, isError } = useGetDisplayExpiredQuery({ page, q: search });
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {
             return data?.data.resource.data;
         }
     }, [data]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

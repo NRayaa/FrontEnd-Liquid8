@@ -147,8 +147,8 @@ const DataInput = () => {
         }
     }, [results]);
 
-    if (isRole === false) {
-        return <Alert message={message ?? ''} />;
+    if (isRole === false || mergeResults.isError || results.isError) {
+        return <Alert message={message ?? 'anda tidak berhak mengakses halaman ini'} />;
     }
 
     return (

@@ -3,6 +3,7 @@ import { BreadCrumbs } from '../../../../components';
 import { useCreateColorTagMutation } from '../../../../store/services/colorTagApi';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const AddTagWarna = () => {
     const [createColorTag, results] = useCreateColorTagMutation();
@@ -48,6 +49,10 @@ const AddTagWarna = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    if (results.isError) {
+        return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>
