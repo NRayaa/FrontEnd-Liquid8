@@ -14,6 +14,7 @@ import { useMergedHeaderMutation } from '../../../store/services/inboundDataProc
 import { DataTable } from 'mantine-datatable';
 import { ProductOldsItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -55,6 +56,8 @@ const DataInput = () => {
     const [dataGenerates, setDataGenerates] = useState<GeneratesData | undefined>();
 
     const [page, setPage] = useState<number>(1);
+    const [isRole, setIsRole] = useState<boolean>(true);
+    const [message, setMessage] = useState<string>('');
 
     const [detailProductOld, results] = useLazyDetailProductOldQuery();
 
@@ -76,6 +79,13 @@ const DataInput = () => {
             return dataGenerates?.data?.resource?.code_document;
         }
     }, [dataGenerates]);
+
+    const handleRole = (roleActive: boolean) => {
+        setIsRole(roleActive);
+    };
+    const handleMessage = (message: string) => {
+        setMessage(message);
+    };
 
     const dataHeaders: any = useMemo(() => {
         if (dataGenerates) {
@@ -136,6 +146,10 @@ const DataInput = () => {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
+
+    if (isRole === false) {
+        return <Alert message={message ?? ''} />;
+    }
 
     return (
         <div>
@@ -215,7 +229,17 @@ const DataInput = () => {
                                     )}
                                 </button>
                             </div>
-                            <p className="mb-5">{activeTab3 === 1 && <HomeItemTab showAlert={showAlert} getGeneratesData={(data) => getGeneratesData(data)} dataGenerates={dataGenerates} />}</p>
+                            <p className="mb-5">
+                                {activeTab3 === 1 && (
+                                    <HomeItemTab
+                                        showAlert={showAlert}
+                                        getGeneratesData={(data) => getGeneratesData(data)}
+                                        dataGenerates={dataGenerates}
+                                        handleRole={handleRole}
+                                        handleMessage={handleMessage}
+                                    />
+                                )}
+                            </p>
                             <p className="mb-5">
                                 {activeTab3 === 2 && (
                                     <div>

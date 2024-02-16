@@ -8,11 +8,12 @@ import IconPlus from '../../../../components/Icon/IconPlus';
 import { formatRupiah } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const TagWarna = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, refetch } = useGetAllColorTagQuery({ page, q: search });
+    const { data, refetch, isError } = useGetAllColorTagQuery({ page, q: search });
     const [deleteColorTag, deleteResults] = useDeleteColorTagMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -89,6 +90,10 @@ const TagWarna = () => {
             toast.error(deleteResults.data.data.message);
         }
     }, [deleteResults]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>

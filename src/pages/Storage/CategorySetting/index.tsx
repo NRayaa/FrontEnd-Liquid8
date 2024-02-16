@@ -7,10 +7,11 @@ import { useDeleteCategoryMutation, useGetCategoriesQuery } from '../../../store
 import { formatRupiah } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const CategorySetting = () => {
     const navigate = useNavigate();
-    const { data, refetch } = useGetCategoriesQuery(undefined);
+    const { data, refetch, isError } = useGetCategoriesQuery(undefined);
     const [deleteCategory, results] = useDeleteCategoryMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -83,6 +84,10 @@ const CategorySetting = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>
