@@ -10,9 +10,17 @@ import DetailCashier from '../pages/Outbound/Sale/DetailCashier';
 import ListBuyer from '../pages/Outbound/Buyer/ListBuyer';
 import AddBuyer from '../pages/Outbound/Buyer/Addbuyer';
 import DetailBuyer from '../pages/Outbound/Buyer/DetailBuyer';
-import Bundle from '../pages/Storage/MovingProduct/BundleProduct/BundleProduct';
-import CreateBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/CreateBundleProduct';
+import Bundle from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
 import DetailBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/DetailBundleProduct';
+import Repair from '../pages/Storage/MovingProduct/RepairProduct/Repair';
+import CreateRepair from '../pages/Storage/MovingProduct/RepairProduct/CreateRepair';
+import DetailRepair from '../pages/Storage/MovingProduct/RepairProduct/DetailRepair';
+import PalletProduct from '../pages/Storage/MovingProduct/PalletProduct/PalletProduct';
+import CreatePalletProduct from '../pages/Storage/MovingProduct/PalletProduct/CreatePalletProduct';
+import DetailPalletProduct from '../pages/Storage/MovingProduct/PalletProduct/DetailPalletProduct';
+import CreateMovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/CreateMovingBundleProduct';
+import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
+import MovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -32,7 +40,6 @@ const Pallet = lazy(() => import('../pages/Storage/Pallet'));
 const PalletGenerate = lazy(() => import('../pages/Storage/Pallet/PalletGenerate'));
 const ListProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/ListProduct'));
 const DetailExpiredProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/DetailExpiredProduct'));
-const BundleProduct = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct'));
 const CreateBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/CreateBundle'));
 const DetailBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle'));
 const PromoProduct = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct'));
@@ -135,17 +142,47 @@ const routes = [
     // Moving Product Bundle
     {
         path: '/storage/moving_product/bundle',
-        element: <BundleProduct />,
+        element: <MovingBundleProduct />,
         layout: 'default',
     },
     {
         path: '/storage/moving_product/bundle/create_bundle',
-        element: <CreateBundleProduct />,
+        element: <CreateMovingBundleProduct />,
         layout: 'default',
     },
     {
         path: '/storage/moving_product/bundle/detail_bundle',
         element: <DetailBundleProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/repair',
+        element: <Repair />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/bundle/create_repair',
+        element: <CreateRepair />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/bundle/detail_repair',
+        element: <DetailRepair />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/pallet',
+        element: <PalletProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/bundle/create_pallet',
+        element: <CreatePalletProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/bundle/detail_pallet',
+        element: <DetailPalletProduct />,
         layout: 'default',
     },
     // Expired Product
@@ -161,7 +198,7 @@ const routes = [
     },
     {
         path: '/storage/expired_product/bundle_product',
-        element: <Bundle />,
+        element: <BundleProduct />,
         layout: 'default',
     },
     {

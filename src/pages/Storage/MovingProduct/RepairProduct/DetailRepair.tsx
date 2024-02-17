@@ -5,62 +5,6 @@ import { useDetailBundleProductQuery } from '../../../../store/services/bundlePr
 import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-    if (type === 15) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Berhasil Dikirim',
-            padding: '10px 20px',
-        });
-    }
-    if (type == 20) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Data Berhasil Ditambah',
-            padding: '10px 20px',
-        });
-    }
-};
 const DetailRepair = () => {
     const { id }: any = useParams();
     const { data, isSuccess } = useDetailBundleProductQuery(id);
@@ -80,12 +24,12 @@ const DetailRepair = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <Link to="/storage/expired_product/bundle_product">
-                        <span>Expired Product</span>
+                    <Link to="/storage/moving_product/repair">
+                        <span>Moving Repair Product</span>
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Detail Bundle</span>
+                    <span>Detail Rapair</span>
                 </li>
             </ul>
             <div>

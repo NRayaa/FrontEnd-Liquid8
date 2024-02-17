@@ -96,18 +96,18 @@ const Repair = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Expired Product</span>
+                    <span>Moving Product</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Bundle Product</span>
+                    <span>Repair Product</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">Bundle Product </h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">Repair Product </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div>
-                        <Link to="/storage/expired_product/create_bundle">
+                        <Link to="/storage/moving_product/bundle/create_repair">
                             <button className="btn btn-outline-info">
                                 <IconPlus />
                                 Create
@@ -147,7 +147,7 @@ const Repair = () => {
                                             </button>
                                         </Link>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                            UNBUNDLE
+                                            UNREPAIR
                                         </button>
                                     </div>
                                 ),

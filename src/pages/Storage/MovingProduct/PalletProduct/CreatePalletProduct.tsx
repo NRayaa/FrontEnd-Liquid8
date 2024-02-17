@@ -13,7 +13,7 @@ import {
 } from '../../../../store/services/bundleProductApi';
 import toast from 'react-hot-toast';
 
-const CreatePallet = () => {
+const CreatePalletProduct = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
@@ -127,25 +127,25 @@ const CreatePallet = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <Link to="/storage/expired_product/bundle_product">
-                        <span>Expired Product</span>
+                    <Link to="/storage/moving_product/pallet">
+                        <span>Moving Pallet Product</span>
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Create Bundle</span>
+                    <span>Create Pallet</span>
                 </li>
             </ul>
             <div>
-                <h1 className="text-lg font-semibold py-4">Create Bundle</h1>
+                <h1 className="text-lg font-semibold py-4">Create Pallet</h1>
             </div>
             <div>
                 <form className="w-[400px] mb-4 " onSubmit={handleCreateBundle}>
                     <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
+                        Create Pallet
                     </button>
                     <div className="flex items-center justify-between mb-2 mt-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Bundle :
+                            Nama Pallet :
                         </label>
                         <input id="categoryName" type="text" className=" form-input w-[250px]" required value={nameBundle} onChange={(e) => setNameBundle(e.target.value)} />
                     </div>
@@ -253,4 +253,4 @@ const CreatePallet = () => {
     );
 };
 
-export default CreatePallet;
+export default CreatePalletProduct;

@@ -8,7 +8,7 @@ import { BundleItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
 
-const Pallet = () => {
+const PalletProduct = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const { data, isSuccess, refetch } = useGetBundleProductsQuery({ page, q: search });
@@ -96,18 +96,18 @@ const Pallet = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Expired Product</span>
+                    <span>Moving Product</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Bundle Product</span>
+                    <span>Pallet Product</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">Bundle Product </h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">Pallet Product </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div>
-                        <Link to="/storage/expired_product/create_bundle">
+                        <Link to="/storage/moving_product/bundle/create_pallet">
                             <button className="btn btn-outline-info">
                                 <IconPlus />
                                 Create
@@ -147,7 +147,7 @@ const Pallet = () => {
                                             </button>
                                         </Link>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                            UNBUNDLE
+                                            UNPALLET
                                         </button>
                                     </div>
                                 ),
@@ -164,4 +164,4 @@ const Pallet = () => {
     );
 };
 
-export default Pallet;
+export default PalletProduct;
