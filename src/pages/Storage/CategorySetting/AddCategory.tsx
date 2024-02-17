@@ -3,6 +3,7 @@ import { BreadCrumbs } from '../../../components';
 import { useCreateCategoryMutation } from '../../../store/services/categoriesApi';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const AddCategory = () => {
     const [createCategory, results] = useCreateCategoryMutation();
@@ -40,6 +41,11 @@ const AddCategory = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    if (results.isError) {
+        return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
+    }
+
     return (
         <>
             <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/storage/product" current="Add Category" />

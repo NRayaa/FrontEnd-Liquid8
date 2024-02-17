@@ -6,10 +6,11 @@ import { GetRiwayatcheckItem } from '../../../store/services/types';
 import { formatDate } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const CheckHistory = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, refetch, isSuccess } = useGetRiwayatChecksQuery(page);
+    const { data, refetch, isSuccess, isError } = useGetRiwayatChecksQuery(page);
     const [deleteRiwayatCheck, results] = useDeleteRiwayatCheckMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -88,6 +89,10 @@ const CheckHistory = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    if (isError && !data?.data?.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div className="panel mt-6 min-h-[450px]">

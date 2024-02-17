@@ -7,11 +7,12 @@ import { NewProductItem } from '../../../store/services/types';
 import { formatDate, formatRupiah } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const Product = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, refetch, isSuccess } = useGetAllProductNewQuery({ page, q: search });
+    const { data, isError, refetch, isSuccess } = useGetAllProductNewQuery({ page, q: search });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -88,6 +89,10 @@ const Product = () => {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>

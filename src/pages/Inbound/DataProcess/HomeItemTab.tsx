@@ -6,9 +6,11 @@ interface HomeItemTab {
     showAlert: (type: number) => void;
     getGeneratesData: (data: GeneratesData) => void;
     dataGenerates: GeneratesData | undefined;
+    handleRole: (roleActive: boolean) => void;
+    handleMessage: (message: string) => void;
 }
 
-const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataGenerates }) => {
+const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataGenerates, handleRole, handleMessage }) => {
     const [file, setFile] = useState<File | null>(null);
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +39,14 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
             fetch('https://apiliquid8.digitalindustryagency.com/api/generate', requestOptions)
                 .then((response) => response.json())
                 .then((result) => {
-                    getGeneratesData(result);
-                    toast.success(result.message ?? 'File berhasil ditambahkan');
+                    handleMessage(result.data.message);
+                    handleRole(result.data.status);
+                    if (result.data.status) {
+                        getGeneratesData(result);
+                        toast.success(result.data.message);
+                    } else {
+                        toast.error(result.data.message);
+                    }
                 })
                 .catch((error) => toast.error('Error!'));
         }
