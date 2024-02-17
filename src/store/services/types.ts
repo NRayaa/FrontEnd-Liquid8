@@ -1139,6 +1139,38 @@ interface GetDashboard {
     };
 }
 
+interface GetListBuyerItem {
+    id: number;
+    name_buyer: string;
+    phone_buyer: string;
+    address_buyer: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListBuyer {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListBuyerItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+
 
 export type {
     UserDataItem,
@@ -1216,4 +1248,6 @@ export type {
     GetShowChartInboundOutbound,
     GetInboundData,
     ExportToExcel,
+    GetListBuyer,
+    GetListBuyerItem,
 };
