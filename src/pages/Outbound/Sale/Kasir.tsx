@@ -3,13 +3,14 @@ import { DataTable } from 'mantine-datatable';
 import { useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation } from '../../../store/services/saleApi';
-import { GetListSaleItem, NewProductItem } from '../../../store/services/types';
+import { GetListBuyerItem, GetListSaleItem, NewProductItem } from '../../../store/services/types';
 import { useGetAllProductNewQuery } from '../../../store/services/productNewApi';
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import IconSearch from '../../../components/Icon/IconSearch';
 import { formatRupiah } from '../../../helper/functions';
 import toast from 'react-hot-toast';
+import { useGetListBuyerQuery } from '../../../store/services/buyerApi';
 
 interface GetTotalSaleItem {
     total_sale: string;
@@ -26,9 +27,10 @@ const Kasir = () => {
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
+    const [addBuyerOpen, setAddBuyerOpen] = useState(false);
     const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
     const { data: listProduct } = useGetAllProductNewQuery({ page, q: search });
-    // const { data: listBuyer } = useGetAllProductNewQuery({ page, q: search });
+    const { data: listBuyer } = useGetListBuyerQuery({ page, q: search });
     const [deleteSale, results] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
@@ -45,9 +47,13 @@ const Kasir = () => {
         return listProduct?.data.resource.data;
     }, [listProduct]);
 
+    const listBuyerData = useMemo(() => {
+        return listBuyer?.data.resource.data;
+    }, [listBuyer]);
+
     const [input, setInput] = useState({
         sale_barcode: '',
-        sale_buyer_name: '',
+        buyer_id: 0,
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -62,8 +68,9 @@ const Kasir = () => {
         try {
             const body = {
                 sale_barcode: input.sale_barcode,
-                sale_buyer_name: input.sale_buyer_name,
+                buyer_id: inputBuyer.id,
             };
+            console.log('DATA SSENT', body);
             await addSale(body);
             toast.success('Success add sale');
             refetch();
@@ -106,6 +113,39 @@ const Kasir = () => {
         setIsModalOpen(false);
     };
 
+    const [inputBuyer, setInputBuyer] = useState({
+        id: 0,
+        name_buyer: '',
+    });
+
+    const handleInputChangeBuyer = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setInputBuyer((prevState) => ({
+            ...prevState,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleBuyerSelection = (selectedBuyerItem: GetListBuyerItem) => {
+        setInputBuyer({
+            id: selectedBuyerItem.id,
+            name_buyer: selectedBuyerItem.name_buyer,
+        });
+        setListBuyerOpen(false);
+    };
+
+    const handleSearchBuyerButtonClick = () => {
+        setListBuyerOpen(true);
+    };
+
+    const handleCloseModalBuyer = () => {
+        setListBuyerOpen(false);
+    };
+
+    const handleAddBuyerButtonClick = () => {
+        setListBuyerOpen(false);
+        setAddBuyerOpen(true);
+    };
+
     useEffect(() => {
         if (results) {
             navigate('/outbound/sale/kasir');
@@ -143,44 +183,55 @@ const Kasir = () => {
                                 >
                                     <Dialog.Panel as="div" className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark">
                                         <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
-                                            <div className="text-lg font-bold">Pilih Product</div>
+                                            <div className="text-lg font-bold">Pilih Buyer</div>
                                         </div>
-                                        <div className="w-1/2 mt-5">
-                                            <input className="form-input" placeholder="Search..." onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)} value={search} autoFocus />
+                                        <div className="mb-4 flex justify-between">
+                                            <div className="relative w-[220px]">
+                                                <input
+                                                    className="form-input mr-2"
+                                                    placeholder="Search..."
+                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+                                                    value={search}
+                                                    autoFocus
+                                                />
+                                            </div>
+                                            <button type="button" className="btn btn-primary uppercase px-6" onClick={handleAddBuyerButtonClick}>
+                                                Add Buyer
+                                            </button>
                                         </div>
                                         <div className="max-h-[290px] overflow-y-scroll rounded-md mt-5">
                                             <DataTable
                                                 highlightOnHover
                                                 className="whitespace-nowrap table-hover"
-                                                records={productNewData}
+                                                records={listBuyerData}
                                                 columns={[
                                                     {
                                                         accessor: 'No',
                                                         title: 'No',
-                                                        render: (item: NewProductItem, index: number) => <span>{index + 1}</span>,
+                                                        render: (item: GetListBuyerItem, index: number) => <span>{index + 1}</span>,
                                                     },
                                                     {
-                                                        accessor: 'product_barcode',
-                                                        title: 'Barcode',
-                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_barcode_product}</span>,
-                                                    },
-                                                    {
-                                                        accessor: 'product_name',
+                                                        accessor: 'name_buyer',
                                                         title: 'Nama',
-                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_name_product}</span>,
+                                                        render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
                                                     },
                                                     {
-                                                        accessor: 'new_category_product',
-                                                        title: 'Kategori',
-                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_category_product}</span>,
+                                                        accessor: 'phone_buyer',
+                                                        title: 'No. Hp',
+                                                        render: (item: GetListBuyerItem) => <span className="font-semibold">{item.phone_buyer}</span>,
+                                                    },
+                                                    {
+                                                        accessor: 'address_buyer',
+                                                        title: 'Alamat',
+                                                        render: (item: GetListBuyerItem) => <span className="font-semibold">{item.address_buyer}</span>,
                                                     },
                                                     {
                                                         accessor: 'action',
                                                         title: 'Opsi',
                                                         titleClassName: '!text-center',
-                                                        render: (item: NewProductItem) => (
+                                                        render: (item: GetListBuyerItem) => (
                                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                                <button type="button" className="btn btn-outline-info" onClick={() => handleProductSelection(item.new_barcode_product)}>
+                                                                <button type="button" className="btn btn-outline-info" onClick={() => handleBuyerSelection(item)}>
                                                                     <IconSquareCheck className="ltr:mr-2 rtl:ml-2 " />
                                                                 </button>
                                                             </div>
@@ -191,7 +242,7 @@ const Kasir = () => {
                                             />
                                         </div>
                                         <div className="flex justify-end items-center mt-8">
-                                            <button type="button" className="btn btn-outline-danger" onClick={handleCloseModal}>
+                                            <button type="button" className="btn btn-outline-danger" onClick={handleCloseModalBuyer}>
                                                 Kembali
                                             </button>
                                         </div>
@@ -201,6 +252,67 @@ const Kasir = () => {
                         </div>
                     </Dialog>
                 </Transition>
+
+                <Transition appear show={addBuyerOpen} as={Fragment}>
+                    <Dialog as="div" open={addBuyerOpen} onClose={() => setAddBuyerOpen(false)}>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <div className="fixed inset-0" />
+                        </Transition.Child>
+                        <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                            <div className="flex items-start justify-center min-h-screen px-4">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel as="div" className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark">
+                                        <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
+                                            <div className="text-lg font-bold">Add Buyer</div>
+                                        </div>
+                                        <form className="w-[400px]">
+                                            <div className="flex items-center  justify-between mb-2">
+                                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                                    Nama :
+                                                </label>
+                                                <input id="categoryName" type="text" className="form-input w-[250px]" />
+                                            </div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <label htmlFor="username" className="text-[15px] font-semibold whitespace-nowrap">
+                                                    No. Hp :
+                                                </label>
+                                                <input id="username" type="text" className="form-input w-[250px]" />
+                                            </div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                                                    Alamat :
+                                                </label>
+                                                <input id="email" type="text" className="form-input w-[250px]" />
+                                            </div>
+                                            <div className="flex justify-between items-center mt-8">
+                                                <button type="submit" className="btn btn-primary mt-4 px-16">
+                                                    Create
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </div>
+                        </div>
+                    </Dialog>
+                </Transition>
+
                 <Transition appear show={isModalOpen} as={Fragment}>
                     <Dialog as="div" open={isModalOpen} onClose={() => setIsModalOpen(false)}>
                         <Transition.Child
@@ -305,20 +417,29 @@ const Kasir = () => {
                                 </label>
                                 <input id="categoryName" type="text" value={twolastItem?.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
                             </div>
-                            <div className="flex items-center justify-between mb-4">
-                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Buyer :
-                                </label>
-                                <input
-                                    id="categoryName"
-                                    type="text"
-                                    name="sale_buyer_name"
-                                    onChange={handleInputChange}
-                                    value={input.sale_buyer_name}
-                                    placeholder="Nama"
-                                    className=" form-input w-[250px]"
-                                    required
-                                />
+                            <div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                        Buyer :
+                                    </label>
+                                    <div className="relative flex w-[250px] mb-4">
+                                        <input
+                                            type="text"
+                                            className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                            placeholder="Search..."
+                                            name="name_buyer"
+                                            value={inputBuyer.name_buyer}
+                                            onChange={handleInputChangeBuyer}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="h-7 w-7 absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
+                                            onClick={handleSearchBuyerButtonClick}
+                                        >
+                                            <IconSearch className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -334,7 +455,7 @@ const Kasir = () => {
                                     <div className="relative flex w-[250px] mb-4">
                                         <input
                                             type="text"
-                                            className="form-input flex-1 ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                            className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                                             placeholder="Search..."
                                             onChange={handleInputChange}
                                             value={input.sale_barcode}

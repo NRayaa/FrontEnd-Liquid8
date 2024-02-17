@@ -95,7 +95,7 @@ const CategorySetting = () => {
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Sub Kategori</h5>
                 <div className="mb-4 flex justify-between">
-                    <div className="relative w-[220px]">
+                    <div className="relative w-1/2">
                         <input
                             type="text"
                             className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"

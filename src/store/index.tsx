@@ -19,6 +19,7 @@ import { authApi } from './services/authApi';
 import { saleApi } from './services/saleApi';
 import { migrateApi } from './services/migrateApi';
 import { dashboardApi } from './services/dashboardApi';
+import { buyerApi } from './services/buyerApi';
 
 const rootReducer = combineReducers({
     themeConfig: themeConfigSlice,
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
     [saleApi.reducerPath]: saleApi.reducer,
     [migrateApi.reducerPath]: migrateApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    [buyerApi.reducerPath]: buyerApi.reducer,
 });
 
 export default configureStore({
@@ -66,6 +68,7 @@ export default configureStore({
             .concat(saleApi.middleware)
             .concat(migrateApi.middleware)
             .concat(dashboardApi.middleware)
+            .concat(buyerApi.middleware)
 });
 
 export type IRootState = ReturnType<typeof rootReducer>;
