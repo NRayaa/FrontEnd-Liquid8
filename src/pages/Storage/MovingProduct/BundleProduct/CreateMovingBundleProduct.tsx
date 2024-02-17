@@ -13,7 +13,7 @@ import {
 } from '../../../../store/services/bundleProductApi';
 import toast from 'react-hot-toast';
 
-const CreateBundleProduct = () => {
+const CreateMovingBundleProduct = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
@@ -127,8 +127,8 @@ const CreateBundleProduct = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <Link to="/storage/expired_product/bundle_product">
-                        <span>Expired Product</span>
+                    <Link to="/storage/moving_product/bundle">
+                        <span>Moving Product</span>
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
@@ -253,4 +253,4 @@ const CreateBundleProduct = () => {
     );
 };
 
-export default CreateBundleProduct;
+export default CreateMovingBundleProduct;

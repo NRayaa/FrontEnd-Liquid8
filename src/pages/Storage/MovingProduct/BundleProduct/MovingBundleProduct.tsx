@@ -8,7 +8,7 @@ import { BundleItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
 
-const BundleProduct = () => {
+const MovingBundleProduct = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const { data, isSuccess, refetch } = useGetBundleProductsQuery({ page, q: search });
@@ -96,7 +96,7 @@ const BundleProduct = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Expired Product</span>
+                    <span>Moving Product</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
                     <span>Bundle Product</span>
@@ -107,7 +107,7 @@ const BundleProduct = () => {
                 <h1 className="text-lg font-bold flex justify-start py-4">Bundle Product </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div>
-                        <Link to="/storage/expired_product/create_bundle">
+                        <Link to="/storage/moving_product/bundle/create_bundle">
                             <button className="btn btn-outline-info">
                                 <IconPlus />
                                 Create
@@ -164,4 +164,4 @@ const BundleProduct = () => {
     );
 };
 
-export default BundleProduct;
+export default MovingBundleProduct;
