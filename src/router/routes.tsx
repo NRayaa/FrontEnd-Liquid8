@@ -10,6 +10,9 @@ import DetailCashier from '../pages/Outbound/Sale/DetailCashier';
 import ListBuyer from '../pages/Outbound/Buyer/ListBuyer';
 import AddBuyer from '../pages/Outbound/Buyer/Addbuyer';
 import DetailBuyer from '../pages/Outbound/Buyer/DetailBuyer';
+import Bundle from '../pages/Storage/MovingProduct/BundleProduct/BundleProduct';
+import CreateBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/CreateBundleProduct';
+import DetailBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/DetailBundleProduct';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
@@ -135,6 +138,22 @@ const routes = [
         element: <EditCategory />,
         layout: 'default',
     },
+    // Moving Product Bundle
+    {
+        path: '/storage/moving_product/bundle',
+        element: <BundleProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/bundle/create_bundle',
+        element: <CreateBundleProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/bundle/detail_bundle',
+        element: <DetailBundleProduct />,
+        layout: 'default',
+    },
     // Expired Product
     {
         path: '/storage/expired_product/list_product',
@@ -148,7 +167,7 @@ const routes = [
     },
     {
         path: '/storage/expired_product/bundle_product',
-        element: <BundleProduct />,
+        element: <Bundle />,
         layout: 'default',
     },
     {
