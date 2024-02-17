@@ -25,8 +25,10 @@ const Kasir = () => {
     const [saleFinish] = useSaleFinishMutation();
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
     const { data: listProduct } = useGetAllProductNewQuery({ page, q: search });
+    // const { data: listBuyer } = useGetAllProductNewQuery({ page, q: search });
     const [deleteSale, results] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
@@ -37,11 +39,8 @@ const Kasir = () => {
         }
         return [];
     }, [listSaleData]);
-
     const twolastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 3] as GetCodeDocumentItem;
-
     const lastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 1] as GetTotalSaleItem;
-
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
     }, [listProduct]);
@@ -66,7 +65,7 @@ const Kasir = () => {
                 sale_buyer_name: input.sale_buyer_name,
             };
             await addSale(body);
-            toast.success("Success add sale")
+            toast.success('Success add sale');
             refetch();
         } catch (err) {}
     };
@@ -74,7 +73,7 @@ const Kasir = () => {
     const handleFinishSale = async () => {
         try {
             await saleFinish(null);
-            toast.success("Success finish sale")
+            toast.success('Success finish sale');
             navigate('/outbound/sale/list_kasir');
         } catch (err) {
             console.error('Failed to finish sale:', err);
@@ -84,7 +83,7 @@ const Kasir = () => {
     const handleDeleteSale = async (id: number) => {
         try {
             await deleteSale(id);
-            toast.success("Success delete product sale");
+            toast.success('Success delete product sale');
             refetch();
         } catch (err) {
             console.log(err);
@@ -118,6 +117,90 @@ const Kasir = () => {
         <>
             <BreadCrumbs base="Home" basePath="/" sub="Sales" subPath="/outbound/sale/kasir" current="Cashier" />
             <div>
+                <Transition appear show={listBuyerOpen} as={Fragment}>
+                    <Dialog as="div" open={listBuyerOpen} onClose={() => setListBuyerOpen(false)}>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <div className="fixed inset-0" />
+                        </Transition.Child>
+                        <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                            <div className="flex items-start justify-center min-h-screen px-4">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel as="div" className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark">
+                                        <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
+                                            <div className="text-lg font-bold">Pilih Product</div>
+                                        </div>
+                                        <div className="w-1/2 mt-5">
+                                            <input className="form-input" placeholder="Search..." onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)} value={search} autoFocus />
+                                        </div>
+                                        <div className="max-h-[290px] overflow-y-scroll rounded-md mt-5">
+                                            <DataTable
+                                                highlightOnHover
+                                                className="whitespace-nowrap table-hover"
+                                                records={productNewData}
+                                                columns={[
+                                                    {
+                                                        accessor: 'No',
+                                                        title: 'No',
+                                                        render: (item: NewProductItem, index: number) => <span>{index + 1}</span>,
+                                                    },
+                                                    {
+                                                        accessor: 'product_barcode',
+                                                        title: 'Barcode',
+                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_barcode_product}</span>,
+                                                    },
+                                                    {
+                                                        accessor: 'product_name',
+                                                        title: 'Nama',
+                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_name_product}</span>,
+                                                    },
+                                                    {
+                                                        accessor: 'new_category_product',
+                                                        title: 'Kategori',
+                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_category_product}</span>,
+                                                    },
+                                                    {
+                                                        accessor: 'action',
+                                                        title: 'Opsi',
+                                                        titleClassName: '!text-center',
+                                                        render: (item: NewProductItem) => (
+                                                            <div className="flex items-center w-max mx-auto gap-6">
+                                                                <button type="button" className="btn btn-outline-info" onClick={() => handleProductSelection(item.new_barcode_product)}>
+                                                                    <IconSquareCheck className="ltr:mr-2 rtl:ml-2 " />
+                                                                </button>
+                                                            </div>
+                                                        ),
+                                                    },
+                                                ]}
+                                                minHeight={200}
+                                            />
+                                        </div>
+                                        <div className="flex justify-end items-center mt-8">
+                                            <button type="button" className="btn btn-outline-danger" onClick={handleCloseModal}>
+                                                Kembali
+                                            </button>
+                                        </div>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </div>
+                        </div>
+                    </Dialog>
+                </Transition>
                 <Transition appear show={isModalOpen} as={Fragment}>
                     <Dialog as="div" open={isModalOpen} onClose={() => setIsModalOpen(false)}>
                         <Transition.Child

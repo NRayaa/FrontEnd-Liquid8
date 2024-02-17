@@ -258,6 +258,51 @@ const Sidebar = () => {
                             </li>
 
                             <li className="menu nav-item">
+                                <button type="button" className={`${currentMenu === 'moving_product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('moving_product')}>
+                                    <div className="flex items-center">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M2.00098 11.999L16.001 11.999M16.001 11.999L12.501 8.99902M16.001 11.999L12.501 14.999"
+                                                stroke="currentColor"
+                                                stroke-width="1.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            ></path>
+                                            <path
+                                                opacity="0.5"
+                                                d="M9.00195 7C9.01406 4.82497 9.11051 3.64706 9.87889 2.87868C10.7576 2 12.1718 2 15.0002 2L16.0002 2C18.8286 2 20.2429 2 21.1215 2.87868C22.0002 3.75736 22.0002 5.17157 22.0002 8L22.0002 16C22.0002 18.8284 22.0002 20.2426 21.1215 21.1213C20.2429 22 18.8286 22 16.0002 22H15.0002C12.1718 22 10.7576 22 9.87889 21.1213C9.11051 20.3529 9.01406 19.175 9.00195 17"
+                                                stroke="currentColor"
+                                                stroke-width="1.5"
+                                                stroke-linecap="round"
+                                            ></path>
+                                        </svg>
+
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Moving Product')}</span>
+                                    </div>
+
+                                    <div className={currentMenu === 'moving_product' ? 'rotate-90' : 'rtl:rotate-180'}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <AnimateHeight duration={300} height={currentMenu === 'moving_product' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to="/storage/moving_product/bundle">{'Bundle'}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/storage/moving_product/bundle">{'Repair'}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/storage/moving_product/bundle">{'Pallet'}</NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
+                            </li>
+
+                            <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'expired_product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('expired_product')}>
                                     <div className="flex items-center">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
