@@ -42,15 +42,16 @@ const EditAkun = () => {
                 password: input.password,
                 role_id: input.role_id,
             };
-            await updateAccount({id, body});
-            toast.success('Success update account');
+            await updateAccount({ id, body });
         } catch (err) {}
     };
 
-
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results?.data?.data?.message);
             navigate('/akun/akun/list_akun');
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message);
         }
     }, [results]);
 

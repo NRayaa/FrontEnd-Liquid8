@@ -10,7 +10,14 @@ const Index = () => {
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     const [loading] = useState(false);
-
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
     const chartData = useMemo(() => {
         return data?.data.resource.chart_inbound_outbound || [];
     }, [data]);
@@ -185,14 +192,7 @@ const Index = () => {
         },
     };
 
-    const getRandomColor = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
+    //Sales By Category
     const productSales = useMemo(() => {
         return data?.data?.resource?.product_sales || [];
     }, [data]);
@@ -206,7 +206,6 @@ const Index = () => {
         return data?.data?.resource?.product_sales.map(() => getRandomColor()) || [];
     }, [data]);
 
-    //Sales By Category
     const salesByCategory: any = {
         series: productCategories.map((item) => parseInt(String(item.total), 10)),
         options: {
@@ -286,6 +285,7 @@ const Index = () => {
         },
     };
 
+    //Product By Category
     const productData = useMemo(() => {
         return data?.data?.resource?.product_data || [];
     }, [data]);
@@ -299,7 +299,6 @@ const Index = () => {
         return data?.data?.resource?.product_data.map(() => getRandomColor()) || [];
     }, [data]);
 
-    //Product By Category
     const productByCategory: any = {
         series: productCategoriesData.map((item) => parseInt(String(item.total), 10)),
         options: {
@@ -379,6 +378,7 @@ const Index = () => {
         },
     };
 
+    //Expired By Category
     const productExpired = useMemo(() => {
         return data?.data?.resource?.expired_data || [];
     }, [data]);
@@ -392,7 +392,6 @@ const Index = () => {
         return data?.data?.resource?.expired_data.map(() => getRandomColor()) || [];
     }, [data]);
 
-    //Expired By Category
     const expiredByCategory: any = {
         series: productCategoriesExpired.map((item) => Math.round((item.total / totalProductExpired) * 10)),
         options: {
@@ -540,7 +539,7 @@ const Index = () => {
 
                 <div className="panel h-full">
                     <div className="flex items-center mb-5">
-                        <h5 className="font-semibold text-lg dark:text-white-light">Outbound By Category</h5>
+                        <h5 className="font-semibold text-lg dark:text-white-light">Expired By Category</h5>
                     </div>
                     <div>
                         <div className="bg-white dark:bg-black rounded-lg overflow-hidden">

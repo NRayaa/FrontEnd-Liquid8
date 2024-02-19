@@ -40,7 +40,6 @@ const AddAkun = () => {
                 role_id: input.role_id,
             };
             await createAccount(body);
-            // toast.success('Success create account!');
         } catch (err) {}
     };
 

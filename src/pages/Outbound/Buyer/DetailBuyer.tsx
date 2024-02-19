@@ -1,27 +1,19 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useUpdateAccountMutation } from '../../../store/services/listAkunApi';
-import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
-import { GetListRoleItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
+import { useGetListBuyerQuery, useUpdatedBuyerMutation } from '../../../store/services/buyerApi';
 
 const DetailBuyer = () => {
     const { state } = useLocation();
     const params = useParams();
     const navigate = useNavigate();
-    const [updateAccount, results] = useUpdateAccountMutation();
-    const { data } = useGetListRoleQuery(undefined);
-    const dataListRole: GetListRoleItem[] = useMemo(() => {
-        return (data?.data?.resource || []) as GetListRoleItem[];
-    }, [data]);
+    const [updateBuyer, results] = useUpdatedBuyerMutation();
 
     const [input, setInput] = useState({
-        name: state?.name,
-        username: state?.username,
-        email: state?.email,
-        password: state?.password,
-        role_id: state?.role_id,
+        name_buyer: state?.name_buyer,
+        phone_buyer: state?.phone_buyer,
+        address_buyer: state?.address_buyer,
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,26 +23,26 @@ const DetailBuyer = () => {
         }));
     };
 
-    const handleUpdateAccount = async (e: { preventDefault: () => void }) => {
+    const handleUpdateBuyer = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
             const { id } = params;
             const body = {
-                name: input.name,
-                username: input.username,
-                email: input.email,
-                password: input.password,
-                role_id: input.role_id,
+                name_buyer: input.name_buyer,
+                phone_buyer: input.phone_buyer,
+                address_buyer: input.address_buyer,
             };
-            await updateAccount({id, body});
-            toast.success('Success update account');
+            await updateBuyer({id, body});
         } catch (err) {}
     };
 
 
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results?.data?.data?.message);
             navigate('/buyer/buyer/list_buyer');
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message);
         }
     }, [results]);
 
@@ -60,24 +52,24 @@ const DetailBuyer = () => {
 
             <div className="panel mt-10 w-full min-h-[400px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Detail Buyer</h5>
-                <form className="w-[400px]" onSubmit={handleUpdateAccount}>
+                <form className="w-[400px]" onSubmit={handleUpdateBuyer}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="name" onChange={handleInputChange} value={input.name} />
+                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="username" className="text-[15px] font-semibold whitespace-nowrap">
                             No. Hp :
                         </label>
-                        <input id="username" type="text" className="form-input w-[250px]" required name="username" onChange={handleInputChange} value={input.username} />
+                        <input id="username" type="text" className="form-input w-[250px]" required name="phone_buyer" onChange={handleInputChange} value={input.phone_buyer} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
                             Alamat :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" required name="email" onChange={handleInputChange} value={input.email} />
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16">
                         Update
