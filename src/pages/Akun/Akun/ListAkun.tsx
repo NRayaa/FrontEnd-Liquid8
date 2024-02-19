@@ -32,16 +32,19 @@ const ListAkun = () => {
     const handleDeleteAccount = async (id: number) => {
         try {
             await deleteAccount(id);
-            toast.success('Success delete account!');
         } catch (err) {
             console.log(err);
         }
     };
 
     useEffect(() => {
-        if (results) {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results.data?.data?.message);
         }
+        refetch();
     }, [results]);
 
     return (

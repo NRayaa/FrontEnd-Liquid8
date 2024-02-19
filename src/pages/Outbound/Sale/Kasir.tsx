@@ -10,7 +10,7 @@ import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import IconSearch from '../../../components/Icon/IconSearch';
 import { formatRupiah } from '../../../helper/functions';
 import toast from 'react-hot-toast';
-import { useGetListBuyerQuery } from '../../../store/services/buyerApi';
+import { useAddBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 
 interface GetTotalSaleItem {
     total_sale: string;
@@ -23,6 +23,7 @@ const Kasir = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
     const [addSale] = useAddSaleMutation();
+    const [addBuyer, resultsAddBuyer] = useAddBuyerMutation();
     const [saleFinish] = useSaleFinishMutation();
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,6 +55,9 @@ const Kasir = () => {
     const [input, setInput] = useState({
         sale_barcode: '',
         buyer_id: 0,
+        name_buyer: '',
+        phone_buyer: '',
+        address_buyer: '',
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -70,9 +74,21 @@ const Kasir = () => {
                 sale_barcode: input.sale_barcode,
                 buyer_id: inputBuyer.id,
             };
-            console.log('DATA SSENT', body);
             await addSale(body);
             toast.success('Success add sale');
+            refetch();
+        } catch (err) {}
+    };
+
+    const handleAddBuyer = async (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+        try {
+            const body = {
+                name_buyer: input.name_buyer,
+                phone_buyer: input.phone_buyer,
+                address_buyer: input.address_buyer,
+            };
+            await addBuyer(body);
             refetch();
         } catch (err) {}
     };
@@ -135,6 +151,7 @@ const Kasir = () => {
 
     const handleSearchBuyerButtonClick = () => {
         setListBuyerOpen(true);
+        refetch();
     };
 
     const handleCloseModalBuyer = () => {
@@ -152,6 +169,17 @@ const Kasir = () => {
         }
         refetch();
     }, [results, listSaleData, refetch]);
+
+    useEffect(() => {
+        if (resultsAddBuyer.isSuccess) {
+            toast.success(resultsAddBuyer.data.data.message);
+            setAddBuyerOpen(false);
+            navigate('/outbound/sale/kasir');
+            refetch();
+        } else if (resultsAddBuyer.isError) {
+            toast.error(resultsAddBuyer.data?.data?.message);
+        }
+    }, [resultsAddBuyer, refetch]);
 
     return (
         <>
@@ -238,7 +266,10 @@ const Kasir = () => {
                                                         ),
                                                     },
                                                 ]}
-                                                minHeight={200}
+                                                totalRecords={listBuyer?.data.resource.total ?? 0}
+                                                recordsPerPage={listBuyer?.data.resource.per_page ?? 10}
+                                                page={page}
+                                                onPageChange={(prevPage) => setPage(prevPage)}
                                             />
                                         </div>
                                         <div className="flex justify-end items-center mt-8">
@@ -281,24 +312,24 @@ const Kasir = () => {
                                         <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
                                             <div className="text-lg font-bold">Add Buyer</div>
                                         </div>
-                                        <form className="w-[400px]">
+                                        <form className="w-[400px]" onSubmit={handleAddBuyer}>
                                             <div className="flex items-center  justify-between mb-2">
                                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                                     Nama :
                                                 </label>
-                                                <input id="categoryName" type="text" className="form-input w-[250px]" />
+                                                <input id="categoryName" type="text" className="form-input w-[250px]" name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
                                             </div>
                                             <div className="flex items-center justify-between mb-2">
                                                 <label htmlFor="username" className="text-[15px] font-semibold whitespace-nowrap">
                                                     No. Hp :
                                                 </label>
-                                                <input id="username" type="text" className="form-input w-[250px]" />
+                                                <input id="username" type="text" className="form-input w-[250px]" name="phone_buyer" onChange={handleInputChange} value={input.phone_buyer} />
                                             </div>
                                             <div className="flex items-center justify-between mb-2">
                                                 <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
                                                     Alamat :
                                                 </label>
-                                                <input id="email" type="text" className="form-input w-[250px]" />
+                                                <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
                                             </div>
                                             <div className="flex justify-between items-center mt-8">
                                                 <button type="submit" className="btn btn-primary mt-4 px-16">
@@ -384,6 +415,10 @@ const Kasir = () => {
                                                     },
                                                 ]}
                                                 minHeight={200}
+                                                totalRecords={listProduct?.data.resource.total ?? 0}
+                                                recordsPerPage={listProduct?.data.resource.per_page ?? 10}
+                                                page={page}
+                                                onPageChange={(prevPage) => setPage(prevPage)}
                                             />
                                         </div>
                                         <div className="flex justify-end items-center mt-8">

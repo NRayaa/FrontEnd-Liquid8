@@ -9,7 +9,27 @@ export const buyerApi = createApi({
         getListBuyer: builder.query<GetListBuyer, { page: number; q: string }>({
             query: ({ page, q }) => `/buyers?page=${page}&q=${q}`,
         }),
+        addBuyer: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/buyers',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updatedBuyer: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/buyers/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        deleteBuyer: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/buyers/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useGetListBuyerQuery } = buyerApi;
+export const { useGetListBuyerQuery, useAddBuyerMutation, useUpdatedBuyerMutation, useDeleteBuyerMutation } = buyerApi;

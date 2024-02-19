@@ -1,5 +1,5 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -7,6 +7,9 @@ import { useDispatch } from 'react-redux';
 import IconPencil from '../../../components/Icon/IconPencil';
 import IconTrashLines from '../../../components/Icon/IconTrashLines';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDeleteBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
+import { GetListBuyerItem } from '../../../store/services/types';
+import toast from 'react-hot-toast';
 
 const rowData = [
     {
@@ -513,8 +516,34 @@ const rowData = [
 
 const ListBuyer = () => {
     const navigate = useNavigate();
+    const [page, setPage] = useState<number>(1);
+    const [search] = useState<string>('');
+    const { data, refetch } = useGetListBuyerQuery({ page, q: search });
+    const [deleteBuyer, results] = useDeleteBuyerMutation();
     const [initialRecords2, setInitialRecords2] = useState(sortBy(rowData, 'firstName'));
     const [recordsData2, setRecordsData2] = useState(initialRecords2);
+
+    const listBuyer = useMemo(() => {
+        return data?.data.resource.data;
+    }, [data]);
+
+    const handleDeleteBuyer = async (id: number) => {
+        try {
+            await deleteBuyer(id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            refetch();
+            toast.success(results.data.data.message);
+        } else if (results.isError) {
+            toast.error(results.data?.data?.message);
+        }
+        refetch();
+    }, [results]);
 
     return (
         <div>
@@ -528,29 +557,54 @@ const ListBuyer = () => {
                 <div className="datatables">
                     <DataTable
                         className="whitespace-nowrap table-hover"
-                        records={recordsData2}
+                        records={listBuyer}
                         columns={[
                             {
                                 accessor: 'No',
                                 title: 'No',
+                                render: (item: GetListBuyerItem, index: number) => <span>{index + 1}</span>,
                             },
-                            { accessor: 'company', title: 'Nama' },
-                            { accessor: 'phone', title: 'No Hp' },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'Nama',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'phone_buyer',
+                                title: 'No.HP',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.phone_buyer}</span>,
+                            },
+                            {
+                                accessor: 'address_buyer',
+                                title: 'Alamat',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.address_buyer}</span>,
+                            },
+
                             {
                                 accessor: 'action',
                                 title: 'Detail',
                                 titleClassName: '!text-center',
-                                render: (item) => (
+                                render: (item: GetListBuyerItem) => (
                                     <div className="flex items-center w-max mx-auto gap-2">
-                                        <Link to={`/buyer/buyer/list_buyer/detail_buyer/${item.id}`}>
+                                        <Link
+                                            to={`/buyer/buyer/list_buyer/detail_buyer/${item.id}`}
+                                            state={{ name_buyer: item.name_buyer, phone_buyer: item.phone_buyer, address_buyer: item.address_buyer}}
+                                        >
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
                                         </Link>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteBuyer(item.id)}>
+                                            Delete
+                                        </button>
                                     </div>
                                 ),
                             },
                         ]}
+                        totalRecords={data?.data.resource.total ?? 0}
+                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>
