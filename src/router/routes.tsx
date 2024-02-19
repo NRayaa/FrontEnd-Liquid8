@@ -146,12 +146,12 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/storage/moving_product/bundle/create_bundle',
+        path: '/storage/moving_product/create_bundle',
         element: <CreateMovingBundleProduct />,
         layout: 'default',
     },
     {
-        path: '/storage/moving_product/bundle/detail_bundle',
+        path: '/storage/moving_product/detail_bundle/:id',
         element: <DetailBundleProduct />,
         layout: 'default',
     },
@@ -161,12 +161,12 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/storage/moving_product/bundle/create_repair',
+        path: '/storage/moving_product/create_repair',
         element: <CreateRepair />,
         layout: 'default',
     },
     {
-        path: '/storage/moving_product/bundle/detail_repair',
+        path: '/storage/moving_product/detail_repair/:id',
         element: <DetailRepair />,
         layout: 'default',
     },
@@ -176,12 +176,12 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/storage/moving_product/bundle/create_pallet',
+        path: '/storage/moving_product/create_pallet',
         element: <CreatePalletProduct />,
         layout: 'default',
     },
     {
-        path: '/storage/moving_product/bundle/detail_pallet',
+        path: '/storage/moving_product/detail_pallet/:id',
         element: <DetailPalletProduct />,
         layout: 'default',
     },
