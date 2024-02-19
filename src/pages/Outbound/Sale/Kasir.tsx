@@ -22,7 +22,7 @@ interface GetCodeDocumentItem {
 const Kasir = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
-    const [addSale] = useAddSaleMutation();
+    const [addSale, resultAddSale] = useAddSaleMutation();
     const [addBuyer, resultsAddBuyer] = useAddBuyerMutation();
     const [saleFinish] = useSaleFinishMutation();
     const [search, setSearch] = useState('');
@@ -32,7 +32,7 @@ const Kasir = () => {
     const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
     const { data: listProduct } = useGetAllProductNewQuery({ page, q: search });
     const { data: listBuyer } = useGetListBuyerQuery({ page, q: search });
-    const [deleteSale, results] = useDeleteSaleMutation();
+    const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
         const data = listSaleData?.data.resource.data;
@@ -75,7 +75,6 @@ const Kasir = () => {
                 buyer_id: inputBuyer.id,
             };
             await addSale(body);
-            toast.success('Success add sale');
             refetch();
         } catch (err) {}
     };
@@ -164,13 +163,6 @@ const Kasir = () => {
     };
 
     useEffect(() => {
-        if (results) {
-            navigate('/outbound/sale/kasir');
-        }
-        refetch();
-    }, [results, listSaleData, refetch]);
-
-    useEffect(() => {
         if (resultsAddBuyer.isSuccess) {
             toast.success(resultsAddBuyer.data.data.message);
             setAddBuyerOpen(false);
@@ -178,8 +170,20 @@ const Kasir = () => {
             refetch();
         } else if (resultsAddBuyer.isError) {
             toast.error(resultsAddBuyer.data?.data?.message);
+        } else if (resultAddSale.isSuccess) {
+            toast.success(resultAddSale.data.data.message);
+            navigate('/outbound/sale/kasir');
+            refetch();
+        } else if (resultAddSale.isError) {
+            toast.error(resultAddSale.data?.data?.message);
+        } else if (resultsDeleteSale.isSuccess) {
+            toast.success(resultsDeleteSale.data.data.message);
+            navigate('/outbound/sale/kasir');
+            refetch();
+        } else if (resultsDeleteSale.isError) {
+            toast.error(resultsDeleteSale.data?.data?.message);
         }
-    }, [resultsAddBuyer, refetch]);
+    }, [resultsAddBuyer, resultAddSale, resultsDeleteSale, listSaleData, refetch]);
 
     return (
         <>
