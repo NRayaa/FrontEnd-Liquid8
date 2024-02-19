@@ -1169,8 +1169,31 @@ interface GetListBuyer {
         };
     };
 }
-
-
+interface GetNotifByRoleItem {
+    id: number;
+    user_id: string;
+    notification_name: string;
+    status: string;
+    spv_id: string;
+    riwayat_check_id: string;
+    read_at: string;
+    created_at: string;
+    updated_at: string;
+}
+interface GetNotifByRole {
+    data: {
+        status: boolean;
+        message: string;
+        resource: GetNotifByRoleItem[];
+    };
+}
+interface SpvAprroval {
+    data: {
+        status: boolean;
+        message: string;
+        resource: GetNotifByRoleItem;
+    };
+}
 
 export type {
     UserDataItem,
@@ -1250,4 +1273,6 @@ export type {
     ExportToExcel,
     GetListBuyer,
     GetListBuyerItem,
+    GetNotifByRole,
+    SpvAprroval,
 };
