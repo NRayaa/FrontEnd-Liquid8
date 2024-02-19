@@ -100,4 +100,39 @@ function formatCurrency(value: number) {
     return formattedValue;
 }
 
-export { formatTimestamp, formatRupiah, formatDate, generateRandomString, formatYearToDay, convertPercentage, formatCurrency };
+function countPastTime(timestamp: string) {
+    // Mengonversi timestamp ke objek Date
+    const waktuSekarang: any = new Date();
+    const waktuInput: any = new Date(timestamp);
+
+    // Menghitung selisih waktu dalam milidetik
+    const selisihMilidetik = waktuSekarang - waktuInput;
+
+    // Menghitung selisih dalam detik, menit, jam, hari, minggu, bulan, dan tahun
+    const selisihDetik = Math.floor(selisihMilidetik / 1000);
+    const selisihMenit = Math.floor(selisihDetik / 60);
+    const selisihJam = Math.floor(selisihMenit / 60);
+    const selisihHari = Math.floor(selisihJam / 24);
+    const selisihMinggu = Math.floor(selisihHari / 7);
+    const selisihBulan = Math.floor(selisihHari / 30);
+    const selisihTahun = Math.floor(selisihHari / 365);
+
+    // Logika untuk menentukan format waktu yang sesuai
+    if (selisihTahun > 0) {
+        return selisihTahun === 1 ? '1 tahun yang lalu' : `${selisihTahun} tahun yang lalu`;
+    } else if (selisihBulan > 0) {
+        return selisihBulan === 1 ? '1 bulan yang lalu' : `${selisihBulan} bulan yang lalu`;
+    } else if (selisihMinggu > 0) {
+        return selisihMinggu === 1 ? '1 minggu yang lalu' : `${selisihMinggu} minggu yang lalu`;
+    } else if (selisihHari > 0) {
+        return selisihHari === 1 ? '1 hari yang lalu' : `${selisihHari} hari yang lalu`;
+    } else if (selisihJam > 0) {
+        return selisihJam === 1 ? '1 jam yang lalu' : `${selisihJam} jam yang lalu`;
+    } else if (selisihMenit > 0) {
+        return selisihMenit === 1 ? '1 menit yang lalu' : `${selisihMenit} menit yang lalu`;
+    } else {
+        return 'Baru saja';
+    }
+}
+
+export { formatTimestamp, formatRupiah, formatDate, generateRandomString, formatYearToDay, convertPercentage, formatCurrency, countPastTime };
