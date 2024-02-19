@@ -1,3 +1,4 @@
 import Alert from './Alert';
+import Spinner from './Spinner';
 
-export { Alert };
+export { Alert, Spinner };
