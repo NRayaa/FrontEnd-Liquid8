@@ -6,12 +6,14 @@ import { useGetNotifByRoleQuery, useLazyGetNotifByRoleQuery, useLazySpvApprovalQ
 import { Spinner } from '../../commons';
 import { countPastTime } from '../../helper/functions';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const NotificationHeader = () => {
     const [getNotifByRole, notifResults] = useLazyGetNotifByRoleQuery();
     const { refetch } = useGetNotifByRoleQuery(undefined);
     const [spvApproval, spvResults] = useLazySpvApprovalQuery();
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+    const navigate = useNavigate();
 
     const handleGetNotification = async () => {
         await getNotifByRole(undefined);
@@ -27,6 +29,10 @@ const NotificationHeader = () => {
     const handleApprove = async (id: number) => {
         await spvApproval(id);
     };
+
+    const handlePageNotif = () => {
+        navigate('/notification');
+    }
 
     useEffect(() => {
         if (spvResults.isSuccess && spvResults.data.data.status) {
@@ -63,7 +69,7 @@ const NotificationHeader = () => {
                     <li onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center px-4 py-2 justify-between font-semibold">
                             <h4 className="text-lg">Notifikasi</h4>
-                            <span className="badge bg-primary/80">{filterNewNotifLength?.length !== 0} New</span>
+                            <span className="badge bg-primary/80" onClick={handlePageNotif}>{filterNewNotifLength?.length !== 0} Open</span>
                         </div>
                     </li>
                     <li className="dark:text-white-light/90 min-h-[200px]" onClick={(e) => e.stopPropagation()}>

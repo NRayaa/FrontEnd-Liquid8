@@ -21,6 +21,7 @@ import DetailPalletProduct from '../pages/Storage/MovingProduct/PalletProduct/De
 import CreateMovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/CreateMovingBundleProduct';
 import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
 import MovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
+import Notification from '../pages/Notification/Notification';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -64,6 +65,12 @@ const routes = [
     {
         path: '/',
         element: <Dashboard />,
+        layout: 'default',
+    },
+     // dashboard
+     {
+        path: '/notification',
+        element: <Notification />,
         layout: 'default',
     },
     //Inbound Data Process
