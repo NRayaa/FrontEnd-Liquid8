@@ -104,7 +104,7 @@ const CreateMovingBundleProduct = () => {
         if (resultsCreateBundle.isSuccess) {
             toast.success(resultsCreateBundle?.data.data.message);
             bundleLists?.refetch();
-            navigate('/storage/expired_product/bundle_product');
+            navigate('/storage/moving_product/bundle');
         } else if (resultsCreateBundle.isError) {
             toast.error(resultsCreateBundle?.data?.data?.message ?? 'Error');
         }

@@ -107,7 +107,7 @@ const MovingBundleProduct = () => {
                 <h1 className="text-lg font-bold flex justify-start py-4">Bundle Product </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div>
-                        <Link to="/storage/moving_product/bundle/create_bundle">
+                        <Link to="/storage/moving_product/create_bundle">
                             <button className="btn btn-outline-info">
                                 <IconPlus />
                                 Create
@@ -141,7 +141,7 @@ const MovingBundleProduct = () => {
                                 titleClassName: '!text-center',
                                 render: (item: BundleItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/storage/expired_product/detail_bundle/${item.id}`}>
+                                        <Link to={`/storage/moving_product/detail_bundle/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
                                                 DETAIL
                                             </button>
