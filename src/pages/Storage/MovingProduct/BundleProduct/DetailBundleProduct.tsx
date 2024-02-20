@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useDetailBundleProductQuery } from '../../../../store/services/bundleProductApi';
 import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -135,8 +136,15 @@ const DetailBundleProduct = () => {
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                 </div> */}
-                <div>
-                    <div className="datatables panel xl:col-span-3">
+                <div className="panel">
+                    <div className="flex items-center mb-4">
+                        <Link to="/storage/moving_product/bundle">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                    </div>
+                    <div className="datatables xl:col-span-3">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "

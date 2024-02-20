@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 import { useGetShowRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const DetailRepair = () => {
     const { id }: any = useParams();
@@ -62,8 +63,15 @@ const DetailRepair = () => {
                         <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price_custom ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
                     </div>
                 </form>
-                <div>
-                    <div className="datatables panel xl:col-span-3">
+                <div className="panel">
+                    <div className="flex items-center justify-between mb-4">
+                        <Link to="/storage/moving_product/repair">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                    </div>
+                    <div className="datatables xl:col-span-3">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "

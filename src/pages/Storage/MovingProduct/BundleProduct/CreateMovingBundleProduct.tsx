@@ -12,6 +12,7 @@ import {
     useGetFilterProductBundlesQuery,
 } from '../../../../store/services/bundleProductApi';
 import toast from 'react-hot-toast';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const CreateMovingBundleProduct = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
@@ -175,7 +176,14 @@ const CreateMovingBundleProduct = () => {
                     </div> */}
                 </div>
                 <div>
-                    <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterBundles.data?.data.resource.data.data.length} </span>
+                    <div className="flex items-center justify-between mb-4">
+                        <Link to="/storage/moving_product/bundle">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterBundles.data?.data.resource.data.data.length} </span>
+                    </div>
                     <div className="grid grid-cols-5 gap-4">
                         <div className="datatables xl:col-span-3">
                             <DataTable

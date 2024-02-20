@@ -7,6 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import IconSend from '../../../components/Icon/IconSend';
 import { useGetShowMigrateQuery } from '../../../store/services/migrateApi';
 import { formatRupiah } from '../../../helper/functions';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const DetailMigrate = () => {
     const dispatch = useDispatch();
@@ -64,8 +65,15 @@ const DetailMigrate = () => {
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div className="datatables panel xl:col-span-3">
+                <div className="panel">
+                    <div className="flex items-center justify-between mb-4">
+                        <Link to="/outbound/migrate/list_migrate">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                    </div>
+                    <div className="datatables xl:col-span-3">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
