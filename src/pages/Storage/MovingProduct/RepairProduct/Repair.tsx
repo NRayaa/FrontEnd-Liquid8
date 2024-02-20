@@ -124,8 +124,8 @@ const Repair = () => {
                         records={dataRepairMovingProduct}
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: RepairItem, index: number) => <span>{index + 1}</span> },
-                            { accessor: 'barcode', title: 'Barcode Bundle', sortable: true, render: (item: RepairItem) => <span>{item.barcode}</span> },
-                            { accessor: 'firstName', title: 'Nama Bundle', sortable: true, render: (item: RepairItem) => <span>{item.repair_name}</span> },
+                            { accessor: 'barcode', title: 'Barcode Repair', sortable: true, render: (item: RepairItem) => <span>{item.barcode}</span> },
+                            { accessor: 'firstName', title: 'Nama Repair', sortable: true, render: (item: RepairItem) => <span>{item.repair_name}</span> },
                             { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: RepairItem) => <span>{item.total_products}</span> },
                             { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: RepairItem) => <span>{formatRupiah(item.total_price)}</span> },
                             {
