@@ -11,9 +11,10 @@ import {
 } from '../../../store/services/palletApi';
 import { ProdcutItem } from '../../../store/services/types';
 import { formatRupiah, generateRandomString } from '../../../helper/functions';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const PalletGenerate = () => {
     const [pageLeftTable, setPageLeftTable] = useState<number>(1);
@@ -170,89 +171,98 @@ const PalletGenerate = () => {
                 </form>
             </div>
             <div className="datatables mt-8">
-                <div className="relative w-[260px] mb-8">
-                    <input
-                        type="text"
-                        className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
-                        placeholder="Search..."
-                        value={searchLeftTable}
-                        onChange={(e) => setSearchLeftTable(e.target.value)}
-                    />
-                </div>
-                <div className="grid grid-cols-5 gap-4">
-                    <div className="datatables xl:col-span-3">
-                        <DataTable
-                            highlightOnHover
-                            className="whitespace-nowrap table-hover "
-                            records={displayData}
-                            columns={[
-                                { accessor: 'id', title: 'No', sortable: true, render: (item: ProdcutItem, index: number) => <span>{index + 1}</span> },
-                                { accessor: 'barcode', title: 'New Barcode', sortable: true, render: (item: ProdcutItem) => <span>{item?.new_barcode_product}</span> },
-                                { accessor: 'nama produk', title: 'Nama Produk', sortable: true, width: 220, render: (item: ProdcutItem) => <p className="truncate">{item?.new_name_product}</p> },
-                                { accessor: 'harga', title: 'Harga', sortable: true, render: (item: ProdcutItem) => <span>{formatRupiah(item?.new_price_product ?? '0')}</span> },
-                                { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProdcutItem) => <span>{item.new_category_product}</span> },
-                                {
-                                    accessor: 'status',
-                                    title: 'Status',
-                                    sortable: true,
-                                    render: (item: ProdcutItem) => <span className="badge whitespace-nowrap bg-primary capitalize">{item.new_status_product}</span>,
-                                },
-                                {
-                                    accessor: 'action',
-                                    title: 'Opsi',
-                                    titleClassName: '!text-center',
-                                    render: (item: ProdcutItem) => (
-                                        <div className="flex items-center w-max mx-auto gap-6" onClick={() => handleAddDisplay(item)}>
-                                            <button type="button" className="btn btn-outline-info">
-                                                Add
-                                            </button>
-                                        </div>
-                                    ),
-                                },
-                            ]}
-                            totalRecords={displayLists.data?.data.resource.total ?? 0}
-                            recordsPerPage={displayLists.data?.data.resource.per_page ?? 10}
-                            page={pageLeftTable}
-                            onPageChange={(prevPage) => setPageLeftTable(prevPage)}
-                        />
+                <div className="panel">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="relative w-[260px]">
+                            <input
+                                type="text"
+                                className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                placeholder="Search..."
+                                value={searchLeftTable}
+                                onChange={(e) => setSearchLeftTable(e.target.value)}
+                            />
+                        </div>
+                        <Link to="/storage/pallet">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
                     </div>
-                    <div className="datatables xl:col-span-2">
-                        <DataTable
-                            highlightOnHover
-                            className="whitespace-nowrap table-hover "
-                            records={filterData?.data.data}
-                            columns={[
-                                { accessor: 'id', title: 'No', sortable: true, render: (item: ProdcutItem, index: number) => <span>{index + 1}</span> },
-                                {
-                                    accessor: 'barcode',
-                                    title: 'Barcode LQD',
-                                    sortable: true,
-                                    render: (item: ProdcutItem) => <span className="text-ellipsis overflow-hidden">{item.new_barcode_product}</span>,
-                                },
-                                {
-                                    accessor: 'nama',
-                                    title: 'Nama Produk',
-                                    sortable: true,
-                                    render: (item: ProdcutItem) => <span className="text-ellipsis overflow-hidden">{item.new_name_product}</span>,
-                                },
-                                {
-                                    accessor: 'action',
-                                    title: 'Aksi',
-                                    titleClassName: '!text-center',
-                                    render: (item: ProdcutItem) => (
-                                        <div className="flex items-center space-x-2">
-                                            <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteFilter(item.id)}>
-                                                Delete
-                                            </button>
-                                        </div>
-                                    ),
-                                },
-                            ]}
-                            totalRecords={filterLists.data?.data.resource.data.total ?? 0}
-                            recordsPerPage={filterLists.data?.data.resource.data.per_page ?? 10}
-                            page={pageRightTable}
-                            onPageChange={(prevPage) => setPageRightTable(prevPage)}
-                        />
+                    <div className="grid grid-cols-5 gap-4">
+                        <div className="datatables xl:col-span-3">
+                            <DataTable
+                                highlightOnHover
+                                className="whitespace-nowrap table-hover "
+                                records={displayData}
+                                columns={[
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProdcutItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'barcode', title: 'New Barcode', sortable: true, render: (item: ProdcutItem) => <span>{item?.new_barcode_product}</span> },
+                                    { accessor: 'nama produk', title: 'Nama Produk', sortable: true, width: 220, render: (item: ProdcutItem) => <p className="truncate">{item?.new_name_product}</p> },
+                                    { accessor: 'harga', title: 'Harga', sortable: true, render: (item: ProdcutItem) => <span>{formatRupiah(item?.new_price_product ?? '0')}</span> },
+                                    { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProdcutItem) => <span>{item.new_category_product}</span> },
+                                    {
+                                        accessor: 'status',
+                                        title: 'Status',
+                                        sortable: true,
+                                        render: (item: ProdcutItem) => <span className="badge whitespace-nowrap bg-primary capitalize">{item.new_status_product}</span>,
+                                    },
+                                    {
+                                        accessor: 'action',
+                                        title: 'Opsi',
+                                        titleClassName: '!text-center',
+                                        render: (item: ProdcutItem) => (
+                                            <div className="flex items-center w-max mx-auto gap-6" onClick={() => handleAddDisplay(item)}>
+                                                <button type="button" className="btn btn-outline-info">
+                                                    Add
+                                                </button>
+                                            </div>
+                                        ),
+                                    },
+                                ]}
+                                totalRecords={displayLists.data?.data.resource.total ?? 0}
+                                recordsPerPage={displayLists.data?.data.resource.per_page ?? 10}
+                                page={pageLeftTable}
+                                onPageChange={(prevPage) => setPageLeftTable(prevPage)}
+                            />
+                        </div>
+                        <div className="datatables xl:col-span-2">
+                            <DataTable
+                                highlightOnHover
+                                className="whitespace-nowrap table-hover "
+                                records={filterData?.data.data}
+                                columns={[
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProdcutItem, index: number) => <span>{index + 1}</span> },
+                                    {
+                                        accessor: 'barcode',
+                                        title: 'Barcode LQD',
+                                        sortable: true,
+                                        render: (item: ProdcutItem) => <span className="text-ellipsis overflow-hidden">{item.new_barcode_product}</span>,
+                                    },
+                                    {
+                                        accessor: 'nama',
+                                        title: 'Nama Produk',
+                                        sortable: true,
+                                        render: (item: ProdcutItem) => <span className="text-ellipsis overflow-hidden">{item.new_name_product}</span>,
+                                    },
+                                    {
+                                        accessor: 'action',
+                                        title: 'Aksi',
+                                        titleClassName: '!text-center',
+                                        render: (item: ProdcutItem) => (
+                                            <div className="flex items-center space-x-2">
+                                                <button type="button" className="btn btn-outline-danger uppercase" onClick={() => handleDeleteFilter(item.id)}>
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        ),
+                                    },
+                                ]}
+                                totalRecords={filterLists.data?.data.resource.data.total ?? 0}
+                                recordsPerPage={filterLists.data?.data.resource.data.per_page ?? 10}
+                                page={pageRightTable}
+                                onPageChange={(prevPage) => setPageRightTable(prevPage)}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

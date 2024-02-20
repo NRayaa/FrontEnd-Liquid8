@@ -1,8 +1,9 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useGetListBuyerQuery, useUpdatedBuyerMutation } from '../../../store/services/buyerApi';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const DetailBuyer = () => {
     const { state } = useLocation();
@@ -32,10 +33,9 @@ const DetailBuyer = () => {
                 phone_buyer: input.phone_buyer,
                 address_buyer: input.address_buyer,
             };
-            await updateBuyer({id, body});
+            await updateBuyer({ id, body });
         } catch (err) {}
     };
-
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -51,7 +51,15 @@ const DetailBuyer = () => {
             <BreadCrumbs base="Buyer" basePath="/buyer/buyer/list_buyer" sub="List Buyer" subPath="/buyer/buyer/list_buyer" current="Add Akun" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Detail Buyer</h5>
+                <div className="flex items-center justify-between mb-4">
+                    <h5 className="font-semibold text-lg dark:text-white-light mb-5">Detail Buyer</h5>
+                    <Link to="/buyer/buyer/list_buyer">
+                        <button type="button" className=" px-2 btn btn-outline-danger">
+                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                        </button>
+                    </Link>
+                </div>
+
                 <form className="w-[400px]" onSubmit={handleUpdateBuyer}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">

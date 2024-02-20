@@ -2,9 +2,10 @@ import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import BarcodeData from './BarcodeData';
 import { useDetailProductNewQuery, useEditDetailProductMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import NewBarcodeData from './NewBarcodeData';
 import toast from 'react-hot-toast';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const DetailProduct = () => {
     const { id } = useParams();
@@ -94,7 +95,15 @@ const DetailProduct = () => {
         <>
             <BreadCrumbs base="Storage" basePath="storage/product" sub="Produk" subPath="/storage/product" current="Detail Produk" />
             <div className="mt-10 p-6 panel">
-                <h1 className="text-xl font-bold mb-6">Detail Product</h1>
+                <div className="flex items-center justify-between mb-6">
+                    <h1 className="text-xl font-bold">Detail Product</h1>
+                    <Link to="/storage/product">
+                        <button type="button" className=" px-2 btn btn-outline-danger">
+                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                        </button>
+                    </Link>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
                     <NewBarcodeData
                         header="New Data"
@@ -113,7 +122,7 @@ const DetailProduct = () => {
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary mt-6 px-16 uppercase" onClick={hanldeEditProduct}>
+                <button type="submit" className="btn btn-primary px-16 uppercase mt-6" onClick={hanldeEditProduct}>
                     Edit Product
                 </button>
             </div>

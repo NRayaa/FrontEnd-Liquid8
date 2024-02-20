@@ -65,6 +65,16 @@ const Notification = () => {
                             <div className="flex items-center justify-between w-full mt-4">
                                 <div className="flex items-center space-x-3">
                                     <button
+                                        onClick={() => {
+                                            refetch();
+                                            setQuery('all');
+                                        }}
+                                        type="button"
+                                        className="ltr:ml-auto rtl:mr-auto text-success border px-2 py-2 text-xs border-success rounded-lg bg-opacity-0 bg-success hover:bg-opacity-10"
+                                    >
+                                        Refresh
+                                    </button>
+                                    <button
                                         onClick={() => setQuery('pending')}
                                         type="button"
                                         className="ltr:ml-auto rtl:mr-auto text-warning border px-2 py-2 text-xs border-warning rounded-lg bg-opacity-0 bg-warning hover:bg-opacity-10"

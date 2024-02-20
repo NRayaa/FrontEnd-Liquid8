@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useDetailBundleProductQuery } from '../../../../store/services/bundleProductApi';
 import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -130,13 +131,15 @@ const DetailPalletProduct = () => {
                         />
                     </div>
                 </form>
-                {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="panel">
+                    <div className="flex items-center justify-between mb-4">
+                        <Link to="/storage/pallet">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
                     </div>
-                </div> */}
-                <div>
-                    <div className="datatables panel xl:col-span-3">
+                    <div className="datatables xl:col-span-3">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
