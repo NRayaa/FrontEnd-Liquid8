@@ -4,28 +4,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useGetDisplayExpiredQuery, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah, generateRandomString } from '../../../../helper/functions';
-import {
-    useCreateBundleMutation,
-    useDeleteFilterProductBundlesMutation,
-    useFilterProductBundleMutation,
-    useGetBundleProductsQuery,
-    useGetFilterProductBundlesQuery,
-} from '../../../../store/services/bundleProductApi';
 import toast from 'react-hot-toast';
+import {
+    useCreateRepairMovingProductsMutation,
+    useDeleteFilterRepairMovingProductsMutation,
+    useFilterRepairMovingProductsMutation,
+    useGetFilterRepairMovingProductsQuery,
+    useGetRepairMovingProductsQuery,
+} from '../../../../store/services/repairMovingApi';
 
 const CreateRepair = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
     const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
-    const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
-    const [filterProductBundle, results] = useFilterProductBundleMutation();
-    const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
-    const [createBundle, resultsCreateBundle] = useCreateBundleMutation();
+    const filterRepair = useGetFilterRepairMovingProductsQuery(rightTablePage);
+    const [filterProductRepair, results] = useFilterRepairMovingProductsMutation();
+    const [deleteFilterProductRepair, resultsDeleteRepair] = useDeleteFilterRepairMovingProductsMutation();
+    const [createRepair, resultsCreateRepair] = useCreateRepairMovingProductsMutation();
     const navigate = useNavigate();
-    const bundleLists = useGetBundleProductsQuery({ page: 1, q: '' });
+    const repairLists = useGetRepairMovingProductsQuery(undefined);
 
-    const [nameBundle, setNameBundle] = useState<string>('');
+    const [nameRepair, setNameRepair] = useState<string>('');
     const [totalPrice, setTotalPrice] = useState<string>('');
     const [customPrice, setCustomPrice] = useState<string>('');
     const [totalProductBundle, setTotalProductBundle] = useState<string>('');
@@ -36,15 +36,15 @@ const CreateRepair = () => {
         }
     }, [data]);
 
-    const filterBundlesProducts = useMemo(() => {
-        if (filterBundles.isSuccess) {
-            return filterBundles.data.data.resource.data.data;
+    const filterRepairProducts = useMemo(() => {
+        if (filterRepair.isSuccess) {
+            return filterRepair.data.data.resource.data.data;
         }
-    }, [filterBundles.data, data]);
+    }, [filterRepair.data, data]);
 
-    const handleAddFilterBundle = async (id: number) => {
+    const handleAddFilterRepair = async (id: number) => {
         try {
-            await filterProductBundle(id);
+            await filterProductRepair(id);
         } catch (err) {
             console.log(err);
         }
@@ -52,29 +52,29 @@ const CreateRepair = () => {
 
     const handleDeleteProductBundle = async (id: number) => {
         try {
-            await deleteFilterProductBundles(id);
+            await deleteFilterProductRepair(id);
         } catch (err) {
             console.log(err);
         }
     };
 
     const handleAddLeftTable = (item: ProductExpiredItem) => {
-        handleAddFilterBundle(item.id);
+        handleAddFilterRepair(item.id);
         setTotalProductBundle(item.new_quantity_product ?? '');
     };
 
-    const handleCreateBundle = async (e: { preventDefault: () => void }) => {
+    const handleCreateRepair = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
             const body = {
-                name_bundle: nameBundle,
-                total_price_bundle: Number(totalPrice),
-                total_price_custom_bundle: Number(customPrice),
-                total_product_bundle: filterBundlesProducts?.length,
-                barcode_bundle: generateRandomString(10),
+                repair_name: nameRepair,
+                total_price: Number(totalPrice),
+                total_custom_price: Number(customPrice),
+                total_products: filterRepairProducts?.length,
+                barcode: generateRandomString(10),
             };
 
-            await createBundle(body);
+            await createRepair(body);
         } catch (err) {
             console.log(err);
         }
@@ -84,39 +84,39 @@ const CreateRepair = () => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
             refetch();
-            filterBundles.refetch();
+            filterRepair.refetch();
         } else if (results.isError) {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
-    }, [results, filterBundles.isSuccess]);
+    }, [results, filterRepair.isSuccess]);
 
     useEffect(() => {
-        if (resultsDeleteBundle.isSuccess) {
-            toast.success(resultsDeleteBundle?.data.data.message);
+        if (resultsDeleteRepair.isSuccess) {
+            toast.success(resultsDeleteRepair?.data.data.message);
             refetch();
-            filterBundles.refetch();
-        } else if (resultsDeleteBundle.isError) {
-            toast.error(resultsDeleteBundle?.data?.data?.message ?? 'Error');
+            filterRepair.refetch();
+        } else if (resultsDeleteRepair.isError) {
+            toast.error(resultsDeleteRepair?.data?.data?.message ?? 'Error');
         }
-    }, [resultsDeleteBundle]);
+    }, [resultsDeleteRepair]);
 
     useEffect(() => {
-        if (resultsCreateBundle.isSuccess) {
-            toast.success(resultsCreateBundle?.data.data.message);
-            bundleLists?.refetch();
+        if (resultsCreateRepair.isSuccess) {
+            toast.success(resultsCreateRepair?.data.data.message);
+            repairLists?.refetch();
             navigate('/storage/moving_product/repair');
-        } else if (resultsCreateBundle.isError) {
-            toast.error(resultsCreateBundle?.data?.data?.message ?? 'Error');
+        } else if (resultsCreateRepair.isError) {
+            toast.error(resultsCreateRepair?.data?.data?.message ?? 'Error');
         }
-    }, [resultsCreateBundle]);
+    }, [resultsCreateRepair]);
 
     useEffect(() => {
-        const totalAmount = filterBundles?.data?.data.resource.data.data.reduce((accumulator: any, currentItem: any) => {
+        const totalAmount = filterRepair?.data?.data.resource.data.data.reduce((accumulator: any, currentItem: any) => {
             return accumulator + parseFloat(currentItem.new_price_product);
         }, 0);
         setTotalPrice(JSON.stringify(totalAmount));
         setCustomPrice(JSON.stringify(totalAmount));
-    }, [filterBundlesProducts]);
+    }, [filterRepairProducts]);
 
     return (
         <div>
@@ -139,7 +139,7 @@ const CreateRepair = () => {
                 <h1 className="text-lg font-semibold py-4">Create Repair</h1>
             </div>
             <div>
-                <form className="w-[400px] mb-4 " onSubmit={handleCreateBundle}>
+                <form className="w-[400px] mb-4 " onSubmit={handleCreateRepair}>
                     <button type="submit" className="btn btn-primary mb-4 px-16">
                         Create Repair
                     </button>
@@ -147,7 +147,7 @@ const CreateRepair = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama Repair :
                         </label>
-                        <input id="categoryName" type="text" className=" form-input w-[250px]" required value={nameBundle} onChange={(e) => setNameBundle(e.target.value)} />
+                        <input id="categoryName" type="text" className=" form-input w-[250px]" required value={nameRepair} onChange={(e) => setNameRepair(e.target.value)} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -175,7 +175,7 @@ const CreateRepair = () => {
                     </div> */}
                 </div>
                 <div>
-                    <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterBundles.data?.data.resource.data.data.length} </span>
+                    <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterRepair.data?.data.resource.data.data.length} </span>
                     <div className="grid grid-cols-5 gap-4">
                         <div className="datatables xl:col-span-3">
                             <DataTable
@@ -222,7 +222,7 @@ const CreateRepair = () => {
                             <DataTable
                                 highlightOnHover
                                 className="whitespace-nowrap table-hover "
-                                records={filterBundlesProducts}
+                                records={filterRepairProducts}
                                 columns={[
                                     { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
                                     { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },

@@ -3,17 +3,15 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import IconPlus from '../../../../components/Icon/IconPlus';
 import { useEffect, useMemo, useState } from 'react';
-import { useDeleteBundleProductMutation, useGetBundleProductsQuery } from '../../../../store/services/bundleProductApi';
-import { BundleItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
-import { useGetRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
+import { RepairItem, useDeleteRepairMovingProductsMutation, useGetRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
 
 const Repair = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const { data, isSuccess, refetch } = useGetRepairMovingProductsQuery(undefined);
-    const [deleteBundleProduct, results] = useDeleteBundleProductMutation();
+    const [deleteRepairProduct, results] = useDeleteRepairMovingProductsMutation();
 
     const dataRepairMovingProduct = useMemo(() => {
         if (isSuccess) {
@@ -44,7 +42,7 @@ const Repair = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteBundleProduct(id);
+                        await deleteRepairProduct(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
@@ -125,22 +123,22 @@ const Repair = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataRepairMovingProduct}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true, render: (item: BundleItem, index: number) => <span>{index + 1}</span> },
-                            { accessor: 'barcode', title: 'Barcode Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.barcode_bundle}</span> },
-                            { accessor: 'firstName', title: 'Nama Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.name_bundle}</span> },
-                            { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: BundleItem) => <span>{item?.total_product_bundle}</span> },
-                            { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: BundleItem) => <span>{formatRupiah(item?.total_price_bundle)}</span> },
+                            { accessor: 'id', title: 'No', sortable: true, render: (item: RepairItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'barcode', title: 'Barcode Bundle', sortable: true, render: (item: RepairItem) => <span>{item.barcode}</span> },
+                            { accessor: 'firstName', title: 'Nama Bundle', sortable: true, render: (item: RepairItem) => <span>{item.repair_name}</span> },
+                            { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: RepairItem) => <span>{item.total_products}</span> },
+                            { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: RepairItem) => <span>{formatRupiah(item.total_price)}</span> },
                             {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (item: BundleItem) => <span className="badge whitespace-nowrap bg-primary">{item.product_bundles[0].new_status_product}</span>,
+                                render: (item: RepairItem) => <span className="badge whitespace-nowrap bg-primary">{item.repair_products[0].new_status_product}</span>,
                             },
                             {
                                 accessor: 'action',
                                 title: 'Opsi',
                                 titleClassName: '!text-center',
-                                render: (item: BundleItem) => (
+                                render: (item: RepairItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <Link to={`/storage/moving_product/detail_repair/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
