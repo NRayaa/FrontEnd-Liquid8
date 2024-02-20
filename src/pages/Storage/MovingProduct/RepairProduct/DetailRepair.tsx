@@ -1,13 +1,12 @@
 import { DataTable } from 'mantine-datatable';
 import { Link, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { useDetailBundleProductQuery } from '../../../../store/services/bundleProductApi';
 import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
+import { useGetShowRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
 
 const DetailRepair = () => {
     const { id }: any = useParams();
-    const { data, isSuccess } = useDetailBundleProductQuery(id);
+    const { data, isSuccess } = useGetShowRepairMovingProductsQuery(id);
 
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
@@ -44,34 +43,26 @@ const DetailRepair = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Barcode Bundle :
                         </label>
-                        <input id="categoryName" disabled type="text" value={detailDataBundle?.barcode_bundle} className=" form-input w-[250px]" required />
+                        <input id="categoryName" disabled type="text" value={detailDataBundle?.barcode} className=" form-input w-[250px]" required />
                     </div>
                     <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
                     <div className="flex items-center justify-between mb-2 mt-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama Bundle :
                         </label>
-                        <input id="categoryName" disabled type="text" value={detailDataBundle?.name_bundle} className=" form-input w-[250px]" required />
+                        <input id="categoryName" disabled type="text" value={detailDataBundle?.repair_name} className=" form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Awal :
                         </label>
-                        <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price_bundle ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
+                        <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Custom Display :
                         </label>
-                        <input
-                            id="categoryName"
-                            disabled
-                            type="text"
-                            value={formatRupiah(detailDataBundle?.total_price_custom_bundle ?? '0')}
-                            placeholder="Rp"
-                            className=" form-input w-[250px]"
-                            required
-                        />
+                        <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price_custom ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
                     </div>
                 </form>
                 {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -87,10 +78,10 @@ const DetailRepair = () => {
                             records={[1]}
                             columns={[
                                 { accessor: 'id', title: 'No', sortable: true, render: () => <span>1</span> },
-                                { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: () => <span>{detailDataBundle?.barcode_bundle}</span> },
-                                { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: () => <span>{detailDataBundle?.name_bundle}</span> },
-                                { accessor: 'QTY', title: 'QTY', sortable: true, render: () => <span>{detailDataBundle?.total_product_bundle}</span> },
-                                { accessor: 'totalMasuk', title: 'Harga', sortable: true, render: () => <span>{formatRupiah(detailDataBundle?.total_price_bundle ?? '0')}</span> },
+                                { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: () => <span>{detailDataBundle?.barcode}</span> },
+                                { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: () => <span>{detailDataBundle?.repair_name}</span> },
+                                { accessor: 'QTY', title: 'QTY', sortable: true, render: () => <span>{detailDataBundle?.total_products}</span> },
+                                { accessor: 'totalMasuk', title: 'Harga', sortable: true, render: () => <span>{formatRupiah(detailDataBundle?.total_price ?? '0')}</span> },
                             ]}
                         />
                     </div>

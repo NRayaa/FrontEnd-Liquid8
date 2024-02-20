@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGetDisplayExpiredQuery, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
+import { useGetDisplayExpiredQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah, generateRandomString } from '../../../../helper/functions';
 import toast from 'react-hot-toast';

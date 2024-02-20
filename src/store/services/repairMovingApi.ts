@@ -59,6 +59,23 @@ interface Links {
     active: boolean;
 }
 
+interface DetailRepairResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            repair_name: string;
+            total_price: string;
+            total_price_custom: string;
+            total_products: string;
+            barcode: string;
+            created_at: string;
+            updated_at: string;
+        };
+    };
+}
+
 export const repairMovingProductsApi = createApi({
     reducerPath: 'repairMovingProductsApi',
     baseQuery: baseQuery,
@@ -94,6 +111,9 @@ export const repairMovingProductsApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        getShowRepairMovingProducts: builder.query<DetailRepairResponse, any>({
+            query: (id) => `/repair-mv/${id}`,
+        }),
     }),
 });
 
@@ -104,4 +124,5 @@ export const {
     useDeleteFilterRepairMovingProductsMutation,
     useCreateRepairMovingProductsMutation,
     useDeleteRepairMovingProductsMutation,
+    useGetShowRepairMovingProductsQuery,
 } = repairMovingProductsApi;
