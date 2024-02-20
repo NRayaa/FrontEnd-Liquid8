@@ -6,33 +6,37 @@ import { useGetNotifByRoleQuery, useLazyGetNotifByRoleQuery, useLazySpvApprovalQ
 import { Spinner } from '../../commons';
 import { countPastTime } from '../../helper/functions';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { GetNotifByRoleItem } from '../../store/services/types';
 
 const NotificationHeader = () => {
     const [getNotifByRole, notifResults] = useLazyGetNotifByRoleQuery();
-    const { refetch } = useGetNotifByRoleQuery(undefined);
+    const { refetch } = useGetNotifByRoleQuery({ page: 1, query: 'all' });
     const [spvApproval, spvResults] = useLazySpvApprovalQuery();
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     const navigate = useNavigate();
 
-    const handleGetNotification = async () => {
-        await getNotifByRole(undefined);
+    const handleNavigateNotif = () => {
+        navigate('/notification');
     };
 
-    const filterNewNotifLength = useMemo(() => {
-        const filtered = notifResults.data?.data.resource.filter((item: { status: string }) => {
-            return item.status === 'pending';
-        });
-        return filtered;
-    }, [notifResults]);
+    const handleGetNotification = async () => {
+        try {
+            await getNotifByRole({ page: 1, query: 'all' });
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const handleApprove = async (id: number) => {
         await spvApproval(id);
     };
 
-    const handlePageNotif = () => {
-        navigate('/notification');
-    }
+    const notifDataResults = useMemo(() => {
+        if (notifResults.isSuccess && notifResults.data.data.status) {
+            return notifResults.data.data.resource;
+        }
+    }, [notifResults]);
 
     useEffect(() => {
         if (spvResults.isSuccess && spvResults.data.data.status) {
@@ -66,10 +70,12 @@ const NotificationHeader = () => {
                 }
             >
                 <ul className="!py-0 text-dark dark:text-white-dark w-[300px] sm:w-[350px] divide-y dark:divide-white/10">
-                    <li onClick={(e) => e.stopPropagation()}>
+                    <li>
                         <div className="flex items-center px-4 py-2 justify-between font-semibold">
                             <h4 className="text-lg">Notifikasi</h4>
-                            <span className="badge bg-primary/80" onClick={handlePageNotif}>{filterNewNotifLength?.length !== 0} Open</span>
+                            <button onClick={handleNavigateNotif} className="badge bg-primary/80">
+                                Open
+                            </button>
                         </div>
                     </li>
                     <li className="dark:text-white-light/90 min-h-[200px]" onClick={(e) => e.stopPropagation()}>
@@ -79,24 +85,25 @@ const NotificationHeader = () => {
                                 <p className="mt-2 font-medium">Loading..</p>
                             </div>
                         )}
-                        {notifResults.isSuccess &&
-                            notifResults.data.data.resource.map((item) => (
-                                <div className="group flex items-center px-4 py-2" key={item.id}>
-                                    <div className="ltr:pl-3 rtl:pr-3 flex flex-auto">
-                                        <div className="ltr:pr-3 rtl:pl-3">
-                                            <h6>{item.notification_name}</h6>
-                                            <span className="text-xs block font-normal dark:text-gray-500">{countPastTime(item.created_at)}</span>
-                                        </div>
-                                        {item.status === 'pending' && (
-                                            <button type="button" className="ltr:ml-auto rtl:mr-auto text-neutral-300 hover:text-success opacity-100" onClick={() => handleApprove(item.id)}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                </svg>
-                                            </button>
-                                        )}
+                        {notifDataResults?.data?.map((item: GetNotifByRoleItem) => (
+                            <div className="group flex items-center px-4 py-2" key={item.id}>
+                                <div className="ltr:pl-3 rtl:pr-3 flex flex-auto">
+                                    <div className="ltr:pr-3 rtl:pl-3">
+                                        <h6>{item.notification_name}</h6>
+                                        <span className="text-xs block font-normal dark:text-gray-500">{countPastTime(item.created_at)}</span>
                                     </div>
+                                    {item.status === 'pending' && (
+                                        <button
+                                            type="button"
+                                            className="ltr:ml-auto rtl:mr-auto text-neutral-300 hover:text-success opacity-100 border px-2 text-xs hover:border-success rounded-lg"
+                                            onClick={() => handleApprove(item.id)}
+                                        >
+                                            Approve
+                                        </button>
+                                    )}
                                 </div>
-                            ))}
+                            </div>
+                        ))}
                     </li>
                 </ul>
             </Dropdown>

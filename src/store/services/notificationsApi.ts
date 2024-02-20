@@ -6,8 +6,8 @@ export const notificationsApi = createApi({
     reducerPath: 'notificationsApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        getNotifByRole: builder.query<GetNotifByRole, undefined>({
-            query: () => '/notificationByRole',
+        getNotifByRole: builder.query<GetNotifByRole, { page: number; query: string }>({
+            query: ({ page, query }) => `/notificationByRole?page=${page}&q=${query === 'all' ? '' : query}`,
         }),
         spvApproval: builder.query<SpvAprroval, number>({
             query: (id) => `/spv/approve/${id}`,
