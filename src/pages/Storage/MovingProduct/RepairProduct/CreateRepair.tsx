@@ -12,6 +12,7 @@ import {
     useGetFilterRepairMovingProductsQuery,
     useGetRepairMovingProductsQuery,
 } from '../../../../store/services/repairMovingApi';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const CreateRepair = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
@@ -174,8 +175,16 @@ const CreateRepair = () => {
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div> */}
                 </div>
-                <div>
-                    <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterRepair.data?.data.resource.data.data.length} </span>
+                <div className="panel">
+                    <div className="flex items-center justify-between mb-4">
+                        <Link to="/storage/moving_product/repair">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterRepair.data?.data.resource.data.data.length} </span>
+                    </div>
+
                     <div className="grid grid-cols-5 gap-4">
                         <div className="datatables xl:col-span-3">
                             <DataTable

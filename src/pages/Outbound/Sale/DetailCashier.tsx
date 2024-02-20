@@ -8,6 +8,7 @@ import { useGetShowSaleQuery } from '../../../store/services/saleApi';
 import { GetShowSaleDocumentItem } from '../../../store/services/types';
 import IconArchive from '../../../components/Icon/IconArchive';
 import { formatRupiah } from '../../../helper/functions';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const DetailCashier = () => {
     const dispatch = useDispatch();
@@ -66,8 +67,15 @@ const DetailCashier = () => {
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div className="datatables panel xl:col-span-3">
+                <div className="mt-8 panel">
+                    <div className="flex items-center justify-between mb-4">
+                        <Link to="/outbound/sale/list_kasir">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                    </div>
+                    <div className="datatables xl:col-span-3">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "

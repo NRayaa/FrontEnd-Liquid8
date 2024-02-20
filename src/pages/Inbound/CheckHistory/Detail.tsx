@@ -1,10 +1,11 @@
 import TableHistoryCheckItem from './TableHistoryCheckItem';
 import PieChartItem from './PieChartItem';
 import TablePercentageItem from './TablePercentageItem';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useGetDetailRiwayatCheckQuery, useExportToExcelMutation } from '../../../store/services/riwayatApi';
 import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const DetailCheckHistory = () => {
     const { id } = useParams();
@@ -46,10 +47,17 @@ const DetailCheckHistory = () => {
                 </div>
                 <PieChartItem detailCheckData={detailCheckData} />
             </div>
-            <div className="lg:panel w-full">
-                <button type="button" className="btn btn-lg lg:btn btn-primary uppercase mb-4 ms-auto w-full md:w-auto lg:w-auto" onClick={handleExportData}>
-                    Export data
-                </button>
+            <div className="lg:panel w-full bg-[blue]">
+                <div className="flex items-center justify-between mb-4">
+                    <Link to="/inbound/check_history">
+                        <button type="button" className=" px-2 btn btn-outline-danger">
+                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                        </button>
+                    </Link>
+                    <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
+                        Export data
+                    </button>
+                </div>
                 <TablePercentageItem detailCheckData={detailCheckData} />
             </div>
         </div>

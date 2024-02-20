@@ -1,9 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDetailProductNewQuery } from '../../../../store/services/productNewApi';
 import { formatRupiah } from '../../../../helper/functions';
 import { useCreatePromoMutation, useGetPromotListsQuery } from '../../../../store/services/promoApi';
 import toast from 'react-hot-toast';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const EditExpiredToPromo = () => {
     const params = useParams();
@@ -59,7 +60,15 @@ const EditExpiredToPromo = () => {
 
     return (
         <div className="panel mt-6 dark:text-white-light mb-5">
-            <h1 className="text-lg font-bold flex justify-start py-4">Edit Product Expired</h1>
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-lg font-bold flex justify-start py-4">Edit Product Expired</h1>
+                <Link to="/storage/expired_product/promo_product">
+                    <button type="button" className=" px-2 btn btn-outline-danger">
+                        <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                    </button>
+                </Link>
+            </div>
+
             <div className="w-[400px] mb-4">
                 <div className="flex items-center justify-between mb-4.5">
                     <label htmlFor="barcode" className="text-[15px] font-semibold whitespace-nowrap">
