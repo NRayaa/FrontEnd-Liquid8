@@ -7,14 +7,15 @@ import { useDeleteBundleProductMutation, useGetBundleProductsQuery } from '../..
 import { BundleItem } from '../../../../store/services/types';
 import { formatRupiah } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
+import { useGetRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
 
 const Repair = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetBundleProductsQuery({ page, q: search });
+    const { data, isSuccess, refetch } = useGetRepairMovingProductsQuery(undefined);
     const [deleteBundleProduct, results] = useDeleteBundleProductMutation();
 
-    const dataBundleProduct = useMemo(() => {
+    const dataRepairMovingProduct = useMemo(() => {
         if (isSuccess) {
             return data.data.resource.data;
         }
@@ -122,7 +123,7 @@ const Repair = () => {
                     <DataTable
                         highlightOnHover
                         className="whitespace-nowrap table-hover "
-                        records={dataBundleProduct}
+                        records={dataRepairMovingProduct}
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: BundleItem, index: number) => <span>{index + 1}</span> },
                             { accessor: 'barcode', title: 'Barcode Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.barcode_bundle}</span> },
