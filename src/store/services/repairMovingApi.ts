@@ -1,80 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from './prepareHeader';
-
-export interface RepairItem {
-    id: number;
-    repair_name: string;
-    total_price: string;
-    total_price_custom: string;
-    total_products: string;
-    barcode: string;
-    created_at: string;
-    updated_at: string;
-    repair_products: RepairSubItem[];
-}
-
-export interface RepairSubItem {
-    id: number;
-    repair_id: string;
-    code_document: string;
-    old_barcode_product: string;
-    new_barcode_product: string;
-    new_name_product: string;
-    new_quantity_product: string;
-    new_price_product: string;
-    new_date_in_product: string;
-    new_status_product: string;
-    new_quality: string;
-    new_category_product: null | string;
-    new_tag_product: null | string;
-    created_at: null | string;
-    updated_at: null | string;
-}
-
-export interface RepairResponse {
-    data: {
-        status: boolean;
-        message: string;
-        resource: {
-            current_page: number;
-            data: RepairItem[];
-            first_page_url: string;
-            from: number;
-            last_page: number;
-            last_page_url: string;
-            links: Links[];
-            next_page_url: null | string;
-            path: string;
-            per_page: number;
-            prev_page_url: null | string;
-            to: number;
-            total: number;
-        };
-    };
-}
-
-interface Links {
-    url: string | null;
-    label: string;
-    active: boolean;
-}
-
-interface DetailRepairResponse {
-    data: {
-        status: boolean;
-        message: string;
-        resource: {
-            id: number;
-            repair_name: string;
-            total_price: string;
-            total_price_custom: string;
-            total_products: string;
-            barcode: string;
-            created_at: string;
-            updated_at: string;
-        };
-    };
-}
+import { DetailRepairResponse, RepairResponse } from './types';
 
 export const repairMovingProductsApi = createApi({
     reducerPath: 'repairMovingProductsApi',
@@ -105,12 +31,6 @@ export const repairMovingProductsApi = createApi({
                 body,
             }),
         }),
-        deleteRepairMovingProducts: builder.mutation({
-            query: (id) => ({
-                url: `/repair-mv/${id}`,
-                method: 'DELETE',
-            }),
-        }),
         getShowRepairMovingProducts: builder.query<DetailRepairResponse, any>({
             query: (id) => `/repair-mv/${id}`,
         }),
@@ -123,6 +43,5 @@ export const {
     useFilterRepairMovingProductsMutation,
     useDeleteFilterRepairMovingProductsMutation,
     useCreateRepairMovingProductsMutation,
-    useDeleteRepairMovingProductsMutation,
     useGetShowRepairMovingProductsQuery,
 } = repairMovingProductsApi;

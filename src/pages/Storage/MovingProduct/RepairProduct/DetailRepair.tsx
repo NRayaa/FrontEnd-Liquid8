@@ -28,7 +28,7 @@ const DetailRepair = () => {
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Detail Rapair</span>
+                    <span>Detail Repair</span>
                 </li>
             </ul>
             <div>
@@ -36,9 +36,6 @@ const DetailRepair = () => {
             </div>
             <div>
                 <form className="w-[400px] mb-4 ">
-                    {/* <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
-                    </button> */}
                     <div className="flex items-center justify-between ">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Barcode Bundle :
@@ -65,23 +62,18 @@ const DetailRepair = () => {
                         <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price_custom ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
                     </div>
                 </form>
-                {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
-                </div> */}
                 <div>
                     <div className="datatables panel xl:col-span-3">
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
-                            records={[1]}
+                            records={detailDataBundle?.repair_products}
                             columns={[
-                                { accessor: 'id', title: 'No', sortable: true, render: () => <span>1</span> },
-                                { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: () => <span>{detailDataBundle?.barcode}</span> },
-                                { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: () => <span>{detailDataBundle?.repair_name}</span> },
-                                { accessor: 'QTY', title: 'QTY', sortable: true, render: () => <span>{detailDataBundle?.total_products}</span> },
-                                { accessor: 'totalMasuk', title: 'Harga', sortable: true, render: () => <span>{formatRupiah(detailDataBundle?.total_price ?? '0')}</span> },
+                                { accessor: 'id', title: 'No', sortable: true, render: (item, index: number) => <span>{index + 1}</span> },
+                                { accessor: 'new_barcode_product', title: 'Barcode LQD', sortable: true },
+                                { accessor: 'new_name_product', title: 'Nama Produk', sortable: true },
+                                { accessor: 'new_quantity_product', title: 'QTY', sortable: true },
+                                { accessor: 'new_price_product', title: 'Harga', sortable: true },
                             ]}
                         />
                     </div>

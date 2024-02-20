@@ -1209,6 +1209,81 @@ interface SpvAprroval {
     };
 }
 
+interface RepairItem {
+    id: number;
+    repair_name: string;
+    total_price: string;
+    total_price_custom: string;
+    total_products: string;
+    barcode: string;
+    created_at: string;
+    updated_at: string;
+    repair_products: RepairSubItem[];
+}
+
+interface RepairSubItem {
+    id: number;
+    repair_id: string;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: null | string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
+
+interface RepairResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: RepairItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface DetailRepairResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            repair_name: string;
+            total_price: string;
+            total_price_custom: string;
+            total_products: string;
+            barcode: string;
+            created_at: string;
+            updated_at: string;
+            repair_products: {
+                new_barcode_product: string;
+                new_name_product: string;
+                new_quantity_product: number;
+                new_price_product: number;
+            }[];
+        };
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -1290,4 +1365,6 @@ export type {
     GetNotifByRole,
     SpvAprroval,
     GetNotifByRoleItem,
+    RepairResponse,
+    DetailRepairResponse,
 };
