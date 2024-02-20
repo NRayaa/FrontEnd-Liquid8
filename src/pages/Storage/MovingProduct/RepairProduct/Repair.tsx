@@ -1,90 +1,21 @@
 import { DataTable } from 'mantine-datatable';
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import IconPlus from '../../../../components/Icon/IconPlus';
 import { useEffect, useMemo, useState } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
-import { RepairItem, useDeleteRepairMovingProductsMutation, useGetRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
+import { useGetRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
 
 const Repair = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetRepairMovingProductsQuery(undefined);
-    const [deleteRepairProduct, results] = useDeleteRepairMovingProductsMutation();
+    const { data, isSuccess } = useGetRepairMovingProductsQuery(undefined);
 
     const dataRepairMovingProduct = useMemo(() => {
         if (isSuccess) {
             return data.data.resource.data;
         }
     }, [data]);
-
-    const showAlert = async ({ type, id }: { type: number; id: number | undefined }) => {
-        if (type === 11) {
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-secondary',
-                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                    popup: 'sweet-alerts',
-                },
-                buttonsStyling: false,
-            });
-            swalWithBootstrapButtons
-                .fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'No, cancel!',
-                    reverseButtons: true,
-                    padding: '2em',
-                })
-                .then(async (result) => {
-                    if (result.value) {
-                        await deleteRepairProduct(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                    }
-                });
-        }
-        if (type === 15) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Berhasil Dikirim',
-                padding: '10px 20px',
-            });
-        }
-        if (type == 20) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Data Berhasil Ditambah',
-                padding: '10px 20px',
-            });
-        }
-    };
-
-    useEffect(() => {
-        if (results.isSuccess) {
-            toast.success(results.data.data.message);
-            refetch();
-        } else if (results.isError) {
-            toast.error(results?.data?.data?.message ?? 'Error');
-        }
-    }, [results]);
 
     return (
         <div>
@@ -123,31 +54,28 @@ const Repair = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataRepairMovingProduct}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true, render: (item: RepairItem, index: number) => <span>{index + 1}</span> },
-                            { accessor: 'barcode', title: 'Barcode Repair', sortable: true, render: (item: RepairItem) => <span>{item.barcode}</span> },
-                            { accessor: 'firstName', title: 'Nama Repair', sortable: true, render: (item: RepairItem) => <span>{item.repair_name}</span> },
-                            { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: RepairItem) => <span>{item.total_products}</span> },
-                            { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: RepairItem) => <span>{formatRupiah(item.total_price)}</span> },
+                            { accessor: 'id', title: 'No', sortable: true, render: (item, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'barcode', title: 'Barcode Repair', sortable: true, render: (item) => <span>{item.barcode}</span> },
+                            { accessor: 'firstName', title: 'Nama Repair', sortable: true, render: (item) => <span>{item.repair_name}</span> },
+                            { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item) => <span>{item.total_products}</span> },
+                            { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item) => <span>{formatRupiah(item.total_price)}</span> },
                             {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (item: RepairItem) => <span className="badge whitespace-nowrap bg-primary">{item.repair_products[0].new_status_product}</span>,
+                                render: (item) => <span className="badge whitespace-nowrap bg-primary">{item.repair_products[0].new_status_product}</span>,
                             },
                             {
                                 accessor: 'action',
                                 title: 'Opsi',
                                 titleClassName: '!text-center',
-                                render: (item: RepairItem) => (
+                                render: (item) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <Link to={`/storage/moving_product/detail_repair/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
                                                 DETAIL
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                            UNREPAIR
-                                        </button>
                                     </div>
                                 ),
                             },
