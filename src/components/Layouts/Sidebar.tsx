@@ -295,9 +295,6 @@ const Sidebar = () => {
                                         <li>
                                             <NavLink to="/storage/moving_product/repair">{'Repair'}</NavLink>
                                         </li>
-                                        <li>
-                                            <NavLink to="/storage/moving_product/pallet">{'Pallet'}</NavLink>
-                                        </li>
                                     </ul>
                                 </AnimateHeight>
                             </li>
@@ -334,9 +331,6 @@ const Sidebar = () => {
                                     <ul className="sub-menu text-gray-500">
                                         <li>
                                             <NavLink to="/storage/expired_product/list_product">{'List Product'}</NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/storage/expired_product/bundle_product">{'Bundle Product'}</NavLink>
                                         </li>
                                         <li>
                                             <NavLink to="/storage/expired_product/promo_product">{'Promo Product'}</NavLink>
