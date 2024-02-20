@@ -33,7 +33,7 @@ const ListProductRepair = () => {
     }, [listProductData]);
 
     const dataCategories = useMemo(() => {
-        return categoriesData?.data?.resource;
+        return categoriesData?.data.resource;
     }, [categoriesData]);
 
     const [input, setInput] = useState({

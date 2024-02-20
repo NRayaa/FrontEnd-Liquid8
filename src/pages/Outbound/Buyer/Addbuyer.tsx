@@ -47,7 +47,7 @@ const AddBuyer = () => {
             <BreadCrumbs base="Buyer" basePath="/buyer/buyer/list_buyer" sub="List Buyer" subPath="/buyer/buyer/list_buyer" current="Add Buyer" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Add Akun</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Add Buyer</h5>
                 <form className="w-[400px]" onSubmit={handleCreateBuyer}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
