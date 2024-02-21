@@ -49,7 +49,7 @@ const AddBuyer = () => {
 
             <div className="panel mt-10 w-full min-h-[400px]">
                 <div className="flex items-center justify-between mb-4">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Add Akun</h5>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Add Buyer</h5>
                     <Link to="/buyer/buyer/list_buyer">
                         <button type="button" className=" px-2 btn btn-outline-danger">
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
