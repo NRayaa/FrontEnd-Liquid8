@@ -137,7 +137,7 @@ const Notification = () => {
                                                     <span className="text-xs block font-normal dark:text-gray-500">{countPastTime(item.created_at)}</span>
                                                 </div>
                                             </td>
-                                            {item.status === 'pending' && item.role_name === 'Spv' && (
+                                            {item.status === 'pending' && item.role_id === 2 && (
                                                 <td className="whitespace-nowrap font-medium ltr:text-right rtl:text-left">
                                                     <button
                                                         onClick={() => handleApprove(item.id)}
