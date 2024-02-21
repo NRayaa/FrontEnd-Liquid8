@@ -92,7 +92,7 @@ const NotificationHeader = () => {
                                         <h6>{item.notification_name}</h6>
                                         <span className="text-xs block font-normal dark:text-gray-500">{countPastTime(item.created_at)}</span>
                                     </div>
-                                    {item.status === 'pending' && (
+                                    {item.status === 'pending' && item.role_name === 'Spv' && (
                                         <button
                                             type="button"
                                             className="ltr:ml-auto rtl:mr-auto text-neutral-300 hover:text-success opacity-100 border px-2 text-xs hover:border-success rounded-lg"
