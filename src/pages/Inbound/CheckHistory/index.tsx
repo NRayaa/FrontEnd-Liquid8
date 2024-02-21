@@ -111,7 +111,7 @@ const CheckHistory = () => {
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.code_document}</span>,
                     },
                     {
-                        accessor: 'date_document',
+                        accessor: 'tanggal',
                         title: 'Tanggal',
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{formatDate(item.created_at)}</span>,
                     },
@@ -121,7 +121,7 @@ const CheckHistory = () => {
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.total_data}</span>,
                     },
                     {
-                        accessor: 'total_data',
+                        accessor: 'total masuk',
                         title: 'Total Masuk',
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.total_data_in}</span>,
                     },

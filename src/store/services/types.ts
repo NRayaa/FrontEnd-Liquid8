@@ -1179,6 +1179,8 @@ interface GetNotifByRoleItem {
     read_at: string;
     created_at: string;
     updated_at: string;
+    role_name: 'Spv' | 'Crew' | 'Reparasi';
+    role_id: number;
 }
 interface GetNotifByRole {
     data: {
