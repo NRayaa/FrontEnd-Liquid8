@@ -91,7 +91,6 @@ const ListProductRepair = () => {
             };
             await updateProductRepair({ id, body });
             setRepair(false);
-            toast.success("Success repair product")
             refetch();
         } catch (err) {
             console.error(err);
@@ -106,7 +105,6 @@ const ListProductRepair = () => {
     const handleThrowsConfirmation = async (id: number) => {
         try {
             await updateThrows(id);
-            toast.success("Success throws product")
             refetch();
         } catch (err) {
             console.error('Error updating throws:', err);
@@ -132,10 +130,18 @@ const ListProductRepair = () => {
     }, [selectedCategory, productData]);
 
     useEffect(() => {
-        if (results) {
+        if (results.isSuccess) {
+            toast.success(results?.data?.data?.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message);
+        }if (result.isSuccess) {
+            toast.success(result?.data?.data?.message);
+            refetch();
+        } else if (result.isError) {
+            toast.error(result?.data?.data?.message);
         }
-    }, [results]);
+    }, [results, result]);
 
     return (
         <div>
@@ -266,16 +272,16 @@ const ListProductRepair = () => {
                                                             />
                                                         </div>
                                                         {/* <div> */}
-                                                            {/* <label htmlFor="discount">Discount (%)</label> */}
-                                                            <input
-                                                                id="discount"
-                                                                type="hidden"
-                                                                placeholder="Enter Discount"
-                                                                className="form-input"
-                                                                name="discount"
-                                                                value={calculateDiscount()}
-                                                                onChange={handleInputChange}
-                                                            />
+                                                        {/* <label htmlFor="discount">Discount (%)</label> */}
+                                                        <input
+                                                            id="discount"
+                                                            type="hidden"
+                                                            placeholder="Enter Discount"
+                                                            className="form-input"
+                                                            name="discount"
+                                                            value={calculateDiscount()}
+                                                            onChange={handleInputChange}
+                                                        />
                                                         {/* </div> */}
                                                     </div>
                                                 </div>
