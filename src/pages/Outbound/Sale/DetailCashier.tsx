@@ -9,6 +9,7 @@ import { GetShowSaleDocumentItem } from '../../../store/services/types';
 import IconArchive from '../../../components/Icon/IconArchive';
 import { formatRupiah } from '../../../helper/functions';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import { Alert } from '../../../commons';
 
 const DetailCashier = () => {
     const dispatch = useDispatch();
@@ -16,12 +17,20 @@ const DetailCashier = () => {
         dispatch(setPageTitle('List Data'));
     });
     const { id } = useParams();
-    const { data: ShowSaleData } = useGetShowSaleQuery(id);
+    const { data: ShowSaleData, isError, isLoading } = useGetShowSaleQuery(id);
 
     const ShowSale = useMemo(() => {
         return ShowSaleData?.data.resource;
     }, [ShowSaleData]);
     console.log('SHOW', ShowSale);
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
+    if (isError && !ShowSaleData?.data.status) {
+        return <Alert message={ShowSaleData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
