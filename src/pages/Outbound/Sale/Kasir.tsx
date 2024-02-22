@@ -11,6 +11,7 @@ import IconSearch from '../../../components/Icon/IconSearch';
 import { formatRupiah } from '../../../helper/functions';
 import toast from 'react-hot-toast';
 import { useAddBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
+import { Alert } from '../../../commons';
 
 interface GetTotalSaleItem {
     total_sale: string;
@@ -24,12 +25,12 @@ const Kasir = () => {
     const [page, setPage] = useState<number>(1);
     const [addSale, resultAddSale] = useAddSaleMutation();
     const [addBuyer, resultsAddBuyer] = useAddBuyerMutation();
-    const [saleFinish] = useSaleFinishMutation();
+    const [saleFinish, resultFinish] = useSaleFinishMutation();
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const [addBuyerOpen, setAddBuyerOpen] = useState(false);
-    const { data: listSaleData, refetch } = useGetListSaleQuery({ page, q: search });
+    const { data: listSaleData, isError, isLoading, refetch } = useGetListSaleQuery({ page, q: search });
     const { data: listProduct } = useGetAllProductNewQuery({ page, q: search });
     const { data: listBuyer } = useGetListBuyerQuery({ page, q: search });
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
@@ -95,8 +96,6 @@ const Kasir = () => {
     const handleFinishSale = async () => {
         try {
             await saleFinish(null);
-            toast.success('Success finish sale');
-            navigate('/outbound/sale/list_kasir');
         } catch (err) {
             console.error('Failed to finish sale:', err);
         }
@@ -105,7 +104,6 @@ const Kasir = () => {
     const handleDeleteSale = async (id: number) => {
         try {
             await deleteSale(id);
-            toast.success('Success delete product sale');
             refetch();
         } catch (err) {
             console.log(err);
@@ -182,8 +180,19 @@ const Kasir = () => {
             refetch();
         } else if (resultsDeleteSale.isError) {
             toast.error(resultsDeleteSale.data?.data?.message);
+        } else if (resultFinish.isSuccess) {
+            toast.success('Success finish sale');
+            navigate('/outbound/sale/list_kasir');
         }
-    }, [resultsAddBuyer, resultAddSale, resultsDeleteSale, listSaleData, refetch]);
+    }, [resultsAddBuyer, resultAddSale, resultsDeleteSale, listSaleData, resultFinish, refetch]);
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
+    if (isError && !listSaleData?.data.status) {
+        return <Alert message={listSaleData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>
