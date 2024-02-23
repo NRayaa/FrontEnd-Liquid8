@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useGetListDumpQuery } from '../../../store/services/listDumpApi';
 import { GetListDumpItem } from '../../../store/services/types';
+import { Alert } from '../../../commons';
 
 const ListDump = () => {
     const dispatch = useDispatch();
@@ -13,10 +14,14 @@ const ListDump = () => {
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const { data } = useGetListDumpQuery({ page, q: search });
+    const { data, isError } = useGetListDumpQuery({ page, q: search });
     const dataListDump = useMemo(() => {
         return data?.data?.resource?.data;
     }, [data]);
+
+    if (isError && !data?.data?.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

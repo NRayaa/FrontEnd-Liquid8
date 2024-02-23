@@ -83,6 +83,7 @@ const CategorySetting = () => {
         } else if (results.isError) {
             toast.error(results.data.data.message);
         }
+        refetch();
     }, [results]);
 
     if (isError && !data?.data.status) {

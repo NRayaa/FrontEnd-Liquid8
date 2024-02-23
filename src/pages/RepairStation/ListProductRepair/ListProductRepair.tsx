@@ -11,12 +11,13 @@ import { useGetListProductRepairQuery, useUpdateProductRepairMutation, useUpdate
 import { GetListProductRepairItem, ProdcutItem } from '../../../store/services/types';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const ListProductRepair = () => {
     const dispatch = useDispatch();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data: listProductData, refetch } = useGetListProductRepairQuery({ page, q: search });
+    const { data: listProductData, refetch, isError } = useGetListProductRepairQuery({ page, q: search });
     const { data: categoriesData } = useGetCategoriesQuery(undefined);
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
@@ -135,13 +136,18 @@ const ListProductRepair = () => {
             refetch();
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
-        }if (result.isSuccess) {
+        }
+        if (result.isSuccess) {
             toast.success(result?.data?.data?.message);
             refetch();
         } else if (result.isError) {
             toast.error(result?.data?.data?.message);
         }
     }, [results, result]);
+
+    if (isError && !listProductData?.data?.status) {
+        return <Alert message={listProductData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
