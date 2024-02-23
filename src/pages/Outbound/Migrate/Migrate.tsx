@@ -94,7 +94,7 @@ const Migrate = () => {
                         </div>
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                DESTINY :
+                                DESTINATION :
                             </label>
                             <input
                                 id="categoryName"
