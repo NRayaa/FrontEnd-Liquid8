@@ -3,6 +3,7 @@ import { BreadCrumbs } from '../../../../components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const EditTagWarna = () => {
     const { state } = useLocation();
@@ -50,6 +51,10 @@ const EditTagWarna = () => {
         }
     }, [results]);
 
+    if (results.isError) {
+        return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
+    }
+
     return (
         <>
             <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/storage/product" current="Edit Tag Warna" />
@@ -58,32 +63,32 @@ const EditTagWarna = () => {
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Detail Tag Warna</h5>
                 <form className="w-[400px]" onSubmit={handleEditTagColor}>
                     <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="tagColor" className="text-[15px] font-semibold whitespace-nowrap">
                             Tag Warna :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="hexa_code_color" value={input.hexa_code_color} onChange={handleChangeInput} />
+                        <input id="tagColor" type="color" className="ml-4 h-[35px] w-[35px]" required name="hexa_code_color" value={input.hexa_code_color} onChange={handleChangeInput} />
                     </div>
                     <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="colorName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama Warna :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="name_color" value={input.name_color} onChange={handleChangeInput} />
+                        <input id="colorName" type="text" className="form-input w-[250px]" required name="name_color" value={input.name_color} onChange={handleChangeInput} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="price" className="text-[15px] font-semibold whitespace-nowrap">
                             Range Harga:
                         </label>
                         <div className="flex items-center ms-14">
-                            <input id="categoryName" type="text" className="form-input w-[250px]" required name="min_price_color" value={input.min_price_color} onChange={handleChangeInput} />
+                            <input id="price" type="text" className="form-input w-[250px]" required name="min_price_color" value={input.min_price_color} onChange={handleChangeInput} />
                             <span className="px-6">-</span>
-                            <input id="categoryName" type="text" className="form-input w-[250px]" required name="max_price_color" value={input.max_price_color} onChange={handleChangeInput} />
+                            <input type="text" className="form-input w-[250px]" required name="max_price_color" value={input.max_price_color} onChange={handleChangeInput} />
                         </div>
                     </div>
                     <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="fixedPrice" className="text-[15px] font-semibold whitespace-nowrap">
                             Fixed Price :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="fixed_price_color" value={input.fixed_price_color} onChange={handleChangeInput} />
+                        <input id="fixedPrice" type="text" className="form-input w-[250px]" required name="fixed_price_color" value={input.fixed_price_color} onChange={handleChangeInput} />
                     </div>
                     <span className="text-[10px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
                     <button type="submit" className="btn btn-primary mt-4 px-16">

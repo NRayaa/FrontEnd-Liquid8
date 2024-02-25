@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useGetListMigrateQuery } from '../../../store/services/migrateApi';
 import { GetListMigrateItem } from '../../../store/services/types';
+import { Alert } from '../../../commons';
 
 const ListMigrate = () => {
     const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const ListMigrate = () => {
     });
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState('');
-    const { data: ListMigrateData, refetch } = useGetListMigrateQuery({ page, q: search });
+    const { data: ListMigrateData, refetch, isError } = useGetListMigrateQuery({ page, q: search });
 
     const listMigrate = useMemo(() => {
         return ListMigrateData?.data.resource.data;
@@ -23,6 +24,10 @@ const ListMigrate = () => {
     useEffect(() => {
         refetch();
     }, [listMigrate]);
+
+    if (isError && !ListMigrateData?.data?.status) {
+        return <Alert message={ListMigrateData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Barcode from 'react-barcode';
+import LogoLiquid from '/assets/images/logo-barcode.png';
+import { Spinner } from '../../../commons';
 
 interface BarcodePrint {
     oldPrice: string;
@@ -8,9 +10,8 @@ interface BarcodePrint {
 }
 
 const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode }) => {
-    const handlePrint = () => {
+    const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
-
         if (containerElement) {
             const printWindow: Window | null = window.open('', '_blank');
 
@@ -35,7 +36,7 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode })
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Barcode value={barcode} width={1} height={46} />
-                        <img src="/assets/images/logo-barcode.png" alt="barcode" style={{ marginTop: '-10px' }} width={120} />
+                        <img src={LogoLiquid} alt="barcode" style={{ marginTop: '-10px' }} width={120} />
                     </div>
                     <div>
                         <table style={{ borderSpacing: 0 }}>
@@ -45,7 +46,7 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode })
                             </tr>
                             <tr>
                                 <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>New Price</td>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'underline' }}>: {newPrice}</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {newPrice}</td>
                             </tr>
                         </table>
                     </div>

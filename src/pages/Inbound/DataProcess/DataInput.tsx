@@ -14,6 +14,7 @@ import { useMergedHeaderMutation } from '../../../store/services/inboundDataProc
 import { DataTable } from 'mantine-datatable';
 import { ProductOldsItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -55,6 +56,8 @@ const DataInput = () => {
     const [dataGenerates, setDataGenerates] = useState<GeneratesData | undefined>();
 
     const [page, setPage] = useState<number>(1);
+    const [isRole, setIsRole] = useState<boolean>(true);
+    const [message, setMessage] = useState<string>('');
 
     const [detailProductOld, results] = useLazyDetailProductOldQuery();
 
@@ -77,10 +80,16 @@ const DataInput = () => {
         }
     }, [dataGenerates]);
 
-    const dataHeaders = useMemo(() => {
+    const handleRole = (roleActive: boolean) => {
+        setIsRole(roleActive);
+    };
+    const handleMessage = (message: string) => {
+        setMessage(message);
+    };
+
+    const dataHeaders: any = useMemo(() => {
         if (dataGenerates) {
-            const fileName = dataGenerates?.data?.resource?.file_name;
-            return dataGenerates?.data?.resource?.headers[fileName];
+            return dataGenerates?.data?.resource.headers;
         }
     }, [dataGenerates]);
 
@@ -137,6 +146,10 @@ const DataInput = () => {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
+
+    if (isRole === false || mergeResults.isError || results.isError) {
+        return <Alert message={message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
@@ -216,7 +229,17 @@ const DataInput = () => {
                                     )}
                                 </button>
                             </div>
-                            <p className="mb-5">{activeTab3 === 1 && <HomeItemTab showAlert={showAlert} getGeneratesData={(data) => getGeneratesData(data)} dataGenerates={dataGenerates} />}</p>
+                            <p className="mb-5">
+                                {activeTab3 === 1 && (
+                                    <HomeItemTab
+                                        showAlert={showAlert}
+                                        getGeneratesData={(data) => getGeneratesData(data)}
+                                        dataGenerates={dataGenerates}
+                                        handleRole={handleRole}
+                                        handleMessage={handleMessage}
+                                    />
+                                )}
+                            </p>
                             <p className="mb-5">
                                 {activeTab3 === 2 && (
                                     <div>
@@ -243,7 +266,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setBarcode(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>
@@ -253,7 +276,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setProductName(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>
@@ -263,7 +286,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setProductQty(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>
@@ -273,7 +296,7 @@ const DataInput = () => {
                                                             <div>
                                                                 <select id="gridState" className="form-select text-white-dark" onChange={(e) => setProductPrice(Array(e.target.value))}>
                                                                     <option>Choose...</option>
-                                                                    {dataHeaders?.map((item, index) => {
+                                                                    {dataHeaders?.map((item: string, index: number) => {
                                                                         return <option key={index}>{item}</option>;
                                                                     })}
                                                                 </select>

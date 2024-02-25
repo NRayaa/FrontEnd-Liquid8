@@ -36,7 +36,7 @@ const DetailExpiredProduct = () => {
                 <h1 className="text-lg font-bold flex justify-start py-4">Detail Product </h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <Link to="/storage/expired_product/list_product">
+                        <Link to="/storage/pallet">
                             <button className="btn btn-outline-info">
                                 <IconArrowBackward /> Kembali{' '}
                             </button>

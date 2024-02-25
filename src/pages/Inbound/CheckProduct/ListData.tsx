@@ -8,6 +8,7 @@ import { useDeleteDocumentMutation, useDocumentsCheckProductsQuery } from '../..
 import { CheckProductDocumentItem } from '../../../store/services/types';
 import { formatDate } from '../../../helper/functions';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const ListData = () => {
     const dispatch = useDispatch();
@@ -16,7 +17,7 @@ const ListData = () => {
     });
 
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess, refetch } = useDocumentsCheckProductsQuery(page);
+    const { data, isSuccess, refetch, isError } = useDocumentsCheckProductsQuery(page);
     const [deleteDocument, results] = useDeleteDocumentMutation();
     const [search, setSearch] = useState<string>('');
     const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
@@ -94,6 +95,10 @@ const ListData = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    if (isError && !data?.data?.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

@@ -13,6 +13,7 @@ import { useCheckAllDocumentMutation } from '../../../store/services/riwayatApi'
 import NewBarcodeData from './NewBarcodeData';
 import BarcodePrinted from './BarcodePrinted';
 import { formatRupiah } from '../../../helper/functions';
+import { Alert } from '../../../commons';
 
 const MultiCheck = () => {
     const { state } = useLocation();
@@ -82,16 +83,12 @@ const MultiCheck = () => {
 
     const newPrice = useMemo(() => {
         if (results.isSuccess && results.data.data.status) {
-            if (!Array.isArray(results.data?.data.resource.product)) {
-                return results.data?.data.resource.product.old_price_product;
-            }
+            return results.data?.data.resource.product.old_price_product;
         }
     }, [results]);
     const newBarcode = useMemo(() => {
         if (results.isSuccess && results.data.data.status) {
-            if (!Array.isArray(results.data?.data.resource.product)) {
-                return results.data?.data.resource.new_barcode;
-            }
+            return results.data?.data.resource.new_barcode;
         }
     }, [results]);
 
@@ -140,10 +137,10 @@ const MultiCheck = () => {
             toast.success(results?.data?.data?.message ?? '');
             setIsProductCheck(true);
             hideBarcode();
-            if (Array.isArray(results.data?.data.resource.product)) {
-                setKeterangan('<100K');
-            } else {
+            if (Math.ceil(Number(results.data.data.resource.product.old_price_product)) > 100000) {
                 setKeterangan('>100K');
+            } else {
+                setKeterangan('<100K');
             }
             setInputBarcode('');
         } else if (results.isError) {
@@ -162,6 +159,10 @@ const MultiCheck = () => {
         setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));
         setCodeBarcode(newBarcode);
     }, [oldData?.old_price_product, oldData?.old_barcode_product]);
+
+    if ((results.isError && !results.data?.data.status) || checkResults.isError) {
+        return <Alert message={results.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUpdateAccountMutation } from '../../../store/services/listAkunApi';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import { GetListRoleItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const EditAkun = () => {
     const { state } = useLocation();
@@ -42,24 +43,33 @@ const EditAkun = () => {
                 password: input.password,
                 role_id: input.role_id,
             };
-            await updateAccount({id, body});
-            toast.success('Success update account');
+            await updateAccount({ id, body });
         } catch (err) {}
     };
 
-
     useEffect(() => {
         if (results.isSuccess) {
+            toast.success(results?.data?.data?.message);
             navigate('/akun/akun/list_akun');
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message);
         }
     }, [results]);
 
     return (
         <>
-            <BreadCrumbs base="Akun" basePath="akun/list_akun" sub="List Akun" subPath="akun/list_akun" current="Add Akun" />
+            <BreadCrumbs base="Akun" basePath="/akun/akun/list_akun" sub="List Akun" subPath="/akun/akun/list_akun" current="Add Akun" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Edit Akun</h5>
+                <div className="flex items-center justify-between mb-4">
+                    <h5 className="font-semibold text-lg dark:text-white-light">Edit Akun</h5>
+                    <Link to="/akun/akun/list_akun">
+                        <button type="button" className=" px-2 btn btn-outline-danger">
+                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                        </button>
+                    </Link>
+                </div>
+
                 <form className="w-[400px]" onSubmit={handleUpdateAccount}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">

@@ -6,10 +6,11 @@ import { GetRiwayatcheckItem } from '../../../store/services/types';
 import { formatDate } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const CheckHistory = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, refetch, isSuccess } = useGetRiwayatChecksQuery(page);
+    const { data, refetch, isSuccess, isError } = useGetRiwayatChecksQuery(page);
     const [deleteRiwayatCheck, results] = useDeleteRiwayatCheckMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -89,6 +90,10 @@ const CheckHistory = () => {
         }
     }, [results]);
 
+    if (isError && !data?.data?.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
+
     return (
         <div className="panel mt-6 min-h-[450px]">
             <h5 className="font-semibold text-lg dark:text-white-light mb-5">Riwayat Check</h5>
@@ -106,7 +111,7 @@ const CheckHistory = () => {
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.code_document}</span>,
                     },
                     {
-                        accessor: 'date_document',
+                        accessor: 'tanggal',
                         title: 'Tanggal',
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{formatDate(item.created_at)}</span>,
                     },
@@ -116,7 +121,7 @@ const CheckHistory = () => {
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.total_data}</span>,
                     },
                     {
-                        accessor: 'total_data',
+                        accessor: 'total masuk',
                         title: 'Total Masuk',
                         render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.total_data_in}</span>,
                     },

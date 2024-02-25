@@ -7,9 +7,23 @@ import AddAkun from '../pages/Akun/Akun/AddAkun';
 import EditAkun from '../pages/Akun/Akun/EditAkun';
 import LoginBoxed from '../pages/Authentication/LoginBoxed';
 import DetailCashier from '../pages/Outbound/Sale/DetailCashier';
+import ListBuyer from '../pages/Outbound/Buyer/ListBuyer';
+import AddBuyer from '../pages/Outbound/Buyer/Addbuyer';
+import DetailBuyer from '../pages/Outbound/Buyer/DetailBuyer';
+import Bundle from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
+import DetailBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/DetailBundleProduct';
+import Repair from '../pages/Storage/MovingProduct/RepairProduct/Repair';
+import CreateRepair from '../pages/Storage/MovingProduct/RepairProduct/CreateRepair';
+import DetailRepair from '../pages/Storage/MovingProduct/RepairProduct/DetailRepair';
+import PalletProduct from '../pages/Storage/MovingProduct/PalletProduct/PalletProduct';
+import CreatePalletProduct from '../pages/Storage/MovingProduct/PalletProduct/CreatePalletProduct';
+import DetailPalletProduct from '../pages/Storage/MovingProduct/PalletProduct/DetailPalletProduct';
+import CreateMovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/CreateMovingBundleProduct';
+import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
+import MovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
+import Notification from '../pages/Notification/Notification';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
-const AddDataInput = lazy(() => import('../pages/Inbound/DataProcess/AddDataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
 const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
 const DetailListData = lazy(() => import('../pages/Inbound/CheckProduct/DetailListData'));
@@ -27,7 +41,6 @@ const Pallet = lazy(() => import('../pages/Storage/Pallet'));
 const PalletGenerate = lazy(() => import('../pages/Storage/Pallet/PalletGenerate'));
 const ListProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/ListProduct'));
 const DetailExpiredProduct = lazy(() => import('../pages/Storage/ExpiredProduct/ListProduct/DetailExpiredProduct'));
-const BundleProduct = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct'));
 const CreateBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/CreateBundle'));
 const DetailBundle = lazy(() => import('../pages/Storage/ExpiredProduct/BundleProduct/DetailBundle'));
 const PromoProduct = lazy(() => import('../pages/Storage/ExpiredProduct/PromoProduct/PromoProduct'));
@@ -54,15 +67,16 @@ const routes = [
         element: <Dashboard />,
         layout: 'default',
     },
+     // dashboard
+     {
+        path: '/notification',
+        element: <Notification />,
+        layout: 'default',
+    },
     //Inbound Data Process
     {
         path: '/inbound/data_process/data_input',
         element: <DataInput />,
-        layout: 'default',
-    },
-    {
-        path: '/inbound/data_process/add_data_input',
-        element: <AddDataInput />,
         layout: 'default',
     },
     //List Data
@@ -130,6 +144,52 @@ const routes = [
     {
         path: '/storage/categorysetting/:id',
         element: <EditCategory />,
+        layout: 'default',
+    },
+    // Moving Product Bundle
+    {
+        path: '/storage/moving_product/bundle',
+        element: <MovingBundleProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/create_bundle',
+        element: <CreateMovingBundleProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/detail_bundle/:id',
+        element: <DetailBundleProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/repair',
+        element: <Repair />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/create_repair',
+        element: <CreateRepair />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/detail_repair/:id',
+        element: <DetailRepair />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/pallet',
+        element: <PalletProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/create_pallet',
+        element: <CreatePalletProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/moving_product/detail_pallet/:id',
+        element: <DetailPalletProduct />,
         layout: 'default',
     },
     // Expired Product
@@ -253,9 +313,26 @@ const routes = [
         element: <EditAkun />,
         layout: 'default',
     },
+    // Role
     {
         path: '/akun/role/list_role',
         element: <ListRole />,
+        layout: 'default',
+    },
+    // Buyer
+    {
+        path: '/buyer/buyer/list_buyer',
+        element: <ListBuyer />,
+        layout: 'default',
+    },
+    {
+        path: '/buyer/buyer/list_buyer/add_buyer',
+        element: <AddBuyer />,
+        layout: 'default',
+    },
+    {
+        path: '/buyer/buyer/list_buyer/detail_buyer/:id',
+        element: <DetailBuyer />,
         layout: 'default',
     },
 ];

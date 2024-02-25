@@ -197,11 +197,11 @@ const Sidebar = () => {
                                 <svg className="w-4 h-5 flex-none hidden" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
                                 </svg>
-                                <span>{t('STORAGE')}</span>
+                                <span>{t('Inventory')}</span>
                             </h2>
 
                             <li className="menu nav-item">
-                                <NavLink to="/storage/product" className="group">
+                                <button type="button" className={`${currentMenu === 'product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('product')}>
                                     <div className="flex items-center">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0_40_1201)">
@@ -219,7 +219,24 @@ const Sidebar = () => {
 
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Product')}</span>
                                     </div>
-                                </NavLink>
+
+                                    <div className={currentMenu === 'product' ? 'rotate-90' : 'rtl:rotate-180'}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <AnimateHeight duration={300} height={currentMenu === 'product' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to="/storage/product">{'By Category'}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/storage/product-tag">{'By Color'}</NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
                             </li>
 
                             <li className="menu nav-item">
@@ -258,6 +275,48 @@ const Sidebar = () => {
                             </li>
 
                             <li className="menu nav-item">
+                                <button type="button" className={`${currentMenu === 'moving_product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('moving_product')}>
+                                    <div className="flex items-center">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M2.00098 11.999L16.001 11.999M16.001 11.999L12.501 8.99902M16.001 11.999L12.501 14.999"
+                                                stroke="currentColor"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            ></path>
+                                            <path
+                                                opacity="0.5"
+                                                d="M9.00195 7C9.01406 4.82497 9.11051 3.64706 9.87889 2.87868C10.7576 2 12.1718 2 15.0002 2L16.0002 2C18.8286 2 20.2429 2 21.1215 2.87868C22.0002 3.75736 22.0002 5.17157 22.0002 8L22.0002 16C22.0002 18.8284 22.0002 20.2426 21.1215 21.1213C20.2429 22 18.8286 22 16.0002 22H15.0002C12.1718 22 10.7576 22 9.87889 21.1213C9.11051 20.3529 9.01406 19.175 9.00195 17"
+                                                stroke="currentColor"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                            ></path>
+                                        </svg>
+
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Moving Product')}</span>
+                                    </div>
+
+                                    <div className={currentMenu === 'moving_product' ? 'rotate-90' : 'rtl:rotate-180'}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <AnimateHeight duration={300} height={currentMenu === 'moving_product' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to="/storage/moving_product/bundle">{'Bundle'}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/storage/moving_product/repair">{'Repair'}</NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
+                            </li>
+
+                            <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'expired_product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('expired_product')}>
                                     <div className="flex items-center">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -289,9 +348,6 @@ const Sidebar = () => {
                                     <ul className="sub-menu text-gray-500">
                                         <li>
                                             <NavLink to="/storage/expired_product/list_product">{'List Product'}</NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/storage/expired_product/bundle_product">{'Bundle Product'}</NavLink>
                                         </li>
                                         <li>
                                             <NavLink to="/storage/expired_product/promo_product">{'Promo Product'}</NavLink>
@@ -430,9 +486,29 @@ const Sidebar = () => {
                                         <div className="flex items-center">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path
-                                                    d="M16.4999 6.75H19.5719C19.7577 6.75018 19.9368 6.81933 20.0745 6.94403C20.2123 7.06874 20.2988 7.24013 20.3174 7.425L20.7749 12H19.2659L18.8909 8.25H16.4999V10.5C16.4999 10.6989 16.4209 10.8897 16.2802 11.0303C16.1396 11.171 15.9488 11.25 15.7499 11.25C15.551 11.25 15.3602 11.171 15.2195 11.0303C15.0789 10.8897 14.9999 10.6989 14.9999 10.5V8.25H8.99987V10.5C8.99987 10.6989 8.92086 10.8897 8.7802 11.0303C8.63955 11.171 8.44879 11.25 8.24987 11.25C8.05096 11.25 7.8602 11.171 7.71954 11.0303C7.57889 10.8897 7.49987 10.6989 7.49987 10.5V8.25H5.10737L3.90737 20.25H11.9999V21.75H3.07787C2.97312 21.7499 2.86955 21.7278 2.77383 21.6853C2.67812 21.6427 2.59238 21.5806 2.52215 21.5028C2.45192 21.4251 2.39874 21.3335 2.36606 21.234C2.33337 21.1345 2.3219 21.0292 2.33237 20.925L3.68237 7.425C3.70095 7.24013 3.78749 7.06874 3.92522 6.94403C4.06296 6.81933 4.24207 6.75018 4.42787 6.75H7.49987V6.2265C7.49987 3.6255 9.50387 1.5 11.9999 1.5C14.4959 1.5 16.4999 3.6255 16.4999 6.2265V6.7515V6.75ZM14.9999 6.75V6.2265C14.9999 4.4355 13.6469 3 11.9999 3C10.3529 3 8.99987 4.4355 8.99987 6.2265V6.7515H14.9999V6.75ZM19.7204 18.09L17.9999 16.371V21.75C17.9999 21.9489 17.9209 22.1397 17.7802 22.2803C17.6396 22.421 17.4488 22.5 17.2499 22.5C17.051 22.5 16.8602 22.421 16.7195 22.2803C16.5789 22.1397 16.4999 21.9489 16.4999 21.75V16.371L14.7809 18.09C14.7117 18.1616 14.6289 18.2188 14.5374 18.2581C14.4459 18.2974 14.3475 18.3181 14.2479 18.3189C14.1483 18.3198 14.0496 18.3008 13.9574 18.2631C13.8652 18.2254 13.7815 18.1697 13.7111 18.0993C13.6407 18.0289 13.585 17.9451 13.5473 17.853C13.5095 17.7608 13.4906 17.662 13.4914 17.5625C13.4923 17.4629 13.513 17.3644 13.5523 17.2729C13.5916 17.1814 13.6487 17.0987 13.7204 17.0295L16.7204 14.0295C16.861 13.8889 17.0518 13.8099 17.2506 13.8099C17.4495 13.8099 17.6402 13.8889 17.7809 14.0295L20.7809 17.0295C20.8525 17.0987 20.9096 17.1814 20.9489 17.2729C20.9883 17.3644 21.0089 17.4629 21.0098 17.5625C21.0107 17.662 20.9917 17.7608 20.954 17.853C20.9163 17.9451 20.8606 18.0289 20.7902 18.0993C20.7197 18.1697 20.636 18.2254 20.5438 18.2631C20.4517 18.3008 20.3529 18.3198 20.2533 18.3189C20.1537 18.3181 20.0553 18.2974 19.9638 18.2581C19.8723 18.2188 19.7896 18.1616 19.7204 18.09Z"
-                                                    fill="#888EA8"
-                                                />
+                                                    d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                    strokeLinecap="round"
+                                                ></path>
+                                                <path
+                                                    opacity="0.5"
+                                                    d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                ></path>
+                                                <path
+                                                    opacity="0.5"
+                                                    d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                ></path>
+                                                <path opacity="0.5" d="M11 9H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"></path>
+                                                <path
+                                                    d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                ></path>
                                             </svg>
                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Sale')}</span>
                                         </div>
@@ -453,6 +529,23 @@ const Sidebar = () => {
                                             </li>
                                         </ul>
                                     </AnimateHeight>
+                                </li>
+                                <li className="menu nav-item">
+                                    <NavLink to="/buyer/buyer/list_buyer" className="group">
+                                        <div className="flex items-center">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"></circle>
+                                                <path d="M12 6V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"></path>
+                                                <path
+                                                    d="M15 9.5C15 8.11929 13.6569 7 12 7C10.3431 7 9 8.11929 9 9.5C9 10.8807 10.3431 12 12 12C13.6569 12 15 13.1193 15 14.5C15 15.8807 13.6569 17 12 17C10.3431 17 9 15.8807 9 14.5"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                    strokeLinecap="round"
+                                                ></path>
+                                            </svg>
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{'Buyer'}</span>
+                                        </div>
+                                    </NavLink>
                                 </li>
                             </ul>
 

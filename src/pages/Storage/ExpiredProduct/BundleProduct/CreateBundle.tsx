@@ -12,12 +12,13 @@ import {
     useGetFilterProductBundlesQuery,
 } from '../../../../store/services/bundleProductApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const CreateBundle = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
+    const { data, isSuccess, refetch, isError } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
     const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
     const [filterProductBundle, results] = useFilterProductBundleMutation();
     const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
@@ -118,6 +119,10 @@ const CreateBundle = () => {
         setCustomPrice(JSON.stringify(totalAmount));
     }, [filterBundlesProducts]);
 
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -185,7 +190,13 @@ const CreateBundle = () => {
                                 columns={[
                                     { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
                                     { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
-                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
+                                    {
+                                        accessor: 'firstName',
+                                        title: 'Nama Produk',
+                                        sortable: true,
+                                        width: 220,
+                                        render: (item: ProductExpiredItem) => <p className="truncate">{item.new_name_product}</p>,
+                                    },
                                     { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_category_product}</span> },
                                     {
                                         accessor: 'totalMasuk',

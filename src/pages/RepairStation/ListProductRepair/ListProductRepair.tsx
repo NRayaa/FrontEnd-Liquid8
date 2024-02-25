@@ -11,12 +11,13 @@ import { useGetListProductRepairQuery, useUpdateProductRepairMutation, useUpdate
 import { GetListProductRepairItem, ProdcutItem } from '../../../store/services/types';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const ListProductRepair = () => {
     const dispatch = useDispatch();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data: listProductData, refetch } = useGetListProductRepairQuery({ page, q: search });
+    const { data: listProductData, refetch, isError } = useGetListProductRepairQuery({ page, q: search });
     const { data: categoriesData } = useGetCategoriesQuery(undefined);
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
@@ -33,7 +34,7 @@ const ListProductRepair = () => {
     }, [listProductData]);
 
     const dataCategories = useMemo(() => {
-        return categoriesData?.data?.resource;
+        return categoriesData?.data.resource;
     }, [categoriesData]);
 
     const [input, setInput] = useState({
@@ -91,7 +92,6 @@ const ListProductRepair = () => {
             };
             await updateProductRepair({ id, body });
             setRepair(false);
-            toast.success("Success repair product")
             refetch();
         } catch (err) {
             console.error(err);
@@ -106,7 +106,6 @@ const ListProductRepair = () => {
     const handleThrowsConfirmation = async (id: number) => {
         try {
             await updateThrows(id);
-            toast.success("Success throws product")
             refetch();
         } catch (err) {
             console.error('Error updating throws:', err);
@@ -132,10 +131,23 @@ const ListProductRepair = () => {
     }, [selectedCategory, productData]);
 
     useEffect(() => {
-        if (results) {
+        if (results.isSuccess) {
+            toast.success(results?.data?.data?.message);
             refetch();
+        } else if (results.isError) {
+            toast.error(results?.data?.data?.message);
         }
-    }, [results]);
+        if (result.isSuccess) {
+            toast.success(result?.data?.data?.message);
+            refetch();
+        } else if (result.isError) {
+            toast.error(result?.data?.data?.message);
+        }
+    }, [results, result]);
+
+    if (isError && !listProductData?.data?.status) {
+        return <Alert message={listProductData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
@@ -266,16 +278,16 @@ const ListProductRepair = () => {
                                                             />
                                                         </div>
                                                         {/* <div> */}
-                                                            {/* <label htmlFor="discount">Discount (%)</label> */}
-                                                            <input
-                                                                id="discount"
-                                                                type="hidden"
-                                                                placeholder="Enter Discount"
-                                                                className="form-input"
-                                                                name="discount"
-                                                                value={calculateDiscount()}
-                                                                onChange={handleInputChange}
-                                                            />
+                                                        {/* <label htmlFor="discount">Discount (%)</label> */}
+                                                        <input
+                                                            id="discount"
+                                                            type="hidden"
+                                                            placeholder="Enter Discount"
+                                                            className="form-input"
+                                                            name="discount"
+                                                            value={calculateDiscount()}
+                                                            onChange={handleInputChange}
+                                                        />
                                                         {/* </div> */}
                                                     </div>
                                                 </div>

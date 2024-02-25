@@ -7,11 +7,12 @@ import { useDeletePromoMutation, useGetPromotListsQuery } from '../../../../stor
 import { formatRupiah } from '../../../../helper/functions';
 import { PromoListItem } from '../../../../store/services/types';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../../commons';
 
 const PromoProduct = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetPromotListsQuery({ page, q: search });
+    const { data, isSuccess, refetch, isError } = useGetPromotListsQuery({ page, q: search });
     const [deletePromo, results] = useDeletePromoMutation();
 
     const promoLists = useMemo(() => {
@@ -86,6 +87,10 @@ const PromoProduct = () => {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
     }, [results]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>

@@ -60,6 +60,8 @@ const ProductCheck: React.FC<ProductCheck> = ({
     const [descriptionAbnormal, setDescriptionAbnormal] = useState<string>('');
     const [barcodeStatus, setBarcodeStatus] = useState<'LOLOS' | 'TIDAK LOLOS'>('LOLOS');
 
+    // hideBarcode();
+
     const productCheckData = useMemo(() => {
         if (isSuccess) {
             return data?.data.resource;
@@ -169,8 +171,11 @@ const ProductCheck: React.FC<ProductCheck> = ({
         if (results.isSuccess) {
             toast.success(results.data.data.message);
             resetValueMultiCheck();
-            if (barcodeStatus === 'LOLOS') {
+            if (Math.ceil(Number(oldData?.old_price_product)) > 100000) {
                 showBarcode();
+                resetProductCheckShow();
+            } else {
+                hideBarcode();
                 resetProductCheckShow();
             }
         } else if (results.isError) {

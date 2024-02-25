@@ -5,15 +5,24 @@ import { useGetListSaleDocumentQuery } from '../../../store/services/saleApi';
 import { GetListSaleDocumentItem } from '../../../store/services/types';
 import { DataTable } from 'mantine-datatable';
 import { formatRupiah } from '../../../helper/functions';
+import { Alert } from '../../../commons';
 
 const ListKasir = () => {
     const [page, setPage] = useState<number>(1);
     const [search] = useState<string>('');
-    const { data: listSaleDocumentData } = useGetListSaleDocumentQuery({ page, q: search });
+    const { data: listSaleDocumentData, isError, isLoading } = useGetListSaleDocumentQuery({ page, q: search });
 
     const listSaleDocument = useMemo(() => {
         return listSaleDocumentData?.data.resource.data;
     }, [listSaleDocumentData]);
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
+    if (isError && !listSaleDocumentData?.data.status) {
+        return <Alert message={listSaleDocumentData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>
@@ -72,9 +81,7 @@ const ListKasir = () => {
                                 title: 'Opsi',
                                 render: (item: GetListSaleDocumentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link
-                                            to={`/outbound/sale/list_kasir/detail_kasir/${item.id}`}
-                                        >
+                                        <Link to={`/outbound/sale/list_kasir/detail_kasir/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>

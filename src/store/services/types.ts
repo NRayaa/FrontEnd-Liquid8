@@ -1100,9 +1100,9 @@ interface GetProductSales {
 }
 
 interface GetShowChartInboundOutbound {
-    month: number;
-    outbound_count: number;
-    inbound_count: number;
+    month: string;
+    outbound_count: string;
+    inbound_count: string;
 }
 
 interface GetInboundData {
@@ -1139,6 +1139,152 @@ interface GetDashboard {
     };
 }
 
+interface GetListBuyerItem {
+    id: number;
+    name_buyer: string;
+    phone_buyer: string;
+    address_buyer: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListBuyer {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListBuyerItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface GetNotifByRoleItem {
+    id: number;
+    user_id: string;
+    notification_name: string;
+    status: string;
+    spv_id: string;
+    riwayat_check_id: string;
+    read_at: string;
+    created_at: string;
+    updated_at: string;
+    role_name: 'Spv' | 'Crew' | 'Reparasi';
+    role_id: number;
+}
+interface GetNotifByRole {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetNotifByRoleItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface SpvAprroval {
+    data: {
+        status: boolean;
+        message: string;
+        resource: GetNotifByRoleItem;
+    };
+}
+
+interface RepairItem {
+    id: number;
+    repair_name: string;
+    total_price: string;
+    total_price_custom: string;
+    total_products: string;
+    barcode: string;
+    created_at: string;
+    updated_at: string;
+    repair_products: RepairSubItem[];
+}
+
+interface RepairSubItem {
+    id: number;
+    repair_id: string;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: null | string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
+
+interface RepairResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: RepairItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface DetailRepairResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            repair_name: string;
+            total_price: string;
+            total_price_custom: string;
+            total_products: string;
+            barcode: string;
+            created_at: string;
+            updated_at: string;
+            repair_products: {
+                new_barcode_product: string;
+                new_name_product: string;
+                new_quantity_product: number;
+                new_price_product: number;
+            }[];
+        };
+    };
+}
 
 export type {
     UserDataItem,
@@ -1216,4 +1362,11 @@ export type {
     GetShowChartInboundOutbound,
     GetInboundData,
     ExportToExcel,
+    GetListBuyer,
+    GetListBuyerItem,
+    GetNotifByRole,
+    SpvAprroval,
+    GetNotifByRoleItem,
+    RepairResponse,
+    DetailRepairResponse,
 };
