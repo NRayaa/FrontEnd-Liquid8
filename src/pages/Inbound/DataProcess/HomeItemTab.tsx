@@ -36,7 +36,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 redirect: 'follow' as RequestRedirect,
             };
 
-            fetch('https://laluisari.payon.id/api/generate', requestOptions)
+            fetch('http://127.0.0.1:8000/api/generate', requestOptions)
                 .then((response) => response.json())
                 .then((result) => {
                     handleMessage(result.data.message);
