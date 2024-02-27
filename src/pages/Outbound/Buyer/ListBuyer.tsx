@@ -10,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 import { GetListBuyerItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const rowData = [
     {
@@ -518,12 +519,12 @@ const ListBuyer = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
     const [search] = useState<string>('');
-    const { data, refetch } = useGetListBuyerQuery({ page, q: search });
+    const { data, refetch, isError } = useGetListBuyerQuery({ page, q: search });
     const [deleteBuyer, results] = useDeleteBuyerMutation();
     const [initialRecords2, setInitialRecords2] = useState(sortBy(rowData, 'firstName'));
     const [recordsData2, setRecordsData2] = useState(initialRecords2);
 
-    const listBuyer = useMemo(() => {
+    const listBuyer: any = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
@@ -545,6 +546,10 @@ const ListBuyer = () => {
         refetch();
     }, [results]);
 
+    if (isError && !data?.data?.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
+
     return (
         <div>
             <div className="panel mt-6">
@@ -562,7 +567,7 @@ const ListBuyer = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListBuyerItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer?.length ?? 1 + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name_buyer',
@@ -588,7 +593,7 @@ const ListBuyer = () => {
                                     <div className="flex items-center w-max mx-auto gap-2">
                                         <Link
                                             to={`/buyer/buyer/list_buyer/detail_buyer/${item.id}`}
-                                            state={{ name_buyer: item.name_buyer, phone_buyer: item.phone_buyer, address_buyer: item.address_buyer}}
+                                            state={{ name_buyer: item.name_buyer, phone_buyer: item.phone_buyer, address_buyer: item.address_buyer }}
                                         >
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail

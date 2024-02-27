@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useGetListDumpQuery } from '../../../store/services/listDumpApi';
 import { GetListDumpItem } from '../../../store/services/types';
+import { Alert } from '../../../commons';
 
 const ListDump = () => {
     const dispatch = useDispatch();
@@ -13,10 +14,14 @@ const ListDump = () => {
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const { data } = useGetListDumpQuery({ page, q: search });
-    const dataListDump = useMemo(() => {
+    const { data, isError } = useGetListDumpQuery({ page, q: search });
+    const dataListDump: any = useMemo(() => {
         return data?.data?.resource?.data;
     }, [data]);
+
+    if (isError && !data?.data?.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
@@ -48,7 +53,7 @@ const ListDump = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataListDump}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (item: GetListDumpItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'id', title: 'No', render: (item: GetListDumpItem, index: number) => <span>{(page - 1) * dataListDump?.length + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'BARCODE', render: (item: GetListDumpItem) => <span>{item.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'PRODUCT', render: (item: GetListDumpItem) => <span>{item.new_name_product}</span> },
                             { accessor: 'harga', title: 'HARGA', render: (item: GetListDumpItem) => <span>{item.new_price_product} </span> },

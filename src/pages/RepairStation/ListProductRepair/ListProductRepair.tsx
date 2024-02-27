@@ -11,12 +11,13 @@ import { useGetListProductRepairQuery, useUpdateProductRepairMutation, useUpdate
 import { GetListProductRepairItem, ProdcutItem } from '../../../store/services/types';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const ListProductRepair = () => {
     const dispatch = useDispatch();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data: listProductData, refetch } = useGetListProductRepairQuery({ page, q: search });
+    const { data: listProductData, refetch, isError } = useGetListProductRepairQuery({ page, q: search });
     const { data: categoriesData } = useGetCategoriesQuery(undefined);
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
@@ -28,7 +29,7 @@ const ListProductRepair = () => {
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsMutation();
 
-    const dataListProductRepair = useMemo(() => {
+    const dataListProductRepair: any = useMemo(() => {
         return listProductData?.data?.resource?.data;
     }, [listProductData]);
 
@@ -72,7 +73,7 @@ const ListProductRepair = () => {
     const handleRepair = (id: number) => {
         setSelectedItem(id);
         setRepair(true);
-        const selectedProduct = dataListProductRepair?.find((product) => product.id === id);
+        const selectedProduct = dataListProductRepair?.find((product: any) => product.id === id);
         setProductData(selectedProduct || null);
         console.log(id);
     };
@@ -135,13 +136,18 @@ const ListProductRepair = () => {
             refetch();
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
-        }if (result.isSuccess) {
+        }
+        if (result.isSuccess) {
             toast.success(result?.data?.data?.message);
             refetch();
         } else if (result.isError) {
             toast.error(result?.data?.data?.message);
         }
     }, [results, result]);
+
+    if (isError && !listProductData?.data?.status) {
+        return <Alert message={listProductData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
@@ -393,7 +399,7 @@ const ListProductRepair = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataListProductRepair}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length ?? 0 + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'Barcode', render: (item: GetListProductRepairItem) => <span>{item.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'Nama', render: (item: GetListProductRepairItem) => <span>{item.new_name_product}</span> },
                             {

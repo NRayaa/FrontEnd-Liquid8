@@ -5,6 +5,7 @@ import { useDetailBundleProductQuery } from '../../../../store/services/bundlePr
 import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { NewProductItem } from '../../../../store/services/types';
 
 const showAlert = async (type: number) => {
     if (type === 11) {
@@ -71,6 +72,8 @@ const DetailBundleProduct = () => {
             return data.data.resource;
         }
     }, [data]);
+
+    console.log("detailDataBundle", detailDataBundle)
 
     return (
         <div>
@@ -148,13 +151,20 @@ const DetailBundleProduct = () => {
                         <DataTable
                             highlightOnHover
                             className="whitespace-nowrap table-hover "
-                            records={[1]}
+                            records={detailDataBundle?.product_bundles}
                             columns={[
-                                { accessor: 'id', title: 'No', sortable: true, render: () => <span>1</span> },
-                                { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: () => <span>{detailDataBundle?.barcode_bundle}</span> },
-                                { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: () => <span>{detailDataBundle?.name_bundle}</span> },
-                                { accessor: 'QTY', title: 'QTY', sortable: true, render: () => <span>{detailDataBundle?.total_product_bundle}</span> },
-                                { accessor: 'totalMasuk', title: 'Harga', sortable: true, render: () => <span>{formatRupiah(detailDataBundle?.total_price_bundle ?? '0')}</span> },
+                                { accessor: 'id', title: 'No', sortable: true, render: (item: NewProductItem, index: number) => <span>{index + 1}</span> },
+                                { accessor: 'code_document', title: 'Code Document', sortable: true, render: (item: NewProductItem) => <span>{item.code_document}</span> },
+                                { accessor: 'new_barcode_product', title: 'Barcode', sortable: true, render: (item: NewProductItem) => <span>{item.new_barcode_product}</span> },
+                                { accessor: 'new_category_product', title: 'Kategori', sortable: true, render: (item: NewProductItem) => <span>{item.new_category_product}</span> },
+                                { accessor: 'new_name_product', title: 'Nama', sortable: true, render: (item: NewProductItem) => <span>{item.new_name_product}</span> },
+                                { accessor: 'new_price_product', title: 'Harga', sortable: true, render: (item: NewProductItem) => <span>{formatRupiah(item.new_price_product ?? "0")}</span> },
+                                {
+                                    accessor: 'status',
+                                    title: 'Status',
+                                    sortable: true,
+                                    render: (item: NewProductItem) => <span className="badge whitespace-nowrap bg-primary">{item.new_status_product}</span>,
+                                },
                             ]}
                         />
                     </div>

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useGetListMigrateQuery } from '../../../store/services/migrateApi';
 import { GetListMigrateItem } from '../../../store/services/types';
+import { Alert } from '../../../commons';
 
 const ListMigrate = () => {
     const dispatch = useDispatch();
@@ -14,15 +15,19 @@ const ListMigrate = () => {
     });
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState('');
-    const { data: ListMigrateData, refetch } = useGetListMigrateQuery({ page, q: search });
+    const { data: ListMigrateData, refetch, isError } = useGetListMigrateQuery({ page, q: search });
 
-    const listMigrate = useMemo(() => {
+    const listMigrate: any = useMemo(() => {
         return ListMigrateData?.data.resource.data;
     }, [ListMigrateData]);
 
     useEffect(() => {
         refetch();
     }, [listMigrate]);
+
+    if (isError && !ListMigrateData?.data?.status) {
+        return <Alert message={ListMigrateData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
@@ -54,7 +59,7 @@ const ListMigrate = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListMigrateItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: GetListMigrateItem, index: number) => <span><span>{(page - 1) * listMigrate?.length + (index + 1)}</span></span>,
                             },
                             {
                                 accessor: 'code_document_migrate',

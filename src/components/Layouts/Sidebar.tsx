@@ -201,7 +201,7 @@ const Sidebar = () => {
                             </h2>
 
                             <li className="menu nav-item">
-                                <NavLink to="/storage/product" className="group">
+                                <button type="button" className={`${currentMenu === 'product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('product')}>
                                     <div className="flex items-center">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0_40_1201)">
@@ -219,7 +219,24 @@ const Sidebar = () => {
 
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Product')}</span>
                                     </div>
-                                </NavLink>
+
+                                    <div className={currentMenu === 'product' ? 'rotate-90' : 'rtl:rotate-180'}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <AnimateHeight duration={300} height={currentMenu === 'product' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to="/storage/product/category">{'By Category'}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/storage/product/color">{'By Color'}</NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
                             </li>
 
                             <li className="menu nav-item">

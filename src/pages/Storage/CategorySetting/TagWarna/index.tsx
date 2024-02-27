@@ -74,7 +74,7 @@ const TagWarna = () => {
         }
     };
 
-    const dataColorTag = useMemo(() => {
+    const dataColorTag: any = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
@@ -120,7 +120,7 @@ const TagWarna = () => {
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: ColorTagItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: ColorTagItem, index: number) => <span>{(page - 1) * dataColorTag?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'Tag Warna',

@@ -6,16 +6,17 @@ import { useDeleteAccountMutation, useGetListAkunQuery } from '../../../store/se
 import { GetListAkunItem, GetListRoleItem } from '../../../store/services/types';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import toast from 'react-hot-toast';
+import { Alert } from '../../../commons';
 
 const ListAkun = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
     const [search] = useState<string>('');
-    const { data: listAkunData, refetch } = useGetListAkunQuery({ page, q: search });
-    const { data: listRoleData } = useGetListRoleQuery(undefined);
+    const { data: listAkunData, refetch, isError } = useGetListAkunQuery({ page, q: search });
+    const { data: listRoleData, refetch: listRefetch } = useGetListRoleQuery(undefined);
     const [deleteAccount, results] = useDeleteAccountMutation();
 
-    const listAkun = useMemo(() => {
+    const listAkun: any = useMemo(() => {
         return listAkunData?.data.resource.data;
     }, [listAkunData]);
 
@@ -28,7 +29,7 @@ const ListAkun = () => {
         const role = dataListRole.find((r) => r.id === roleIdNumber);
         return role?.role_name || 'Unknown Role';
     };
-    
+
     const handleDeleteAccount = async (id: number) => {
         try {
             await deleteAccount(id);
@@ -40,12 +41,18 @@ const ListAkun = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
+            listRefetch();
             refetch();
         } else if (results.isError) {
             toast.error(results.data?.data?.message);
         }
         refetch();
+        listRefetch();
     }, [results]);
+
+    if (isError && !listAkunData?.data?.status) {
+        return <Alert message={listAkunData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <div>
@@ -64,7 +71,7 @@ const ListAkun = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListAkunItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: GetListAkunItem, index: number) =><span>{(page - 1) * listAkun?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name',

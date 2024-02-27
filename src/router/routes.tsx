@@ -29,7 +29,8 @@ const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck')
 const DetailListData = lazy(() => import('../pages/Inbound/CheckProduct/DetailListData'));
 const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
 const DetailCheckHistory = lazy(() => import('../pages/Inbound/CheckHistory/Detail'));
-const Product = lazy(() => import('../pages/Storage/Product'));
+const ProductByCategory = lazy(() => import('../pages/Storage/Product/ByCategory'));
+const ProductByColor = lazy(() => import('../pages/Storage/Product/ByColor'));
 const DetailProduct = lazy(() => import('../pages/Storage/Product/DetailProduct'));
 const CategorySetting = lazy(() => import('../pages/Storage/CategorySetting'));
 const AddCategory = lazy(() => import('../pages/Storage/CategorySetting/AddCategory'));
@@ -107,8 +108,13 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/storage/product',
-        element: <Product />,
+        path: '/storage/product/category',
+        element: <ProductByCategory />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/product/color',
+        element: <ProductByColor />,
         layout: 'default',
     },
     {

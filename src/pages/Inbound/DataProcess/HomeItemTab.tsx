@@ -22,6 +22,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
     };
 
     const fetchData = async () => {
+
         if (file) {
             const formdata = new FormData();
             const token = localStorage.getItem('token');
@@ -36,7 +37,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 redirect: 'follow' as RequestRedirect,
             };
 
-            fetch('http://127.0.0.1:8000/api/generate', requestOptions)
+            fetch('https://server.wms-liquid8.online/api/generate', requestOptions)
                 .then((response) => response.json())
                 .then((result) => {
                     handleMessage(result.data.message);
@@ -50,6 +51,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 })
                 .catch((error) => toast.error('Error!'));
         }
+        
     };
 
     useEffect(() => {

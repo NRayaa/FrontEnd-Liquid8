@@ -34,6 +34,12 @@ export const repairMovingProductsApi = createApi({
         getShowRepairMovingProducts: builder.query<DetailRepairResponse, any>({
             query: (id) => `/repair-mv/${id}`,
         }),
+        unrepairMovingProduct: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `/repair-mv/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -44,4 +50,5 @@ export const {
     useDeleteFilterRepairMovingProductsMutation,
     useCreateRepairMovingProductsMutation,
     useGetShowRepairMovingProductsQuery,
+    useUnrepairMovingProductMutation,
 } = repairMovingProductsApi;

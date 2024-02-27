@@ -12,7 +12,7 @@ const ListKasir = () => {
     const [search] = useState<string>('');
     const { data: listSaleDocumentData, isError, isLoading } = useGetListSaleDocumentQuery({ page, q: search });
 
-    const listSaleDocument = useMemo(() => {
+    const listSaleDocument: any = useMemo(() => {
         return listSaleDocumentData?.data.resource.data;
     }, [listSaleDocumentData]);
 
@@ -54,7 +54,7 @@ const ListKasir = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListSaleDocumentItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: GetListSaleDocumentItem, index: number) => <span><span>{(page - 1) * listSaleDocument?.length + (index + 1)}</span></span>,
                             },
                             {
                                 accessor: 'Barcode',
