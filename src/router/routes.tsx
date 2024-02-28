@@ -22,8 +22,6 @@ import CreateMovingBundleProduct from '../pages/Storage/MovingProduct/BundleProd
 import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
 import MovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
 import Notification from '../pages/Notification/Notification';
-import DetailProductCategory from '../pages/Storage/Product/ByCategory/DetailProductCategory';
-import DetailProductColor from '../pages/Storage/Product/ByColor/DetailProductColor';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -33,7 +31,7 @@ const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
 const DetailCheckHistory = lazy(() => import('../pages/Inbound/CheckHistory/Detail'));
 const ProductByCategory = lazy(() => import('../pages/Storage/Product/ByCategory'));
 const ProductByColor = lazy(() => import('../pages/Storage/Product/ByColor'));
-const DetailProduct = lazy(() => import('../pages/Storage/Product/ByColor/DetailProductColor'));
+const DetailProduct = lazy(() => import('../pages/Storage/Product/DetailProduct'));
 const CategorySetting = lazy(() => import('../pages/Storage/CategorySetting'));
 const AddCategory = lazy(() => import('../pages/Storage/CategorySetting/AddCategory'));
 const EditCategory = lazy(() => import('../pages/Storage/CategorySetting/EditCategory'));
@@ -70,8 +68,8 @@ const routes = [
         element: <Dashboard />,
         layout: 'default',
     },
-     // dashboard
-     {
+    // dashboard
+    {
         path: '/notification',
         element: <Notification />,
         layout: 'default',
@@ -115,18 +113,13 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/storage/product/category/:id',
-        element: <DetailProductCategory />,
-        layout: 'default',
-    },
-    {
         path: '/storage/product/color',
         element: <ProductByColor />,
         layout: 'default',
     },
     {
-        path: '/storage/product/color/:id',
-        element: <DetailProductColor />,
+        path: '/storage/product/:id',
+        element: <DetailProduct />,
         layout: 'default',
     },
     {
