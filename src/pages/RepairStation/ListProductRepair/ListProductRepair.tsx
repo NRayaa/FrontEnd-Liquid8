@@ -399,7 +399,7 @@ const ListProductRepair = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataListProductRepair}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length ?? 0 + (index + 1)}</span> },
+                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'Barcode', render: (item: GetListProductRepairItem) => <span>{item.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'Nama', render: (item: GetListProductRepairItem) => <span>{item.new_name_product}</span> },
                             {
