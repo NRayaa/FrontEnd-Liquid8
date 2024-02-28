@@ -71,7 +71,7 @@ const CheckHistory = () => {
         }
     };
 
-    const riwayatCheckData = useMemo(() => {
+    const riwayatCheckData: any = useMemo(() => {
         if (data?.data.status && isSuccess) {
             return data.data.resource.data;
         }
@@ -103,7 +103,7 @@ const CheckHistory = () => {
                     {
                         accessor: 'id',
                         title: 'No',
-                        render: (item: GetRiwayatcheckItem, index: number) => <span>{index + 1}</span>,
+                        render: (item: GetRiwayatcheckItem, index: number) => <span>{(page - 1) * riwayatCheckData?.length + (index + 1)}</span>,
                     },
                     {
                         accessor: 'date_document',

@@ -17,7 +17,7 @@ const ListMigrate = () => {
     const [search, setSearch] = useState('');
     const { data: ListMigrateData, refetch, isError } = useGetListMigrateQuery({ page, q: search });
 
-    const listMigrate = useMemo(() => {
+    const listMigrate: any = useMemo(() => {
         return ListMigrateData?.data.resource.data;
     }, [ListMigrateData]);
 
@@ -59,7 +59,7 @@ const ListMigrate = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListMigrateItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: GetListMigrateItem, index: number) => <span><span>{(page - 1) * listMigrate?.length + (index + 1)}</span></span>,
                             },
                             {
                                 accessor: 'code_document_migrate',

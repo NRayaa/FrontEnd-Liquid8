@@ -29,7 +29,7 @@ const ListProductRepair = () => {
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsMutation();
 
-    const dataListProductRepair = useMemo(() => {
+    const dataListProductRepair: any = useMemo(() => {
         return listProductData?.data?.resource?.data;
     }, [listProductData]);
 
@@ -73,7 +73,7 @@ const ListProductRepair = () => {
     const handleRepair = (id: number) => {
         setSelectedItem(id);
         setRepair(true);
-        const selectedProduct = dataListProductRepair?.find((product) => product.id === id);
+        const selectedProduct = dataListProductRepair?.find((product: any) => product.id === id);
         setProductData(selectedProduct || null);
         console.log(id);
     };
@@ -399,7 +399,7 @@ const ListProductRepair = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataListProductRepair}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length ?? 0 + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'Barcode', render: (item: GetListProductRepairItem) => <span>{item.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'Nama', render: (item: GetListProductRepairItem) => <span>{item.new_name_product}</span> },
                             {

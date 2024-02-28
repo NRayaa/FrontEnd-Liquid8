@@ -15,7 +15,7 @@ const PromoProduct = () => {
     const { data, isSuccess, refetch, isError } = useGetPromotListsQuery({ page, q: search });
     const [deletePromo, results] = useDeletePromoMutation();
 
-    const promoLists = useMemo(() => {
+    const promoLists: any = useMemo(() => {
         if (isSuccess) {
             return data.data.resource.data;
         }
@@ -128,7 +128,7 @@ const PromoProduct = () => {
                         className="whitespace-nowrap table-hover "
                         records={promoLists}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true, render: (item: PromoListItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'id', title: 'No', sortable: true, render: (item: PromoListItem, index: number) => <span>{(page - 1) * promoLists?.length + (index + 1)}</span> },
                             { accessor: 'Promo Name', title: 'Nama Promo', sortable: true, render: (item: PromoListItem) => <span>{item.name_promo}</span> },
                             { accessor: 'barcode', title: 'Barcode', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: PromoListItem) => <span>{item.new_product.new_name_product}</span> },

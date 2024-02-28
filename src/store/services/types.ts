@@ -534,6 +534,7 @@ interface DetailBundleResponse {
             total_price_custom_bundle: string;
             total_product_bundle: string;
             barcode_bundle: string;
+            product_bundles: NewProductItem[]
             created_at: string;
             updated_at: string;
         };

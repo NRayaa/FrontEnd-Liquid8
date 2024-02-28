@@ -20,7 +20,7 @@ const DetailListData = () => {
         dispatch(setPageTitle('Detail List'));
     });
 
-    const detailProductOlds = useMemo(() => {
+    const detailProductOlds: any = useMemo(() => {
         if (data?.data.resource !== null) {
             if (data?.data?.resource?.data.length !== 0) {
                 return data?.data.resource.data;
@@ -90,32 +90,32 @@ const DetailListData = () => {
                                 {
                                     accessor: 'id',
                                     title: 'No',
-                                    render: (item, index: number) => <span>{index + 1}</span>,
+                                    render: (item: any, index: number) => <span>{(page - 1) * detailProductOlds?.length + (index + 1)}</span>,
                                 },
                                 {
                                     accessor: 'code_document',
                                     title: 'Nama Data',
-                                    render: (item) => <span>{item.code_document}</span>,
+                                    render: (item: any) => <span>{item.code_document}</span>,
                                 },
                                 {
                                     accessor: 'old_barcode_product',
                                     title: 'Nomor Resi',
-                                    render: (item) => <span>{item.old_barcode_product}</span>,
+                                    render: (item: any) => <span>{item.old_barcode_product}</span>,
                                 },
                                 {
                                     accessor: 'old_name_product',
                                     title: 'Nama Produk',
-                                    render: (item) => <span className="whitespace-pre-wrap">{item.old_name_product}</span>,
+                                    render: (item: any) => <span className="whitespace-pre-wrap">{item.old_name_product}</span>,
                                 },
                                 {
                                     accessor: 'old_quantity_product',
                                     title: 'QTY',
-                                    render: (item) => <span>{item.old_quantity_product}</span>,
+                                    render: (item: any) => <span>{item.old_quantity_product}</span>,
                                 },
                                 {
                                     accessor: 'old_price_product',
                                     title: 'Harga',
-                                    render: (item) => <span>{formatRupiah(item.old_price_product)}</span>,
+                                    render: (item: any) => <span>{formatRupiah(item.old_price_product)}</span>,
                                 },
                             ]}
                             totalRecords={data?.data.resource.total ?? 0}

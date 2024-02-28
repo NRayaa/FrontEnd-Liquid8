@@ -18,7 +18,7 @@ const ListProduct = () => {
     const { data, isSuccess, refetch, isError } = useGetExpiredProductsQuery({ page, q: search });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
-    const expiredProducts = useMemo(() => {
+    const expiredProducts: any = useMemo(() => {
         if (isSuccess) {
             return data?.data.resource.data;
         }
@@ -124,7 +124,7 @@ const ListProduct = () => {
                         className="whitespace-nowrap table-hover "
                         records={expiredProducts}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{(page - 1) * expiredProducts?.length + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'Nama Data', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
                             { accessor: 'category', title: 'Ketegori', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_category_product}</span> },

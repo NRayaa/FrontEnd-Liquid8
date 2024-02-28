@@ -6,11 +6,12 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import NewBarcodeData from './NewBarcodeData';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import { Alert } from '../../../commons';
 
 const DetailProduct = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data, isSuccess, refetch } = useDetailProductNewQuery(id);
+    const { data, isSuccess, refetch, isError } = useDetailProductNewQuery(id);
     const productNew = useGetAllProductNewQuery({ page: 1, q: '' });
     const [editDetailProduct, results] = useEditDetailProductMutation();
     const [input, setInput] = useState({
@@ -84,12 +85,20 @@ const DetailProduct = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message ?? 'Product updated');
-            navigate('/storage/product');
+            if (dataDetailProduct?.new_tag_product !== null) {
+                navigate('/storage/product/color');
+            } else {
+                navigate('/storage/product/category');
+            }
             productNew.refetch();
         } else if (results.isError) {
             toast.error('Product updated failed');
         }
     }, [results]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>
@@ -97,7 +106,7 @@ const DetailProduct = () => {
             <div className="mt-10 p-6 panel">
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-xl font-bold">Detail Product</h1>
-                    <Link to="/storage/product">
+                    <Link to={dataDetailProduct?.new_tag_product !== null ? '/storage/product/color' : '/storage/product/category'}>
                         <button type="button" className=" px-2 btn btn-outline-danger">
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
                         </button>

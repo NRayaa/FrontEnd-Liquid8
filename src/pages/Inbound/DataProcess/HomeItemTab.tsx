@@ -22,6 +22,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
     };
 
     const fetchData = async () => {
+
         if (file) {
             const formdata = new FormData();
             const token = localStorage.getItem('token');
@@ -50,6 +51,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 })
                 .catch((error) => toast.error('Error!'));
         }
+
     };
 
     useEffect(() => {

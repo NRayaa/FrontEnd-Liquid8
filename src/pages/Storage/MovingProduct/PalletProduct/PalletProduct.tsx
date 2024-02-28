@@ -14,7 +14,7 @@ const PalletProduct = () => {
     const { data, isSuccess, refetch } = useGetBundleProductsQuery({ page, q: search });
     const [deleteBundleProduct, results] = useDeleteBundleProductMutation();
 
-    const dataBundleProduct = useMemo(() => {
+    const dataBundleProduct: any = useMemo(() => {
         if (isSuccess) {
             return data.data.resource.data;
         }
@@ -124,7 +124,7 @@ const PalletProduct = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataBundleProduct}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true, render: (item: BundleItem, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'id', title: 'No', sortable: true, render: (item: BundleItem, index: number) => <span>{(page - 1) * dataBundleProduct?.length + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'Barcode Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.barcode_bundle}</span> },
                             { accessor: 'firstName', title: 'Nama Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.name_bundle}</span> },
                             { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: BundleItem) => <span>{item?.total_product_bundle}</span> },
