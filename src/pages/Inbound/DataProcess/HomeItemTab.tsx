@@ -50,6 +50,20 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 })
                 .catch((error) => toast.error('Error!'));
         }
+        //     fetch('https://server.wms-liquid8.online/api/generate', requestOptions)
+        //         .then((response) => response.json())
+        //         .then((result) => {
+        //             handleMessage(result.data.message);
+        //             handleRole(result.data.status);
+        //             if (result.data.status) {
+        //                 getGeneratesData(result);
+        //                 toast.success(result.data.message);
+        //             } else {
+        //                 toast.error(result.data.message);
+        //             }
+        //         })
+        //         .catch((error) => toast.error('Error!'));
+        // }
     };
 
     useEffect(() => {
