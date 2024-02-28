@@ -39,7 +39,7 @@ const ListRole = () => {
                         columns={[
                             { accessor: 'id', title: 'No', render: (item: GetListRoleItem, index: number) => <span>{index + 1}</span> },
 
-                            { accessor: 'role_name', title: 'BARCODE', render: (item: GetListRoleItem) => <span>{item.role_name}</span> },
+                            { accessor: 'role_name', title: 'Role Name', render: (item: GetListRoleItem) => <span>{item.role_name}</span> },
                         ]}
                     />
                 </div>
