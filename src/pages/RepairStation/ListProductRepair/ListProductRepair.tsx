@@ -386,34 +386,52 @@ const ListProductRepair = () => {
                 </Transition>
             </div>
 
-            <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">List Product Repair </h1>
-                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:mr-auto rtl:ml-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
+            <div className="panel mt-6 min-h-[450px]">
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Product Repair</h5>
+                <div className="relative w-[220px] ms-auto mb-4">
+                    <input
+                        type="text"
+                        className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
+                        <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+                            <path d="M18.5 18.5L22 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                    </button>
+                    <button type="button" className="hover:opacity-80 sm:hidden block absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                            <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                    </button>
                 </div>
-                <div className="datatables panel xl:col-span-2">
+                <div className="datatables">
                     <DataTable
-                        highlightOnHover
-                        className="whitespace-nowrap table-hover "
                         records={dataListProductRepair}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length + (index + 1)}</span> },
-                            { accessor: 'barcode', title: 'Barcode', render: (item: GetListProductRepairItem) => <span>{item.new_barcode_product}</span> },
-                            { accessor: 'firstName', title: 'Nama', render: (item: GetListProductRepairItem) => <span>{item.new_name_product}</span> },
+                            {
+                                accessor: 'id',
+                                title: 'NO',
+                                render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length + (index + 1)}</span>,
+                            },
+                            { accessor: 'barcode', title: 'NEW BARCODE', render: (item: GetListProductRepairItem) => <span className="font-semibold">{item.new_barcode_product}</span> },
+                            { accessor: 'firstName', title: 'NAMA', render: (item: GetListProductRepairItem) => <span className="font-semibold">{item.new_name_product}</span> },
                             {
                                 accessor: 'keterangan',
-                                title: 'Keterangan',
+                                title: 'KETERANGAN',
                                 render: (item: GetListProductRepairItem) => {
                                     const newQualityData = JSON.parse(item.new_quality);
                                     const keterangan = newQualityData.abnormal;
-                                    return <span>{keterangan}</span>;
+                                    return <span className="font-semibold">{keterangan}</span>;
                                 },
                             },
                             {
                                 accessor: 'action',
-                                title: 'Opsi',
+                                title: 'OPSI',
                                 titleClassName: '!text-center',
                                 render: (item: GetListProductRepairItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
