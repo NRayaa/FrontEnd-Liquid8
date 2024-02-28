@@ -425,7 +425,7 @@ const ListProductRepair = () => {
                                 title: 'KETERANGAN',
                                 render: (item: GetListProductRepairItem) => {
                                     const newQualityData = JSON.parse(item.new_quality);
-                                    const keterangan = newQualityData.abnormal;
+                                    const keterangan = newQualityData.damaged || newQualityData.abnormal || newQualityData.lolos;
                                     return <span className="font-semibold">{keterangan}</span>;
                                 },
                             },
