@@ -96,7 +96,7 @@ const ProductByCategory = () => {
 
     return (
         <>
-            <BreadCrumbs base="Storage" basePath="storage/product/category" current="Produk" />
+            <BreadCrumbs base="Storage" basePath="storage/product" current="Produk" />
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product By Category</h5>
                 <div className="relative w-[220px] ms-auto mb-4">
@@ -168,7 +168,7 @@ const ProductByCategory = () => {
                                 title: 'Aksi',
                                 render: (item: NewProductItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/storage/product/category/${item.id}`}>
+                                        <Link to={`/storage/product/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
