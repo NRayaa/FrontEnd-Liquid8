@@ -6,11 +6,12 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import NewBarcodeData from './NewBarcodeData';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import { Alert } from '../../../commons';
 
 const DetailProduct = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data, isSuccess, refetch } = useDetailProductNewQuery(id);
+    const { data, isSuccess, refetch, isError } = useDetailProductNewQuery(id);
     const productNew = useGetAllProductNewQuery({ page: 1, q: '' });
     const [editDetailProduct, results] = useEditDetailProductMutation();
     const [input, setInput] = useState({
@@ -94,6 +95,10 @@ const DetailProduct = () => {
             toast.error('Product updated failed');
         }
     }, [results]);
+
+    if (isError && !data?.data.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
 
     return (
         <>
