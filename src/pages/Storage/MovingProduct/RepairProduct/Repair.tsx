@@ -13,7 +13,7 @@ const Repair = () => {
     const { data, isSuccess, refetch } = useGetRepairMovingProductsQuery(undefined);
     const [unrepairMovingProduct, results] = useUnrepairMovingProductMutation();
 
-    const dataRepairMovingProduct = useMemo(() => {
+    const dataRepairMovingProduct: any = useMemo(() => {
         if (isSuccess) {
             return data.data.resource.data;
         }
@@ -121,7 +121,7 @@ const Repair = () => {
                         className="whitespace-nowrap table-hover "
                         records={dataRepairMovingProduct}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true, render: (item, index: number) => <span>{index + 1}</span> },
+                            { accessor: 'id', title: 'No', sortable: true, render: (item: any, index: number) =><span>{(page - 1) * dataRepairMovingProduct?.length ?? 0 + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'Barcode Repair', sortable: true, render: (item) => <span>{item.barcode}</span> },
                             { accessor: 'firstName', title: 'Nama Repair', sortable: true, render: (item) => <span>{item.repair_name}</span> },
                             { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item) => <span>{item.total_products}</span> },

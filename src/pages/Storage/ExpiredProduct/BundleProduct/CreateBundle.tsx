@@ -31,13 +31,13 @@ const CreateBundle = () => {
     const [customPrice, setCustomPrice] = useState<string>('');
     const [totalProductBundle, setTotalProductBundle] = useState<string>('');
 
-    const expiredProducts = useMemo(() => {
+    const expiredProducts: any = useMemo(() => {
         if (isSuccess) {
             return data?.data.resource.data;
         }
     }, [data]);
 
-    const filterBundlesProducts = useMemo(() => {
+    const filterBundlesProducts: any = useMemo(() => {
         if (filterBundles.isSuccess) {
             return filterBundles.data.data.resource.data.data;
         }
@@ -188,7 +188,7 @@ const CreateBundle = () => {
                                 className="whitespace-nowrap table-hover "
                                 records={expiredProducts}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{(leftTablePage - 1) * expiredProducts?.length + (index + 1)}</span> },
                                     { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
                                     {
                                         accessor: 'firstName',
@@ -229,7 +229,7 @@ const CreateBundle = () => {
                                 className="whitespace-nowrap table-hover "
                                 records={filterBundlesProducts}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{(rightTablePage - 1) * filterBundlesProducts?.length + (index + 1)}</span> },
                                     { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
                                     { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
                                     {

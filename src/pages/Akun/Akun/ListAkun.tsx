@@ -16,7 +16,7 @@ const ListAkun = () => {
     const { data: listRoleData, refetch: listRefetch } = useGetListRoleQuery(undefined);
     const [deleteAccount, results] = useDeleteAccountMutation();
 
-    const listAkun = useMemo(() => {
+    const listAkun: any = useMemo(() => {
         return listAkunData?.data.resource.data;
     }, [listAkunData]);
 
@@ -71,7 +71,7 @@ const ListAkun = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListAkunItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: GetListAkunItem, index: number) =><span>{(page - 1) * listAkun?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name',

@@ -524,7 +524,7 @@ const ListBuyer = () => {
     const [initialRecords2, setInitialRecords2] = useState(sortBy(rowData, 'firstName'));
     const [recordsData2, setRecordsData2] = useState(initialRecords2);
 
-    const listBuyer = useMemo(() => {
+    const listBuyer: any = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
@@ -567,7 +567,7 @@ const ListBuyer = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListBuyerItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer?.length ?? 1 + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name_buyer',

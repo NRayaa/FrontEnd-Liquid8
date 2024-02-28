@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BreadCrumbs } from '../../../components';
+import { BreadCrumbs } from '../../../../components';
 import { DataTable } from 'mantine-datatable';
-import { useDeleteProductNewMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
-import { NewProductItem } from '../../../store/services/types';
-import { formatDate, formatRupiah } from '../../../helper/functions';
+import { useDeleteProductNewMutation, useGetAllProductNewQuery, useProductByColorQuery } from '../../../../store/services/productNewApi';
+import { NewProductItem } from '../../../../store/services/types';
+import { formatDate, formatRupiah } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
-import { Alert } from '../../../commons';
+import { Alert } from '../../../../commons';
 
-const Product = () => {
+const ProductByColor = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isError, refetch, isSuccess } = useGetAllProductNewQuery({ page, q: search });
+    const { data, isError, refetch, isSuccess } = useProductByColorQuery({ page, q: search });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -98,7 +98,7 @@ const Product = () => {
         <>
             <BreadCrumbs base="Storage" basePath="storage/product" current="Produk" />
             <div className="panel mt-6 min-h-[450px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product by Color</h5>
                 <div className="relative w-[220px] ms-auto mb-4">
                     <input
                         type="text"
@@ -127,7 +127,7 @@ const Product = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: NewProductItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: NewProductItem, index: number) => <span>{(page - 1) * productNewData?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'new barcode product',
@@ -193,4 +193,4 @@ const Product = () => {
     );
 };
 
-export default Product;
+export default ProductByColor;

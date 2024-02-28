@@ -34,6 +34,12 @@ export const productNewApi = createApi({
         getDisplayExpired: builder.query<ProductExpired, { page: number; q: string }>({
             query: ({ page, q }) => `/new_product/display-expired?page=${page}&q=${q}`,
         }),
+        productByCategory: builder.query<any, {q: string; page: number}>({
+            query: ({q, page}) => `/product_byCategory?page=${page}&q=${q}`
+        }),
+        productByColor: builder.query<any, {q: string; page: number}>({
+            query: ({q, page}) => `/product_byColor?page=${page}&q=${q}`
+        })
     }),
 });
 
@@ -45,4 +51,6 @@ export const {
     useGetDetailExpiredProductQuery,
     useEditDetailProductMutation,
     useGetDisplayExpiredQuery,
+    useProductByCategoryQuery,
+    useProductByColorQuery
 } = productNewApi;

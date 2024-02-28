@@ -230,10 +230,10 @@ const Sidebar = () => {
                                 <AnimateHeight duration={300} height={currentMenu === 'product' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
-                                            <NavLink to="/storage/product">{'By Category'}</NavLink>
+                                            <NavLink to="/storage/product/category">{'By Category'}</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/storage/product-tag">{'By Color'}</NavLink>
+                                            <NavLink to="/storage/product/color">{'By Color'}</NavLink>
                                         </li>
                                     </ul>
                                 </AnimateHeight>

@@ -130,7 +130,7 @@ const ListData = () => {
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: CheckProductDocumentItem, index: number) => <span>{index + 1}</span>,
+                                render: (item: CheckProductDocumentItem, index: number) => <span>{(page - 1) * listsData?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'base_document',
