@@ -14,6 +14,7 @@ import NewBarcodeData from './NewBarcodeData';
 import BarcodePrinted from './BarcodePrinted';
 import { formatRupiah } from '../../../helper/functions';
 import { Alert } from '../../../commons';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const MultiCheck = () => {
     const { state } = useLocation();
@@ -29,6 +30,7 @@ const MultiCheck = () => {
     const [newPriceBarcode, setNewPriceBarcode] = useState('');
     const [oldPriceBarcode, setOldPriceBarcode] = useState('');
     const [codeBarcode, setCodeBarcode] = useState<string>('');
+    const [isQuantity, setIsQuantity] = useState<boolean>(false);
 
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
@@ -39,6 +41,9 @@ const MultiCheck = () => {
     };
     const hideBarcode = () => {
         setIsBarcode(false);
+    };
+    const handleIsQuantity = () => {
+        setIsQuantity(true);
     };
 
     const handleInputBarcode = async () => {
@@ -181,7 +186,14 @@ const MultiCheck = () => {
             </ul>
             <div className="flex gap-4">
                 <div className=" xl:w-1/2 ss:w-full gap-4">
-                    <h1 className="text-lg font-bold my-4">CHECK : {state?.codeDocument}</h1>
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-lg font-bold my-4">CHECK : {state?.codeDocument}</h1>
+                        <Link to="/inbound/check_product/detail_data" state={{ codeDocument: state?.codeDocument }}>
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                    </div>
                     <form className="w-full panel mb-5 col-span-2 gap-4 flex items-center">
                         <div className="relative w-full">
                             <input
@@ -222,6 +234,7 @@ const MultiCheck = () => {
                                     qty={!isResetValue ? oldData?.old_quantity_product : ''}
                                     handleSetNewPercentagePriceInput={handleSetNewPercentagePriceInput}
                                     handleSetCustomQuantityInput={handleSetCustomQuantityInput}
+                                    handleIsQuantity={handleIsQuantity}
                                 />
                             ) : (
                                 <TagColorData
@@ -250,6 +263,7 @@ const MultiCheck = () => {
                         handleSetNewPriceProduct={handleSetNewPriceProduct}
                         customQuantity={customQuantity}
                         codeBarcode={codeBarcode}
+                        isQuantity={isQuantity}
                     />
                 )}
                 {isBarcode && <BarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}

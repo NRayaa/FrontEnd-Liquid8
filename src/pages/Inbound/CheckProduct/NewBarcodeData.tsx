@@ -8,9 +8,10 @@ interface NewBarcodeData {
     header: string;
     handleSetNewPercentagePriceInput: (price: string) => void;
     handleSetCustomQuantityInput: (qty: string) => void;
+    handleIsQuantity: () => void;
 }
 
-const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header, handleSetNewPercentagePriceInput, handleSetCustomQuantityInput }) => {
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header, handleSetNewPercentagePriceInput, handleSetCustomQuantityInput, handleIsQuantity }) => {
     const [inputQuantity, setInputQuantity] = useState<string>('');
     const [inputPrice, setInputPrice] = useState<string>('');
 
@@ -20,6 +21,7 @@ const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty
     }, [qty, newPrice]);
 
     const handleInputQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+        handleIsQuantity();
         setInputQuantity(e.target.value);
         handleSetCustomQuantityInput(e.target.value);
     };

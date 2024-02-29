@@ -13,7 +13,7 @@ const DetailListData = () => {
     const { state } = useLocation();
 
     const [page, setPage] = useState<number>(1);
-    const { data } = useDetailProductOldQuery({ codeDocument: state.codeDocument, page });
+    const { data, refetch } = useDetailProductOldQuery({ codeDocument: state.codeDocument, page });
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -26,6 +26,10 @@ const DetailListData = () => {
                 return data?.data.resource.data;
             }
         }
+    }, [data]);
+
+    useEffect(() => {
+        refetch();
     }, [data]);
 
     return (
