@@ -37,6 +37,7 @@ interface ProductCheck {
     handleSetNewPriceProduct: (newPrice: string) => void;
     customQuantity: string;
     codeBarcode: string;
+    isQuantity: boolean;
 }
 
 const ProductCheck: React.FC<ProductCheck> = ({
@@ -51,6 +52,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     handleSetNewPriceProduct,
     customQuantity,
     codeBarcode,
+    isQuantity,
 }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
     const [newProduct, results] = useNewProductMutation();
@@ -84,6 +86,14 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
     }, [tagColor]);
 
+    const productQuantity = useMemo(() => {
+        if (isQuantity) {
+            return customQuantity;
+        } else {
+            return oldData.old_quantity_product;
+        }
+    }, [isQuantity]);
+
     const handleSendLolos = async () => {
         try {
             const body = {
@@ -92,7 +102,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_barcode_product: codeBarcode,
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
-                new_quantity_product: customQuantity,
+                new_quantity_product: productQuantity,
                 new_price_product: newPrice,
                 old_price_product: oldData.old_price_product,
                 new_date_in_product: newDateProduct,
@@ -117,7 +127,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_barcode_product: codeBarcode,
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
-                new_quantity_product: customQuantity,
+                new_quantity_product: productQuantity,
                 new_price_product: newPrice,
                 old_price_product: oldData.old_price_product,
                 new_date_in_product: newDateProduct,
@@ -143,7 +153,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_barcode_product: codeBarcode,
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
-                new_quantity_product: customQuantity,
+                new_quantity_product: productQuantity,
                 new_price_product: newPrice,
                 old_price_product: oldData.old_price_product,
                 new_date_in_product: newDateProduct,
@@ -227,7 +237,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                         <Tab.Panel>
                             <div className="grid grid-cols-3 gap-4">
                                 {productCheckData?.length !== 0 &&
-                                    productCheckData?.map((option) => (
+                                    productCheckData?.map((option: any) => (
                                         <label key={option.id} className="flex items-center mt-1 cursor-pointer">
                                             <input
                                                 disabled={tagColor && true}
