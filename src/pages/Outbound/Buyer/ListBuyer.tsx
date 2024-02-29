@@ -567,7 +567,7 @@ const ListBuyer = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer?.length ?? 1 + (index + 1)}</span>,
+                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name_buyer',
