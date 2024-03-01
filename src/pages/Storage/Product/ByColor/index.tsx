@@ -131,8 +131,8 @@ const ProductByColor = () => {
                             },
                             {
                                 accessor: 'new barcode product',
-                                title: 'NEW BARCODE',
-                                render: (item: NewProductItem) => <span className="font-semibold">{item.new_barcode_product}</span>,
+                                title: 'OLD BARCODE',
+                                render: (item: NewProductItem) => <span className="font-semibold">{item.old_barcode_product}</span>,
                             },
                             {
                                 accessor: 'old barcode product',
