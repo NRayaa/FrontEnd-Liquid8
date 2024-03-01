@@ -28,7 +28,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Data
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_data}</td>
-                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.precentage_total_data ?? '1')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.precentage_total_data ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">2</td>
@@ -36,7 +36,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Data In
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_data_in}</td>
-                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_in ?? '1')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.percentage_in ?? '1'} %</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">3</td>
@@ -44,7 +44,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Data Lolos
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_data_lolos}</td>
-                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_lolos ?? '1')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.percentage_lolos ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">4</td>
@@ -52,7 +52,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Data Damaged
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_data_damaged}</td>
-                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_damaged ?? '1')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.percentage_damaged ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">5</td>
@@ -60,7 +60,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Data Abnormal
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_data_abnormal}</td>
-                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_abnormal ?? '1')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.percentage_abnormal ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">6</td>
@@ -68,7 +68,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Discrepancy
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_discrepancy}</td>
-                    <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_discrepancy ?? '1')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.percentage_discrepancy ?? '1'}%</td>
                 </tr>
             </tbody>
         </table>

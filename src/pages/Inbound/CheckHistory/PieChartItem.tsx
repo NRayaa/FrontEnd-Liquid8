@@ -20,7 +20,7 @@ const PieChartItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData }) => {
                     show: false,
                 },
             },
-            labels: ['Total data lolos', 'Total data demaged', 'Total discrepancy', 'Total data abnormal'],
+            labels: ['Total data lolos', 'Total data damaged', 'Total discrepancy', 'Total data abnormal'],
             colors: ['#805DCA', '#00AB55', '#E7515A', '#E2A03F'],
             responsive: [
                 {
