@@ -144,6 +144,44 @@ interface CheckProductDocument {
         };
     };
 }
+interface ProductApprovmentItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: number;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: null | string;
+    created_at: string;
+    updated_at: string;
+}
+interface ProductApprovment {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: ProductApprovmentItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: CheckProductDocumentLinks[];
+            next_page_url: null;
+            path: string;
+            per_page: number;
+            prev_page_url: null;
+            to: number;
+            total: number;
+        };
+    };
+}
 
 interface GetBarcodeBody {
     code_document: string;
@@ -323,6 +361,15 @@ interface CheckAllProducts {
         };
     };
 }
+interface HistorySubProductItem {
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    damaged_value: string;
+    new_quantity_product: number;
+    old_price_product: string;
+}
 interface GetRiwayatcheckItem {
     id: number;
     code_document: string;
@@ -340,7 +387,20 @@ interface GetRiwayatcheckItem {
     percentage_discrepancy: string;
     created_at: string;
     updated_at: string;
+    damaged: {
+        products: HistorySubProductItem[];
+        total_old_price: number;
+    };
+    lolos: {
+        products: HistorySubProductItem[];
+        total_old_price: number;
+    };
+    abnormal: {
+        products: HistorySubProductItem[];
+        total_old_price: number;
+    };
 }
+
 interface DetailGetRiwayatcheck {
     data: {
         status: boolean;
@@ -534,7 +594,7 @@ interface DetailBundleResponse {
             total_price_custom_bundle: string;
             total_product_bundle: string;
             barcode_bundle: string;
-            product_bundles: NewProductItem[]
+            product_bundles: NewProductItem[];
             created_at: string;
             updated_at: string;
         };
@@ -1286,6 +1346,24 @@ interface DetailRepairResponse {
         };
     };
 }
+interface SaleReportResponse {
+    data: {
+        category_report: [
+            {
+                category: string;
+                total_quantity: number;
+                total_price: number;
+            },
+            {
+                category: string;
+                total_quantity: number;
+                total_price: number;
+            }
+        ];
+        NameBarcode_report: string[][] | number[][];
+    };
+    message: string;
+}
 
 export type {
     UserDataItem,
@@ -1370,4 +1448,8 @@ export type {
     GetNotifByRoleItem,
     RepairResponse,
     DetailRepairResponse,
+    HistorySubProductItem,
+    SaleReportResponse,
+    ProductApprovmentItem,
+    ProductApprovment,
 };

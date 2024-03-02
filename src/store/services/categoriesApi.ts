@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetCategories, NewProduct, NewProductBody } from './types';
+import { ProductApprovment, GetCategories, NewProduct, NewProductBody } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const categoriesApi = createApi({
@@ -11,10 +11,13 @@ export const categoriesApi = createApi({
         }),
         newProduct: builder.mutation<NewProduct, any>({
             query: (body) => ({
-                url: '/new_products',
+                url: '/product-approves',
                 method: 'POST',
                 body,
             }),
+        }),
+        getProductApproves: builder.query<ProductApprovment, number>({
+            query: (page) => `/product-approves?page=${page}`,
         }),
         createCategory: builder.mutation<any, any>({
             query: (body) => ({
@@ -39,4 +42,4 @@ export const categoriesApi = createApi({
     }),
 });
 
-export const { useGetCategoriesQuery, useNewProductMutation, useCreateCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation } = categoriesApi;
+export const { useGetCategoriesQuery, useNewProductMutation, useCreateCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation, useGetProductApprovesQuery } = categoriesApi;

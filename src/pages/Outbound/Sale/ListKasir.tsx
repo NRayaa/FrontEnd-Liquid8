@@ -54,7 +54,11 @@ const ListKasir = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListSaleDocumentItem, index: number) => <span><span>{(page - 1) * listSaleDocument?.length + (index + 1)}</span></span>,
+                                render: (item: GetListSaleDocumentItem, index: number) => (
+                                    <span>
+                                        <span>{(page - 1) * listSaleDocument?.length + (index + 1)}</span>
+                                    </span>
+                                ),
                             },
                             {
                                 accessor: 'Barcode',

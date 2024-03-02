@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetListSale, GetListSaleDocument, GetShowSaleDocument, } from './types';
+import { GetListSale, GetListSaleDocument, GetShowSaleDocument, SaleReportResponse } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const saleApi = createApi({
@@ -34,7 +34,10 @@ export const saleApi = createApi({
         getShowSale: builder.query<GetShowSaleDocument, string | undefined>({
             query: (id) => `/sale-documents/${id}`,
         }),
+        getSaleReport: builder.query<SaleReportResponse, string | undefined>({
+            query: (code_document_sale) => `/sale-report?code_document_sale=${code_document_sale}`,
+        }),
     }),
 });
 
-export const { useGetListSaleQuery, useAddSaleMutation, useSaleFinishMutation, useDeleteSaleMutation, useGetListSaleDocumentQuery, useGetShowSaleQuery } = saleApi;
+export const { useGetListSaleQuery, useAddSaleMutation, useSaleFinishMutation, useDeleteSaleMutation, useGetListSaleDocumentQuery, useGetShowSaleQuery, useGetSaleReportQuery } = saleApi;
