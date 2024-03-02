@@ -19,6 +19,19 @@ export const categoriesApi = createApi({
         getProductApproves: builder.query<ProductApprovment, number>({
             query: (page) => `/product-approves?page=${page}`,
         }),
+        getDetailProductApprovesByDoc: builder.query<any, string | undefined>({
+            query: (code_document) => `productApprovesByDoc?search=${code_document}`,
+        }),
+        getDetailProductApproves: builder.query<any, number | undefined>({
+            query: (idProduct) => `/product-approves/${idProduct}`,
+        }),
+        editProductApproves: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/product-approves/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
         createCategory: builder.mutation<any, any>({
             query: (body) => ({
                 url: '/categories',
@@ -42,4 +55,14 @@ export const categoriesApi = createApi({
     }),
 });
 
-export const { useGetCategoriesQuery, useNewProductMutation, useCreateCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation, useGetProductApprovesQuery } = categoriesApi;
+export const {
+    useGetCategoriesQuery,
+    useNewProductMutation,
+    useCreateCategoryMutation,
+    useUpdateCategoryMutation,
+    useDeleteCategoryMutation,
+    useGetProductApprovesQuery,
+    useGetDetailProductApprovesByDocQuery,
+    useGetDetailProductApprovesQuery,
+    useEditProductApprovesMutation,
+} = categoriesApi;

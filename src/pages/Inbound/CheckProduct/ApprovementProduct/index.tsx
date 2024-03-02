@@ -160,7 +160,7 @@ const ApprovementProduct = () => {
                                 title: 'Aksi',
                                 render: (item: ProductApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/check_product/detail_data" state={{ codeDocument: item.code_document }}>
+                                        <Link to={`/inbound/check_product/approvment_product/detail`} state={{ code_document: item.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>

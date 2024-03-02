@@ -26,6 +26,8 @@ const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
 const ApprovementProduct = lazy(() => import('../pages/Inbound/CheckProduct/ApprovementProduct'));
+const DetailApproveProduct = lazy(() => import('../pages/Inbound/CheckProduct/ApprovementProduct/DetailApproveProduct'));
+const DetailProductApprovement = lazy(() => import('../pages/Inbound/CheckProduct/ApprovementProduct/DetailProductApprovement'));
 const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
 const DetailListData = lazy(() => import('../pages/Inbound/CheckProduct/DetailListData'));
 const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
@@ -351,6 +353,16 @@ const routes = [
     {
         path: '/inbound/check_product/approvment_product',
         element: <ApprovementProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product/detail',
+        element: <DetailApproveProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product/detail/:id',
+        element: <DetailProductApprovement />,
         layout: 'default',
     },
 ];
