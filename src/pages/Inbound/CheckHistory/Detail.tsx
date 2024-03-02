@@ -3,14 +3,18 @@ import PieChartItem from './PieChartItem';
 import TablePercentageItem from './TablePercentageItem';
 import { Link, useParams } from 'react-router-dom';
 import { useGetDetailRiwayatCheckQuery, useExportToExcelMutation } from '../../../store/services/riwayatApi';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import TableSubProduct from './TableSubProduct';
 
 const DetailCheckHistory = () => {
     const { id } = useParams();
     const { data, isSuccess } = useGetDetailRiwayatCheckQuery(id);
     const [exportToExcel, results] = useExportToExcelMutation();
+    const [productSelected, setProductSelected] = useState<'LOLOS' | 'DAMAGED' | 'ABNORMAL' | string>('LOLOS');
+
+    const productType = ['LOLOS', 'DAMAGED', 'ABNORMAL'];
 
     const detailCheckData = useMemo(() => {
         if (isSuccess && data.data.status) {
@@ -28,6 +32,16 @@ const DetailCheckHistory = () => {
             console.log(err);
         }
     };
+
+    const productTypeActive = useMemo(() => {
+        if (productSelected === 'LOLOS') {
+            return detailCheckData?.lolos.products;
+        } else if (productSelected === 'DAMAGED') {
+            return detailCheckData?.damaged.products;
+        } else {
+            return detailCheckData?.abnormal.products;
+        }
+    }, [productSelected]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -59,6 +73,16 @@ const DetailCheckHistory = () => {
                     </button>
                 </div>
                 <TablePercentageItem detailCheckData={detailCheckData} />
+            </div>
+            <div className="panel mt-4">
+                <div className="mb-6">
+                    <select id="gridState" className="form-select text-white-dark w-auto" value={productSelected} onChange={(e) => setProductSelected(e.target.value)}>
+                        {productType?.map((item: string, index: number) => {
+                            return <option key={index}>{item}</option>;
+                        })}
+                    </select>
+                </div>
+                <TableSubProduct productTypeActive={productTypeActive} />
             </div>
         </div>
     );

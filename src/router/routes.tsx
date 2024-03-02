@@ -25,6 +25,7 @@ import Notification from '../pages/Notification/Notification';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
+const ApprovementProduct = lazy(() => import('../pages/Inbound/CheckProduct/ApprovementProduct'));
 const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
 const DetailListData = lazy(() => import('../pages/Inbound/CheckProduct/DetailListData'));
 const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
@@ -54,6 +55,7 @@ const ListDump = lazy(() => import('../pages/RepairStation/ListDump/ListDump'));
 const Migrate = lazy(() => import('../pages/Outbound/Migrate/Migrate'));
 const ListMigrate = lazy(() => import('../pages/Outbound/Migrate/ListMigrate'));
 const DetailMigrate = lazy(() => import('../pages/Outbound/Migrate/DetailMigrate'));
+const KasirPrint = lazy(() => import('../pages/Outbound/Sale/KasirPrint'));
 
 const routes = [
     // Authentication
@@ -339,6 +341,16 @@ const routes = [
     {
         path: '/buyer/buyer/list_buyer/detail_buyer/:id',
         element: <DetailBuyer />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/sale/kasir/print/:code_document_sale',
+        element: <KasirPrint />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product',
+        element: <ApprovementProduct />,
         layout: 'default',
     },
 ];

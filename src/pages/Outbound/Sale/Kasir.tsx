@@ -1,6 +1,6 @@
 import React, { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation } from '../../../store/services/saleApi';
 import { GetListBuyerItem, GetListSaleItem, NewProductItem } from '../../../store/services/types';
@@ -452,10 +452,13 @@ const Kasir = () => {
                 </div>
                 <div className="relative w-[220px]"></div>
                 <div>
-                    <div className="mb-4 flex justify-end">
+                    <div className="mb-4 flex justify-end space-x-2">
                         <button type="button" className="btn btn-primary uppercase px-6" onClick={handleFinishSale}>
                             Sale
                         </button>
+                        <Link to={`/outbound/sale/kasir/print/${twolastItem?.code_document_sale}`} type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto">
+                            Export data
+                        </Link>
                     </div>
                     <div className="grid grid-cols-2 space-x-6 items-end">
                         <form className="w-[400px] cols-span-1 mb-4 ">

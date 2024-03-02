@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableHistoryCheckItem } from './TableHistoryCheckItem';
-import { convertPercentage } from '../../../helper/functions';
+import { convertPercentage, formatRupiah } from '../../../helper/functions';
 
 const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData }) => {
     return (
@@ -69,6 +69,30 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_discrepancy}</td>
                     <td className="px-6 py-4">{convertPercentage(detailCheckData?.percentage_discrepancy ?? '1')}</td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">7</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Old Price Damaged
+                    </th>
+                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.damaged.total_old_price))}</td>
+                    <td></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">8</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Old Price Lolos
+                    </th>
+                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.lolos.total_old_price))}</td>
+                    <td></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">9</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Old Price Abnormal
+                    </th>
+                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.abnormal.total_old_price))}</td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
