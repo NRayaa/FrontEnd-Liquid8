@@ -1,6 +1,7 @@
 import { useGetSaleReportQuery } from '../../../store/services/saleApi';
 import { useParams } from 'react-router-dom';
 import LogoLiquid from '/assets/images/logo-barcode.png';
+import { formatDate } from '../../../helper/functions';
 
 const ReportTable = () => {
     const { code_document_sale } = useParams();
@@ -57,7 +58,7 @@ const ReportTable = () => {
                             </tr>
                             <tr>
                                 <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46 }}>
-                                    <h1 style={{ fontSize: 36 }}></h1>
+                                    <h1 style={{ fontSize: 36 }}>{data?.buyer.id}</h1>
                                 </td>
                             </tr>
                         </table>
@@ -69,11 +70,11 @@ const ReportTable = () => {
                     <table border={1}>
                         <tr>
                             <td style={{ width: '50%' }}>
-                                <h5>Nama :</h5>
-                                <h5>Asal :</h5>
-                                <h5>HP :</h5>
-                                <h5>NPWP :</h5>
-                                <h5>Tanggal :</h5>
+                                <h5>Nama : {data?.buyer.buyer_name_document_sale}</h5>
+                                <h5>Asal : {data?.buyer.buyer_address_document_sale}</h5>
+                                <h5>HP : {data?.buyer.buyer_phone_document_sale}</h5>
+                                <h5>NPWP : -</h5>
+                                <h5>Tanggal : {formatDate(data?.buyer.created_at ?? '')}</h5>
                             </td>
                             <td style={{ width: '50%' }}>
                                 <h5 style={{ textDecoration: 'underline', fontWeight: 'bold' }}>Catatan Pembelian</h5>

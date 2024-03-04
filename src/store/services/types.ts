@@ -1348,21 +1348,37 @@ interface DetailRepairResponse {
 }
 interface SaleReportResponse {
     data: {
-        category_report: [
-            {
-                category: string;
-                total_quantity: number;
-                total_price: number;
-            },
-            {
-                category: string;
-                total_quantity: number;
-                total_price: number;
-            }
-        ];
+        category_report: {
+            category: string | null;
+            total_quantity: number;
+            total_price: number;
+        }[];
         NameBarcode_report: string[][] | number[][];
     };
     message: string;
+    buyer: {
+        id: number;
+        code_document_sale: string;
+        buyer_name_document_sale: string;
+        buyer_phone_document_sale: string;
+        buyer_address_document_sale: string;
+        total_product_document_sale: number;
+        total_price_document_sale: string;
+        status_document_sale: string;
+        created_at: string;
+        updated_at: string;
+        sales: {
+            id: number;
+            code_document_sale: string;
+            product_name_sale: string;
+            product_barcode_sale: string;
+            product_price_sale: string;
+            product_qty_sale: number;
+            status_sale: string;
+            created_at: string;
+            updated_at: string;
+        }[];
+    };
 }
 
 export type {
