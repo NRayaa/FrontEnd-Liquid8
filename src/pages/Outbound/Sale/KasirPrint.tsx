@@ -1,6 +1,6 @@
-import React from 'react';
 import { useGetSaleReportQuery } from '../../../store/services/saleApi';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import LogoLiquid from '/assets/images/logo-barcode.png';
 
 const ReportTable = () => {
     const { code_document_sale } = useParams();
@@ -29,48 +29,182 @@ const ReportTable = () => {
 
     return (
         <>
-            <div className="print-container">
-                <h2 style={{ marginBottom: 16 }}>{data?.message}</h2>
-                <h3>Category Report</h3>
-                <table style={{ marginBottom: 24 }} border={1}>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Total Quantity</th>
-                            <th>Total Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.data.category_report.map((item, index) => (
-                            <tr key={index}>
-                                <td>{item.category}</td>
-                                <td>{item.total_quantity}</td>
-                                <td>{item.total_price}</td>
+            <div className="print-container" style={{ fontFamily: 'sans-serif' }}>
+                {/* header */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
+                        <table border={1} style={{ marginBottom: 2 }}>
+                            <tr>
+                                <td>FORM VALIDASI</td>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                <h3>NameBarcode Report</h3>
-                <table border={1}>
-                    <thead>
-                        <tr>
-                            <th>Barang</th>
-                            <th>Nama Produk</th>
-                            <th>Barcode</th>
-                            <th>Total Harga</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.data?.NameBarcode_report.map((item, index) => (
-                            <tr key={index}>
-                                {item.map((subItem, subIndex) => (
-                                    <td key={subIndex}>{subItem}</td>
-                                ))}
+                            <tr>
+                                <td>/LMS/I/2024</td>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </table>
+                        <table border={1}>
+                            <tr>
+                                <td>Sales Reference</td>
+                            </tr>
+                            <tr>
+                                <td style={{ height: 18 }}></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table border={1}>
+                            <tr>
+                                <td>BUYER ID</td>
+                            </tr>
+                            <tr>
+                                <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46 }}>
+                                    <h1 style={{ fontSize: 36 }}></h1>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <img src={LogoLiquid} alt="barcode" style={{ marginTop: '-10px' }} width={120} />
+                </div>
+                <div style={{ marginTop: 16, marginBottom: 16 }}>
+                    <h3 style={{ fontSize: 12 }}>A. Identitas Buyer</h3>
+                    <table border={1}>
+                        <tr>
+                            <td style={{ width: '50%' }}>
+                                <h5>Nama :</h5>
+                                <h5>Asal :</h5>
+                                <h5>HP :</h5>
+                                <h5>NPWP :</h5>
+                                <h5>Tanggal :</h5>
+                            </td>
+                            <td style={{ width: '50%' }}>
+                                <h5 style={{ textDecoration: 'underline', fontWeight: 'bold' }}>Catatan Pembelian</h5>
+                                <p style={{ fontSize: 12 }}>
+                                    Masing-masing pihak tidak bertanggung jawab atas, perbuatan melawan hukum, kelalaian, pelanggaran atau segala kerugian, kerusakan, ongkos atau biaya dalam bentuk
+                                    apapun yang harus dibayar atau diderita oleh pihak yang lain (a) baik yang bersifat tidak langsung atau konsekuensial atau (b) yang terkait dengan kerugian ekonomi,
+                                    keuntungan atau reputasi bisnis.
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <p style={{ marginTop: 12, fontSize: 12 }}>
+                        Bahwa yang bersangkutan di atas telah melakukan pemilihan dan pemilahan atas barang yang berada di area Liquid8 Wholesale dan sepakat untuk melakukan pembelian sebagaimana
+                        detail barang & harga berlaku di bawah:
+                    </p>
+                </div>
+                {/* tables */}
+                {/* footer */}
+                <div>
+                    <h3 style={{ fontSize: 12 }}>B. Informasi Harga Jual & Diskon berlaku</h3>
+                    <table style={{ marginBottom: 24 }} border={1}>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Total Quantity</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.data.category_report.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.category}</td>
+                                    <td>{item.total_quantity}</td>
+                                    <td>{item.total_price}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <table border={1}>
+                        <thead>
+                            <tr>
+                                <th>Barang</th>
+                                <th>Nama Produk</th>
+                                <th>Barcode</th>
+                                <th>Total Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.data?.NameBarcode_report.map((item, index) => (
+                                <tr key={index}>
+                                    {item.map((subItem, subIndex) => (
+                                        <td key={subIndex}>{subItem}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <p style={{ marginTop: 12, fontSize: 12 }}>
+                        Bahwa Buyer telah SETUJU dengan diskon atau harga jual yang telah ditentukan di atas dan SETUJU untuk melakukan transfer sebagaimana total "FINAL PRICE" tertera sebesar
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: 200, borderBottom: '2 solid black' }}>
+                            <h3 style={{ fontWeight: 'bold' }}>Rp</h3>
+                        </div>
+                        <p>(Nol Rupiah)</p>
+                    </div>
+                    <div>
+                        <p> ke rekening di bawah ini :</p>
+                    </div>
+                    <div style={{ width: '100%' }}>
+                        <table border={1} style={{ width: '100%' }}>
+                            <tr>
+                                <td style={{ width: '100%' }}>
+                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                                        <p>NOMOR REKENING :</p>
+                                        <p>178-499-8811</p>
+                                    </div>
+                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                                        <p>NAMA PEMILIK:</p>
+                                        <p>178-499-8811</p>
+                                    </div>
+                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                                        <p>BANK REKENING:</p>
+                                        <p>BCA</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <h3 style={{ fontSize: 12 }}>C. Informasi status pembelian</h3>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                            <ul style={{ listStyle: 'none' }}>
+                                <li>(1) Pembayaran telah dilakukan oleh buyer bersangkutan</li>
+                                <li>(2) Pembayaran telah terkonfirmasi masuk ke rekening yang ditunjuk</li>
+                                <li>(3) Segala label, dan informasi pihak diluar penjual dan pembeli telah di tiadakan</li>
+                                <li>(4) Schedule pickup barang telah di tentukan</li>
+                                <li>(5) Buyer sudah di info barang keluar gudang tidak bisa di kembalikan/refund</li>
+                            </ul>
+                            <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: -40 }}>
+                                    <h5>Sudah</h5>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2, marginTop: -4 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: -40, marginLeft: 6 }}>
+                                    <h5>Belum</h5>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2, marginTop: -4 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 16 }}>
+                        <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
+                            <h5>Buyer</h5>
+                        </div>
+                        <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <h5>Dibuat:</h5>
+                            <h5>Admin Kasir:</h5>
+                        </div>
+                    </div>
+                </div>
             </div>
             <button onClick={handlePrint} className="py-2 px-8 bg-primary text-white rounded-full mt-6">
                 Print
