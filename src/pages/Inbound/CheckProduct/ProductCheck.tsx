@@ -38,6 +38,7 @@ interface ProductCheck {
     customQuantity: string;
     codeBarcode: string;
     isQuantity: boolean;
+    getSelectedCategory: (selected: string) => void;
 }
 
 const ProductCheck: React.FC<ProductCheck> = ({
@@ -53,6 +54,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     customQuantity,
     codeBarcode,
     isQuantity,
+    getSelectedCategory,
 }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
     const [newProduct, results] = useNewProductMutation();
@@ -175,6 +177,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     const handleSelectedLolosOption = ({ value, percentage }: { value: string; percentage: string }) => {
         setSelectedOption(value);
         countPercentage(percentage);
+        getSelectedCategory(value);
     };
 
     useEffect(() => {
