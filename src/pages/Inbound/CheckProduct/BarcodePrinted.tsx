@@ -47,11 +47,11 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
                     <div>
                         <table style={{ borderSpacing: 0 }}>
                             <tr>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Old price</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga Retail</td>
                                 <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'line-through' }}>: {oldPrice}</td>
                             </tr>
                             <tr>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>New Price</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga Diskon</td>
                                 <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {newPrice}</td>
                             </tr>
                         </table>
