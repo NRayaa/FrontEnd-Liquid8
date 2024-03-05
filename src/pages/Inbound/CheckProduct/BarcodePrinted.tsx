@@ -7,9 +7,10 @@ interface BarcodePrint {
     oldPrice: string;
     newPrice: string;
     barcode: string;
+    category: string;
 }
 
-const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode }) => {
+const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, category }) => {
     const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
         if (containerElement) {
@@ -36,7 +37,12 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode })
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Barcode value={barcode} width={1} height={46} />
-                        <img src={LogoLiquid} alt="barcode" style={{ marginTop: '-10px' }} width={120} />
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                            <img src={LogoLiquid} alt="barcode" style={{ marginTop: '-10px' }} width={120} />
+                            <div style={{ height: 26, border: '2px solid black', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <p style={{ fontWeight: 'bold', fontSize: 10 }}>{category}</p>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <table style={{ borderSpacing: 0 }}>

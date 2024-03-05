@@ -31,11 +31,15 @@ const MultiCheck = () => {
     const [oldPriceBarcode, setOldPriceBarcode] = useState('');
     const [codeBarcode, setCodeBarcode] = useState<string>('');
     const [isQuantity, setIsQuantity] = useState<boolean>(false);
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
 
     const [getBarcode, results] = useLazyGetBarcodeQuery();
 
     const [keterangan, setKeterangan] = useState<string>('');
 
+    const getSelectedCategory = (selected: string) => {
+        setSelectedCategory(selected);
+    };
     const showBarcode = () => {
         setIsBarcode(true);
     };
@@ -264,9 +268,10 @@ const MultiCheck = () => {
                         customQuantity={customQuantity}
                         codeBarcode={codeBarcode}
                         isQuantity={isQuantity}
+                        getSelectedCategory={getSelectedCategory}
                     />
                 )}
-                {isBarcode && <BarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} />}
+                {isBarcode && <BarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} category={selectedCategory} />}
             </div>
         </div>
     );
