@@ -1,7 +1,7 @@
 import { useGetSaleReportQuery } from '../../../store/services/saleApi';
 import { useParams } from 'react-router-dom';
 import LogoLiquid from '/assets/images/logo-barcode.png';
-import { formatDate } from '../../../helper/functions';
+import { formatDate, formatTimestamp } from '../../../helper/functions';
 
 const ReportTable = () => {
     const { code_document_sale } = useParams();
@@ -74,7 +74,7 @@ const ReportTable = () => {
                                 <h5>Asal : {data?.buyer.buyer_address_document_sale}</h5>
                                 <h5>HP : {data?.buyer.buyer_phone_document_sale}</h5>
                                 <h5>NPWP : -</h5>
-                                <h5>Tanggal : {formatDate(data?.buyer.created_at ?? '')}</h5>
+                                <h5>Tanggal : {formatTimestamp(data?.buyer.created_at ?? '')}</h5>
                             </td>
                             <td style={{ width: '50%' }}>
                                 <h5 style={{ textDecoration: 'underline', fontWeight: 'bold' }}>Catatan Pembelian</h5>
