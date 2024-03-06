@@ -131,6 +131,13 @@ const ListProductRepair = () => {
     }, [selectedCategory, productData]);
 
     useEffect(() => {
+        setInput((prevState) => ({
+            ...prevState,
+            new_price_product: calculatedPrice,
+        }));
+    }, [selectedCategory]);
+
+    useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
             refetch();

@@ -148,7 +148,7 @@ const Migrate = () => {
                                     render: (e, index: number) => index + 1,
                                 },
                                 {
-                                    accessor: 'new_barcode_product',
+                                    accessor: 'old_barcode_product',
                                     title: 'Barcode',
                                 },
                                 {
@@ -195,7 +195,7 @@ const Migrate = () => {
                                     render: (e, index: number) => index + 1,
                                 },
                                 {
-                                    accessor: 'new_barcode_product',
+                                    accessor: 'old_barcode_product',
                                     title: 'Barcode',
                                 },
                                 {
