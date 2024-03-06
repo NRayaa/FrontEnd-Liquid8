@@ -385,6 +385,7 @@ interface GetRiwayatcheckItem {
     percentage_damaged: string;
     percentage_abnormal: string;
     percentage_discrepancy: string;
+    status_approve: string;
     created_at: string;
     updated_at: string;
     damaged: {
