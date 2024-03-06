@@ -86,7 +86,7 @@ const ListProductRepair = () => {
                 new_status_product: productData?.new_status_product,
                 new_barcode_product: productData?.new_barcode_product,
                 new_name_product: productData?.new_name_product,
-                new_price_product: calculatedPrice,
+                new_price_product: input.new_price_product !== '' ? input.new_price_product : calculatedPrice,
                 new_quantity_product: input.new_quantity_product,
                 new_category_product: input.new_category_product,
             };
@@ -260,8 +260,7 @@ const ListProductRepair = () => {
                                                                 placeholder="Enter Harga"
                                                                 className="form-input"
                                                                 name="new_price_product"
-                                                                // value={calculatedPrice}
-                                                                value={input.new_price_product || calculatedPrice}
+                                                                value={input.new_price_product !== '' ? input.new_price_product : calculatedPrice}
                                                                 onChange={handleInputChange}
                                                             />
                                                         </div>
