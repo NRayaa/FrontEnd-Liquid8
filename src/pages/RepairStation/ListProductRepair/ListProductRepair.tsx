@@ -260,9 +260,9 @@ const ListProductRepair = () => {
                                                                 placeholder="Enter Harga"
                                                                 className="form-input"
                                                                 name="new_price_product"
-                                                                value={calculatedPrice}
+                                                                // value={calculatedPrice}
+                                                                value={input.new_price_product || calculatedPrice}
                                                                 onChange={handleInputChange}
-                                                                readOnly
                                                             />
                                                         </div>
                                                         <div>
