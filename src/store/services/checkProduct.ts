@@ -18,7 +18,13 @@ export const checkProduct = createApi({
                 method: 'DELETE',
             }),
         }),
+        deleteApprove: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-approves/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation } = checkProduct;
+export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation } = checkProduct;

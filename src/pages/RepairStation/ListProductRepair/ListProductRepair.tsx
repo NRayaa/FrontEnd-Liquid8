@@ -84,7 +84,7 @@ const ListProductRepair = () => {
                 old_barcode_product: productData?.old_barcode_product,
                 old_price_product: productData?.old_price_product,
                 new_status_product: productData?.new_status_product,
-                new_barcode_product: productData?.new_barcode_product,
+                new_barcode_product: productData?.old_barcode_product,
                 new_name_product: productData?.new_name_product,
                 new_price_product: input.new_price_product !== '' ? input.new_price_product : calculatedPrice,
                 new_quantity_product: input.new_quantity_product,
@@ -243,7 +243,7 @@ const ListProductRepair = () => {
                                                                 placeholder="Enter Barcode"
                                                                 className="form-input"
                                                                 name="new_barcode_product"
-                                                                value={productData?.new_barcode_product || ''}
+                                                                value={productData?.old_barcode_product || ''}
                                                                 onChange={handleInputChange}
                                                             />
                                                         </div>
@@ -314,7 +314,7 @@ const ListProductRepair = () => {
                                                                             setSelectedCategory(category.id);
                                                                         }}
                                                                     />
-                                                                    <label htmlFor={`category${category.id}`} className="mr-8">
+                                                                    <label htmlFor={`category ${category.id}`} className="mr-8">
                                                                         {category.name_category}
                                                                     </label>
                                                                 </div>
@@ -424,7 +424,7 @@ const ListProductRepair = () => {
                                 title: 'NO',
                                 render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length + (index + 1)}</span>,
                             },
-                            { accessor: 'barcode', title: 'NEW BARCODE', render: (item: GetListProductRepairItem) => <span className="font-semibold">{item.new_barcode_product}</span> },
+                            { accessor: 'barcode', title: 'BARCODE', render: (item: GetListProductRepairItem) => <span className="font-semibold">{item.old_barcode_product}</span> },
                             { accessor: 'firstName', title: 'NAMA', render: (item: GetListProductRepairItem) => <span className="font-semibold">{item.new_name_product}</span> },
                             {
                                 accessor: 'keterangan',

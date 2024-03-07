@@ -6,6 +6,7 @@ import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/ser
 import { formatRupiah, formatYearToDay, generateRandomString } from '../../../helper/functions';
 import BarcodePrinted from './BarcodePrinted';
 import toast from 'react-hot-toast';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 interface ProductCheck {
     oldData: {
@@ -192,7 +193,8 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 resetProductCheckShow();
             }
         } else if (results.isError) {
-            toast.error(results?.data?.data?.message ?? 'error');
+            const fetchError = results.error as FetchBaseQueryError;
+            toast.error((fetchError.data as any)?.old_barcode_product ?? 'error');
         }
     }, [results]);
 
