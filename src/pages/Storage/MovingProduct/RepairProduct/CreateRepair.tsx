@@ -193,7 +193,12 @@ const CreateRepair = () => {
                                 records={expiredProducts}
                                 columns={[
                                     { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
+                                    {
+                                        accessor: 'barcode',
+                                        title: 'Barcode LQD',
+                                        sortable: true,
+                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.new_barcode_product : item.old_barcode_product}</span>,
+                                    },
                                     {
                                         accessor: 'firstName',
                                         title: 'Nama Produk',
@@ -201,10 +206,12 @@ const CreateRepair = () => {
                                         width: 220,
                                         render: (item: ProductExpiredItem) => <p className="truncate">{item.new_name_product}</p>,
                                     },
-                                    { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_category_product}</span> },
+                                    { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProductExpiredItem) => (
+                                        <span>{item.new_tag_product ? item.new_tag_product : item.new_category_product}</span>
+                                    ), },
                                     {
                                         accessor: 'totalMasuk',
-                                        title: 'Total Masuk',
+                                        title: 'Harga',
                                         sortable: true,
                                         render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product)}</span>,
                                     },
@@ -234,7 +241,7 @@ const CreateRepair = () => {
                                 records={filterRepairProducts}
                                 columns={[
                                     { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
+                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.old_barcode_product}</span> },
                                     { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
                                     {
                                         accessor: 'action',

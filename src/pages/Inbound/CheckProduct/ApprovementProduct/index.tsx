@@ -5,7 +5,7 @@ import { useGetProductApprovesQuery } from '../../../../store/services/categorie
 import { CheckProductDocumentItem, ProductApprovmentItem } from '../../../../store/services/types';
 import { formatDate, formatRupiah } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
-import { useDeleteDocumentMutation } from '../../../../store/services/checkProduct';
+import { useDeleteApproveMutation } from '../../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 
@@ -13,7 +13,7 @@ const ApprovementProduct = () => {
     const [search, setSearch] = useState<string>('');
     const [page, setPage] = useState<number>(1);
     const { data, refetch, isError, isSuccess } = useGetProductApprovesQuery(page);
-    const [deleteDocument, results] = useDeleteDocumentMutation();
+    const [deleteApprove, results] = useDeleteApproveMutation();
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
@@ -52,7 +52,7 @@ const ApprovementProduct = () => {
                     padding: '2em',
                 })
                 .then(async (result) => {
-                    await deleteDocument(id);
+                    await deleteApprove(id);
                     if (result.value) {
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
