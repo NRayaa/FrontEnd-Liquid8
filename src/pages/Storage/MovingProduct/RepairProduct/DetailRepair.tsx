@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 import { useGetShowRepairMovingProductsQuery } from '../../../../store/services/repairMovingApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
 
 const DetailRepair = () => {
     const { id }: any = useParams();
@@ -36,33 +37,52 @@ const DetailRepair = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Repair</h1>
             </div>
             <div>
-                <form className="w-[400px] mb-4 ">
-                    <div className="flex items-center justify-between ">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Barcode Repair :
-                        </label>
-                        <input id="categoryName" disabled type="text" value={detailDataBundle?.barcode} className=" form-input w-[250px]" required />
+                <div className="flex divide-x mb-4 items-center">
+                    <form className="w-[400px] pr-4">
+                        <div className="flex items-center justify-between ">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Barcode Repair :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={detailDataBundle?.barcode} className=" form-input w-[250px]" required />
+                        </div>
+                        <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
+                        <div className="flex items-center justify-between mb-2 mt-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Nama Repair :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={detailDataBundle?.repair_name} className=" form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Awal :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Custom Display :
+                            </label>
+                            <input
+                                id="categoryName"
+                                disabled
+                                type="text"
+                                value={formatRupiah(detailDataBundle?.total_custom_price ?? '0')}
+                                placeholder="Rp"
+                                className=" form-input w-[250px]"
+                                required
+                            />
+                        </div>
+                    </form>
+                    <div className="px-4">
+                        <BarcodePrinted
+                            barcode={detailDataBundle?.barcode ?? ''}
+                            newPrice={detailDataBundle?.total_custom_price ?? '0'}
+                            oldPrice={detailDataBundle?.total_price ?? '0'}
+                            category={detailDataBundle?.repair_name ?? ''}
+                            isBundle
+                        />
                     </div>
-                    <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
-                    <div className="flex items-center justify-between mb-2 mt-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Repair :
-                        </label>
-                        <input id="categoryName" disabled type="text" value={detailDataBundle?.repair_name} className=" form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Total Awal :
-                        </label>
-                        <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Custom Display :
-                        </label>
-                        <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price_custom ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
-                    </div>
-                </form>
+                </div>
                 <div className="panel">
                     <div className="flex items-center justify-between mb-4">
                         <Link to="/storage/moving_product/repair">
