@@ -1335,7 +1335,7 @@ interface DetailRepairResponse {
             id: number;
             repair_name: string;
             total_price: string;
-            total_price_custom: string;
+            total_custom_price: string;
             total_products: string;
             barcode: string;
             created_at: string;
