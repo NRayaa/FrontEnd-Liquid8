@@ -39,14 +39,14 @@ const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive }) => {
                         title: 'Name',
                         render: (item: HistorySubProductItem) => (
                             <div>
-                                <span className="font-semibold">{item.new_name_product}</span>
+                                <span className="font-semibold">{item.new_name_product ?? item.old_name_product}</span>
                             </div>
                         ),
                     },
                     {
                         accessor: 'Quantity',
                         title: 'Quantity',
-                        render: (item: HistorySubProductItem) => <span className="font-semibold truncate">{item.new_quantity_product}</span>,
+                        render: (item: HistorySubProductItem) => <span className="font-semibold truncate">{item.new_quantity_product ?? item.old_quantity_product}</span>,
                     },
                     {
                         accessor: 'Price',
