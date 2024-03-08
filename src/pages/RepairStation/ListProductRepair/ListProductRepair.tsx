@@ -308,7 +308,7 @@ const ListProductRepair = () => {
                                                         <NewBarcodeData
                                                             barcode={getProductRepairResults.data?.data.resource.new_barcode}
                                                             nama={productData?.new_name_product ?? ''}
-                                                            newPrice={isReset ? productData?.old_price_product : percentagedPrice ?? '0'}
+                                                            newPrice={(isReset ? productData?.old_price_product : percentagedPrice) ?? '0'}
                                                             qty={productData?.new_quantity_product ?? '0'}
                                                             header="New Data"
                                                         />
