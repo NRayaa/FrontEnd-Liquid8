@@ -75,7 +75,6 @@ const DetailProduct = () => {
                 deskripsi: dataDetailProduct?.deskripsi,
                 _method: 'PUT',
             };
-            console.log("DATA SENT", body)
             await editDetailProduct({ id, body });
             refetch();
         } catch (err) {
