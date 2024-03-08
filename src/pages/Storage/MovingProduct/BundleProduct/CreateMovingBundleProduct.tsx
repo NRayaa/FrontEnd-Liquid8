@@ -215,7 +215,7 @@ const CreateMovingBundleProduct = () => {
                                         accessor: 'harga',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product)}</span>,
+                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product ?? '0')}</span>,
                                     },
                                     {
                                         accessor: 'action',

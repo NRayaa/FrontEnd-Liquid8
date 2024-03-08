@@ -66,7 +66,7 @@ const DetailProduct = () => {
                 old_name_product: dataDetailProduct?.new_name_product,
                 new_quantity_product: input.new_quantity_product,
                 new_price_product: input.new_price_product,
-                old_price_product: dataDetailProduct?.old_price_product,
+                old_price_product: dataDetailProduct?.old_price_product || '0',
                 new_date_in_product: dataDetailProduct?.new_date_in_product,
                 new_status_product: dataDetailProduct?.new_status_product,
                 condition: condition,
@@ -75,6 +75,7 @@ const DetailProduct = () => {
                 deskripsi: dataDetailProduct?.deskripsi,
                 _method: 'PUT',
             };
+            console.log("DATA SENT", body)
             await editDetailProduct({ id, body });
             refetch();
         } catch (err) {

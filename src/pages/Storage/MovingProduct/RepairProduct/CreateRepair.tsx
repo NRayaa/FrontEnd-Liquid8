@@ -206,14 +206,17 @@ const CreateRepair = () => {
                                         width: 220,
                                         render: (item: ProductExpiredItem) => <p className="truncate">{item.new_name_product}</p>,
                                     },
-                                    { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProductExpiredItem) => (
-                                        <span>{item.new_tag_product ? item.new_tag_product : item.new_category_product}</span>
-                                    ), },
+                                    {
+                                        accessor: 'category',
+                                        title: 'Kategori',
+                                        sortable: true,
+                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.new_tag_product : item.new_category_product}</span>,
+                                    },
                                     {
                                         accessor: 'totalMasuk',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product)}</span>,
+                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product ?? '0')}</span>,
                                     },
                                     {
                                         accessor: 'action',
