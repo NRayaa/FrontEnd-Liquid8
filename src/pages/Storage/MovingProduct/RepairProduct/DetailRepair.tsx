@@ -33,20 +33,20 @@ const DetailRepair = () => {
                 </li>
             </ul>
             <div>
-                <h1 className="text-lg font-semibold py-4">Detail Bundle</h1>
+                <h1 className="text-lg font-semibold py-4">Detail Repair</h1>
             </div>
             <div>
                 <form className="w-[400px] mb-4 ">
                     <div className="flex items-center justify-between ">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Barcode Bundle :
+                            Barcode Repair :
                         </label>
                         <input id="categoryName" disabled type="text" value={detailDataBundle?.barcode} className=" form-input w-[250px]" required />
                     </div>
                     <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
                     <div className="flex items-center justify-between mb-2 mt-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Bundle :
+                            Nama Repair :
                         </label>
                         <input id="categoryName" disabled type="text" value={detailDataBundle?.repair_name} className=" form-input w-[250px]" required />
                     </div>

@@ -113,7 +113,8 @@ const CreateRepair = () => {
 
     useEffect(() => {
         const totalAmount = filterRepair?.data?.data.resource.data.data.reduce((accumulator: any, currentItem: any) => {
-            return accumulator + parseFloat(currentItem.new_price_product);
+            const price = currentItem.new_price_product !== null ? currentItem.new_price_product : currentItem.new_tag_product !== null ? currentItem.fixed_price : 0;
+            return accumulator + parseFloat(price);
         }, 0);
         setTotalPrice(JSON.stringify(totalAmount));
         setCustomPrice(JSON.stringify(totalAmount));
@@ -197,7 +198,7 @@ const CreateRepair = () => {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.new_barcode_product : item.old_barcode_product}</span>,
+                                        render: (item: ProductExpiredItem) => <span>{item.new_category_product ? item.new_barcode_product : item.old_barcode_product}</span>,
                                     },
                                     {
                                         accessor: 'firstName',
@@ -216,7 +217,10 @@ const CreateRepair = () => {
                                         accessor: 'totalMasuk',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product ?? '0')}</span>,
+                                        render: (item: ProductExpiredItem, index: number) => {
+                                            const price = item.new_price_product !== null ? item.new_price_product : item.new_tag_product !== null ? item.fixed_price : '0';
+                                            return <span>{formatRupiah(price)}</span>;
+                                        },
                                     },
                                     {
                                         accessor: 'action',

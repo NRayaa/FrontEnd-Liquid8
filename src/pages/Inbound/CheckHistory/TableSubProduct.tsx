@@ -5,9 +5,13 @@ import { formatRupiah } from '../../../helper/functions';
 
 interface TableSubProduct {
     productTypeActive: HistorySubProductItem[] | undefined;
+    totalRecords: number;
+    recordsPerPage: number;
+    page: number;
+    onPageChange: (page: number) => void;
 }
 
-const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive }) => {
+const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive, totalRecords, recordsPerPage, page, onPageChange }) => {
     return (
         <>
             <DataTable
@@ -54,6 +58,11 @@ const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive }) => {
                         render: (item: HistorySubProductItem) => <span className="font-semibold truncate">{formatRupiah(item.old_price_product)}</span>,
                     },
                 ]}
+                totalRecords={totalRecords}
+                recordsPerPage={recordsPerPage}
+                page={page}
+                onPageChange={onPageChange}
+                minHeight={200}
             />
         </>
     );
