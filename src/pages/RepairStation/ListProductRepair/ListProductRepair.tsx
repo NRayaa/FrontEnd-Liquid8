@@ -12,6 +12,71 @@ import { GetListProductRepairItem, ProdcutItem } from '../../../store/services/t
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
+import { useLazyGetProductRepairQuery } from '../../../store/services/checkProduct';
+import { formatRupiah } from '../../../helper/functions';
+
+interface TagColorData {
+    tag: string;
+    nama: string;
+    harga: string;
+    qty: string;
+}
+
+const TagColorData: React.FC<TagColorData> = ({ tag, nama, harga, qty }) => {
+    return (
+        <div className="flex flex-col gap-4">
+            <h1 className="flex justify-center text-lg font-bold">NEW DATA</h1>
+            <div>
+                <label htmlFor="gridBarcode2">Tag</label>
+                <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" value={tag} />
+            </div>
+            <div>
+                <label htmlFor="gridNama2">Nama</label>
+                <input id="gridNama2" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+            </div>
+            <div>
+                <label htmlFor="gridNama4">Harga</label>
+                <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga)} />
+            </div>
+            <div>
+                <label htmlFor="gridQTY2">QTY</label>
+                <input id="gridQTY2" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+            </div>
+        </div>
+    );
+};
+
+interface NewBarcodeData {
+    barcode: string;
+    nama: string;
+    newPrice: string;
+    qty: string;
+    header: string;
+}
+
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header }) => {
+    return (
+        <div className="flex flex-col gap-4">
+            <h1 className="flex justify-center text-lg font-bold">{header}</h1>
+            <div>
+                <label htmlFor="gridBarcode1">Barcode</label>
+                <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
+            </div>
+            <div>
+                <label htmlFor="gridNama1">Nama</label>
+                <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+            </div>
+            <div>
+                <label htmlFor="gridNama3">Harga</label>
+                <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(newPrice)} />
+            </div>
+            <div>
+                <label htmlFor="gridQTY1">QTY</label>
+                <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+            </div>
+        </div>
+    );
+};
 
 const ListProductRepair = () => {
     const dispatch = useDispatch();
@@ -28,6 +93,10 @@ const ListProductRepair = () => {
     const [repair, setRepair] = useState(false);
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsMutation();
+    // tandanibos
+    const [getProductRepair, getProductRepairResults] = useLazyGetProductRepairQuery();
+    const [countPercentage, setCountPercentage] = useState<number>(0);
+    const [isReset, setIsReset] = useState<boolean>(false);
 
     const dataListProductRepair: any = useMemo(() => {
         return listProductData?.data?.resource?.data;
@@ -50,6 +119,7 @@ const ListProductRepair = () => {
 
     const closePopup = () => {
         setRepair(false);
+        setIsReset(true);
         setInput({
             old_barcode_product: '',
             old_price_product: 0,
@@ -63,20 +133,27 @@ const ListProductRepair = () => {
     };
     const [updateProductRepair, result] = useUpdateProductRepairMutation();
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = ({ value, percentage }: any) => {
         setInput((prevState) => ({
             ...prevState,
-            [e.target.name]: e.target.value,
+            new_category_product: value,
         }));
+        setCountPercentage(parseInt(percentage));
     };
 
-    const handleRepair = (id: number) => {
+    const handleRepair = async (id: number) => {
         setSelectedItem(id);
-        setRepair(true);
         const selectedProduct = dataListProductRepair?.find((product: any) => product.id === id);
+        // tandanibos
+        await getProductRepair({ code_document: selectedProduct.code_document, old_barcode_product: selectedProduct.old_barcode_product });
         setProductData(selectedProduct || null);
-        console.log(id);
     };
+
+    const colorTags = useMemo(() => {
+        if (getProductRepairResults.isSuccess && getProductRepairResults.data.data.resource.color_tags !== undefined) {
+            return getProductRepairResults.data.data.resource.color_tags[0];
+        }
+    }, [getProductRepairResults]);
 
     const handleRepairSend = async (id: number) => {
         try {
@@ -84,14 +161,15 @@ const ListProductRepair = () => {
                 old_barcode_product: productData?.old_barcode_product,
                 old_price_product: productData?.old_price_product,
                 new_status_product: productData?.new_status_product,
-                new_barcode_product: productData?.old_barcode_product,
+                new_barcode_product: colorTags ? productData?.old_barcode_product : getProductRepairResults.data?.data.resource.new_barcode,
                 new_name_product: productData?.new_name_product,
-                new_price_product: input.new_price_product !== '' ? input.new_price_product : calculatedPrice,
-                new_quantity_product: input.new_quantity_product,
-                new_category_product: input.new_category_product,
+                new_price_product: colorTags ? colorTags.fixed_price_color : percentagedPrice,
+                new_quantity_product: productData?.new_quantity_product,
+                new_category_product: colorTags ? productData?.new_category_product : input.new_category_product,
             };
             await updateProductRepair({ id, body });
             setRepair(false);
+            setIsReset(true);
             refetch();
         } catch (err) {
             console.error(err);
@@ -152,6 +230,21 @@ const ListProductRepair = () => {
         }
     }, [results, result]);
 
+    // tandanibos
+    useEffect(() => {
+        if (getProductRepairResults.isSuccess) {
+            setRepair(true);
+        }
+    }, [getProductRepairResults]);
+
+    const percentagedPrice = useMemo(() => {
+        if (productData) {
+            const total = 100 - countPercentage;
+            const percentaged = (parseInt(productData?.old_price_product) * total) / 100;
+            return JSON.stringify(percentaged);
+        }
+    }, [colorTags, countPercentage]);
+
     if (isError && !listProductData?.data?.status) {
         return <Alert message={listProductData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
     }
@@ -204,122 +297,52 @@ const ListProductRepair = () => {
                                         <div className="space-y-5 col-span-2">
                                             <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    <div className="flex flex-col gap-4">
-                                                        <h1 className="flex justify-center text-lg font-bold">Old Data</h1>
-                                                        <div>
-                                                            <label htmlFor="gridBarcode1">Barcode</label>
-                                                            <input
-                                                                id="gridBarcode1"
-                                                                disabled
-                                                                type="text"
-                                                                placeholder="Enter Barcode"
-                                                                className="form-input"
-                                                                value={productData?.old_barcode_product || ''}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridNama1">Nama</label>
-                                                            <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={productData?.new_name_product || ''} />
-                                                        </div>
-                                                        {/* <div> */}
-                                                        <input id="gridNama1" type="hidden" disabled placeholder="Enter Display" className="form-input" value={productData?.new_status_product || ''} />
-                                                        {/* </div> */}
-                                                        <div>
-                                                            <label htmlFor="gridNama3">Harga</label>
-                                                            <input id="gridNama3" disabled type="text" placeholder="Enter Harga" className="form-input" value={productData?.old_price_product || ''} />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridQTY1">QTY</label>
-                                                            <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" value={productData?.new_quantity_product || ''} />
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col gap-4">
-                                                        <h1 className="flex justify-center text-lg font-bold">New Data</h1>
-                                                        <div>
-                                                            <label htmlFor="gridBarcode1">Barcode</label>
-                                                            <input
-                                                                id="gridBarcode1"
-                                                                type="text"
-                                                                placeholder="Enter Barcode"
-                                                                className="form-input"
-                                                                name="new_barcode_product"
-                                                                value={productData?.old_barcode_product || ''}
-                                                                onChange={handleInputChange}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridNama1">Nama</label>
-                                                            <input
-                                                                id="gridNama1"
-                                                                type="text"
-                                                                placeholder="Enter Nama"
-                                                                className="form-input"
-                                                                name="new_name_product"
-                                                                value={productData?.new_name_product || ''}
-                                                                onChange={handleInputChange}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridNama3">Harga</label>
-                                                            <input
-                                                                id="gridNama3"
-                                                                type="text"
-                                                                placeholder="Enter Harga"
-                                                                className="form-input"
-                                                                name="new_price_product"
-                                                                value={input.new_price_product !== '' ? input.new_price_product : calculatedPrice}
-                                                                onChange={handleInputChange}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridQTY1">QTY</label>
-                                                            <input
-                                                                id="gridQTY1"
-                                                                type="text"
-                                                                placeholder="Enter QTY"
-                                                                className="form-input"
-                                                                name="new_quantity_product"
-                                                                value={input.new_quantity_product || ''}
-                                                                onChange={handleInputChange}
-                                                            />
-                                                        </div>
-                                                        {/* <div> */}
-                                                        {/* <label htmlFor="discount">Discount (%)</label> */}
-                                                        <input
-                                                            id="discount"
-                                                            type="hidden"
-                                                            placeholder="Enter Discount"
-                                                            className="form-input"
-                                                            name="discount"
-                                                            value={calculateDiscount()}
-                                                            onChange={handleInputChange}
+                                                    <NewBarcodeData
+                                                        barcode={productData?.old_barcode_product ?? ''}
+                                                        nama={productData?.new_name_product ?? ''}
+                                                        newPrice={productData?.old_price_product ?? '0'}
+                                                        qty={productData?.new_quantity_product ?? '0'}
+                                                        header="Old Data"
+                                                    />
+                                                    {!colorTags ? (
+                                                        <NewBarcodeData
+                                                            barcode={getProductRepairResults.data?.data.resource.new_barcode}
+                                                            nama={productData?.new_name_product ?? ''}
+                                                            newPrice={isReset ? productData?.old_price_product : percentagedPrice ?? '0'}
+                                                            qty={productData?.new_quantity_product ?? '0'}
+                                                            header="New Data"
                                                         />
-                                                        {/* </div> */}
-                                                    </div>
+                                                    ) : (
+                                                        <TagColorData
+                                                            harga={colorTags.fixed_price_color}
+                                                            nama={colorTags.name_color}
+                                                            qty={productData?.new_quantity_product ?? '0'}
+                                                            tag={colorTags.hexa_code_color}
+                                                        />
+                                                    )}
                                                 </div>
                                                 <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-1">
                                                     <div className="flex flex-col gap-4">
                                                         <h1 className="flex justify-start text-lg font-bold">Category</h1>
-                                                        <form className="space-y-5 flex flex-wrap">
+                                                        <div className="grid grid-cols-3 gap-4">
                                                             {dataCategories?.map((category, index) => (
-                                                                <div key={category.id} className="flex items-center w-1/2">
+                                                                <label key={category.id} className="flex items-center mt-1 cursor-pointer">
                                                                     <input
+                                                                        disabled={colorTags}
                                                                         type="radio"
-                                                                        id={`category${category.id}`}
-                                                                        name="new_category_product"
-                                                                        className="mr-2"
+                                                                        className="form-radio text-success peer w-6 h-6"
+                                                                        name="radioOption"
                                                                         value={category.name_category}
                                                                         onChange={(e) => {
-                                                                            handleInputChange(e);
+                                                                            setIsReset(false);
+                                                                            handleInputChange({ value: e.target.value, percentage: category.discount_category });
                                                                             setSelectedCategory(category.id);
                                                                         }}
                                                                     />
-                                                                    <label htmlFor={`category ${category.id}`} className="mr-8">
-                                                                        {category.name_category}
-                                                                    </label>
-                                                                </div>
+                                                                    <span className="text-white-dark">{category.name_category}</span>
+                                                                </label>
                                                             ))}
-                                                        </form>
+                                                        </div>
                                                     </div>
 
                                                     <div className="flex justify-end items-center mt-8">
