@@ -6,63 +6,8 @@ import { useMemo } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import { NewProductItem } from '../../../../store/services/types';
+import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
 
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-    if (type === 15) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Berhasil Dikirim',
-            padding: '10px 20px',
-        });
-    }
-    if (type == 20) {
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'Data Berhasil Ditambah',
-            padding: '10px 20px',
-        });
-    }
-};
 const DetailBundleProduct = () => {
     const { id }: any = useParams();
     const { data, isSuccess } = useDetailBundleProductQuery(id);
@@ -73,7 +18,7 @@ const DetailBundleProduct = () => {
         }
     }, [data]);
 
-    console.log("detailDataBundle", detailDataBundle)
+    console.log('detailDataBundle', detailDataBundle);
 
     return (
         <div>
@@ -96,44 +41,63 @@ const DetailBundleProduct = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Bundle</h1>
             </div>
             <div>
-                <form className="w-[400px] mb-4 ">
-                    {/* <button type="submit" className="btn btn-primary mb-4 px-16">
+                <div className="flex gap-4 items-center mb-4 divide-x divide-gray-500">
+                    <form className="w-[400px]">
+                        {/* <button type="submit" className="btn btn-primary mb-4 px-16">
                         Create Bundle
                     </button> */}
-                    <div className="flex items-center justify-between ">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Barcode Bundle :
-                        </label>
-                        <input id="categoryName" disabled type="text" value={detailDataBundle?.barcode_bundle} className=" form-input w-[250px]" required />
-                    </div>
-                    <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
-                    <div className="flex items-center justify-between mb-2 mt-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Bundle :
-                        </label>
-                        <input id="categoryName" disabled type="text" value={detailDataBundle?.name_bundle} className=" form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Total Awal :
-                        </label>
-                        <input id="categoryName" disabled type="text" value={formatRupiah(detailDataBundle?.total_price_bundle ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Custom Display :
-                        </label>
-                        <input
-                            id="categoryName"
-                            disabled
-                            type="text"
-                            value={formatRupiah(detailDataBundle?.total_price_custom_bundle ?? '0')}
-                            placeholder="Rp"
-                            className=" form-input w-[250px]"
-                            required
+                        <div className="flex items-center justify-between ">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Barcode Bundle :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={detailDataBundle?.barcode_bundle} className=" form-input w-[250px]" required />
+                        </div>
+                        <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
+                        <div className="flex items-center justify-between mb-2 mt-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Nama Bundle :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={detailDataBundle?.name_bundle} className=" form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Awal :
+                            </label>
+                            <input
+                                id="categoryName"
+                                disabled
+                                type="text"
+                                value={formatRupiah(detailDataBundle?.total_price_bundle ?? '0')}
+                                placeholder="Rp"
+                                className=" form-input w-[250px]"
+                                required
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Custom Display :
+                            </label>
+                            <input
+                                id="categoryName"
+                                disabled
+                                type="text"
+                                value={formatRupiah(detailDataBundle?.total_price_custom_bundle ?? '0')}
+                                placeholder="Rp"
+                                className=" form-input w-[250px]"
+                                required
+                            />
+                        </div>
+                    </form>
+                    <div className="px-4">
+                        <BarcodePrinted
+                            barcode={detailDataBundle?.barcode_bundle ?? ''}
+                            newPrice={detailDataBundle?.total_price_custom_bundle ?? '0'}
+                            oldPrice={detailDataBundle?.total_price_bundle ?? '0'}
+                            category={detailDataBundle?.name_bundle ?? ''}
+                            isBundle
                         />
                     </div>
-                </form>
+                </div>
                 {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -158,7 +122,7 @@ const DetailBundleProduct = () => {
                                 { accessor: 'new_barcode_product', title: 'Barcode', sortable: true, render: (item: NewProductItem) => <span>{item.new_barcode_product}</span> },
                                 { accessor: 'new_category_product', title: 'Kategori', sortable: true, render: (item: NewProductItem) => <span>{item.new_category_product}</span> },
                                 { accessor: 'new_name_product', title: 'Nama', sortable: true, render: (item: NewProductItem) => <span>{item.new_name_product}</span> },
-                                { accessor: 'new_price_product', title: 'Harga', sortable: true, render: (item: NewProductItem) => <span>{formatRupiah(item.new_price_product ?? "0")}</span> },
+                                { accessor: 'new_price_product', title: 'Harga', sortable: true, render: (item: NewProductItem) => <span>{formatRupiah(item.new_price_product ?? '0')}</span> },
                                 {
                                     accessor: 'status',
                                     title: 'Status',
