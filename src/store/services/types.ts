@@ -365,8 +365,10 @@ interface HistorySubProductItem {
     code_document: string;
     old_barcode_product: string;
     new_barcode_product: string;
+    old_name_product: string;
     new_name_product: string;
     damaged_value: string;
+    old_quantity_product: number;
     new_quantity_product: number;
     old_price_product: string;
 }

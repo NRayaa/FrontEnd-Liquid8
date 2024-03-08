@@ -7,21 +7,29 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import TableSubProduct from './TableSubProduct';
+import { useDetailProductOldQuery } from '../../../store/services/productOldsApi';
+import { HistorySubProductItem, ItemDetailOldsProduct } from '../../../store/services/types';
 
 const DetailCheckHistory = () => {
     const { id } = useParams();
     const { data, isSuccess } = useGetDetailRiwayatCheckQuery(id);
     const [exportToExcel, results] = useExportToExcelMutation();
-    const [productSelected, setProductSelected] = useState<'LOLOS' | 'DAMAGED' | 'ABNORMAL' | string>('LOLOS');
+    const [productSelected, setProductSelected] = useState<'LOLOS' | 'DAMAGED' | 'ABNORMAL' | 'DISCREPANCY' | string>('LOLOS');
 
-    const productType = ['LOLOS', 'DAMAGED', 'ABNORMAL'];
+    const productType = ['LOLOS', 'DAMAGED', 'ABNORMAL', 'DISCREPANCY'];
 
     const detailCheckData = useMemo(() => {
         if (isSuccess && data.data.status) {
             return data.data.resource;
         }
     }, [data]);
-
+    const { data: detailProductData } = useDetailProductOldQuery({ codeDocument: detailCheckData?.code_document, page: 1 });
+    const detailChecDiscrepancy = useMemo(() => {
+        if (isSuccess && detailProductData?.data.status) {
+            return detailProductData?.data.resource;
+        }
+    }, [detailProductData]);
+    console.log('detailChecDiscrepancy', detailChecDiscrepancy);
     const handleExportData = async () => {
         try {
             const body = {
@@ -38,6 +46,8 @@ const DetailCheckHistory = () => {
             return detailCheckData?.lolos.products;
         } else if (productSelected === 'DAMAGED') {
             return detailCheckData?.damaged.products;
+        } else if (productSelected === 'DISCREPANCY') {
+            return detailChecDiscrepancy?.data;
         } else {
             return detailCheckData?.abnormal.products;
         }
@@ -82,7 +92,7 @@ const DetailCheckHistory = () => {
                         })}
                     </select>
                 </div>
-                <TableSubProduct productTypeActive={productTypeActive} />
+                <TableSubProduct productTypeActive={productTypeActive as HistorySubProductItem[]} />
             </div>
         </div>
     );
