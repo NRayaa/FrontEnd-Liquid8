@@ -22,6 +22,7 @@ import CreateMovingBundleProduct from '../pages/Storage/MovingProduct/BundleProd
 import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
 import MovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
 import Notification from '../pages/Notification/Notification';
+import PalletDetail from '../pages/Storage/Pallet/DetailPallet';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -258,6 +259,11 @@ const routes = [
     {
         path: '/storage/pallet/create_pallet/generate',
         element: <PalletGenerate />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/pallet/detail_pallet/:id',
+        element: <PalletDetail />,
         layout: 'default',
     },
     // Repair Station

@@ -121,7 +121,7 @@ const PalletGenerate = () => {
 
     return (
         <>
-            <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/storage/product" current="Add Category" />
+            <BreadCrumbs base="Home" basePath="/" sub="Pallet" subPath="/storage/pallet" current="Add Pallet" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Pallet Generate</h5>

@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CreatePaletBody, CreatePaletResponse, DeletePaletList, DisplayPallet, FilterDisplayPallet, PaletLists, filterPalletLists } from './types';
+import { CreatePaletBody, CreatePaletResponse, DeletePaletList, DetailPalletProps, DisplayPallet, FilterDisplayPallet, PaletLists, filterPalletLists } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const palletApi = createApi({
@@ -40,6 +40,9 @@ export const palletApi = createApi({
                 body,
             }),
         }),
+        showPallet: builder.query<DetailPalletProps, number>({
+            query: (id) => `/palet/${id}`,
+        }),
     }),
 });
 
@@ -51,4 +54,5 @@ export const {
     useFilterProductListsQuery,
     useDeleteFilterProductMutation,
     useCreatePalleteMutation,
+    useShowPalletQuery,
 } = palletApi;
