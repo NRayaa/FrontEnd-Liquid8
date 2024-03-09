@@ -506,6 +506,7 @@ interface ProductExpiredItem {
     new_quality: string;
     new_category_product: null | string;
     new_tag_product: null | string;
+    fixed_price: string;
     created_at: string;
     updated_at: string;
 }

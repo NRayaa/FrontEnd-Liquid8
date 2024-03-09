@@ -202,7 +202,7 @@ const CreateMovingBundleProduct = () => {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.new_barcode_product : item.old_barcode_product}</span>,
+                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.old_barcode_product : item.new_barcode_product}</span>,
                                     },
                                     {
                                         accessor: 'firstName',
@@ -215,13 +215,16 @@ const CreateMovingBundleProduct = () => {
                                         accessor: 'category',
                                         title: 'Kategori',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.new_tag_product : item.new_category_product}</span>,
+                                        render: (item: ProductExpiredItem) => <span>{item.new_category_product ? item.new_category_product : item.new_tag_product}</span>,
                                     },
                                     {
                                         accessor: 'harga',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product ?? '0')}</span>,
+                                        render: (item: ProductExpiredItem, index: number) => {
+                                            const price = item.new_price_product !== null ? item.new_price_product : item.new_tag_product !== null ? item.fixed_price : '0';
+                                            return <span>{formatRupiah(price)}</span>;
+                                        },
                                     },
                                     {
                                         accessor: 'action',
