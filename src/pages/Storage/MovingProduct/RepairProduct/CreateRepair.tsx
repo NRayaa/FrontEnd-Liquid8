@@ -117,6 +117,7 @@ const CreateRepair = () => {
         setCustomPrice(new_price?.toString() ?? '0');
     }, [filterRepair]);
 
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -203,7 +204,7 @@ const CreateRepair = () => {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.new_barcode_product : item.old_barcode_product}</span>,
+                                        render: (item: ProductExpiredItem) => <span>{item.new_category_product ? item.new_barcode_product : item.old_barcode_product}</span>,
                                     },
                                     {
                                         accessor: 'firstName',
@@ -222,7 +223,10 @@ const CreateRepair = () => {
                                         accessor: 'totalMasuk',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product ?? '0')}</span>,
+                                        render: (item: ProductExpiredItem, index: number) => {
+                                            const price = item.new_price_product !== null ? item.new_price_product : item.new_tag_product !== null ? item.fixed_price : '0';
+                                            return <span>{formatRupiah(price)}</span>;
+                                        },
                                     },
                                     {
                                         accessor: 'action',
