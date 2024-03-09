@@ -4,6 +4,7 @@ import { DataTable } from 'mantine-datatable';
 import { formatRupiah } from '../../../helper/functions';
 
 interface TableSubProduct {
+<<<<<<< HEAD
     productTypeActive: HistorySubProductItem[] | undefined;
     totalRecords: number;
     recordsPerPage: number;
@@ -12,6 +13,16 @@ interface TableSubProduct {
 }
 
 const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive, totalRecords, recordsPerPage, page, onPageChange }) => {
+=======
+    productTypeActive: HistorySubProductItem[];
+    totalRecord: number;
+    perPage: number;
+    page: number;
+    changePage: (prevPage: number) => void;
+}
+
+const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive, totalRecord, perPage, page, changePage }) => {
+>>>>>>> 39812879e6394fb05550fa709aa255b826088df1
     return (
         <>
             <DataTable
@@ -20,7 +31,7 @@ const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive, totalRe
                     {
                         accessor: 'No',
                         title: 'No',
-                        render: (item: HistorySubProductItem, index: number) => <span>{index + 1}</span>,
+                        render: (item: HistorySubProductItem, index: number) => <span>{(page - 1) * productTypeActive?.length + (index + 1)}</span>,
                     },
                     {
                         accessor: 'Kode Dokumen',
@@ -58,11 +69,18 @@ const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive, totalRe
                         render: (item: HistorySubProductItem) => <span className="font-semibold truncate">{formatRupiah(item.old_price_product)}</span>,
                     },
                 ]}
+<<<<<<< HEAD
                 totalRecords={totalRecords}
                 recordsPerPage={recordsPerPage}
                 page={page}
                 onPageChange={onPageChange}
                 minHeight={200}
+=======
+                totalRecords={totalRecord ?? 0}
+                recordsPerPage={perPage ?? 10}
+                page={page}
+                onPageChange={changePage}
+>>>>>>> 39812879e6394fb05550fa709aa255b826088df1
             />
         </>
     );

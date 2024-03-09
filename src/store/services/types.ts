@@ -623,7 +623,7 @@ interface GetFilterProductBundles {
         status: boolean;
         message: string;
         resource: {
-            total_new_price: string;
+            total_new_price: number;
             data: {
                 current_page: number;
                 data: ProductExpiredItem[];
@@ -820,7 +820,7 @@ interface filterPalletLists {
         status: boolean;
         message: string;
         resource: {
-            total_new_price: string;
+            total_new_price: number;
             data: {
                 current_page: number;
                 data: ProdcutItem[];

@@ -69,7 +69,7 @@ const CreateMovingBundleProduct = () => {
         try {
             const body = {
                 name_bundle: nameBundle,
-                total_price_bundle: Number(totalPrice),
+                total_price_bundle: filterBundles?.data?.data.resource.total_new_price ?? 0,
                 total_price_custom_bundle: Number(customPrice),
                 total_product_bundle: filterBundlesProducts?.length,
                 barcode_bundle: generateRandomString(10),
@@ -112,13 +112,10 @@ const CreateMovingBundleProduct = () => {
     }, [resultsCreateBundle]);
 
     useEffect(() => {
-        const totalAmount = filterBundles?.data?.data.resource.data.data.reduce((accumulator: any, currentItem: any) => {
-            const price = currentItem.new_price_product !== null ? currentItem.new_price_product : currentItem.new_tag_product !== null ? currentItem.fixed_price : 0;
-            return accumulator + parseFloat(price);
-        }, 0);
-        setTotalPrice(JSON.stringify(totalAmount));
-        setCustomPrice(JSON.stringify(totalAmount));
-    }, [filterBundlesProducts]);
+        const new_price = filterBundles?.data?.data.resource.total_new_price;
+
+        setCustomPrice(new_price?.toString() ?? '0');
+    }, [filterBundles?.data?.data.resource.total_new_price]);
 
     return (
         <div>
@@ -155,7 +152,15 @@ const CreateMovingBundleProduct = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga :
                         </label>
-                        <input disabled id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={formatRupiah(totalPrice ?? '0')} />
+                        <input
+                            disabled
+                            id="categoryName"
+                            type="text"
+                            placeholder="Rp"
+                            className=" form-input w-[250px]"
+                            required
+                            value={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
+                        />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -183,7 +188,7 @@ const CreateMovingBundleProduct = () => {
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
                             </button>
                         </Link>
-                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterBundles.data?.data.resource.data.data.length} </span>
+                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterBundles.data?.data.resource.data.total} </span>
                     </div>
                     <div className="grid grid-cols-5 gap-4">
                         <div className="datatables xl:col-span-3">
