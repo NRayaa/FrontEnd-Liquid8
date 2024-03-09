@@ -24,9 +24,7 @@ const DetailCheckHistory = () => {
             return data.data.resource;
         }
     }, [data]);
-    
-    const [page, setPage] = useState<number>(1);
-    const { data: detailProductData } = useDetailProductOldQuery({ codeDocument: detailCheckData?.code_document, page });
+    const { data: detailProductData } = useDetailProductOldQuery({ codeDocument: detailCheckData?.code_document, page: 1 });
     const detailChecDiscrepancy = useMemo(() => {
         if (isSuccess && detailProductData?.data.status) {
             return detailProductData?.data.resource;
