@@ -14,6 +14,8 @@ import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 import { useLazyGetProductRepairQuery } from '../../../store/services/checkProduct';
 import { formatRupiah } from '../../../helper/functions';
+import BarcodePrinted from './BarcodePrinted';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 interface TagColorData {
     tag: string;
@@ -97,6 +99,7 @@ const ListProductRepair = () => {
     const [getProductRepair, getProductRepairResults] = useLazyGetProductRepairQuery();
     const [countPercentage, setCountPercentage] = useState<number>(0);
     const [isReset, setIsReset] = useState<boolean>(false);
+    const [isBarcode, setIsBarcode] = useState<boolean>(false);
 
     const dataListProductRepair: any = useMemo(() => {
         return listProductData?.data?.resource?.data;
@@ -168,9 +171,6 @@ const ListProductRepair = () => {
                 new_category_product: colorTags ? productData?.new_category_product : input.new_category_product,
             };
             await updateProductRepair({ id, body });
-            setRepair(false);
-            setIsReset(true);
-            refetch();
         } catch (err) {
             console.error(err);
         }
@@ -236,6 +236,18 @@ const ListProductRepair = () => {
             setRepair(true);
         }
     }, [getProductRepairResults]);
+
+    useEffect(() => {
+        if (result.isSuccess) {
+            if (!colorTags) {
+                setRepair(true);
+                setIsBarcode(true);
+            } else {
+                setRepair(false);
+                setIsReset(true);
+            }
+        }
+    }, [result]);
 
     const percentagedPrice = useMemo(() => {
         if (productData) {
@@ -323,34 +335,52 @@ const ListProductRepair = () => {
                                                 </div>
                                                 <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-1">
                                                     <div className="flex flex-col gap-4">
-                                                        <h1 className="flex justify-start text-lg font-bold">Category</h1>
-                                                        <div className="grid grid-cols-3 gap-4">
-                                                            {dataCategories?.map((category, index) => (
-                                                                <label key={category.id} className="flex items-center mt-1 cursor-pointer">
-                                                                    <input
-                                                                        disabled={colorTags}
-                                                                        type="radio"
-                                                                        className="form-radio text-success peer w-6 h-6"
-                                                                        name="radioOption"
-                                                                        value={category.name_category}
-                                                                        onChange={(e) => {
-                                                                            setIsReset(false);
-                                                                            handleInputChange({ value: e.target.value, percentage: category.discount_category });
-                                                                            setSelectedCategory(category.id);
-                                                                        }}
-                                                                    />
-                                                                    <span className="text-white-dark">{category.name_category}</span>
-                                                                </label>
-                                                            ))}
-                                                        </div>
+                                                        {isBarcode ? (
+                                                            <BarcodePrinted
+                                                                barcode={result.data.data.resource.new_barcode_product}
+                                                                category={result.data.data.resource.new_category_product}
+                                                                newPrice={formatRupiah(result.data.data.resource.new_price_product)}
+                                                                oldPrice={formatRupiah(result.data.data.resource.old_price_product)}
+                                                                isBundle={false}
+                                                            />
+                                                        ) : (
+                                                            <>
+                                                                <h1 className="flex justify-start text-lg font-bold">Category</h1>
+                                                                <div className="grid grid-cols-3 gap-4">
+                                                                    {dataCategories?.map((category, index) => (
+                                                                        <label key={category.id} className="flex items-center mt-1 cursor-pointer">
+                                                                            <input
+                                                                                disabled={colorTags}
+                                                                                type="radio"
+                                                                                className="form-radio text-success peer w-6 h-6"
+                                                                                name="radioOption"
+                                                                                value={category.name_category}
+                                                                                onChange={(e) => {
+                                                                                    setIsReset(false);
+                                                                                    handleInputChange({ value: e.target.value, percentage: category.discount_category });
+                                                                                    setSelectedCategory(category.id);
+                                                                                }}
+                                                                            />
+                                                                            <span className="text-white-dark">{category.name_category}</span>
+                                                                        </label>
+                                                                    ))}
+                                                                </div>
+                                                            </>
+                                                        )}
                                                     </div>
 
                                                     <div className="flex justify-end items-center mt-8">
-                                                        <Link to="/repair_station/list_product_repair">
-                                                            <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
-                                                                Repair
+                                                        {isBarcode ? (
+                                                            <button type="button" className=" px-2 btn btn-outline-danger" onClick={() => setRepair(false)}>
+                                                                <IconArrowBackward className="flex mx-2" fill={true} /> Kembali
                                                             </button>
-                                                        </Link>
+                                                        ) : (
+                                                            <Link to="/repair_station/list_product_repair">
+                                                                <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
+                                                                    Repair
+                                                                </button>
+                                                            </Link>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
