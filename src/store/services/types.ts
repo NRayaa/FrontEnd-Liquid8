@@ -1384,6 +1384,42 @@ interface SaleReportResponse {
         }[];
     };
 }
+interface DetailPalletProps {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            name_palet: string;
+            category_palet: string;
+            total_price_palet: string;
+            total_product_palet: number;
+            palet_barcode: string;
+            created_at: string;
+            updated_at: string;
+            palet_products: SubPaletItem[];
+        };
+    };
+}
+
+interface SubPaletItem {
+    id: number;
+    palet_id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: number;
+    new_price_product: string;
+    old_price_product: null | string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
 
 export type {
     UserDataItem,
@@ -1472,4 +1508,6 @@ export type {
     SaleReportResponse,
     ProductApprovmentItem,
     ProductApprovment,
+    DetailPalletProps,
+    SubPaletItem,
 };
