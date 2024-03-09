@@ -4,10 +4,14 @@ import { DataTable } from 'mantine-datatable';
 import { formatRupiah } from '../../../helper/functions';
 
 interface TableSubProduct {
-    productTypeActive: HistorySubProductItem[] | undefined;
+    productTypeActive: HistorySubProductItem[];
+    totalRecord: number;
+    perPage: number;
+    page: number;
+    changePage: (prevPage: number) => void;
 }
 
-const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive }) => {
+const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive, totalRecord, perPage, page, changePage }) => {
     return (
         <>
             <DataTable
@@ -16,7 +20,7 @@ const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive }) => {
                     {
                         accessor: 'No',
                         title: 'No',
-                        render: (item: HistorySubProductItem, index: number) => <span>{index + 1}</span>,
+                        render: (item: HistorySubProductItem, index: number) => <span>{(page - 1) * productTypeActive?.length + (index + 1)}</span>,
                     },
                     {
                         accessor: 'Kode Dokumen',
@@ -54,6 +58,10 @@ const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive }) => {
                         render: (item: HistorySubProductItem) => <span className="font-semibold truncate">{formatRupiah(item.old_price_product)}</span>,
                     },
                 ]}
+                totalRecords={totalRecord ?? 0}
+                recordsPerPage={perPage ?? 10}
+                page={page}
+                onPageChange={changePage}
             />
         </>
     );

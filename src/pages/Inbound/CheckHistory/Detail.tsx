@@ -15,6 +15,7 @@ const DetailCheckHistory = () => {
     const { data, isSuccess } = useGetDetailRiwayatCheckQuery(id);
     const [exportToExcel, results] = useExportToExcelMutation();
     const [productSelected, setProductSelected] = useState<'LOLOS' | 'DAMAGED' | 'ABNORMAL' | 'DISCREPANCY' | string>('LOLOS');
+    const [page, setPage] = useState<number>(1);
 
     const productType = ['LOLOS', 'DAMAGED', 'ABNORMAL', 'DISCREPANCY'];
 
@@ -29,7 +30,6 @@ const DetailCheckHistory = () => {
             return detailProductData?.data.resource;
         }
     }, [detailProductData]);
-    console.log('detailChecDiscrepancy', detailChecDiscrepancy);
     const handleExportData = async () => {
         try {
             const body = {
@@ -41,7 +41,7 @@ const DetailCheckHistory = () => {
         }
     };
 
-    const productTypeActive = useMemo(() => {
+    const productTypeActive: any = useMemo(() => {
         if (productSelected === 'LOLOS') {
             return detailCheckData?.lolos.products;
         } else if (productSelected === 'DAMAGED') {
@@ -92,7 +92,13 @@ const DetailCheckHistory = () => {
                         })}
                     </select>
                 </div>
-                <TableSubProduct productTypeActive={productTypeActive as HistorySubProductItem[]} />
+                <TableSubProduct
+                    productTypeActive={productTypeActive}
+                    totalRecord={detailChecDiscrepancy?.total ?? 0}
+                    perPage={detailChecDiscrepancy?.per_page ?? 10}
+                    page={page}
+                    changePage={(prevPage: number) => setPage(prevPage)}
+                />
             </div>
         </div>
     );
