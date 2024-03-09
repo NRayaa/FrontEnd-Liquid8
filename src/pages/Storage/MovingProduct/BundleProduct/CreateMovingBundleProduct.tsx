@@ -202,7 +202,19 @@ const CreateMovingBundleProduct = () => {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.old_barcode_product : item.new_barcode_product}</span>,
+                                        render: (item: ProductExpiredItem) => {
+                                            let barcode: string | undefined;
+
+                                            if (!item.new_category_product && !item.new_tag_product) {
+                                                barcode = item.old_barcode_product;
+                                            } else if (item.new_category_product !== null) {
+                                                barcode = item.new_barcode_product ?? undefined;
+                                            } else if (item.new_tag_product !== null) {
+                                                barcode = item.old_barcode_product;
+                                            }
+
+                                            return <span>{barcode ?? ''}</span>;
+                                        },
                                     },
                                     {
                                         accessor: 'firstName',
@@ -222,8 +234,16 @@ const CreateMovingBundleProduct = () => {
                                         title: 'Harga',
                                         sortable: true,
                                         render: (item: ProductExpiredItem, index: number) => {
-                                            const price = item.new_price_product !== null ? item.new_price_product : item.new_tag_product !== null ? item.fixed_price : '0';
-                                            return <span>{formatRupiah(price)}</span>;
+                                            let price: string | undefined;
+                                            if (item.new_category_product !== null && item.new_category_product !== undefined) {
+                                                price = item.new_price_product;
+                                            } else if (item.new_tag_product !== null && item.new_tag_product !== undefined) {
+                                                price = item.fixed_price;
+                                            } else {
+                                                price = item.old_price_product;
+                                            }
+
+                                            return <span>{price !== undefined ? formatRupiah(price) : '0'}</span>;
                                         },
                                     },
                                     {
@@ -252,7 +272,24 @@ const CreateMovingBundleProduct = () => {
                                 records={filterBundlesProducts}
                                 columns={[
                                     { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
+                                    {
+                                        accessor: 'barcode',
+                                        title: 'Barcode LQD',
+                                        sortable: true,
+                                        render: (item: ProductExpiredItem) => {
+                                            let barcode: string | undefined;
+
+                                            if (!item.new_category_product && !item.new_tag_product) {
+                                                barcode = item.old_barcode_product;
+                                            } else if (item.new_category_product !== null) {
+                                                barcode = item.new_barcode_product ?? undefined;
+                                            } else if (item.new_tag_product !== null) {
+                                                barcode = item.old_barcode_product;
+                                            }
+
+                                            return <span>{barcode ?? ''}</span>;
+                                        },
+                                    },
                                     { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
                                     {
                                         accessor: 'action',
