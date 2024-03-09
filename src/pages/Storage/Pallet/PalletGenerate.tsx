@@ -28,7 +28,6 @@ const PalletGenerate = () => {
     const [input, setInput] = useState({
         name: '',
         category: '',
-        totalPrice: '',
         totalProduct: '',
         barcode: '',
     });
@@ -56,7 +55,6 @@ const PalletGenerate = () => {
             setInput((prevState: any) => ({
                 ...prevState,
                 category: item.new_category_product,
-                barcode: item.new_barcode_product,
             }));
         } catch (err) {
             console.log(err);
@@ -76,9 +74,9 @@ const PalletGenerate = () => {
             const body = {
                 name_palet: input.name,
                 category_palet: input.category,
-                total_price_palet: input.totalPrice,
-                total_product_palet: filterData?.data?.data.length,
-                palet_barcode: generateRandomString(10),
+                total_price_palet: filterData?.total_new_price.toString() ?? '0',
+                total_product_palet: filterData?.data?.total,
+                palet_barcode: input.barcode,
             };
             await createPallete(body);
         } catch (err) {
@@ -114,14 +112,8 @@ const PalletGenerate = () => {
         }
     }, [createResults]);
     useEffect(() => {
-        const totalAmount = filterData?.data?.data.reduce((accumulator: any, currentItem: any) => {
-            return accumulator + parseFloat(currentItem.new_price_product);
-        }, 0);
-        setInput((prevState) => ({
-            ...prevState,
-            totalPrice: totalAmount,
-        }));
-    }, [filterData?.data.data]);
+        setInput((prev) => ({ ...prev, barcode: generateRandomString(10) }));
+    }, []);
 
     if (createResults.isError && !createResults.data?.data.status) {
         return <Alert message={createResults.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -144,13 +136,13 @@ const PalletGenerate = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Kategori :
                         </label>
-                        <input disabled onChange={handleInputChange} name="category" value={input.category} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input onChange={handleInputChange} name="category" value={input.category} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga:
                         </label>
-                        <input disabled name="totalPrice" value={formatRupiah(input.totalPrice ?? '0')} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        <input disabled name="totalPrice" value={formatRupiah(filterData?.total_new_price.toString() ?? '0')} id="categoryName" type="text" className="form-input w-[250px]" required />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">

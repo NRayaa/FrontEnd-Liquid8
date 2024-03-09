@@ -69,7 +69,7 @@ const CreateRepair = () => {
         try {
             const body = {
                 repair_name: nameRepair,
-                total_price: Number(totalPrice),
+                total_price: Number(filterRepair.data.data.resource.total_new_price) ?? 0,
                 total_custom_price: Number(customPrice),
                 total_products: filterRepairProducts?.length,
                 barcode: generateRandomString(10),
@@ -112,13 +112,11 @@ const CreateRepair = () => {
     }, [resultsCreateRepair]);
 
     useEffect(() => {
-        const totalAmount = filterRepair?.data?.data.resource.data.data.reduce((accumulator: any, currentItem: any) => {
-            const price = currentItem.new_price_product !== null ? currentItem.new_price_product : currentItem.new_tag_product !== null ? currentItem.fixed_price : 0;
-            return accumulator + parseFloat(price);
-        }, 0);
-        setTotalPrice(JSON.stringify(totalAmount));
-        setCustomPrice(JSON.stringify(totalAmount));
-    }, [filterRepairProducts]);
+        const new_price = filterRepair?.data?.data.resource.total_new_price;
+
+        setCustomPrice(new_price?.toString() ?? '0');
+    }, [filterRepair]);
+
 
     return (
         <div>
@@ -155,7 +153,15 @@ const CreateRepair = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga :
                         </label>
-                        <input disabled id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={formatRupiah(totalPrice ?? '0')} />
+                        <input
+                            disabled
+                            id="categoryName"
+                            type="text"
+                            placeholder="Rp"
+                            className=" form-input w-[250px]"
+                            required
+                            value={formatRupiah(filterRepair?.data?.data.resource.total_new_price.toString() ?? '0')}
+                        />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -183,7 +189,7 @@ const CreateRepair = () => {
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
                             </button>
                         </Link>
-                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterRepair.data?.data.resource.data.data.length} </span>
+                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterRepair.data?.data.resource.data.total ?? 0} </span>
                     </div>
 
                     <div className="grid grid-cols-5 gap-4">
