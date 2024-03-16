@@ -186,7 +186,7 @@ const ListProductRepair = () => {
             await updateThrows(id);
             refetch();
         } catch (err) {
-            console.error('Error updating throws:', err);
+            console.error('Error updating QCD:', err);
         } finally {
             setThrows(false);
         }
@@ -377,7 +377,7 @@ const ListProductRepair = () => {
                                                         ) : (
                                                             <Link to="/repair_station/list_product_repair">
                                                                 <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
-                                                                    Repair
+                                                                    To Display
                                                                 </button>
                                                             </Link>
                                                         )}
@@ -418,13 +418,13 @@ const ListProductRepair = () => {
                                 >
                                     <Dialog.Panel as="div" className="panel border-0 p-0 rounded-lg overflow-hidden my-8 w-full max-w-lg text-black dark:text-white-dark">
                                         <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
-                                            <div className="text-lg font-bold">Thows List Product</div>
+                                            <div className="text-lg font-bold">QCD List Product</div>
                                         </div>
                                         <div className="p-5">
                                             <div>
                                                 <form className="space-y-5">
                                                     <div>
-                                                        <h1>Apakah Anda yakin ingin melakukan throws?</h1>
+                                                        <h1>Apakah Anda yakin ingin melakukan QCD?</h1>
                                                     </div>
                                                 </form>
                                             </div>
@@ -433,7 +433,7 @@ const ListProductRepair = () => {
                                                     Kembali
                                                 </button>
                                                 <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleThrowsConfirmation(selectedItem || 0)}>
-                                                    Throws
+                                                    QCD
                                                 </button>
                                             </div>
                                         </div>
@@ -495,10 +495,10 @@ const ListProductRepair = () => {
                                 render: (item: GetListProductRepairItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <button type="button" className="btn btn-outline-info" onClick={() => handleRepair(item.id)}>
-                                            REPAIR
+                                            To Display
                                         </button>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => handleThrows(item.id)}>
-                                            THROWS
+                                            QCD
                                         </button>
                                     </div>
                                 ),

@@ -146,10 +146,10 @@ const MultiCheck = () => {
             toast.success(results?.data?.data?.message ?? '');
             setIsProductCheck(true);
             hideBarcode();
-            if (Math.ceil(Number(results.data.data.resource.product.old_price_product)) > 100000) {
+            if (Math.ceil(Number(results.data.data.resource.product.old_price_product)) >= 100000) {
                 setKeterangan('>100K');
             } else {
-                setKeterangan('<100K');
+                setKeterangan('<=100K');
             }
             setInputBarcode('');
         } else if (results.isError) {

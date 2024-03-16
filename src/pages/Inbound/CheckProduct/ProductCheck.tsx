@@ -185,7 +185,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
         if (results.isSuccess) {
             toast.success(results.data.data.message);
             resetValueMultiCheck();
-            if (Math.ceil(Number(oldData?.old_price_product)) > 100000) {
+            if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
                 showBarcode();
                 resetProductCheckShow();
             } else {

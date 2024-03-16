@@ -35,13 +35,13 @@ const ListDump = () => {
                     <span>Repair Station</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>List Dump</span>
+                    <span>QCD</span>
                 </li>
             </ul>
             {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
             </div> */}
             <div className="panel mt-6 min-h-[450px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Dump</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">QCD</h5>
                 <div className="relative w-[220px] ms-auto mb-4">
                     <input
                         type="text"
