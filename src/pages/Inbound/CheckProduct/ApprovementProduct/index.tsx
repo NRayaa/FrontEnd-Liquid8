@@ -129,7 +129,11 @@ const ApprovementProduct = () => {
                                 title: 'Kode Dokumen',
                                 render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.code_document}</span>,
                             },
-
+                            {
+                                accessor: 'Old Barcode',
+                                title: 'Old Barcode',
+                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.old_barcode_product}</span>,
+                            },
                             {
                                 accessor: 'New Barcode',
                                 title: 'New Barcode',
