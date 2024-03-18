@@ -1,23 +1,47 @@
 import { DataTable } from 'mantine-datatable';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useGetListDumpQuery } from '../../../store/services/listDumpApi';
+import { useGetListDumpQuery, useUpdateListDumpMutation } from '../../../store/services/listDumpApi';
 import { GetListDumpItem } from '../../../store/services/types';
 import { Alert } from '../../../commons';
+import { Dialog, Transition } from '@headlessui/react';
+import { formatRupiah } from '../../../helper/functions';
+import toast from 'react-hot-toast';
 
 const ListDump = () => {
     const dispatch = useDispatch();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
+    const [isModal, setIsModal] = useState<boolean>(false);
+    const [qcdPrice, setQcdPrice] = useState<string | undefined>('0');
+    const [selectedQcd, setSelectedQcd] = useState<number | undefined>();
+
+    const [updateListDump, results] = useUpdateListDumpMutation();
+
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const { data, isError } = useGetListDumpQuery({ page, q: search });
+    const { data, isError, refetch } = useGetListDumpQuery({ page, q: search });
     const dataListDump: any = useMemo(() => {
         return data?.data?.resource?.data;
     }, [data]);
+
+    const handleUpdatePrice = async () => {
+        const body = {
+            new_price_product: qcdPrice,
+        };
+        await updateListDump({ id: selectedQcd, body });
+    };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success('Berhasil update harga');
+            setIsModal(false);
+            refetch();
+        }
+    }, [results]);
 
     if (isError && !data?.data?.status) {
         return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -25,6 +49,40 @@ const ListDump = () => {
 
     return (
         <div>
+            <Transition appear show={isModal} as={Fragment}>
+                <Dialog as="div" open={isModal} onClose={() => setIsModal(false)}>
+                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <div className="fixed inset-0" />
+                    </Transition.Child>
+                    <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                        <div className="flex items-start justify-center min-h-screen px-4">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel as="div" className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-sm text-black dark:text-white-dark">
+                                    <div className="bg-[#fbfbfb] dark:bg-[#121c2c] ">
+                                        <div className="mb-4">
+                                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                                Harga :
+                                            </label>
+                                            <input id="categoryName" type="text" className=" form-input w-[250px]" value={qcdPrice} required onChange={(e) => setQcdPrice(e.target.value)} />
+                                        </div>
+                                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleUpdatePrice}>
+                                            Update Harga
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
             <ul className="flex space-x-2 rtl:space-x-reverse">
                 <li>
                     <Link to="/" className="text-primary hover:underline">
@@ -70,7 +128,28 @@ const ListDump = () => {
                             { accessor: 'id', title: 'No', render: (item: GetListDumpItem, index: number) => <span>{(page - 1) * dataListDump?.length + (index + 1)}</span> },
                             { accessor: 'barcode', title: 'NEW BARCODE', render: (item: GetListDumpItem) => <span className="font-semibold">{item.new_barcode_product}</span> },
                             { accessor: 'firstName', title: 'PRODUCT', render: (item: GetListDumpItem) => <span className="font-semibold"> {item.new_name_product}</span> },
-                            { accessor: 'harga', title: 'HARGA', render: (item: GetListDumpItem) => <span className="font-semibold">{item.new_price_product} </span> },
+                            { accessor: 'New Price', title: 'NEW PRICE', render: (item: GetListDumpItem) => <span className="font-semibold">{formatRupiah(item.new_price_product ?? '0')} </span> },
+                            { accessor: 'Old Price', title: 'OLD PRICE', render: (item: GetListDumpItem) => <span className="font-semibold">{formatRupiah(item.old_price_product ?? '0')} </span> },
+                            {
+                                accessor: 'BUANG',
+                                title: 'BUANG',
+                                render: (item: GetListDumpItem) => (
+                                    <div className="flex items-center w-max mx-auto gap-6">
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-primary"
+                                            onClick={() => {
+                                                setIsModal(true);
+                                                setQcdPrice(item.new_price_product);
+                                                setSelectedQcd(item.id);
+                                            }}
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
+                                ),
+                                textAlignment: 'center',
+                            },
                         ]}
                         totalRecords={data?.data.resource.total ?? 0}
                         recordsPerPage={data?.data.resource.per_page ?? 10}

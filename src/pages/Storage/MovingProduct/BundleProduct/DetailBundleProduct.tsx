@@ -18,8 +18,6 @@ const DetailBundleProduct = () => {
         }
     }, [data]);
 
-    console.log('detailDataBundle', detailDataBundle);
-
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -98,11 +96,6 @@ const DetailBundleProduct = () => {
                         />
                     </div>
                 </div>
-                {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
-                </div> */}
                 <div className="panel">
                     <div className="flex items-center mb-4">
                         <Link to="/storage/moving_product/bundle">

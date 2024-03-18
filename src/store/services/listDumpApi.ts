@@ -9,7 +9,14 @@ export const listDumpApi = createApi({
         GetListDump: builder.query<GetListDump, { page: number; q: string }>({
             query: ({ page, q }) => `/dumps?page=${page}&q=${q}`,
         }),
+        updateListDump: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/update-priceDump/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useGetListDumpQuery} = listDumpApi;
+export const { useGetListDumpQuery, useUpdateListDumpMutation } = listDumpApi;

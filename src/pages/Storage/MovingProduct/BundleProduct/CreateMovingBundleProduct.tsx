@@ -25,6 +25,9 @@ const CreateMovingBundleProduct = () => {
     const [createBundle, resultsCreateBundle] = useCreateBundleMutation();
     const navigate = useNavigate();
     const bundleLists = useGetBundleProductsQuery({ page: 1, q: '' });
+    const [isCategory, setIsCategory] = useState<boolean>(false);
+    const [categories, setCategories] = useState([]);
+    const [selectedCAtegory, setSelectedCategory] = useState<any>();
 
     const [nameBundle, setNameBundle] = useState<string>('');
     const [totalPrice, setTotalPrice] = useState<string>('');
@@ -84,6 +87,7 @@ const CreateMovingBundleProduct = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
+
             refetch();
             filterBundles.refetch();
         } else if (results.isError) {
@@ -112,6 +116,13 @@ const CreateMovingBundleProduct = () => {
     }, [resultsCreateBundle]);
 
     useEffect(() => {
+        if ((filterBundles?.data?.data?.resource?.total_new_price as any) >= 100000 && (filterBundles?.data?.data?.resource?.category as any) !== null) {
+            setIsCategory(true);
+            setCategories(filterBundles?.data?.data?.resource?.category);
+        } else {
+            setIsCategory(false);
+        }
+
         const new_price = filterBundles?.data?.data.resource.total_new_price;
 
         setCustomPrice(new_price?.toString() ?? '0');
@@ -157,11 +168,36 @@ const CreateMovingBundleProduct = () => {
                             id="categoryName"
                             type="text"
                             placeholder="Rp"
-                            className=" form-input w-[250px]"
+                            className="form-input w-[250px]"
                             required
                             value={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
                         />
                     </div>
+                    {!isCategory && (
+                        <div className="flex items-center justify-between mb-2 mt-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Color Name:
+                            </label>
+                            <input id="Color Name" disabled type="text" className=" form-input w-[250px]" required value="hijau" />
+                        </div>
+                    )}
+                    {isCategory && (
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="kategori" className="text-[15px] font-semibold whitespace-nowrap">
+                                Kategori :
+                            </label>
+                            <select id="gridState" className="form-input w-[250px]" onChange={(e) => setSelectedCategory(e.target.value)}>
+                                <option>Choose...</option>
+                                {categories?.map((item: any, index: any) => {
+                                    return (
+                                        <option key={index} value={item.discount_category}>
+                                            {item.name_category} {item.discount_category + '%'}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                    )}
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Custom Harga :
