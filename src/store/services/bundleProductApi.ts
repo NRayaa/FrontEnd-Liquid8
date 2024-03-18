@@ -33,7 +33,7 @@ export const bundleProductApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        createBundle: builder.mutation<CreateBundle, CreateBundleBody>({
+        createBundle: builder.mutation<CreateBundle, any>({
             query: (body) => ({
                 url: '/bundle',
                 method: 'POST',
