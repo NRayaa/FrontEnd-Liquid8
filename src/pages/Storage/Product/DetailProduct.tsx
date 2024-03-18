@@ -7,6 +7,7 @@ import NewBarcodeData from './NewBarcodeData';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import { Alert } from '../../../commons';
+import BarcodePrinted from './BarcodePrinted';
 
 const DetailProduct = () => {
     const { id } = useParams();
@@ -19,6 +20,22 @@ const DetailProduct = () => {
         new_price_product: '',
         new_quantity_product: '',
     });
+    const [newPrice, setNewPrice] = useState<string | undefined>('');
+    const [oldPrice, setOldPrice] = useState<string | undefined>('0');
+    const [isBarcode, setIsBarcode] = useState<boolean>(false);
+
+    const handleNewPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setNewPrice(e.target.value);
+    };
+    const getNewPriceByCategory = (newPrice: string) => {
+        setNewPrice(newPrice);
+    };
+    const getOldPrice = (price: string | undefined) => {
+        setOldPrice(price);
+    };
+    const showBarcode = () => {
+        setIsBarcode(true);
+    };
 
     const dataDetailProduct = useMemo(() => {
         return data?.data.resource;
@@ -65,7 +82,7 @@ const DetailProduct = () => {
                 new_name_product: input.new_name_product,
                 old_name_product: dataDetailProduct?.new_name_product,
                 new_quantity_product: input.new_quantity_product,
-                new_price_product: input.new_price_product,
+                new_price_product: newPrice,
                 old_price_product: dataDetailProduct?.old_price_product || '0',
                 new_date_in_product: dataDetailProduct?.new_date_in_product,
                 new_status_product: dataDetailProduct?.new_status_product,
@@ -81,6 +98,12 @@ const DetailProduct = () => {
             console.log(err);
         }
     };
+
+    useEffect(() => {
+        if (isSuccess) {
+            setNewPrice(data.data.resource.new_price_product);
+        }
+    }, [isSuccess]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -121,6 +144,8 @@ const DetailProduct = () => {
                         qty={input.new_quantity_product}
                         nama={input.new_name_product}
                         handleChangeInput={handleChangeInput}
+                        newPrice={newPrice}
+                        handleNewPriceChange={handleNewPriceChange}
                     />
                     <BarcodeData
                         header="Old Data"
@@ -128,7 +153,20 @@ const DetailProduct = () => {
                         harga={dataDetailProduct?.old_price_product}
                         qty={dataDetailProduct?.new_quantity_product}
                         nama={dataDetailProduct?.new_name_product}
+                        category={dataDetailProduct?.new_category_product}
+                        getNewPriceByCategory={getNewPriceByCategory}
+                        getOldPrice={getOldPrice}
+                        oldPrice={oldPrice}
+                        showBarcode={showBarcode}
                     />
+                    {isBarcode && (
+                        <BarcodePrinted
+                            barcode={dataDetailProduct?.new_barcode_product ?? ''}
+                            category={dataDetailProduct?.new_category_product ?? ''}
+                            newPrice={newPrice ?? ''}
+                            oldPrice={oldPrice ?? ''}
+                        />
+                    )}
                 </div>
 
                 <button type="submit" className="btn btn-primary px-16 uppercase mt-6" onClick={hanldeEditProduct}>
