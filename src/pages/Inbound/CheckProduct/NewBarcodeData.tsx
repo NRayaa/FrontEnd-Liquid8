@@ -1,53 +1,33 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 
 interface NewBarcodeData {
     barcode: string;
     nama: string;
-    newPrice: string;
+    harga: string;
     qty: string;
     header: string;
-    handleSetNewPercentagePriceInput: (price: string) => void;
-    handleSetCustomQuantityInput: (qty: string) => void;
-    handleIsQuantity: () => void;
+    handleChangeInput: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header, handleSetNewPercentagePriceInput, handleSetCustomQuantityInput, handleIsQuantity }) => {
-    const [inputQuantity, setInputQuantity] = useState<string>('');
-    const [inputPrice, setInputPrice] = useState<string>('');
-
-    useEffect(() => {
-        setInputPrice(newPrice);
-        setInputQuantity(qty);
-    }, [qty, newPrice]);
-
-    const handleInputQuantity = (e: ChangeEvent<HTMLInputElement>) => {
-        handleIsQuantity();
-        setInputQuantity(e.target.value);
-        handleSetCustomQuantityInput(e.target.value);
-    };
-    const handleInputPrice = (e: ChangeEvent<HTMLInputElement>) => {
-        setInputPrice(e.target.value);
-        handleSetNewPercentagePriceInput(e.target.value);
-    };
-
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ header, barcode, nama, harga, qty, handleChangeInput }) => {
     return (
-        <div className="flex flex-col gap-4">
-            <h1 className="flex justify-center text-lg font-bold">{header}</h1>
+        <div className="flex flex-col gap-4 panel">
+            <h2 className="text-lg font-medium">{header}</h2>
             <div>
                 <label htmlFor="gridBarcode1">Barcode</label>
                 <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
             </div>
             <div>
                 <label htmlFor="gridNama1">Nama</label>
-                <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+                <input id="gridNama1" type="text" placeholder="Enter Nama" className="form-input" name="new_name_product" value={nama} onChange={handleChangeInput} />
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={inputPrice} onChange={handleInputPrice} />
+                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" name="new_price_product" value={harga} onChange={handleChangeInput} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
-                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={inputQuantity} onChange={handleInputQuantity} />
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" name="new_quantity_product" value={qty} onChange={handleChangeInput} />
             </div>
         </div>
     );

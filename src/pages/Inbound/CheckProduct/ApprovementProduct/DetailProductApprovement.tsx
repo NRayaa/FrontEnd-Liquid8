@@ -5,8 +5,8 @@ import { useEditProductApprovesMutation, useGetDetailProductApprovesByDocQuery, 
 import { Alert } from '../../../../commons';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
-import NewBarcodeData from '../../../Storage/Product/NewBarcodeData';
-import BarcodeData from '../../../Storage/Product/BarcodeData';
+import NewBarcodeData from '../NewBarcodeData';
+import BarcodeData from '../BarcodeData';
 
 const DetailProductApprovement = () => {
     const { id }: any = useParams();

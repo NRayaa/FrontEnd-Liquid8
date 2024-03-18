@@ -15,6 +15,7 @@ import BarcodePrinted from './BarcodePrinted';
 import { formatRupiah } from '../../../helper/functions';
 import { Alert } from '../../../commons';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import NewBarcodeDataMulti from './NewBarcodeDataMulti';
 
 const MultiCheck = () => {
     const { state } = useLocation();
@@ -230,7 +231,7 @@ const MultiCheck = () => {
                                 qty={!isResetValue ? oldData?.old_quantity_product : ''}
                             />
                             {!tagColor || tagColor === undefined ? (
-                                <NewBarcodeData
+                                <NewBarcodeDataMulti
                                     header="NEW DATA"
                                     barcode={!isResetValue ? newBarcode : ''}
                                     nama={!isResetValue ? oldData?.old_name_product : ''}
