@@ -23,6 +23,7 @@ const DetailProduct = () => {
     const [newPrice, setNewPrice] = useState<string | undefined>('');
     const [oldPrice, setOldPrice] = useState<string | undefined>('0');
     const [isBarcode, setIsBarcode] = useState<boolean>(false);
+    const [isRedirect, setIsRedirect] = useState<boolean>(false);
 
     const handleNewPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
         setNewPrice(e.target.value);
@@ -35,6 +36,9 @@ const DetailProduct = () => {
     };
     const showBarcode = () => {
         setIsBarcode(true);
+    };
+    const hideRedirect = () => {
+        setIsRedirect(false);
     };
 
     const dataDetailProduct = useMemo(() => {
@@ -83,7 +87,7 @@ const DetailProduct = () => {
                 old_name_product: dataDetailProduct?.new_name_product,
                 new_quantity_product: input.new_quantity_product,
                 new_price_product: newPrice,
-                old_price_product: dataDetailProduct?.old_price_product || '0',
+                old_price_product: oldPrice,
                 new_date_in_product: dataDetailProduct?.new_date_in_product,
                 new_status_product: dataDetailProduct?.new_status_product,
                 condition: condition,
@@ -108,10 +112,12 @@ const DetailProduct = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message ?? 'Product updated');
-            if (dataDetailProduct?.new_tag_product !== null) {
-                navigate('/storage/product/color');
-            } else {
-                navigate('/storage/product/category');
+            if (isRedirect) {
+                if (dataDetailProduct?.new_tag_product !== null) {
+                    navigate('/storage/product/color');
+                } else {
+                    navigate('/storage/product/category');
+                }
             }
             productNew.refetch();
         } else if (results.isError) {
@@ -158,6 +164,8 @@ const DetailProduct = () => {
                         getOldPrice={getOldPrice}
                         oldPrice={oldPrice}
                         showBarcode={showBarcode}
+                        hideRedirect={hideRedirect}
+                        hanldeEditProduct={hanldeEditProduct}
                     />
                     {isBarcode && (
                         <BarcodePrinted
@@ -169,7 +177,14 @@ const DetailProduct = () => {
                     )}
                 </div>
 
-                <button type="submit" className="btn btn-primary px-16 uppercase mt-6" onClick={hanldeEditProduct}>
+                <button
+                    type="submit"
+                    className="btn btn-primary px-16 uppercase mt-6"
+                    onClick={() => {
+                        hanldeEditProduct();
+                        setIsRedirect(true);
+                    }}
+                >
                     Edit Product
                 </button>
             </div>

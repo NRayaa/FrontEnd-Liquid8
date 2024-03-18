@@ -14,13 +14,17 @@ interface BarcodeData {
     oldPrice: string | undefined;
     getOldPrice: (price: string | undefined) => void;
     showBarcode: () => void;
+    hanldeEditProduct: () => void;
+    hideRedirect: () => void;
 }
 
-const BarcodeData: React.FC<BarcodeData> = ({ header, barcode, nama, harga, qty, category, getNewPriceByCategory, oldPrice, getOldPrice, showBarcode }) => {
+const BarcodeData: React.FC<BarcodeData> = ({ header, barcode, nama, harga, qty, category, getNewPriceByCategory, oldPrice, getOldPrice, showBarcode, hanldeEditProduct, hideRedirect }) => {
     const [updatePriceByProductOld, results] = useLazyUpdatePriceByProductOldQuery();
 
     const handleEditOldPrice = async () => {
         await updatePriceByProductOld(oldPrice);
+        hideRedirect();
+        hanldeEditProduct();
     };
 
     useEffect(() => {
