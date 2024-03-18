@@ -3,7 +3,7 @@ import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetDisplayExpiredQuery, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
-import { formatRupiah, generateRandomString } from '../../../../helper/functions';
+import { formatRupiah, generateRandomString, generateRandomStringFormatBundle } from '../../../../helper/functions';
 import {
     useCreateBundleMutation,
     useDeleteFilterProductBundlesMutation,
@@ -27,12 +27,13 @@ const CreateMovingBundleProduct = () => {
     const bundleLists = useGetBundleProductsQuery({ page: 1, q: '' });
     const [isCategory, setIsCategory] = useState<boolean>(false);
     const [categories, setCategories] = useState([]);
-    const [selectedCAtegory, setSelectedCategory] = useState<any>();
+    const [selectedCategory, setSelectedCategory] = useState<any>();
 
     const [nameBundle, setNameBundle] = useState<string>('');
     const [totalPrice, setTotalPrice] = useState<string>('');
-    const [customPrice, setCustomPrice] = useState<string>('');
+    const [customPrice, setCustomPrice] = useState<string | undefined>('');
     const [totalProductBundle, setTotalProductBundle] = useState<string>('');
+    const [colorName, setColorName] = useState<string>('');
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {
@@ -40,7 +41,7 @@ const CreateMovingBundleProduct = () => {
         }
     }, [data]);
 
-    const filterBundlesProducts = useMemo(() => {
+    const filterBundlesProducts: any = useMemo(() => {
         if (filterBundles.isSuccess) {
             return filterBundles.data.data.resource.data.data;
         }
@@ -75,7 +76,9 @@ const CreateMovingBundleProduct = () => {
                 total_price_bundle: filterBundles?.data?.data.resource.total_new_price ?? 0,
                 total_price_custom_bundle: Number(customPrice),
                 total_product_bundle: filterBundlesProducts?.length,
-                barcode_bundle: generateRandomString(10),
+                barcode_bundle: generateRandomStringFormatBundle(),
+                category: selectedCategory,
+                name_color: colorName,
             };
 
             await createBundle(body);
@@ -119,13 +122,18 @@ const CreateMovingBundleProduct = () => {
         if ((filterBundles?.data?.data?.resource?.total_new_price as any) >= 100000 && (filterBundles?.data?.data?.resource?.category as any) !== null) {
             setIsCategory(true);
             setCategories(filterBundles?.data?.data?.resource?.category);
+            setColorName('');
+            setCustomPrice(JSON.stringify(filterBundles?.data?.data?.resource?.total_new_price));
         } else {
             setIsCategory(false);
+            if (filterBundles?.data?.data?.resource.data.data.length !== 0) {
+                setCustomPrice(filterBundles?.data?.data?.resource.data.data[0].new_tag_product[0].fixed_price_color ?? '0');
+                setColorName(filterBundles?.data?.data?.resource.data.data[0].new_tag_product[0].name_color ?? '');
+            } else {
+                setCustomPrice('0');
+                setColorName('');
+            }
         }
-
-        const new_price = filterBundles?.data?.data.resource.total_new_price;
-
-        setCustomPrice(new_price?.toString() ?? '0');
     }, [filterBundles?.data?.data.resource.total_new_price]);
 
     return (
@@ -178,7 +186,7 @@ const CreateMovingBundleProduct = () => {
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Color Name:
                             </label>
-                            <input id="Color Name" disabled type="text" className=" form-input w-[250px]" required value="hijau" />
+                            <input id="Color Name" disabled type="text" className=" form-input w-[250px]" required value={colorName} />
                         </div>
                     )}
                     {isCategory && (
@@ -186,11 +194,20 @@ const CreateMovingBundleProduct = () => {
                             <label htmlFor="kategori" className="text-[15px] font-semibold whitespace-nowrap">
                                 Kategori :
                             </label>
-                            <select id="gridState" className="form-input w-[250px]" onChange={(e) => setSelectedCategory(e.target.value)}>
+                            <select
+                                id="gridState"
+                                className="form-input w-[250px]"
+                                onChange={(e) => {
+                                    const selectedNameCategory = e.target.selectedOptions[0].getAttribute('data-name-category');
+                                    setSelectedCategory(selectedNameCategory);
+                                    const priceDiscount = (Number(filterBundles?.data?.data.resource.total_new_price) * Number(e.target.value)) / 100;
+                                    setCustomPrice(JSON.stringify(priceDiscount));
+                                }}
+                            >
                                 <option>Choose...</option>
                                 {categories?.map((item: any, index: any) => {
                                     return (
-                                        <option key={index} value={item.discount_category}>
+                                        <option key={index} value={item.discount_category} data-name-category={item.name_category}>
                                             {item.name_category} {item.discount_category + '%'}
                                         </option>
                                     );

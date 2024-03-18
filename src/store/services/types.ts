@@ -667,6 +667,8 @@ interface CreateBundleBody {
     total_price_custom_bundle: number;
     total_product_bundle: number | undefined;
     barcode_bundle: string;
+    category: string | undefined;
+    name_color: string | undefined;
 }
 interface PromoListItem {
     id: number;
