@@ -7,9 +7,11 @@ interface NewBarcodeData {
     qty: string;
     header: string;
     handleChangeInput: (e: ChangeEvent<HTMLInputElement>) => void;
+    newPrice: string | undefined;
+    handleNewPriceChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const NewBarcodeData: React.FC<NewBarcodeData> = ({ header, barcode, nama, harga, qty, handleChangeInput }) => {
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ header, barcode, nama, harga, qty, handleChangeInput, newPrice, handleNewPriceChange }) => {
     return (
         <div className="flex flex-col gap-4 panel">
             <h2 className="text-lg font-medium">{header}</h2>
@@ -23,7 +25,7 @@ const NewBarcodeData: React.FC<NewBarcodeData> = ({ header, barcode, nama, harga
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" name="new_price_product" value={harga} onChange={handleChangeInput} />
+                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" name="new_price_product" value={newPrice} onChange={handleNewPriceChange} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>

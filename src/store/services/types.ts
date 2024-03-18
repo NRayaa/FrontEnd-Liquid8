@@ -507,7 +507,7 @@ interface ProductExpiredItem {
     new_status_product: string;
     new_quality: string;
     new_category_product: null | string;
-    new_tag_product: null | string;
+    new_tag_product: any;
     fixed_price: string;
     created_at: string;
     updated_at: string;
@@ -626,6 +626,7 @@ interface GetFilterProductBundles {
         message: string;
         resource: {
             total_new_price: number;
+            category: any;
             data: {
                 current_page: number;
                 data: ProductExpiredItem[];
