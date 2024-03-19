@@ -121,8 +121,8 @@ const ListDump = () => {
                             </svg>
                         </button>
                     </div>
-                    <button className="bg-sky-400 px-5 py-1.5 rounded-md font-semibold" onClick={onClick}>
-                        Export
+                    <button className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={onClick}>
+                        Export Data
                     </button>
                 </div>
                 <div className="datatables">
