@@ -35,8 +35,8 @@ const CheckHistory = () => {
                     padding: '2em',
                 })
                 .then(async (result) => {
-                    await deleteRiwayatCheck(id);
                     if (result.value) {
+                        await deleteRiwayatCheck(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');

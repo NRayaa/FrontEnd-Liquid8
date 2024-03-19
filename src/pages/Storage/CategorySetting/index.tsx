@@ -36,8 +36,8 @@ const CategorySetting = () => {
                     padding: '2em',
                 })
                 .then(async (result) => {
-                    await deleteCategory(id);
                     if (result.value) {
+                        await deleteCategory(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
