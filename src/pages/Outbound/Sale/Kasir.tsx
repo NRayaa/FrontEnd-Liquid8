@@ -3,8 +3,8 @@ import { DataTable } from 'mantine-datatable';
 import { useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation } from '../../../store/services/saleApi';
-import { GetListBuyerItem, GetListSaleItem, NewProductItem } from '../../../store/services/types';
-import { useGetAllProductNewQuery } from '../../../store/services/productNewApi';
+import { GetListBuyerItem, GetListSaleItem, NewProductItem, SubSalesProductsProps } from '../../../store/services/types';
+import { useGetSaleProductsQuery } from '../../../store/services/productNewApi';
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import IconSearch from '../../../components/Icon/IconSearch';
@@ -31,7 +31,7 @@ const Kasir = () => {
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const [addBuyerOpen, setAddBuyerOpen] = useState(false);
     const { data: listSaleData, isError, isLoading, refetch } = useGetListSaleQuery({ page, q: search });
-    const { data: listProduct } = useGetAllProductNewQuery({ page, q: search });
+    const { data: listProduct } = useGetSaleProductsQuery({ page, q: search });
     const { data: listBuyer } = useGetListBuyerQuery({ page, q: search });
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
 
@@ -397,30 +397,30 @@ const Kasir = () => {
                                                     {
                                                         accessor: 'No',
                                                         title: 'No',
-                                                        render: (item: NewProductItem, index: number) => <span>{index + 1}</span>,
+                                                        render: (item: SubSalesProductsProps, index: number) => <span>{index + 1}</span>,
                                                     },
                                                     {
-                                                        accessor: 'product_barcode',
+                                                        accessor: 'barcode',
                                                         title: 'Barcode',
-                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_barcode_product}</span>,
+                                                        render: (item: SubSalesProductsProps) => <span className="font-semibold">{item.barcode}</span>,
                                                     },
                                                     {
-                                                        accessor: 'product_name',
+                                                        accessor: 'name',
                                                         title: 'Nama',
-                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_name_product}</span>,
+                                                        render: (item: SubSalesProductsProps) => <span className="font-semibold">{item.name}</span>,
                                                     },
                                                     {
-                                                        accessor: 'new_category_product',
+                                                        accessor: 'category',
                                                         title: 'Kategori',
-                                                        render: (item: NewProductItem) => <span className="font-semibold">{item.new_category_product}</span>,
+                                                        render: (item: SubSalesProductsProps) => <span className="font-semibold">{item.category}</span>,
                                                     },
                                                     {
                                                         accessor: 'action',
                                                         title: 'Opsi',
                                                         titleClassName: '!text-center',
-                                                        render: (item: NewProductItem) => (
+                                                        render: (item: SubSalesProductsProps) => (
                                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                                <button type="button" className="btn btn-outline-info" onClick={() => handleProductSelection(item.new_barcode_product)}>
+                                                                <button type="button" className="btn btn-outline-info" onClick={() => handleProductSelection(item.barcode)}>
                                                                     <IconSquareCheck className="ltr:mr-2 rtl:ml-2 " />
                                                                 </button>
                                                             </div>

@@ -95,19 +95,11 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">10</td>
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        Total Price Discrepancy
-                    </th>
-                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.total_price_discrepancy))}</td>
-                    <td></td>
-                </tr>
-                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">11</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Price
                     </th>
-                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.total_price))}</td>
+                    <td className="px-6 py-4">{formatRupiah(detailCheckData?.total_price.toString() || '0')}</td>
                     <td></td>
                 </tr>
             </tbody>
