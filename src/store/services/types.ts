@@ -1426,6 +1426,35 @@ interface SubPaletItem {
     updated_at: null | string;
 }
 
+interface SaleProductsProps {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: SubSalesProductsProps[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface SubSalesProductsProps {
+    barcode: string;
+    name: string;
+    category: null;
+    created_date: string;
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -1515,4 +1544,6 @@ export type {
     ProductApprovment,
     DetailPalletProps,
     SubPaletItem,
+    SaleProductsProps,
+    SubSalesProductsProps,
 };
