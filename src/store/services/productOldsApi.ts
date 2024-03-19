@@ -12,7 +12,13 @@ export const productOldsApi = createApi({
         detailProductOld: builder.query<DetailProductOld, { codeDocument: string | undefined; page: number }>({
             query: ({ codeDocument, page }) => `/product_olds-search?search=${codeDocument}&page=${page}`,
         }),
+        deleteProductOld: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product_olds/${id}`,
+                method: 'DELETE',
+            }),
+        })
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery, useLazyDetailProductOldQuery } = productOldsApi;
+export const { useProductOldsQuery, useDetailProductOldQuery, useDeleteProductOldMutation, useLazyDetailProductOldQuery } = productOldsApi;

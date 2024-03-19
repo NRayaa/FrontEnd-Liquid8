@@ -404,6 +404,7 @@ interface GetRiwayatcheckItem {
         products: HistorySubProductItem[];
         total_old_price: number;
     };
+    priceDiscrepancy: number;
 }
 
 interface DetailGetRiwayatcheck {
