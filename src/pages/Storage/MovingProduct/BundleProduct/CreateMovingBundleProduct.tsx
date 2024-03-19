@@ -13,6 +13,7 @@ import {
 } from '../../../../store/services/bundleProductApi';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
 
 const CreateMovingBundleProduct = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
@@ -30,10 +31,11 @@ const CreateMovingBundleProduct = () => {
     const [selectedCategory, setSelectedCategory] = useState<any>();
 
     const [nameBundle, setNameBundle] = useState<string>('');
-    const [totalPrice, setTotalPrice] = useState<string>('');
     const [customPrice, setCustomPrice] = useState<string | undefined>('');
     const [totalProductBundle, setTotalProductBundle] = useState<string>('');
     const [colorName, setColorName] = useState<string>('');
+    const [isBarcodePrint, setIsBarcodePrint] = useState<boolean>(false);
+    const [barcode, setBarcode] = useState<string>('');
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {
@@ -71,12 +73,14 @@ const CreateMovingBundleProduct = () => {
     const handleCreateBundle = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
+            const barcodeString = generateRandomStringFormatBundle();
+            setBarcode(barcodeString);
             const body = {
                 name_bundle: nameBundle,
-                total_price_bundle: filterBundles?.data?.data.resource.total_new_price ?? 0,
+                total_price_bundle: filterBundles?.data?.data.resource.total_new_price ?? '0',
                 total_price_custom_bundle: Number(customPrice),
                 total_product_bundle: filterBundlesProducts?.length,
-                barcode_bundle: generateRandomStringFormatBundle(),
+                barcode_bundle: barcodeString,
                 category: selectedCategory,
                 name_color: colorName,
             };
@@ -112,7 +116,11 @@ const CreateMovingBundleProduct = () => {
         if (resultsCreateBundle.isSuccess) {
             toast.success(resultsCreateBundle?.data.data.message);
             bundleLists?.refetch();
-            navigate('/storage/moving_product/bundle');
+            if (categories.length !== 0) {
+                setIsBarcodePrint(true);
+            } else {
+                navigate('/storage/moving_product/bundle');
+            }
         } else if (resultsCreateBundle.isError) {
             toast.error(resultsCreateBundle?.data?.data?.message ?? 'Error');
         }
@@ -157,78 +165,91 @@ const CreateMovingBundleProduct = () => {
                 <h1 className="text-lg font-semibold py-4">Create Bundle</h1>
             </div>
             <div>
-                <form className="w-[400px] mb-4 " onSubmit={handleCreateBundle}>
-                    <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
-                    </button>
-                    <div className="flex items-center justify-between mb-2 mt-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Bundle :
-                        </label>
-                        <input id="categoryName" type="text" className=" form-input w-[250px]" required value={nameBundle} onChange={(e) => setNameBundle(e.target.value)} />
-                    </div>
-                    <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Total Harga :
-                        </label>
-                        <input
-                            disabled
-                            id="categoryName"
-                            type="text"
-                            placeholder="Rp"
-                            className="form-input w-[250px]"
-                            required
-                            value={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
-                        />
-                    </div>
-                    {!isCategory && (
+                <div className="flex items-start">
+                    <form className="w-[400px] mb-4 " onSubmit={handleCreateBundle}>
+                        <button type="submit" className="btn btn-primary mb-4 px-16">
+                            Create Bundle
+                        </button>
                         <div className="flex items-center justify-between mb-2 mt-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Color Name:
+                                Nama Bundle :
                             </label>
-                            <input id="Color Name" disabled type="text" className=" form-input w-[250px]" required value={colorName} />
+                            <input id="categoryName" type="text" className=" form-input w-[250px]" required value={nameBundle} onChange={(e) => setNameBundle(e.target.value)} />
                         </div>
-                    )}
-                    {isCategory && (
                         <div className="flex items-center justify-between mb-2">
-                            <label htmlFor="kategori" className="text-[15px] font-semibold whitespace-nowrap">
-                                Kategori :
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Harga :
                             </label>
-                            <select
-                                id="gridState"
+                            <input
+                                disabled
+                                id="categoryName"
+                                type="text"
+                                placeholder="Rp"
                                 className="form-input w-[250px]"
-                                onChange={(e) => {
-                                    const selectedNameCategory = e.target.selectedOptions[0].getAttribute('data-name-category');
-                                    setSelectedCategory(selectedNameCategory);
-                                    const priceDiscount = (Number(filterBundles?.data?.data.resource.total_new_price) * Number(e.target.value)) / 100;
-                                    setCustomPrice(JSON.stringify(priceDiscount));
-                                }}
-                            >
-                                <option>Choose...</option>
-                                {categories?.map((item: any, index: any) => {
-                                    return (
-                                        <option key={index} value={item.discount_category} data-name-category={item.name_category}>
-                                            {item.name_category} {item.discount_category + '%'}
-                                        </option>
-                                    );
-                                })}
-                            </select>
+                                required
+                                value={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
+                            />
+                        </div>
+                        {!isCategory && (
+                            <div className="flex items-center justify-between mb-2 mt-2">
+                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                    Color Name:
+                                </label>
+                                <input id="Color Name" disabled type="text" className=" form-input w-[250px]" required value={colorName} />
+                            </div>
+                        )}
+                        {isCategory && (
+                            <div className="flex items-center justify-between mb-2">
+                                <label htmlFor="kategori" className="text-[15px] font-semibold whitespace-nowrap">
+                                    Kategori :
+                                </label>
+                                <select
+                                    id="gridState"
+                                    className="form-input w-[250px]"
+                                    onChange={(e) => {
+                                        const selectedNameCategory = e.target.selectedOptions[0].getAttribute('data-name-category');
+                                        setSelectedCategory(selectedNameCategory);
+                                        const priceDiscount = (Number(filterBundles?.data?.data.resource.total_new_price) * Number(e.target.value)) / 100;
+                                        setCustomPrice(JSON.stringify(priceDiscount));
+                                    }}
+                                >
+                                    <option>Choose...</option>
+                                    {categories?.map((item: any, index: any) => {
+                                        return (
+                                            <option key={index} value={item.discount_category} data-name-category={item.name_category}>
+                                                {item.name_category} {item.discount_category + '%'}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                        )}
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Custom Harga :
+                            </label>
+                            <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={customPrice} onChange={(e) => setCustomPrice(e.target.value)} />
+                        </div>
+                        <input
+                            type="text"
+                            className="mt-4 form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                            placeholder="Search..."
+                            value={searchLeftTable}
+                            onChange={(e) => setSearchLeftTable(e.target.value)}
+                        />
+                    </form>
+                    {isBarcodePrint && (
+                        <div className="ml-12">
+                            <BarcodePrinted
+                                barcode={barcode}
+                                category={selectedCategory}
+                                newPrice={formatRupiah(JSON.stringify(customPrice) ?? '0')}
+                                oldPrice={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
+                                isBundle
+                            />
                         </div>
                     )}
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Custom Harga :
-                        </label>
-                        <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={customPrice} onChange={(e) => setCustomPrice(e.target.value)} />
-                    </div>
-                    <input
-                        type="text"
-                        className="mt-4 form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
-                        placeholder="Search..."
-                        value={searchLeftTable}
-                        onChange={(e) => setSearchLeftTable(e.target.value)}
-                    />
-                </form>
+                </div>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     {/* <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
