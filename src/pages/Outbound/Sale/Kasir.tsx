@@ -13,13 +13,6 @@ import toast from 'react-hot-toast';
 import { useAddBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 import { Alert } from '../../../commons';
 
-interface GetTotalSaleItem {
-    total_sale: string;
-}
-interface GetCodeDocumentItem {
-    code_document_sale: string;
-}
-
 const Kasir = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
@@ -36,15 +29,8 @@ const Kasir = () => {
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
-        const data = listSaleData?.data.resource.data;
-        if (data && Array.isArray(data)) {
-            const filteredData = data.slice(0, -3);
-            return filteredData as GetListSaleItem[];
-        }
-        return [];
+        return listSaleData?.data.resource.data;
     }, [listSaleData]);
-    const twolastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 3] as GetCodeDocumentItem;
-    const lastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 1] as GetTotalSaleItem;
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
     }, [listProduct]);
@@ -167,19 +153,19 @@ const Kasir = () => {
             navigate('/outbound/sale/kasir');
             refetch();
         } else if (resultsAddBuyer.isError) {
-            toast.error(resultsAddBuyer.data?.data?.message);
+            toast.error(resultsAddBuyer.error?.data?.data?.message);
         } else if (resultAddSale.isSuccess) {
             toast.success(resultAddSale.data.data.message);
             navigate('/outbound/sale/kasir');
             refetch();
         } else if (resultAddSale.isError) {
-            toast.error(resultAddSale.data?.data?.message);
+            toast.error(resultAddSale.error?.data?.data?.message);
         } else if (resultsDeleteSale.isSuccess) {
             toast.success(resultsDeleteSale.data.data.message);
             navigate('/outbound/sale/kasir');
             refetch();
         } else if (resultsDeleteSale.isError) {
-            toast.error(resultsDeleteSale.data?.data?.message);
+            toast.error(resultsDeleteSale?.error?.data?.data?.message);
         } else if (resultFinish.isSuccess) {
             toast.success('Success finish sale');
             navigate('/outbound/sale/list_kasir');
@@ -463,7 +449,7 @@ const Kasir = () => {
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     Code Document:
                                 </label>
-                                <input id="categoryName" type="text" value={twolastItem?.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
+                                <input id="categoryName" type="text" value={listSaleData?.data.resource.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-4">
@@ -493,7 +479,14 @@ const Kasir = () => {
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     TOTAL :
                                 </label>
-                                <input id="categoryName" type="text" value={formatRupiah(lastItem?.total_sale ?? '')} placeholder="Rp" className=" form-input w-[250px]" required />
+                                <input
+                                    id="categoryName"
+                                    type="text"
+                                    value={formatRupiah(listSaleData?.data.resource.product_price_sale ?? '')}
+                                    placeholder="Rp"
+                                    className=" form-input w-[250px]"
+                                    required
+                                />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-4">
@@ -538,17 +531,17 @@ const Kasir = () => {
                                     render: (item: GetListSaleItem, index: number) => <span>{index + 1}</span>,
                                 },
                                 {
-                                    accessor: 'Barcode',
+                                    accessor: 'code_document_sale',
                                     title: 'Barcode',
                                     render: (item: GetListSaleItem) => <span className="font-semibold">{item.code_document_sale}</span>,
                                 },
                                 {
-                                    accessor: 'name',
+                                    accessor: 'product_name_sale',
                                     title: 'Name',
                                     render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_name_sale}</span>,
                                 },
                                 {
-                                    accessor: 'price',
+                                    accessor: 'product_price_sale',
                                     title: 'Price',
                                     render: (item: GetListSaleItem) => <span className="font-semibold">{formatRupiah(item.product_price_sale)}</span>,
                                 },
