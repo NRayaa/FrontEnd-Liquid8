@@ -1045,19 +1045,22 @@ interface GetListSale {
         status: boolean;
         message: string;
         resource: {
+            code_document_sale: string;
             current_page: number;
-            data: (GetListSaleItem | GetTotalSaleItem)[];
+            data: GetListSaleItem[];
             first_page_url: string;
-            from: null | string;
+            from: number;
             last_page: number;
             last_page_url: string;
             links: Links[];
-            next_page_url: null | string;
+            next_page_url: string | null;
             path: string;
             per_page: number;
-            prev_page_url: null | string;
+            prev_page_url: string | null;
+            sale_buyer_name: string;
             to: number;
             total: number;
+            total_sale: number;
         };
     };
 }
