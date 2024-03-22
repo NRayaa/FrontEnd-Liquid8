@@ -173,6 +173,9 @@ const Sidebar = () => {
                                                 <li>
                                                     <NavLink to="/inbound/check_product/approvment_product">{'Approvment Product'}</NavLink>
                                                 </li>
+                                                <li>
+                                                    <NavLink to="/inbound/check_product/manual_inbound">{'Manual Inbound'}</NavLink>
+                                                </li>
                                             </ul>
                                         </AnimateHeight>
                                     </li>
