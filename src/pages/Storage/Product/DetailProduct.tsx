@@ -180,7 +180,7 @@ const DetailProduct = () => {
                                 hanldeEditProduct={handleChangeInput}
                             />
                         </div>
-                        {parseFloat(input.old_price_product) > 1000000 && (
+                        {parseFloat(input.old_price_product) >= 100000 && (
                             <div className="w-full relative">
                                 <label htmlFor="kategori">Kategori Produk</label>
                                 <select
