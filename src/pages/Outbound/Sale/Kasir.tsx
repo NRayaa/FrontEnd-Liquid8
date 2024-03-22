@@ -13,19 +13,12 @@ import toast from 'react-hot-toast';
 import { useAddBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 import { Alert } from '../../../commons';
 
-interface GetTotalSaleItem {
-    total_sale: string;
-}
-interface GetCodeDocumentItem {
-    code_document_sale: string;
-}
-
 const Kasir = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
-    const [addSale, resultAddSale] = useAddSaleMutation();
-    const [addBuyer, resultsAddBuyer] = useAddBuyerMutation();
-    const [saleFinish, resultFinish] = useSaleFinishMutation();
+    const [addSale] = useAddSaleMutation();
+    const [addBuyer] = useAddBuyerMutation();
+    const [saleFinish] = useSaleFinishMutation();
     const [search, setSearch] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
@@ -36,15 +29,8 @@ const Kasir = () => {
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
-        const data = listSaleData?.data.resource.data;
-        if (data && Array.isArray(data)) {
-            const filteredData = data.slice(0, -3);
-            return filteredData as GetListSaleItem[];
-        }
-        return [];
+        return listSaleData?.data.resource.data;
     }, [listSaleData]);
-    const twolastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 3] as GetCodeDocumentItem;
-    const lastItem = listSaleData?.data.resource.data[listSaleData?.data.resource.data.length - 1] as GetTotalSaleItem;
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
     }, [listProduct]);
@@ -75,8 +61,15 @@ const Kasir = () => {
                 sale_barcode: input.sale_barcode,
                 buyer_id: inputBuyer.id,
             };
-            await addSale(body);
-            refetch();
+            await addSale(body)
+                .unwrap()
+                .then((res) => {
+                    toast.success(res.data.message);
+                    setInput((prev) => ({ ...prev, sale_barcode: '' }));
+                    navigate('/outbound/sale/kasir');
+                    refetch();
+                })
+                .catch((err) => toast.error(err.data.data.message));
         } catch (err) {}
     };
 
@@ -88,14 +81,29 @@ const Kasir = () => {
                 phone_buyer: input.phone_buyer,
                 address_buyer: input.address_buyer,
             };
-            await addBuyer(body);
-            refetch();
+            await addBuyer(body)
+                .unwrap()
+                .then((res) => {
+                    toast.success(res.data.message);
+                    setAddBuyerOpen(false);
+                    navigate('/outbound/sale/kasir');
+                    refetch();
+                })
+                .catch((err) => toast.error(err.data.data.message));
         } catch (err) {}
     };
 
     const handleFinishSale = async () => {
         try {
-            await saleFinish(null);
+            await saleFinish(null)
+                .unwrap()
+                .then((res) => {
+                    toast.success(res.data.message);
+                    navigate('/outbound/sale/list_kasir');
+                    setInput((prev) => ({ ...prev, sale_barcode: '' }));
+                    refetch();
+                })
+                .catch((err) => toast.error(err.data.data.message));
         } catch (err) {
             console.error('Failed to finish sale:', err);
         }
@@ -103,8 +111,14 @@ const Kasir = () => {
 
     const handleDeleteSale = async (id: number) => {
         try {
-            await deleteSale(id);
-            refetch();
+            await deleteSale(id)
+                .unwrap()
+                .then((res) => {
+                    toast.success(res.data.message);
+                    navigate('/outbound/sale/kasir');
+                    refetch();
+                })
+                .catch((err) => toast.error(err.data.data.message));
         } catch (err) {
             console.log(err);
         }
@@ -159,32 +173,6 @@ const Kasir = () => {
         setListBuyerOpen(false);
         setAddBuyerOpen(true);
     };
-
-    useEffect(() => {
-        if (resultsAddBuyer.isSuccess) {
-            toast.success(resultsAddBuyer.data.data.message);
-            setAddBuyerOpen(false);
-            navigate('/outbound/sale/kasir');
-            refetch();
-        } else if (resultsAddBuyer.isError) {
-            toast.error(resultsAddBuyer.data?.data?.message);
-        } else if (resultAddSale.isSuccess) {
-            toast.success(resultAddSale.data.data.message);
-            navigate('/outbound/sale/kasir');
-            refetch();
-        } else if (resultAddSale.isError) {
-            toast.error(resultAddSale.data?.data?.message);
-        } else if (resultsDeleteSale.isSuccess) {
-            toast.success(resultsDeleteSale.data.data.message);
-            navigate('/outbound/sale/kasir');
-            refetch();
-        } else if (resultsDeleteSale.isError) {
-            toast.error(resultsDeleteSale.data?.data?.message);
-        } else if (resultFinish.isSuccess) {
-            toast.success('Success finish sale');
-            navigate('/outbound/sale/list_kasir');
-        }
-    }, [resultsAddBuyer, resultAddSale, resultsDeleteSale, listSaleData, resultFinish, refetch]);
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -453,7 +441,7 @@ const Kasir = () => {
                 <div className="relative w-[220px]"></div>
                 <div>
                     <div className="mb-4 flex justify-end space-x-2">
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleFinishSale}>
+                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleFinishSale} disabled={listSaleData?.data.resource.total === 0}>
                             Sale
                         </button>
                     </div>
@@ -463,7 +451,7 @@ const Kasir = () => {
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     Code Document:
                                 </label>
-                                <input id="categoryName" type="text" value={twolastItem?.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
+                                <input id="categoryName" type="text" value={listSaleData?.data.resource.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-4">
@@ -476,13 +464,15 @@ const Kasir = () => {
                                             className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                                             placeholder="Search..."
                                             name="name_buyer"
-                                            value={inputBuyer.name_buyer}
+                                            value={listSaleData?.data.resource.sale_buyer_name ? listSaleData?.data.resource.sale_buyer_name : inputBuyer.name_buyer}
                                             onChange={handleInputChangeBuyer}
+                                            disabled={listSaleData?.data.resource.sale_buyer_name !== ''}
                                         />
                                         <button
                                             type="button"
                                             className="h-7 w-7 absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
                                             onClick={handleSearchBuyerButtonClick}
+                                            disabled={listSaleData?.data.resource.sale_buyer_name !== ''}
                                         >
                                             <IconSearch className="w-4 h-4" />
                                         </button>
@@ -493,7 +483,14 @@ const Kasir = () => {
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     TOTAL :
                                 </label>
-                                <input id="categoryName" type="text" value={formatRupiah(lastItem?.total_sale ?? '')} placeholder="Rp" className=" form-input w-[250px]" required />
+                                <input
+                                    id="categoryName"
+                                    type="text"
+                                    value={formatRupiah(listSaleData?.data.resource.total_sale.toString() ?? '')}
+                                    placeholder="Rp"
+                                    className=" form-input w-[250px]"
+                                    required
+                                />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-4">
@@ -538,17 +535,17 @@ const Kasir = () => {
                                     render: (item: GetListSaleItem, index: number) => <span>{index + 1}</span>,
                                 },
                                 {
-                                    accessor: 'Barcode',
+                                    accessor: 'code_document_sale',
                                     title: 'Barcode',
                                     render: (item: GetListSaleItem) => <span className="font-semibold">{item.code_document_sale}</span>,
                                 },
                                 {
-                                    accessor: 'name',
+                                    accessor: 'product_name_sale',
                                     title: 'Name',
                                     render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_name_sale}</span>,
                                 },
                                 {
-                                    accessor: 'price',
+                                    accessor: 'product_price_sale',
                                     title: 'Price',
                                     render: (item: GetListSaleItem) => <span className="font-semibold">{formatRupiah(item.product_price_sale)}</span>,
                                 },
