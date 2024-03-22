@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGetDisplayExpiredQuery, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
+import { useGetDisplayExpiredQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
-import { formatRupiah, generateRandomString, generateRandomStringFormatBundle } from '../../../../helper/functions';
+import { formatRupiah, generateRandomStringFormatBundle } from '../../../../helper/functions';
 import {
     useCreateBundleMutation,
     useDeleteFilterProductBundlesMutation,
@@ -29,6 +29,7 @@ const CreateMovingBundleProduct = () => {
     const [isCategory, setIsCategory] = useState<boolean>(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState<any>();
+    const [customDisplay, setCustomDisplay] = useState<any>('0');
 
     const [nameBundle, setNameBundle] = useState<string>('');
     const [customPrice, setCustomPrice] = useState<string | undefined>('');
@@ -118,6 +119,7 @@ const CreateMovingBundleProduct = () => {
             bundleLists?.refetch();
             if (categories.length !== 0) {
                 setIsBarcodePrint(true);
+                setCustomDisplay(customPrice);
             } else {
                 navigate('/storage/moving_product/bundle');
             }
@@ -135,8 +137,8 @@ const CreateMovingBundleProduct = () => {
         } else {
             setIsCategory(false);
             if (filterBundles?.data?.data?.resource.data.data.length !== 0) {
-                setCustomPrice(filterBundles?.data?.data?.resource.data.data[0].new_tag_product[0].fixed_price_color ?? '0');
-                setColorName(filterBundles?.data?.data?.resource.data.data[0].new_tag_product[0].name_color ?? '');
+                setCustomPrice(filterBundles?.data?.data?.resource.data.data[0]?.new_tag_product[0]?.fixed_price_color ?? '0');
+                setColorName(filterBundles?.data?.data?.resource.data.data[0]?.new_tag_product[0]?.name_color ?? '');
             } else {
                 setCustomPrice('0');
                 setColorName('');
@@ -243,7 +245,7 @@ const CreateMovingBundleProduct = () => {
                             <BarcodePrinted
                                 barcode={barcode}
                                 category={selectedCategory}
-                                newPrice={formatRupiah(JSON.stringify(customPrice) ?? '0')}
+                                newPrice={formatRupiah(customDisplay)}
                                 oldPrice={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
                                 isBundle
                             />
