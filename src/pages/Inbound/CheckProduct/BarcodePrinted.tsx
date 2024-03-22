@@ -32,6 +32,7 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
             console.error('Container not found');
         }
     };
+
     return (
         <div>
             <div style={{ width: '7cm', height: '4cm', display: 'flex', justifyContent: 'start', alignItems: 'start', fontFamily: 'sans-serif' }} className="print-container">
