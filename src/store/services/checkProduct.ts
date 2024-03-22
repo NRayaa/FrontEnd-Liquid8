@@ -27,7 +27,14 @@ export const checkProduct = createApi({
                 method: 'DELETE',
             }),
         }),
+        checkPrice: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/check-price',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery } = checkProduct;
+export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery, useCheckPriceMutation } = checkProduct;

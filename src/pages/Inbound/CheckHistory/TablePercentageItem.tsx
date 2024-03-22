@@ -76,6 +76,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Old Price Damaged
                     </th>
                     <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.damaged.total_old_price))}</td>
+                    <td className="px-6 py-4">{detailCheckData?.damaged.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -84,6 +85,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Old Price Lolos
                     </th>
                     <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.lolos.total_old_price))}</td>
+                    <td className="px-6 py-4">{detailCheckData?.lolos.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -92,6 +94,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Old Price Abnormal
                     </th>
                     <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.abnormal.total_old_price))}</td>
+                    <td className="px-6 py-4">{detailCheckData?.abnormal.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -100,6 +103,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Price
                     </th>
                     <td className="px-6 py-4">{formatRupiah(detailCheckData?.total_price.toString() || '0')}</td>
+                    <td className="px-6 py-4">100%</td>
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -108,6 +112,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Price Discrepancy
                     </th>
                     <td className="px-6 py-4">{formatRupiah(detailCheckData?.priceDiscrepancy.toString() || '0')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
             </tbody>

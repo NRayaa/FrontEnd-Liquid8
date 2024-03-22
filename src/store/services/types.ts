@@ -395,16 +395,20 @@ interface GetRiwayatcheckItem {
     damaged: {
         products: HistorySubProductItem[];
         total_old_price: number;
+        price_percentage: number;
     };
     lolos: {
         products: HistorySubProductItem[];
         total_old_price: number;
+        price_percentage: number;
     };
     abnormal: {
         products: HistorySubProductItem[];
         total_old_price: number;
+        price_percentage: number;
     };
     priceDiscrepancy: number;
+    price_percentage: number;
 }
 
 interface DetailGetRiwayatcheck {
