@@ -8,7 +8,7 @@ import BarcodePrinted from './BarcodePrinted';
 import toast from 'react-hot-toast';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
-interface ProductCheck {
+interface ManualProductCheck {
     oldData: {
         code_document: string;
         created_at: string;
@@ -42,7 +42,7 @@ interface ProductCheck {
     getSelectedCategory: (selected: string) => void;
 }
 
-const ProductCheck: React.FC<ProductCheck> = ({
+const ManualProductCheck: React.FC<ManualProductCheck> = ({
     oldData,
     tagColor,
     resetValueMultiCheck,
@@ -100,7 +100,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
     const handleSendLolos = async () => {
         try {
             const body = {
-                code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
                 new_barcode_product: codeBarcode,
                 new_name_product: oldData.old_name_product,
@@ -308,4 +307,4 @@ const ProductCheck: React.FC<ProductCheck> = ({
     );
 };
 
-export default ProductCheck;
+export default ManualProductCheck;

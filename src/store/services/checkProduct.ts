@@ -12,13 +12,29 @@ export const checkProduct = createApi({
         getBarcode: builder.query<GetBarcodeResponse | undefined, GetBarcodeBody>({
             query: ({ code_document, old_barcode_product }) => `/search_barcode_product?code_document=${code_document}&old_barcode_product=${old_barcode_product}`,
         }),
+        getProductRepair: builder.query<GetBarcodeResponse | undefined, GetBarcodeBody>({
+            query: ({ code_document, old_barcode_product }) => `/getProductRepair?code_document=${code_document}&old_barcode_product=${old_barcode_product}`,
+        }),
         deleteDocument: builder.mutation<any, any>({
             query: (id) => ({
                 url: `/documents/${id}`,
                 method: 'DELETE',
             }),
         }),
+        deleteApprove: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-approves/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        checkPrice: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/check-price',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation } = checkProduct;
+export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery, useCheckPriceMutation } = checkProduct;

@@ -12,6 +12,73 @@ import { GetListProductRepairItem, ProdcutItem } from '../../../store/services/t
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
+import { useLazyGetProductRepairQuery } from '../../../store/services/checkProduct';
+import { formatRupiah } from '../../../helper/functions';
+import BarcodePrinted from './BarcodePrinted';
+import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+
+interface TagColorData {
+    tag: string;
+    nama: string;
+    harga: string;
+    qty: string;
+}
+
+const TagColorData: React.FC<TagColorData> = ({ tag, nama, harga, qty }) => {
+    return (
+        <div className="flex flex-col gap-4">
+            <h1 className="flex justify-center text-lg font-bold">NEW DATA</h1>
+            <div>
+                <label htmlFor="gridBarcode2">Tag</label>
+                <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" value={tag} />
+            </div>
+            <div>
+                <label htmlFor="gridNama2">Nama</label>
+                <input id="gridNama2" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+            </div>
+            <div>
+                <label htmlFor="gridNama4">Harga</label>
+                <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga)} />
+            </div>
+            <div>
+                <label htmlFor="gridQTY2">QTY</label>
+                <input id="gridQTY2" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+            </div>
+        </div>
+    );
+};
+
+interface NewBarcodeData {
+    barcode: string;
+    nama: string;
+    newPrice: string;
+    qty: string;
+    header: string;
+}
+
+const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header }) => {
+    return (
+        <div className="flex flex-col gap-4">
+            <h1 className="flex justify-center text-lg font-bold">{header}</h1>
+            <div>
+                <label htmlFor="gridBarcode1">Barcode</label>
+                <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
+            </div>
+            <div>
+                <label htmlFor="gridNama1">Nama</label>
+                <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+            </div>
+            <div>
+                <label htmlFor="gridNama3">Harga</label>
+                <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(newPrice)} />
+            </div>
+            <div>
+                <label htmlFor="gridQTY1">QTY</label>
+                <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+            </div>
+        </div>
+    );
+};
 
 const ListProductRepair = () => {
     const dispatch = useDispatch();
@@ -28,6 +95,11 @@ const ListProductRepair = () => {
     const [repair, setRepair] = useState(false);
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsMutation();
+    // tandanibos
+    const [getProductRepair, getProductRepairResults] = useLazyGetProductRepairQuery();
+    const [countPercentage, setCountPercentage] = useState<number>(0);
+    const [isReset, setIsReset] = useState<boolean>(false);
+    const [isBarcode, setIsBarcode] = useState<boolean>(false);
 
     const dataListProductRepair: any = useMemo(() => {
         return listProductData?.data?.resource?.data;
@@ -50,6 +122,7 @@ const ListProductRepair = () => {
 
     const closePopup = () => {
         setRepair(false);
+        setIsReset(true);
         setInput({
             old_barcode_product: '',
             old_price_product: 0,
@@ -63,20 +136,27 @@ const ListProductRepair = () => {
     };
     const [updateProductRepair, result] = useUpdateProductRepairMutation();
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = ({ value, percentage }: any) => {
         setInput((prevState) => ({
             ...prevState,
-            [e.target.name]: e.target.value,
+            new_category_product: value,
         }));
+        setCountPercentage(parseInt(percentage));
     };
 
-    const handleRepair = (id: number) => {
+    const handleRepair = async (id: number) => {
         setSelectedItem(id);
-        setRepair(true);
         const selectedProduct = dataListProductRepair?.find((product: any) => product.id === id);
+        // tandanibos
+        await getProductRepair({ code_document: selectedProduct.code_document, old_barcode_product: selectedProduct.old_barcode_product });
         setProductData(selectedProduct || null);
-        console.log(id);
     };
+
+    const colorTags = useMemo(() => {
+        if (getProductRepairResults.isSuccess && getProductRepairResults.data.data.resource.color_tags !== undefined) {
+            return getProductRepairResults.data.data.resource.color_tags[0];
+        }
+    }, [getProductRepairResults]);
 
     const handleRepairSend = async (id: number) => {
         try {
@@ -84,15 +164,13 @@ const ListProductRepair = () => {
                 old_barcode_product: productData?.old_barcode_product,
                 old_price_product: productData?.old_price_product,
                 new_status_product: productData?.new_status_product,
-                new_barcode_product: productData?.new_barcode_product,
+                new_barcode_product: colorTags ? productData?.old_barcode_product : getProductRepairResults.data?.data.resource.new_barcode,
                 new_name_product: productData?.new_name_product,
-                new_price_product: calculatedPrice,
-                new_quantity_product: input.new_quantity_product,
-                new_category_product: input.new_category_product,
+                new_price_product: colorTags ? colorTags.fixed_price_color : percentagedPrice,
+                new_quantity_product: productData?.new_quantity_product,
+                new_category_product: colorTags ? productData?.new_category_product : input.new_category_product,
             };
             await updateProductRepair({ id, body });
-            setRepair(false);
-            refetch();
         } catch (err) {
             console.error(err);
         }
@@ -108,7 +186,7 @@ const ListProductRepair = () => {
             await updateThrows(id);
             refetch();
         } catch (err) {
-            console.error('Error updating throws:', err);
+            console.error('Error updating QCD:', err);
         } finally {
             setThrows(false);
         }
@@ -131,6 +209,13 @@ const ListProductRepair = () => {
     }, [selectedCategory, productData]);
 
     useEffect(() => {
+        setInput((prevState) => ({
+            ...prevState,
+            new_price_product: calculatedPrice,
+        }));
+    }, [selectedCategory]);
+
+    useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
             refetch();
@@ -144,6 +229,33 @@ const ListProductRepair = () => {
             toast.error(result?.data?.data?.message);
         }
     }, [results, result]);
+
+    // tandanibos
+    useEffect(() => {
+        if (getProductRepairResults.isSuccess) {
+            setRepair(true);
+        }
+    }, [getProductRepairResults]);
+
+    useEffect(() => {
+        if (result.isSuccess) {
+            if (!colorTags) {
+                setRepair(true);
+                setIsBarcode(true);
+            } else {
+                setRepair(false);
+                setIsReset(true);
+            }
+        }
+    }, [result]);
+
+    const percentagedPrice = useMemo(() => {
+        if (productData) {
+            const total = 100 - countPercentage;
+            const percentaged = (parseInt(productData?.old_price_product) * total) / 100;
+            return JSON.stringify(percentaged);
+        }
+    }, [colorTags, countPercentage]);
 
     if (isError && !listProductData?.data?.status) {
         return <Alert message={listProductData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -197,131 +309,78 @@ const ListProductRepair = () => {
                                         <div className="space-y-5 col-span-2">
                                             <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    <div className="flex flex-col gap-4">
-                                                        <h1 className="flex justify-center text-lg font-bold">Old Data</h1>
-                                                        <div>
-                                                            <label htmlFor="gridBarcode1">Barcode</label>
-                                                            <input
-                                                                id="gridBarcode1"
-                                                                disabled
-                                                                type="text"
-                                                                placeholder="Enter Barcode"
-                                                                className="form-input"
-                                                                value={productData?.old_barcode_product || ''}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridNama1">Nama</label>
-                                                            <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={productData?.new_name_product || ''} />
-                                                        </div>
-                                                        {/* <div> */}
-                                                        <input id="gridNama1" type="hidden" disabled placeholder="Enter Display" className="form-input" value={productData?.new_status_product || ''} />
-                                                        {/* </div> */}
-                                                        <div>
-                                                            <label htmlFor="gridNama3">Harga</label>
-                                                            <input id="gridNama3" disabled type="text" placeholder="Enter Harga" className="form-input" value={productData?.old_price_product || ''} />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridQTY1">QTY</label>
-                                                            <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" value={productData?.new_quantity_product || ''} />
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col gap-4">
-                                                        <h1 className="flex justify-center text-lg font-bold">New Data</h1>
-                                                        <div>
-                                                            <label htmlFor="gridBarcode1">Barcode</label>
-                                                            <input
-                                                                id="gridBarcode1"
-                                                                type="text"
-                                                                placeholder="Enter Barcode"
-                                                                className="form-input"
-                                                                name="new_barcode_product"
-                                                                value={productData?.new_barcode_product || ''}
-                                                                onChange={handleInputChange}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridNama1">Nama</label>
-                                                            <input
-                                                                id="gridNama1"
-                                                                type="text"
-                                                                placeholder="Enter Nama"
-                                                                className="form-input"
-                                                                name="new_name_product"
-                                                                value={productData?.new_name_product || ''}
-                                                                onChange={handleInputChange}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridNama3">Harga</label>
-                                                            <input
-                                                                id="gridNama3"
-                                                                type="text"
-                                                                placeholder="Enter Harga"
-                                                                className="form-input"
-                                                                name="new_price_product"
-                                                                value={calculatedPrice}
-                                                                onChange={handleInputChange}
-                                                                readOnly
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="gridQTY1">QTY</label>
-                                                            <input
-                                                                id="gridQTY1"
-                                                                type="text"
-                                                                placeholder="Enter QTY"
-                                                                className="form-input"
-                                                                name="new_quantity_product"
-                                                                value={input.new_quantity_product || ''}
-                                                                onChange={handleInputChange}
-                                                            />
-                                                        </div>
-                                                        {/* <div> */}
-                                                        {/* <label htmlFor="discount">Discount (%)</label> */}
-                                                        <input
-                                                            id="discount"
-                                                            type="hidden"
-                                                            placeholder="Enter Discount"
-                                                            className="form-input"
-                                                            name="discount"
-                                                            value={calculateDiscount()}
-                                                            onChange={handleInputChange}
+                                                    <NewBarcodeData
+                                                        barcode={productData?.old_barcode_product ?? ''}
+                                                        nama={productData?.new_name_product ?? ''}
+                                                        newPrice={productData?.old_price_product ?? '0'}
+                                                        qty={productData?.new_quantity_product ?? '0'}
+                                                        header="Old Data"
+                                                    />
+                                                    {!colorTags ? (
+                                                        <NewBarcodeData
+                                                            barcode={getProductRepairResults.data?.data.resource.new_barcode}
+                                                            nama={productData?.new_name_product ?? ''}
+                                                            newPrice={(isReset ? productData?.old_price_product : percentagedPrice) ?? '0'}
+                                                            qty={productData?.new_quantity_product ?? '0'}
+                                                            header="New Data"
                                                         />
-                                                        {/* </div> */}
-                                                    </div>
+                                                    ) : (
+                                                        <TagColorData
+                                                            harga={colorTags.fixed_price_color}
+                                                            nama={colorTags.name_color}
+                                                            qty={productData?.new_quantity_product ?? '0'}
+                                                            tag={colorTags.hexa_code_color}
+                                                        />
+                                                    )}
                                                 </div>
                                                 <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-1">
                                                     <div className="flex flex-col gap-4">
-                                                        <h1 className="flex justify-start text-lg font-bold">Category</h1>
-                                                        <form className="space-y-5 flex flex-wrap">
-                                                            {dataCategories?.map((category, index) => (
-                                                                <div key={category.id} className="flex items-center w-1/2">
-                                                                    <input
-                                                                        type="radio"
-                                                                        id={`category${category.id}`}
-                                                                        name="new_category_product"
-                                                                        className="mr-2"
-                                                                        value={category.name_category}
-                                                                        onChange={(e) => {
-                                                                            handleInputChange(e);
-                                                                            setSelectedCategory(category.id);
-                                                                        }}
-                                                                    />
-                                                                    <label htmlFor={`category${category.id}`} className="mr-8">
-                                                                        {category.name_category}
-                                                                    </label>
+                                                        {isBarcode ? (
+                                                            <BarcodePrinted
+                                                                barcode={result.data.data.resource.new_barcode_product}
+                                                                category={result.data.data.resource.new_category_product}
+                                                                newPrice={formatRupiah(result.data.data.resource.new_price_product)}
+                                                                oldPrice={formatRupiah(result.data.data.resource.old_price_product)}
+                                                                isBundle={false}
+                                                            />
+                                                        ) : (
+                                                            <>
+                                                                <h1 className="flex justify-start text-lg font-bold">Category</h1>
+                                                                <div className="grid grid-cols-3 gap-4">
+                                                                    {dataCategories?.map((category, index) => (
+                                                                        <label key={category.id} className="flex items-center mt-1 cursor-pointer">
+                                                                            <input
+                                                                                disabled={colorTags}
+                                                                                type="radio"
+                                                                                className="form-radio text-success peer w-6 h-6"
+                                                                                name="radioOption"
+                                                                                value={category.name_category}
+                                                                                onChange={(e) => {
+                                                                                    setIsReset(false);
+                                                                                    handleInputChange({ value: e.target.value, percentage: category.discount_category });
+                                                                                    setSelectedCategory(category.id);
+                                                                                }}
+                                                                            />
+                                                                            <span className="text-white-dark">{category.name_category}</span>
+                                                                        </label>
+                                                                    ))}
                                                                 </div>
-                                                            ))}
-                                                        </form>
+                                                            </>
+                                                        )}
                                                     </div>
 
                                                     <div className="flex justify-end items-center mt-8">
-                                                        <Link to="/repair_station/list_product_repair">
-                                                            <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
-                                                                Repair
+                                                        {isBarcode ? (
+                                                            <button type="button" className=" px-2 btn btn-outline-danger" onClick={() => setRepair(false)}>
+                                                                <IconArrowBackward className="flex mx-2" fill={true} /> Kembali
                                                             </button>
-                                                        </Link>
+                                                        ) : (
+                                                            <Link to="/repair_station/list_product_repair">
+                                                                <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
+                                                                    To Display
+                                                                </button>
+                                                            </Link>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -359,13 +418,13 @@ const ListProductRepair = () => {
                                 >
                                     <Dialog.Panel as="div" className="panel border-0 p-0 rounded-lg overflow-hidden my-8 w-full max-w-lg text-black dark:text-white-dark">
                                         <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
-                                            <div className="text-lg font-bold">Thows List Product</div>
+                                            <div className="text-lg font-bold">QCD List Product</div>
                                         </div>
                                         <div className="p-5">
                                             <div>
                                                 <form className="space-y-5">
                                                     <div>
-                                                        <h1>Apakah Anda yakin ingin melakukan throws?</h1>
+                                                        <h1>Apakah Anda yakin ingin melakukan QCD?</h1>
                                                     </div>
                                                 </form>
                                             </div>
@@ -374,7 +433,7 @@ const ListProductRepair = () => {
                                                     Kembali
                                                 </button>
                                                 <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleThrowsConfirmation(selectedItem || 0)}>
-                                                    Throws
+                                                    QCD
                                                 </button>
                                             </div>
                                         </div>
@@ -386,42 +445,60 @@ const ListProductRepair = () => {
                 </Transition>
             </div>
 
-            <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">List Product Repair </h1>
-                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:mr-auto rtl:ml-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
+            <div className="panel mt-6 min-h-[450px]">
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Product Repair</h5>
+                <div className="relative w-[220px] ms-auto mb-4">
+                    <input
+                        type="text"
+                        className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
+                        <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+                            <path d="M18.5 18.5L22 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                    </button>
+                    <button type="button" className="hover:opacity-80 sm:hidden block absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                            <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                    </button>
                 </div>
-                <div className="datatables panel xl:col-span-2">
+                <div className="datatables">
                     <DataTable
-                        highlightOnHover
-                        className="whitespace-nowrap table-hover "
                         records={dataListProductRepair}
                         columns={[
-                            { accessor: 'id', title: 'No', render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length ?? 0 + (index + 1)}</span> },
-                            { accessor: 'barcode', title: 'Barcode', render: (item: GetListProductRepairItem) => <span>{item.new_barcode_product}</span> },
-                            { accessor: 'firstName', title: 'Nama', render: (item: GetListProductRepairItem) => <span>{item.new_name_product}</span> },
+                            {
+                                accessor: 'id',
+                                title: 'NO',
+                                render: (item: GetListProductRepairItem, index: number) => <span>{(page - 1) * dataListProductRepair?.length + (index + 1)}</span>,
+                            },
+                            { accessor: 'barcode', title: 'BARCODE', render: (item: GetListProductRepairItem) => <span className="font-semibold">{item.old_barcode_product}</span> },
+                            { accessor: 'firstName', title: 'NAMA', render: (item: GetListProductRepairItem) => <span className="font-semibold">{item.new_name_product}</span> },
                             {
                                 accessor: 'keterangan',
-                                title: 'Keterangan',
+                                title: 'KETERANGAN',
                                 render: (item: GetListProductRepairItem) => {
                                     const newQualityData = JSON.parse(item.new_quality);
-                                    const keterangan = newQualityData.abnormal;
-                                    return <span>{keterangan}</span>;
+                                    const keterangan = newQualityData.damaged || newQualityData.abnormal || newQualityData.lolos;
+                                    return <span className="font-semibold">{keterangan}</span>;
                                 },
                             },
                             {
                                 accessor: 'action',
-                                title: 'Opsi',
+                                title: 'OPSI',
                                 titleClassName: '!text-center',
                                 render: (item: GetListProductRepairItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <button type="button" className="btn btn-outline-info" onClick={() => handleRepair(item.id)}>
-                                            REPAIR
+                                            To Display
                                         </button>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => handleThrows(item.id)}>
-                                            THROWS
+                                            QCD
                                         </button>
                                     </div>
                                 ),

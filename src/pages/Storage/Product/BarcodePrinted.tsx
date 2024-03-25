@@ -8,10 +8,9 @@ interface BarcodePrint {
     newPrice: string;
     barcode: string;
     category: string;
-    isBundle?: boolean;
 }
 
-const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, category, isBundle }) => {
+const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, category }) => {
     const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
         if (containerElement) {
@@ -32,7 +31,6 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
             console.error('Container not found');
         }
     };
-
     return (
         <div>
             <div style={{ width: '7cm', height: '4cm', display: 'flex', justifyContent: 'start', alignItems: 'start', fontFamily: 'sans-serif' }} className="print-container">
@@ -49,11 +47,11 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
                     <div>
                         <table style={{ borderSpacing: 0 }}>
                             <tr>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>{!isBundle ? 'Harga Retail' : 'Total Awal'}</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga Retail</td>
                                 <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'line-through' }}>: {oldPrice}</td>
                             </tr>
                             <tr>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>{!isBundle ? 'Harga Diskon' : 'Custom Display'}</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga Diskon</td>
                                 <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {newPrice}</td>
                             </tr>
                         </table>

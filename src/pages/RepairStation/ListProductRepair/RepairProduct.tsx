@@ -202,7 +202,6 @@ const ProductRepair = () => {
         }
         return '';
     };
-    
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     return (
@@ -223,7 +222,7 @@ const ProductRepair = () => {
             {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
             </div> */}
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">List Product Repair </h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">List Product Repair 234234</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />

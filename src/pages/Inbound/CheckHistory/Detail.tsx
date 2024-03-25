@@ -3,14 +3,21 @@ import PieChartItem from './PieChartItem';
 import TablePercentageItem from './TablePercentageItem';
 import { Link, useParams } from 'react-router-dom';
 import { useGetDetailRiwayatCheckQuery, useExportToExcelMutation } from '../../../store/services/riwayatApi';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import TableSubProduct from './TableSubProduct';
+import { useDetailProductOldQuery } from '../../../store/services/productOldsApi';
+import { HistorySubProductItem, ItemDetailOldsProduct } from '../../../store/services/types';
 
 const DetailCheckHistory = () => {
     const { id } = useParams();
     const { data, isSuccess } = useGetDetailRiwayatCheckQuery(id);
     const [exportToExcel, results] = useExportToExcelMutation();
+    const [productSelected, setProductSelected] = useState<'LOLOS' | 'DAMAGED' | 'ABNORMAL' | 'DISCREPANCY' | string>('LOLOS');
+    const [page, setPage] = useState<number>(1);
+
+    const productType = ['LOLOS', 'DAMAGED', 'ABNORMAL', 'DISCREPANCY'];
 
     const detailCheckData = useMemo(() => {
         if (isSuccess && data.data.status) {
@@ -18,6 +25,13 @@ const DetailCheckHistory = () => {
         }
     }, [data]);
 
+    console.log(detailCheckData);
+    const { data: detailProductData } = useDetailProductOldQuery({ codeDocument: detailCheckData?.code_document, page: 1 });
+    const detailChecDiscrepancy = useMemo(() => {
+        if (isSuccess && detailProductData?.data.status) {
+            return detailProductData?.data.resource;
+        }
+    }, [detailProductData]);
     const handleExportData = async () => {
         try {
             const body = {
@@ -28,6 +42,18 @@ const DetailCheckHistory = () => {
             console.log(err);
         }
     };
+
+    const productTypeActive: any = useMemo(() => {
+        if (productSelected === 'LOLOS') {
+            return detailCheckData?.lolos.products;
+        } else if (productSelected === 'DAMAGED') {
+            return detailCheckData?.damaged.products;
+        } else if (productSelected === 'DISCREPANCY') {
+            return detailChecDiscrepancy?.data;
+        } else {
+            return detailCheckData?.abnormal.products;
+        }
+    }, [productSelected]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -59,6 +85,22 @@ const DetailCheckHistory = () => {
                     </button>
                 </div>
                 <TablePercentageItem detailCheckData={detailCheckData} />
+            </div>
+            <div className="panel mt-4">
+                <div className="mb-6">
+                    <select id="gridState" className="form-select text-white-dark w-auto" value={productSelected} onChange={(e) => setProductSelected(e.target.value)}>
+                        {productType?.map((item: string, index: number) => {
+                            return <option key={index}>{item}</option>;
+                        })}
+                    </select>
+                </div>
+                <TableSubProduct
+                    productTypeActive={productTypeActive}
+                    totalRecord={detailChecDiscrepancy?.total ?? 0}
+                    perPage={detailChecDiscrepancy?.per_page ?? 10}
+                    page={page}
+                    changePage={(prevPage: number) => setPage(prevPage)}
+                />
             </div>
         </div>
     );

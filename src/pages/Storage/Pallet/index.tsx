@@ -90,7 +90,7 @@ const Pallet = () => {
 
     return (
         <>
-            <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/" current="SubKategori" />
+            <BreadCrumbs base="Home" basePath="/" current="Pallet" />
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Pallet</h5>
                 <div className="mb-4 flex justify-between">
@@ -138,7 +138,7 @@ const Pallet = () => {
                                 titleClassName: '!text-center',
                                 render: (item: PaletListItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/storage/expired_product/detail_product/${item.id}`}>
+                                        <Link to={`/storage/pallet/detail_pallet/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
                                                 DETAIL
                                             </button>

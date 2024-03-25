@@ -1,21 +1,18 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { formatRupiah } from '../../../helper/functions';
 
 interface BarcodeData {
-    barcode: string;
-    nama: string;
-    harga: string;
-    qty: string;
-    header: string;
+    barcode: string | undefined;
+    nama: string | undefined;
+    harga: string | undefined;
+    qty: string | undefined;
+    header: string | undefined;
 }
 
-const BarcodeData: React.FC<BarcodeData> = ({ barcode, nama, harga, qty, header }) => {
-    const price = useMemo(() => {
-        return formatRupiah(harga);
-    }, [harga]);
+const BarcodeData: React.FC<BarcodeData> = ({ header, barcode, nama, harga, qty }) => {
     return (
-        <div className="flex flex-col gap-4">
-            <h1 className="flex justify-center text-lg font-bold">{header}</h1>
+        <div className="flex flex-col gap-4 panel">
+            <h2 className="text-lg font-medium">{header}</h2>
             <div>
                 <label htmlFor="gridBarcode1">Barcode</label>
                 <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
@@ -26,7 +23,7 @@ const BarcodeData: React.FC<BarcodeData> = ({ barcode, nama, harga, qty, header 
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" value={price} />
+                <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga ?? '0')} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>

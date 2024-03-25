@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { DeleteNewProductResponse, DetailExpiredProduct, DetailNewProduct, GetAllNewProduct, ProductExpired } from './types';
+import { DeleteNewProductResponse, DetailExpiredProduct, DetailNewProduct, GetAllNewProduct, ProductExpired, SaleProductsProps } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const productNewApi = createApi({
@@ -8,6 +8,9 @@ export const productNewApi = createApi({
     endpoints: (builder) => ({
         getAllProductNew: builder.query<GetAllNewProduct, { page: number; q: string }>({
             query: ({ page, q }) => `/new_products?page=${page}&q=${q}`,
+        }),
+        getSaleProducts: builder.query<SaleProductsProps, { page: number; q: string }>({
+            query: ({ page, q }) => `/sale-products?page=${page}&q=${q}`,
         }),
         deleteProductNew: builder.mutation<DeleteNewProductResponse, number>({
             query: (id) => ({
@@ -34,17 +37,21 @@ export const productNewApi = createApi({
         getDisplayExpired: builder.query<ProductExpired, { page: number; q: string }>({
             query: ({ page, q }) => `/new_product/display-expired?page=${page}&q=${q}`,
         }),
-        productByCategory: builder.query<any, {q: string; page: number}>({
-            query: ({q, page}) => `/product_byCategory?page=${page}&q=${q}`
+        productByCategory: builder.query<any, { q: string; page: number }>({
+            query: ({ q, page }) => `/product_byCategory?page=${page}&q=${q}`,
         }),
-        productByColor: builder.query<any, {q: string; page: number}>({
-            query: ({q, page}) => `/product_byColor?page=${page}&q=${q}`
-        })
+        productByColor: builder.query<any, { q: string; page: number }>({
+            query: ({ q, page }) => `/product_byColor?page=${page}&q=${q}`,
+        }),
+        updatePriceByProductOld: builder.query<any, string | undefined>({
+            query: (oldProduct) => `/get-latestPrice?old_price_product=${oldProduct}`,
+        }),
     }),
 });
 
 export const {
     useGetAllProductNewQuery,
+    useGetSaleProductsQuery,
     useDeleteProductNewMutation,
     useDetailProductNewQuery,
     useGetExpiredProductsQuery,
@@ -52,5 +59,6 @@ export const {
     useEditDetailProductMutation,
     useGetDisplayExpiredQuery,
     useProductByCategoryQuery,
-    useProductByColorQuery
+    useProductByColorQuery,
+    useLazyUpdatePriceByProductOldQuery,
 } = productNewApi;

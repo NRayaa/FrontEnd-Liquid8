@@ -144,6 +144,44 @@ interface CheckProductDocument {
         };
     };
 }
+interface ProductApprovmentItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: number;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: null | string;
+    created_at: string;
+    updated_at: string;
+}
+interface ProductApprovment {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: ProductApprovmentItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: CheckProductDocumentLinks[];
+            next_page_url: null;
+            path: string;
+            per_page: number;
+            prev_page_url: null;
+            to: number;
+            total: number;
+        };
+    };
+}
 
 interface GetBarcodeBody {
     code_document: string;
@@ -323,6 +361,17 @@ interface CheckAllProducts {
         };
     };
 }
+interface HistorySubProductItem {
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    old_name_product: string;
+    new_name_product: string;
+    damaged_value: string;
+    old_quantity_product: number;
+    new_quantity_product: number;
+    old_price_product: string;
+}
 interface GetRiwayatcheckItem {
     id: number;
     code_document: string;
@@ -338,9 +387,30 @@ interface GetRiwayatcheckItem {
     percentage_damaged: string;
     percentage_abnormal: string;
     percentage_discrepancy: string;
+    status_approve: string;
+    total_price_discrepancy: number;
+    total_price: number;
     created_at: string;
     updated_at: string;
+    damaged: {
+        products: HistorySubProductItem[];
+        total_old_price: number;
+        price_percentage: number;
+    };
+    lolos: {
+        products: HistorySubProductItem[];
+        total_old_price: number;
+        price_percentage: number;
+    };
+    abnormal: {
+        products: HistorySubProductItem[];
+        total_old_price: number;
+        price_percentage: number;
+    };
+    priceDiscrepancy: number;
+    price_percentage: number;
 }
+
 interface DetailGetRiwayatcheck {
     data: {
         status: boolean;
@@ -442,7 +512,8 @@ interface ProductExpiredItem {
     new_status_product: string;
     new_quality: string;
     new_category_product: null | string;
-    new_tag_product: null | string;
+    new_tag_product: any;
+    fixed_price: string;
     created_at: string;
     updated_at: string;
 }
@@ -534,7 +605,7 @@ interface DetailBundleResponse {
             total_price_custom_bundle: string;
             total_product_bundle: string;
             barcode_bundle: string;
-            product_bundles: NewProductItem[]
+            product_bundles: NewProductItem[];
             created_at: string;
             updated_at: string;
         };
@@ -559,7 +630,8 @@ interface GetFilterProductBundles {
         status: boolean;
         message: string;
         resource: {
-            total_new_price: string;
+            total_new_price: number;
+            category: any;
             data: {
                 current_page: number;
                 data: ProductExpiredItem[];
@@ -600,6 +672,8 @@ interface CreateBundleBody {
     total_price_custom_bundle: number;
     total_product_bundle: number | undefined;
     barcode_bundle: string;
+    category: string | undefined;
+    name_color: string | undefined;
 }
 interface PromoListItem {
     id: number;
@@ -756,7 +830,7 @@ interface filterPalletLists {
         status: boolean;
         message: string;
         resource: {
-            total_new_price: string;
+            total_new_price: number;
             data: {
                 current_page: number;
                 data: ProdcutItem[];
@@ -975,19 +1049,22 @@ interface GetListSale {
         status: boolean;
         message: string;
         resource: {
+            code_document_sale: string;
             current_page: number;
-            data: (GetListSaleItem | GetTotalSaleItem)[];
+            data: GetListSaleItem[];
             first_page_url: string;
-            from: null | string;
+            from: number;
             last_page: number;
             last_page_url: string;
             links: Links[];
-            next_page_url: null | string;
+            next_page_url: string | null;
             path: string;
             per_page: number;
-            prev_page_url: null | string;
+            prev_page_url: string | null;
+            sale_buyer_name: string;
             to: number;
             total: number;
+            total_sale: number;
         };
     };
 }
@@ -1272,7 +1349,7 @@ interface DetailRepairResponse {
             id: number;
             repair_name: string;
             total_price: string;
-            total_price_custom: string;
+            total_custom_price: string;
             total_products: string;
             barcode: string;
             created_at: string;
@@ -1285,6 +1362,105 @@ interface DetailRepairResponse {
             }[];
         };
     };
+}
+interface SaleReportResponse {
+    data: {
+        category_report: {
+            category: string | null;
+            total_quantity: number;
+            total_price: number;
+        }[];
+        NameBarcode_report: string[][] | number[][];
+    };
+    message: string;
+    buyer: {
+        id: number;
+        code_document_sale: string;
+        buyer_name_document_sale: string;
+        buyer_phone_document_sale: string;
+        buyer_address_document_sale: string;
+        total_product_document_sale: number;
+        total_price_document_sale: string;
+        status_document_sale: string;
+        created_at: string;
+        updated_at: string;
+        sales: {
+            id: number;
+            code_document_sale: string;
+            product_name_sale: string;
+            product_barcode_sale: string;
+            product_price_sale: string;
+            product_qty_sale: number;
+            status_sale: string;
+            created_at: string;
+            updated_at: string;
+        }[];
+    };
+}
+interface DetailPalletProps {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            name_palet: string;
+            category_palet: string;
+            total_price_palet: string;
+            total_product_palet: number;
+            palet_barcode: string;
+            created_at: string;
+            updated_at: string;
+            palet_products: SubPaletItem[];
+        };
+    };
+}
+
+interface SubPaletItem {
+    id: number;
+    palet_id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: number;
+    new_price_product: string;
+    old_price_product: null | string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
+
+interface SaleProductsProps {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: SubSalesProductsProps[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface SubSalesProductsProps {
+    barcode: string;
+    name: string;
+    category: null;
+    created_date: string;
 }
 
 export type {
@@ -1370,4 +1546,12 @@ export type {
     GetNotifByRoleItem,
     RepairResponse,
     DetailRepairResponse,
+    HistorySubProductItem,
+    SaleReportResponse,
+    ProductApprovmentItem,
+    ProductApprovment,
+    DetailPalletProps,
+    SubPaletItem,
+    SaleProductsProps,
+    SubSalesProductsProps,
 };

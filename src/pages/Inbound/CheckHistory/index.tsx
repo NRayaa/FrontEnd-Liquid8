@@ -35,8 +35,8 @@ const CheckHistory = () => {
                     padding: '2em',
                 })
                 .then(async (result) => {
-                    await deleteRiwayatCheck(id);
                     if (result.value) {
+                        await deleteRiwayatCheck(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
@@ -127,12 +127,17 @@ const CheckHistory = () => {
                     },
                     {
                         accessor: 'status_document',
-                        title: 'Status',
+                        title: 'Status Check',
                         render: () => (
                             <button type="button" className="rounded-xl btn-sm px-4 bg-[#2EFF43] uppercase text-white">
                                 Done
                             </button>
                         ),
+                    },
+                    {
+                        accessor: 'status_approve',
+                        title: 'Status Approve',
+                        render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.status_approve}</span>,
                     },
                     {
                         accessor: 'Aksi',

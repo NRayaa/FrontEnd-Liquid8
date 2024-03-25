@@ -6,14 +6,49 @@ import { Link, useLocation } from 'react-router-dom';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconArrowForward from '../../../components/Icon/IconArrowForward';
-import { useDetailProductOldQuery } from '../../../store/services/productOldsApi';
+import { useDeleteProductOldMutation, useDetailProductOldQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah } from '../../../helper/functions';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 const DetailListData = () => {
     const { state } = useLocation();
 
     const [page, setPage] = useState<number>(1);
-    const { data } = useDetailProductOldQuery({ codeDocument: state.codeDocument, page });
+    const { data, refetch } = useDetailProductOldQuery({ codeDocument: state.codeDocument, page });
+    const [deleteProductOld, results] = useDeleteProductOldMutation();
+
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menhapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    if (result.value) {
+                        await deleteProductOld(id);
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+    };
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -27,6 +62,20 @@ const DetailListData = () => {
             }
         }
     }, [data]);
+    console.log("DATA", data)
+
+    useEffect(() => {
+        refetch();
+    }, [data]);
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+            refetch();
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
+        }
+    }, [results]);
 
     return (
         <div>
@@ -116,6 +165,17 @@ const DetailListData = () => {
                                     accessor: 'old_price_product',
                                     title: 'Harga',
                                     render: (item: any) => <span>{formatRupiah(item.old_price_product)}</span>,
+                                },
+                                {
+                                    accessor: 'Aksi',
+                                    title: 'Aksi',
+                                    render: (item: any) => (
+                                        <div className="flex items-center w-max mx-auto gap-6">
+                                            <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                                Delete
+                                            </button>
+                                        </div>
+                                    ),
                                 },
                             ]}
                             totalRecords={data?.data.resource.total ?? 0}

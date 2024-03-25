@@ -69,7 +69,7 @@ const CreateRepair = () => {
         try {
             const body = {
                 repair_name: nameRepair,
-                total_price: Number(totalPrice),
+                total_price: Number(filterRepair.data.data.resource.total_new_price) ?? 0,
                 total_custom_price: Number(customPrice),
                 total_products: filterRepairProducts?.length,
                 barcode: generateRandomString(10),
@@ -112,12 +112,10 @@ const CreateRepair = () => {
     }, [resultsCreateRepair]);
 
     useEffect(() => {
-        const totalAmount = filterRepair?.data?.data.resource.data.data.reduce((accumulator: any, currentItem: any) => {
-            return accumulator + parseFloat(currentItem.new_price_product);
-        }, 0);
-        setTotalPrice(JSON.stringify(totalAmount));
-        setCustomPrice(JSON.stringify(totalAmount));
-    }, [filterRepairProducts]);
+        const new_price = filterRepair?.data?.data.resource.total_new_price;
+
+        setCustomPrice(new_price?.toString() ?? '0');
+    }, [filterRepair]);
 
     return (
         <div>
@@ -154,7 +152,15 @@ const CreateRepair = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Total Harga :
                         </label>
-                        <input disabled id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={formatRupiah(totalPrice ?? '0')} />
+                        <input
+                            disabled
+                            id="categoryName"
+                            type="text"
+                            placeholder="Rp"
+                            className=" form-input w-[250px]"
+                            required
+                            value={formatRupiah(filterRepair?.data?.data.resource.total_new_price.toString() ?? '0')}
+                        />
                     </div>
                     <div className="flex items-center justify-between">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -182,7 +188,7 @@ const CreateRepair = () => {
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
                             </button>
                         </Link>
-                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterRepair.data?.data.resource.data.data.length} </span>
+                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterRepair.data?.data.resource.data.total ?? 0} </span>
                     </div>
 
                     <div className="grid grid-cols-5 gap-4">
@@ -193,7 +199,24 @@ const CreateRepair = () => {
                                 records={expiredProducts}
                                 columns={[
                                     { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
+                                    {
+                                        accessor: 'barcode',
+                                        title: 'Barcode LQD',
+                                        sortable: true,
+                                        render: (item: ProductExpiredItem) => {
+                                            let barcode: string | undefined;
+
+                                            if (!item.new_category_product && !item.new_tag_product) {
+                                                barcode = item.old_barcode_product;
+                                            } else if (item.new_category_product !== null) {
+                                                barcode = item.new_barcode_product ?? undefined;
+                                            } else if (item.new_tag_product !== null) {
+                                                barcode = item.old_barcode_product;
+                                            }
+
+                                            return <span>{barcode ?? ''}</span>;
+                                        },
+                                    },
                                     {
                                         accessor: 'firstName',
                                         title: 'Nama Produk',
@@ -201,12 +224,28 @@ const CreateRepair = () => {
                                         width: 220,
                                         render: (item: ProductExpiredItem) => <p className="truncate">{item.new_name_product}</p>,
                                     },
-                                    { accessor: 'category', title: 'Kategori', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_category_product}</span> },
+                                    {
+                                        accessor: 'category',
+                                        title: 'Kategori',
+                                        sortable: true,
+                                        render: (item: ProductExpiredItem) => <span>{item.new_tag_product ? item.new_tag_product : item.new_category_product}</span>,
+                                    },
                                     {
                                         accessor: 'totalMasuk',
-                                        title: 'Total Masuk',
+                                        title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.new_price_product)}</span>,
+                                        render: (item: ProductExpiredItem, index: number) => {
+                                            let price: string | undefined;
+                                            if (item.new_category_product !== null && item.new_category_product !== undefined) {
+                                                price = item.new_price_product;
+                                            } else if (item.new_tag_product !== null && item.new_tag_product !== undefined) {
+                                                price = item.fixed_price;
+                                            } else {
+                                                price = item.old_price_product;
+                                            }
+
+                                            return <span>{price !== undefined ? formatRupiah(price) : '0'}</span>;
+                                        },
                                     },
                                     {
                                         accessor: 'action',
@@ -234,7 +273,24 @@ const CreateRepair = () => {
                                 records={filterRepairProducts}
                                 columns={[
                                     { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
-                                    { accessor: 'barcode', title: 'Barcode LQD', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_barcode_product}</span> },
+                                    {
+                                        accessor: 'barcode',
+                                        title: 'Barcode LQD',
+                                        sortable: true,
+                                        render: (item: ProductExpiredItem) => {
+                                            let barcode: string | undefined;
+
+                                            if (!item.new_category_product && !item.new_tag_product) {
+                                                barcode = item.old_barcode_product;
+                                            } else if (item.new_category_product !== null) {
+                                                barcode = item.new_barcode_product ?? undefined;
+                                            } else if (item.new_tag_product !== null) {
+                                                barcode = item.old_barcode_product;
+                                            }
+
+                                            return <span>{barcode ?? ''}</span>;
+                                        },
+                                    },
                                     { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
                                     {
                                         accessor: 'action',

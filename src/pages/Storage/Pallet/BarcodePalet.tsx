@@ -4,14 +4,13 @@ import LogoLiquid from '/assets/images/logo-barcode.png';
 import { Spinner } from '../../../commons';
 
 interface BarcodePrint {
-    oldPrice: string;
-    newPrice: string;
+    price: string;
+    namePalet: string;
     barcode: string;
     category: string;
-    isBundle?: boolean;
 }
 
-const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, category, isBundle }) => {
+const BarcodePalet: React.FC<BarcodePrint> = ({ price, namePalet, barcode, category }) => {
     const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
         if (containerElement) {
@@ -32,7 +31,6 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
             console.error('Container not found');
         }
     };
-
     return (
         <div>
             <div style={{ width: '7cm', height: '4cm', display: 'flex', justifyContent: 'start', alignItems: 'start', fontFamily: 'sans-serif' }} className="print-container">
@@ -41,7 +39,7 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
                         <Barcode value={barcode} width={1} height={46} />
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
                             <img src={LogoLiquid} alt="barcode" style={{ marginTop: '-10px' }} width={120} />
-                            <div style={{ height: 26, border: '2px solid black', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <div style={{ height: 26, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                                 <p style={{ fontWeight: 'bold', fontSize: 10 }}>{category}</p>
                             </div>
                         </div>
@@ -49,12 +47,12 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
                     <div>
                         <table style={{ borderSpacing: 0 }}>
                             <tr>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>{!isBundle ? 'Harga Retail' : 'Total Awal'}</td>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'line-through' }}>: {oldPrice}</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Nama</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {namePalet}</td>
                             </tr>
                             <tr>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>{!isBundle ? 'Harga Diskon' : 'Custom Display'}</td>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {newPrice}</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {price}</td>
                             </tr>
                         </table>
                     </div>
@@ -67,4 +65,4 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
     );
 };
 
-export default BarcodePrinted;
+export default BarcodePalet;

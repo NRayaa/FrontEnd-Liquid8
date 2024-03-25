@@ -170,9 +170,12 @@ const Sidebar = () => {
                                                 <li>
                                                     <NavLink to="/inbound/check_product/list_data">{'Manifest Inbound'}</NavLink>
                                                 </li>
-                                                {/* <li>
-                                                    <NavLink to="/inbound/check_product/single_check">{'Quality Check'}</NavLink>
-                                                </li> */}
+                                                <li>
+                                                    <NavLink to="/inbound/check_product/approvment_product">{'Approvment Product'}</NavLink>
+                                                </li>
+                                                <li>
+                                                    <NavLink to="/inbound/check_product/manual_inbound">{'Manual Inbound'}</NavLink>
+                                                </li>
                                             </ul>
                                         </AnimateHeight>
                                     </li>
@@ -429,7 +432,7 @@ const Sidebar = () => {
                                                     fill="currentColor"
                                                 />
                                             </svg>
-                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{'List Dump'}</span>
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{'QCD'}</span>
                                         </div>
                                     </NavLink>
                                 </li>

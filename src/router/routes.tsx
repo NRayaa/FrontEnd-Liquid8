@@ -22,9 +22,14 @@ import CreateMovingBundleProduct from '../pages/Storage/MovingProduct/BundleProd
 import BundleProduct from '../pages/Storage/ExpiredProduct/BundleProduct/BundleProduct';
 import MovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/MovingBundleProduct';
 import Notification from '../pages/Notification/Notification';
+import PalletDetail from '../pages/Storage/Pallet/DetailPallet';
+import CreateManualInbound from '../pages/Inbound/CheckProduct/CreateManualInbound';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
+const ApprovementProduct = lazy(() => import('../pages/Inbound/CheckProduct/ApprovementProduct'));
+const DetailApproveProduct = lazy(() => import('../pages/Inbound/CheckProduct/ApprovementProduct/DetailApproveProduct'));
+const DetailProductApprovement = lazy(() => import('../pages/Inbound/CheckProduct/ApprovementProduct/DetailProductApprovement'));
 const MultiCheck = lazy(() => import('../pages/Inbound/CheckProduct/MultiCheck'));
 const DetailListData = lazy(() => import('../pages/Inbound/CheckProduct/DetailListData'));
 const CheckHistory = lazy(() => import('../pages/Inbound/CheckHistory'));
@@ -54,6 +59,7 @@ const ListDump = lazy(() => import('../pages/RepairStation/ListDump/ListDump'));
 const Migrate = lazy(() => import('../pages/Outbound/Migrate/Migrate'));
 const ListMigrate = lazy(() => import('../pages/Outbound/Migrate/ListMigrate'));
 const DetailMigrate = lazy(() => import('../pages/Outbound/Migrate/DetailMigrate'));
+const KasirPrint = lazy(() => import('../pages/Outbound/Sale/KasirPrint'));
 
 const routes = [
     // Authentication
@@ -256,6 +262,11 @@ const routes = [
         element: <PalletGenerate />,
         layout: 'default',
     },
+    {
+        path: '/storage/pallet/detail_pallet/:id',
+        element: <PalletDetail />,
+        layout: 'default',
+    },
     // Repair Station
     {
         path: '/repair_station/list_product_repair',
@@ -339,6 +350,31 @@ const routes = [
     {
         path: '/buyer/buyer/list_buyer/detail_buyer/:id',
         element: <DetailBuyer />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/sale/kasir/print/:code_document_sale',
+        element: <KasirPrint />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product',
+        element: <ApprovementProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product/detail',
+        element: <DetailApproveProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product/detail/:id',
+        element: <DetailProductApprovement />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/manual_inbound',
+        element: <CreateManualInbound />,
         layout: 'default',
     },
 ];

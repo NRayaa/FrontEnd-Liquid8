@@ -44,8 +44,8 @@ const ListData = () => {
                     padding: '2em',
                 })
                 .then(async (result) => {
-                    await deleteDocument(id);
                     if (result.value) {
+                        await deleteDocument(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
@@ -144,9 +144,9 @@ const ListData = () => {
                                 render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.date_document)}</span>,
                             },
                             {
-                                accessor: 'total_column_document',
+                                accessor: 'total_column_in_document',
                                 title: 'Total Barang',
-                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.total_column_document}</span>,
+                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.total_column_in_document}</span>,
                             },
                             {
                                 accessor: 'status_document',

@@ -1,20 +1,34 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BreadCrumbs } from '../../../../components';
 import { DataTable } from 'mantine-datatable';
-import { useDeleteColorTagMutation, useGetAllColorTagQuery, useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
-import { ColorTagItem } from '../../../../store/services/types';
-import IconPlus from '../../../../components/Icon/IconPlus';
-import { formatRupiah } from '../../../../helper/functions';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useGetProductApprovesQuery } from '../../../../store/services/categoriesApi';
+import { CheckProductDocumentItem, ProductApprovmentItem } from '../../../../store/services/types';
+import { formatDate, formatRupiah } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
+import { useDeleteApproveMutation } from '../../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 
-const TagWarna = () => {
-    const [page, setPage] = useState<number>(1);
+const ApprovementProduct = () => {
     const [search, setSearch] = useState<string>('');
-    const { data, refetch, isError } = useGetAllColorTagQuery({ page, q: search });
-    const [deleteColorTag, deleteResults] = useDeleteColorTagMutation();
+    const [page, setPage] = useState<number>(1);
+    const { data, refetch, isError, isSuccess } = useGetProductApprovesQuery(page);
+    const [deleteApprove, results] = useDeleteApproveMutation();
+
+    const listApproveProduct: any = useMemo(() => {
+        if (isSuccess) {
+            return data?.data.resource.data;
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+            refetch();
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
+        }
+    }, [results]);
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -39,7 +53,7 @@ const TagWarna = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteColorTag(id);
+                        await deleteApprove(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
@@ -74,91 +88,85 @@ const TagWarna = () => {
         }
     };
 
-    const dataColorTag: any = useMemo(() => {
-        return data?.data.resource.data;
-    }, [data]);
-
-    useEffect(() => {
-        refetch();
-    }, [data, refetch]);
-
-    useEffect(() => {
-        if (deleteResults.isSuccess) {
-            toast.success(deleteResults.data.data.message);
-            refetch();
-        } else if (deleteResults.isError) {
-            toast.error(deleteResults.data.data.message);
-        }
-    }, [deleteResults]);
-
-    if (isError && !data?.data.status) {
+    if (isError && !data?.data?.status) {
         return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
     }
 
     return (
-        <>
-            <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/" current="Tag Warna" />
-            <div className="panel mt-6 min-h-[450px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Tag Warna</h5>
+        <div>
+            <ul className="flex space-x-2 rtl:space-x-reverse">
+                <li>
+                    <Link to="/" className="text-primary hover:underline">
+                        Home
+                    </Link>
+                </li>
+                <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                    <span>Data Process</span>
+                </li>
+                <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                    <span>Approvment Product</span>
+                </li>
+            </ul>
+
+            <div className="panel mt-6 dark:text-white-light mb-5">
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST APPROVE PRODUCT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div>
-                        <Link to="/storage/categorysetting/tag_warna/add">
-                            <button className="btn btn-outline-info">
-                                <IconPlus />
-                                Create
-                            </button>
-                        </Link>
-                    </div>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        records={dataColorTag}
+                        records={listApproveProduct}
                         columns={[
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: ColorTagItem, index: number) => <span>{(page - 1) * dataColorTag?.length + (index + 1)}</span>,
+                                render: (item: ProductApprovmentItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
                             },
                             {
-                                accessor: 'Tag Warna',
-                                title: 'Tag Warna',
-                                render: (item: ColorTagItem) => <div className="w-[19px] h-[21px]" style={{ backgroundColor: item.hexa_code_color }}></div>,
+                                accessor: 'Kode Dokumen',
+                                title: 'Kode Dokumen',
+                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.code_document}</span>,
                             },
                             {
-                                accessor: 'Min Price',
-                                title: 'Min Price',
-                                render: (item: ColorTagItem) => <span>{formatRupiah(item.min_price_color)}</span>,
+                                accessor: 'Old Barcode',
+                                title: 'Old Barcode',
+                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.old_barcode_product}</span>,
                             },
                             {
-                                accessor: 'Fixed Price',
-                                title: 'Fixed Price',
-                                render: (item: ColorTagItem) => <span>{formatRupiah(item.fixed_price_color)}</span>,
+                                accessor: 'New Barcode',
+                                title: 'New Barcode',
+                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.new_barcode_product}</span>,
                             },
                             {
-                                accessor: 'Max Price',
-                                title: 'Max Price',
-                                render: (item: ColorTagItem) => <span>{formatRupiah(item.max_price_color)}</span>,
+                                accessor: 'Name',
+                                title: 'Name',
+                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.new_name_product}</span>,
+                            },
+                            {
+                                accessor: 'QTY',
+                                title: 'QTY',
+                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.new_quantity_product}</span>,
+                            },
+                            {
+                                accessor: 'Price',
+                                title: 'Price',
+                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{formatRupiah(item.new_price_product)}</span>,
+                            },
+                            {
+                                accessor: 'Status',
+                                title: 'Status',
+                                render: (item: ProductApprovmentItem) => <span className="badge whitespace-nowrap bg-primary ">{item.new_status_product}</span>,
                             },
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item: ColorTagItem) => (
+                                render: (item: ProductApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link
-                                            to={`/storage/categorysetting/tag_warna/${item.id}`}
-                                            state={{
-                                                hexa_code_color: item.hexa_code_color,
-                                                name_color: item.name_color,
-                                                min_price_color: item.min_price_color,
-                                                max_price_color: item.max_price_color,
-                                                fixed_price_color: item.fixed_price_color,
-                                            }}
-                                        >
+                                        <Link to={`/inbound/check_product/approvment_product/detail`} state={{ code_document: item.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
-                                                Edit
+                                                Detail
                                             </button>
                                         </Link>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
@@ -176,8 +184,8 @@ const TagWarna = () => {
                     />
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
-export default TagWarna;
+export default ApprovementProduct;

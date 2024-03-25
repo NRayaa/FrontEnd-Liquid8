@@ -9,14 +9,14 @@ interface GetListMigrateIndex {
             migrate: {
                 total: number;
                 per_page: number;
-                data: { id: number; new_barcode_product: number; new_name_product: string; new_price_product: number }[];
+                data: { id: number; old_barcode_product: number; new_name_product: string; new_price_product: number }[];
             };
             new_product: {
                 total: number;
                 per_page: number;
                 data: {
                     id: number;
-                    new_barcode_product: number;
+                    old_barcode_product: number;
                     new_name_product: string;
                     new_price_product: number;
                 }[];
@@ -33,6 +33,7 @@ interface GetShowMigrateProps {
             total_price_document_migrate: number;
             total_product_document_migrate: number;
             migrates: {
+                old_barcode_product: number;
                 new_barcode_product: number;
                 new_name_product: string;
                 new_price_product: number;

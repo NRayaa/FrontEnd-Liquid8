@@ -1,12 +1,15 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import BarcodeData from './BarcodeData';
-import { useDetailProductNewQuery, useEditDetailProductMutation, useGetAllProductNewQuery } from '../../../store/services/productNewApi';
+import { useDetailProductNewQuery, useEditDetailProductMutation, useGetAllProductNewQuery, useLazyUpdatePriceByProductOldQuery } from '../../../store/services/productNewApi';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import NewBarcodeData from './NewBarcodeData';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import { Alert } from '../../../commons';
+import BarcodePrinted from './BarcodePrinted';
+import { debounce } from 'lodash';
+import { ChevronIcon } from '@mantine/core';
 
 const DetailProduct = () => {
     const { id } = useParams();
@@ -14,11 +17,11 @@ const DetailProduct = () => {
     const { data, isSuccess, refetch, isError } = useDetailProductNewQuery(id);
     const productNew = useGetAllProductNewQuery({ page: 1, q: '' });
     const [editDetailProduct, results] = useEditDetailProductMutation();
-    const [input, setInput] = useState({
-        new_name_product: '',
-        new_price_product: '',
-        new_quantity_product: '',
-    });
+    const [updatePriceByProductOld, resultsUpdate] = useLazyUpdatePriceByProductOldQuery();
+    const [categories, setCategories] = useState([]);
+    const [category, setCategory] = useState('');
+    console.log(category);
+    const [isRedirect, setIsRedirect] = useState<boolean>(false);
 
     const dataDetailProduct = useMemo(() => {
         return data?.data.resource;
@@ -38,39 +41,74 @@ const DetailProduct = () => {
         }
     }, [data?.data.resource?.new_quality]);
 
+    const [input, setInput] = useState({
+        old_barcode_product: '',
+        old_name_product: '',
+        old_price_product: '',
+        new_barcode_product: '',
+        new_name_product: '',
+        new_quantity_product: '',
+        new_price_product: '',
+    });
+
+    const hideRedirect = () => {
+        setIsRedirect(false);
+    };
+
     useEffect(() => {
         if (isSuccess) {
             setInput((prevState) => ({
                 ...prevState,
-                new_name_product: data.data.resource.new_name_product,
-                new_price_product: data.data.resource.new_price_product,
-                new_quantity_product: data.data.resource.new_quantity_product,
+                old_barcode_product: dataDetailProduct?.old_barcode_product ?? '',
+                old_name_product: dataDetailProduct?.new_name_product ?? '',
+                old_price_product: dataDetailProduct?.old_price_product ?? '',
+                new_barcode_product: dataDetailProduct?.new_barcode_product ?? '',
+                new_name_product: dataDetailProduct?.new_name_product ?? '',
+                new_quantity_product: dataDetailProduct?.new_quantity_product ?? '',
+                new_price_product: dataDetailProduct?.new_price_product ?? '',
             }));
         }
-    }, [data]);
+    }, [dataDetailProduct]);
 
-    const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-        setInput((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value,
-        }));
+    const handleLiveSearch = debounce(async (value: string) => {
+        await updatePriceByProductOld(value)
+            .unwrap()
+            .then((res: any) => {
+                setCategories(res.data.resource.category !== null ? res.data.resource.category : []);
+            })
+            .catch((err: any) => console.log(err));
+    }, 1000);
+
+    const handleChangeInput = async (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.name === 'old_price_product') {
+            setInput((prevState) => ({
+                ...prevState,
+                [e.target.name]: e.target.value,
+            }));
+            handleLiveSearch(e.target.value !== '' ? e.target.value : '0');
+        } else {
+            setInput((prevState) => ({
+                ...prevState,
+                [e.target.name]: e.target.value,
+            }));
+        }
     };
 
     const hanldeEditProduct = async () => {
         try {
             const body = {
                 code_document: dataDetailProduct?.code_document,
-                old_barcode_product: dataDetailProduct?.old_barcode_product,
-                new_barcode_product: dataDetailProduct?.new_barcode_product,
+                old_barcode_product: input?.old_barcode_product,
+                new_barcode_product: input?.new_barcode_product,
                 new_name_product: input.new_name_product,
-                old_name_product: dataDetailProduct?.new_name_product,
+                old_name_product: input?.new_name_product,
                 new_quantity_product: input.new_quantity_product,
                 new_price_product: input.new_price_product,
-                old_price_product: dataDetailProduct?.old_price_product,
+                old_price_product: input.old_price_product,
                 new_date_in_product: dataDetailProduct?.new_date_in_product,
                 new_status_product: dataDetailProduct?.new_status_product,
                 condition: condition,
-                new_category_product: dataDetailProduct?.new_category_product,
+                new_category_product: category ?? dataDetailProduct?.new_category_product,
                 new_tag_product: dataDetailProduct?.new_tag_product,
                 deskripsi: dataDetailProduct?.deskripsi,
                 _method: 'PUT',
@@ -83,12 +121,18 @@ const DetailProduct = () => {
     };
 
     useEffect(() => {
+        handleLiveSearch(dataDetailProduct?.old_price_product ?? '0');
+    }, [dataDetailProduct?.old_price_product]);
+
+    useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message ?? 'Product updated');
-            if (dataDetailProduct?.new_tag_product !== null) {
-                navigate('/storage/product/color');
-            } else {
-                navigate('/storage/product/category');
+            if (isRedirect) {
+                if (dataDetailProduct?.new_tag_product !== null) {
+                    navigate('/storage/product/color');
+                } else {
+                    navigate('/storage/product/category');
+                }
             }
             productNew.refetch();
         } else if (results.isError) {
@@ -113,25 +157,69 @@ const DetailProduct = () => {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
-                    <NewBarcodeData
-                        header="New Data"
-                        barcode={dataDetailProduct?.new_barcode_product ?? ''}
-                        harga={input.new_price_product}
-                        qty={input.new_quantity_product}
-                        nama={input.new_name_product}
-                        handleChangeInput={handleChangeInput}
-                    />
-                    <BarcodeData
-                        header="Old Data"
-                        barcode={dataDetailProduct?.old_barcode_product}
-                        harga={dataDetailProduct?.old_price_product}
-                        qty={dataDetailProduct?.new_quantity_product}
-                        nama={dataDetailProduct?.new_name_product}
-                    />
+                <div className="flex w-full gap-4">
+                    <div className="flex w-2/3 flex-col gap-4">
+                        <div className="flex w-full gap-4">
+                            <NewBarcodeData
+                                header="New Data"
+                                barcode={input.new_barcode_product ?? ''}
+                                harga={input.old_price_product ?? ''}
+                                qty={input.new_quantity_product ?? ''}
+                                nama={input.new_name_product ?? ''}
+                                handleChangeInput={handleChangeInput}
+                                newPrice={input.new_price_product ?? ''}
+                            />
+                            <BarcodeData
+                                header="Old Data"
+                                barcode={input.old_barcode_product}
+                                harga={input.old_price_product}
+                                qty={input.new_quantity_product}
+                                nama={input.old_name_product}
+                                oldPrice={input.old_price_product}
+                                hideRedirect={hideRedirect}
+                                hanldeEditProduct={handleChangeInput}
+                            />
+                        </div>
+                        {parseFloat(input.old_price_product) >= 100000 && (
+                            <div className="w-full relative">
+                                <label htmlFor="kategori">Kategori Produk</label>
+                                <select
+                                    id="kategori"
+                                    value={category}
+                                    className="w-full py-1.5 rounded px-3 appearance-none border z-10"
+                                    onChange={(e) => {
+                                        e.preventDefault();
+                                        setCategory(e.target.value);
+                                    }}
+                                >
+                                    {categories.map((item: any) => (
+                                        <option key={item.id} value={item.name_category}>
+                                            {item.name_category}
+                                        </option>
+                                    ))}
+                                </select>
+                                <ChevronIcon className="absolute right-3 top-[34px]" />
+                            </div>
+                        )}
+                    </div>
+                    <div className="w-1/3 flex justify-center">
+                        <BarcodePrinted
+                            barcode={dataDetailProduct?.new_barcode_product ?? ''}
+                            category={dataDetailProduct?.new_category_product ?? ''}
+                            newPrice={input.new_price_product ?? ''}
+                            oldPrice={input.old_price_product ?? ''}
+                        />
+                    </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary px-16 uppercase mt-6" onClick={hanldeEditProduct}>
+                <button
+                    type="submit"
+                    className="btn btn-primary px-16 uppercase mt-6"
+                    onClick={() => {
+                        hanldeEditProduct();
+                        setIsRedirect(true);
+                    }}
+                >
                     Edit Product
                 </button>
             </div>
