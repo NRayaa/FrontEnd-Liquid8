@@ -25,24 +25,35 @@ interface TagColorData {
 }
 
 const TagColorData: React.FC<TagColorData> = ({ tag, nama, harga, qty }) => {
+    const [editData, setEditData] = useState<TagColorData>({
+        nama: nama,
+        harga: harga,
+    } as TagColorData);
+    const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEditData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
     return (
         <div className="flex flex-col gap-4">
             <h1 className="flex justify-center text-lg font-bold">NEW DATA</h1>
             <div>
                 <label htmlFor="gridBarcode2">Tag</label>
-                <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" value={tag} />
+                <input id="gridBarcode2" type="text" placeholder="Enter Barcode" className="form-input" value={tag} />
             </div>
             <div>
                 <label htmlFor="gridNama2">Nama</label>
-                <input id="gridNama2" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+                <input id="gridNama2" type="text" placeholder="Enter Nama" className="form-input" value={nama} />
             </div>
             <div>
                 <label htmlFor="gridNama4">Harga</label>
-                <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga)} />
+                <input id="gridNama4" type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga)} />
             </div>
             <div>
                 <label htmlFor="gridQTY2">QTY</label>
-                <input id="gridQTY2" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+                <input id="gridQTY2" type="text" placeholder="Enter QTY" className="form-input" value={qty} />
             </div>
         </div>
     );
@@ -57,24 +68,35 @@ interface NewBarcodeData {
 }
 
 const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header }) => {
+    const [editData, setEditData] = useState<NewBarcodeData>({
+        nama: nama,
+        newPrice: newPrice,
+    } as NewBarcodeData );
+    const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEditData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
     return (
         <div className="flex flex-col gap-4">
             <h1 className="flex justify-center text-lg font-bold">{header}</h1>
             <div>
                 <label htmlFor="gridBarcode1">Barcode</label>
-                <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
+                <input id="gridBarcode1" type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
             </div>
             <div>
                 <label htmlFor="gridNama1">Nama</label>
-                <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+                <input id="gridNama1" type="text" placeholder="Enter Nama" className="form-input" value={nama} />
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(newPrice)} />
+                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(newPrice)} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
-                <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={qty} />
             </div>
         </div>
     );
@@ -100,6 +122,7 @@ const ListProductRepair = () => {
     const [countPercentage, setCountPercentage] = useState<number>(0);
     const [isReset, setIsReset] = useState<boolean>(false);
     const [isBarcode, setIsBarcode] = useState<boolean>(false);
+    
 
     const dataListProductRepair: any = useMemo(() => {
         return listProductData?.data?.resource?.data;
@@ -375,7 +398,8 @@ const ListProductRepair = () => {
                                                                 <IconArrowBackward className="flex mx-2" fill={true} /> Kembali
                                                             </button>
                                                         ) : (
-                                                            <Link to="/repair_station/list_product_repair">
+                                                            <Link to="/repair_station/list_product_repair"
+>
                                                                 <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
                                                                     To Display
                                                                 </button>
