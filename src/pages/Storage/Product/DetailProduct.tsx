@@ -18,9 +18,9 @@ const DetailProduct = () => {
     const productNew = useGetAllProductNewQuery({ page: 1, q: '' });
     const [editDetailProduct, results] = useEditDetailProductMutation();
     const [updatePriceByProductOld, resultsUpdate] = useLazyUpdatePriceByProductOldQuery();
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState<{ id: number; name_category: string; discount_category: number; max_price_category: number }[]>([]);
     const [category, setCategory] = useState('');
-    console.log(category);
+    const [diskon, setDiskon] = useState<number>(0);
     const [isRedirect, setIsRedirect] = useState<boolean>(false);
 
     const dataDetailProduct = useMemo(() => {
@@ -122,7 +122,13 @@ const DetailProduct = () => {
 
     useEffect(() => {
         handleLiveSearch(dataDetailProduct?.old_price_product ?? '0');
-    }, [dataDetailProduct?.old_price_product]);
+        setCategory(dataDetailProduct?.new_category_product ?? '');
+    }, [dataDetailProduct]);
+
+    useEffect(() => {
+        setDiskon(categories.find((item: any) => item.name_category === category)?.discount_category ?? 0);
+        setInput((prev) => ({ ...prev, new_price_product: (parseFloat(input.old_price_product) - parseFloat(input.old_price_product) * (diskon / 100)).toString() }));
+    }, [diskon, input.old_price_product]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -190,6 +196,7 @@ const DetailProduct = () => {
                                     onChange={(e) => {
                                         e.preventDefault();
                                         setCategory(e.target.value);
+                                        setDiskon(categories.find((item: any) => item.name_category === e.target.value)?.discount_category ?? 0);
                                     }}
                                 >
                                     {categories.map((item: any) => (
