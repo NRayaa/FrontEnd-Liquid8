@@ -19,15 +19,3 @@ interface GeneratesData {
 
 export type { GeneratesData };
 
-// interface ImportProduct {
-//     data: {
-//         status: boolean;
-//         message: string;
-//         resource: {
-//             total_column_count: number;
-//             total_row_count: number;
-//         };
-//     };
-// }
-
-// export type { ImportProduct };
