@@ -45,11 +45,11 @@ const TagColorData: React.FC<TagColorData> = ({ tag, nama, harga, qty }) => {
             </div>
             <div>
                 <label htmlFor="gridNama2">Nama</label>
-                <input id="gridNama2" type="text" placeholder="Enter Nama" className="form-input" value={nama} />
+                <input id="gridNama2" type="text" placeholder="Enter Nama" name='nama' onChange={handleEditInputChange} className="form-input" value={editData.nama} />
             </div>
             <div>
                 <label htmlFor="gridNama4">Harga</label>
-                <input id="gridNama4" type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga)} />
+                <input id="gridNama4" type="text" placeholder="Enter Nama" name={harga}  onChange={handleEditInputChange} className="form-input" value={formatRupiah(editData.harga)} />
             </div>
             <div>
                 <label htmlFor="gridQTY2">QTY</label>
@@ -88,11 +88,11 @@ const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty
             </div>
             <div>
                 <label htmlFor="gridNama1">Nama</label>
-                <input id="gridNama1" type="text" placeholder="Enter Nama" className="form-input" value={nama} />
+                <input id="gridNama1" type="text" placeholder="Enter Nama" className="form-input" name='nama' onChange={handleEditInputChange} value={editData.nama} />
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(newPrice)} />
+                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" name={newPrice} onChange={handleEditInputChange} value={formatRupiah(newPrice)} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
