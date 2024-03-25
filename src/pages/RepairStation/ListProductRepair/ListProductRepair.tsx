@@ -1,12 +1,9 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState, Fragment, useMemo, ChangeEvent } from 'react';
+import { DataTable } from 'mantine-datatable';
+import { useEffect, useState, Fragment, useMemo, ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { IRootState } from '../../../store';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { useGetListProductRepairQuery, useUpdateProductRepairMutation, useUpdateThrowsMutation } from '../../../store/services/listProductAPI';
 import { GetListProductRepairItem, ProdcutItem } from '../../../store/services/types';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
@@ -17,64 +14,94 @@ import { formatRupiah } from '../../../helper/functions';
 import BarcodePrinted from './BarcodePrinted';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
-interface TagColorData {
-    tag: string;
-    nama: string;
-    harga: string;
-    qty: string;
-}
-
-const TagColorData: React.FC<TagColorData> = ({ tag, nama, harga, qty }) => {
-    return (
-        <div className="flex flex-col gap-4">
-            <h1 className="flex justify-center text-lg font-bold">NEW DATA</h1>
-            <div>
-                <label htmlFor="gridBarcode2">Tag</label>
-                <input id="gridBarcode2" disabled type="text" placeholder="Enter Barcode" className="form-input" value={tag} />
-            </div>
-            <div>
-                <label htmlFor="gridNama2">Nama</label>
-                <input id="gridNama2" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
-            </div>
-            <div>
-                <label htmlFor="gridNama4">Harga</label>
-                <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga)} />
-            </div>
-            <div>
-                <label htmlFor="gridQTY2">QTY</label>
-                <input id="gridQTY2" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
-            </div>
-        </div>
-    );
-};
-
-interface NewBarcodeData {
+interface OldBarcodeDataProps {
     barcode: string;
     nama: string;
     newPrice: string;
     qty: string;
     header: string;
+    setInput: Dispatch<
+        SetStateAction<{
+            old_barcode_product: string;
+            old_price_product: string;
+            new_barcode_product: string;
+            new_name_product: string;
+            new_price_product: string;
+            new_quantity_product: string;
+            new_category_product: string;
+            new_status_product: string;
+        }>
+    >;
 }
 
-const NewBarcodeData: React.FC<NewBarcodeData> = ({ barcode, nama, newPrice, qty, header }) => {
+const OldBarcodeData: React.FC<OldBarcodeDataProps> = ({ barcode, nama, newPrice, qty, header, setInput }) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
     return (
         <div className="flex flex-col gap-4">
             <h1 className="flex justify-center text-lg font-bold">{header}</h1>
             <div>
                 <label htmlFor="gridBarcode1">Barcode</label>
-                <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
+                <input id="gridBarcode1" type="text" placeholder="Enter Barcode" name="old_barcode_product" className="form-input" value={barcode} onChange={handleChange} />
             </div>
             <div>
                 <label htmlFor="gridNama1">Nama</label>
-                <input id="gridNama1" type="text" disabled placeholder="Enter Nama" className="form-input" value={nama} />
+                <input id="gridNama1" type="text" placeholder="Enter Nama" name="new_name_product" className="form-input" value={nama} onChange={handleChange} disabled />
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(newPrice)} />
+                <input id="gridNama3" type="number" placeholder="Enter Nama" name="old_price_product" className="form-input" value={newPrice} onChange={handleChange} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
-                <input id="gridQTY1" disabled type="text" placeholder="Enter QTY" className="form-input" value={qty} />
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" name="new_quantity_product" className="form-input" value={qty} onChange={handleChange} disabled />
+            </div>
+        </div>
+    );
+};
+interface NewBarcodeDataProps {
+    barcode: string;
+    nama: string;
+    newPrice: string;
+    qty: string;
+    header: string;
+    setInput: Dispatch<
+        SetStateAction<{
+            old_barcode_product: string;
+            old_price_product: string;
+            new_barcode_product: string;
+            new_name_product: string;
+            new_price_product: string;
+            new_quantity_product: string;
+            new_category_product: string;
+            new_status_product: string;
+        }>
+    >;
+}
+
+const NewBarcodeData: React.FC<NewBarcodeDataProps> = ({ barcode, nama, newPrice, qty, header, setInput }) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+    return (
+        <div className="flex flex-col gap-4">
+            <h1 className="flex justify-center text-lg font-bold">{header}</h1>
+            <div>
+                <label htmlFor="gridBarcode1">Barcode</label>
+                <input id="gridBarcode1" type="text" placeholder="Enter Barcode" name="new_barcode_product" className="form-input" value={barcode} onChange={handleChange} />
+            </div>
+            <div>
+                <label htmlFor="gridNama1">Nama</label>
+                <input id="gridNama1" type="text" placeholder="Enter Nama" name="new_name_product" className="form-input" value={nama} onChange={handleChange} />
+            </div>
+            <div>
+                <label htmlFor="gridNama3">Harga</label>
+                <input id="gridNama3" type="number" placeholder="Enter Nama" name="new_price_product" className="form-input" value={newPrice} onChange={handleChange} />
+            </div>
+            <div>
+                <label htmlFor="gridQTY1">QTY</label>
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" name="new_quantity_product" className="form-input" value={qty} onChange={handleChange} />
             </div>
         </div>
     );
@@ -111,11 +138,11 @@ const ListProductRepair = () => {
 
     const [input, setInput] = useState({
         old_barcode_product: '',
-        old_price_product: 0,
+        old_price_product: '0',
         new_barcode_product: '',
         new_name_product: '',
         new_price_product: '',
-        new_quantity_product: 0,
+        new_quantity_product: '0',
         new_category_product: '',
         new_status_product: '',
     });
@@ -125,18 +152,19 @@ const ListProductRepair = () => {
         setIsReset(true);
         setInput({
             old_barcode_product: '',
-            old_price_product: 0,
+            old_price_product: '0',
             new_barcode_product: '',
             new_name_product: '',
             new_price_product: '',
-            new_quantity_product: 0,
+            new_quantity_product: '0',
             new_category_product: '',
             new_status_product: '',
         });
     };
     const [updateProductRepair, result] = useUpdateProductRepairMutation();
 
-    const handleInputChange = ({ value, percentage }: any) => {
+    // new price
+    const handleNewPrice = ({ value, percentage }: any) => {
         setInput((prevState) => ({
             ...prevState,
             new_category_product: value,
@@ -144,6 +172,7 @@ const ListProductRepair = () => {
         setCountPercentage(parseInt(percentage));
     };
 
+    // to display
     const handleRepair = async (id: number) => {
         setSelectedItem(id);
         const selectedProduct = dataListProductRepair?.find((product: any) => product.id === id);
@@ -161,14 +190,14 @@ const ListProductRepair = () => {
     const handleRepairSend = async (id: number) => {
         try {
             const body = {
-                old_barcode_product: productData?.old_barcode_product,
-                old_price_product: productData?.old_price_product,
-                new_status_product: productData?.new_status_product,
-                new_barcode_product: colorTags ? productData?.old_barcode_product : getProductRepairResults.data?.data.resource.new_barcode,
-                new_name_product: productData?.new_name_product,
-                new_price_product: colorTags ? colorTags.fixed_price_color : percentagedPrice,
-                new_quantity_product: productData?.new_quantity_product,
-                new_category_product: colorTags ? productData?.new_category_product : input.new_category_product,
+                old_barcode_product: input.old_barcode_product,
+                old_price_product: input.old_price_product,
+                new_status_product: input.new_status_product,
+                new_barcode_product: input.old_barcode_product,
+                new_name_product: input?.new_name_product,
+                new_price_product: input.new_price_product,
+                new_quantity_product: input?.new_quantity_product,
+                new_category_product: input?.new_category_product,
             };
             await updateProductRepair({ id, body });
         } catch (err) {
@@ -197,23 +226,35 @@ const ListProductRepair = () => {
         return selectedCategoryItem ? parseFloat(selectedCategoryItem.discount_category) : 0;
     };
 
-    const [discount, setDiscount] = useState<number>(0);
     const [calculatedPrice, setCalculatedPrice] = useState<string>('0');
 
     useEffect(() => {
         const calculatedDiscount = calculateDiscount();
-        setDiscount(calculatedDiscount);
-        const oldPrice = parseFloat(productData?.old_price_product || '0');
-        const discountedPrice = (oldPrice * (100 - calculatedDiscount)) / 100;
+        const oldPrice = parseFloat(productData?.old_price_product ?? '0');
+        const discountedPrice = oldPrice - oldPrice * (calculatedDiscount / 100);
         setCalculatedPrice(discountedPrice.toFixed(2));
     }, [selectedCategory, productData]);
+
+    useEffect(() => {
+        setInput((prev) => ({
+            ...prev,
+            old_barcode_product: productData?.old_barcode_product ?? '',
+            old_price_product: productData?.old_price_product ?? '0',
+            new_barcode_product: productData?.new_barcode_product ?? '',
+            new_name_product: productData?.new_name_product ?? '',
+            new_price_product: productData?.new_price_product ?? '',
+            new_quantity_product: productData?.new_quantity_product ?? '0',
+            new_category_product: productData?.new_category_product ?? '',
+            new_status_product: productData?.new_status_product ?? '',
+        }));
+    }, [productData]);
 
     useEffect(() => {
         setInput((prevState) => ({
             ...prevState,
             new_price_product: calculatedPrice,
         }));
-    }, [selectedCategory]);
+    }, [calculatedPrice, productData]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -248,14 +289,6 @@ const ListProductRepair = () => {
             }
         }
     }, [result]);
-
-    const percentagedPrice = useMemo(() => {
-        if (productData) {
-            const total = 100 - countPercentage;
-            const percentaged = (parseInt(productData?.old_price_product) * total) / 100;
-            return JSON.stringify(percentaged);
-        }
-    }, [colorTags, countPercentage]);
 
     if (isError && !listProductData?.data?.status) {
         return <Alert message={listProductData?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -306,82 +339,101 @@ const ListProductRepair = () => {
                                         <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
                                             <div className="text-lg font-bold">Repair</div>
                                         </div>
-                                        <div className="space-y-5 col-span-2">
-                                            <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    <NewBarcodeData
-                                                        barcode={productData?.old_barcode_product ?? ''}
+                                        <div className="space-y-5 col-span-2 panel">
+                                            <div className="grid grid-cols-3 gap-4 h-full">
+                                                <div className="grid col-span-2 grid-cols-2 panel gap-4">
+                                                    <OldBarcodeData
+                                                        barcode={input.old_barcode_product}
                                                         nama={productData?.new_name_product ?? ''}
-                                                        newPrice={productData?.old_price_product ?? '0'}
+                                                        newPrice={input.old_price_product}
                                                         qty={productData?.new_quantity_product ?? '0'}
                                                         header="Old Data"
+                                                        setInput={setInput}
                                                     />
-                                                    {!colorTags ? (
-                                                        <NewBarcodeData
-                                                            barcode={getProductRepairResults.data?.data.resource.new_barcode}
-                                                            nama={productData?.new_name_product ?? ''}
-                                                            newPrice={(isReset ? productData?.old_price_product : percentagedPrice) ?? '0'}
-                                                            qty={productData?.new_quantity_product ?? '0'}
-                                                            header="New Data"
-                                                        />
-                                                    ) : (
-                                                        <TagColorData
-                                                            harga={colorTags.fixed_price_color}
-                                                            nama={colorTags.name_color}
-                                                            qty={productData?.new_quantity_product ?? '0'}
-                                                            tag={colorTags.hexa_code_color}
-                                                        />
-                                                    )}
+                                                    <NewBarcodeData
+                                                        barcode={input.new_barcode_product}
+                                                        nama={input.new_name_product}
+                                                        newPrice={input.new_price_product}
+                                                        qty={input.new_quantity_product}
+                                                        header="New Data"
+                                                        setInput={setInput}
+                                                    />
                                                 </div>
-                                                <div className="grid grid-cols-1 panel ss:grid-cols-1 sm:grid-cols-1">
-                                                    <div className="flex flex-col gap-4">
-                                                        {isBarcode ? (
-                                                            <BarcodePrinted
-                                                                barcode={result.data.data.resource.new_barcode_product}
-                                                                category={result.data.data.resource.new_category_product}
-                                                                newPrice={formatRupiah(result.data.data.resource.new_price_product)}
-                                                                oldPrice={formatRupiah(result.data.data.resource.old_price_product)}
-                                                                isBundle={false}
-                                                            />
-                                                        ) : (
-                                                            <>
-                                                                <h1 className="flex justify-start text-lg font-bold">Category</h1>
-                                                                <div className="grid grid-cols-3 gap-4">
-                                                                    {dataCategories?.map((category, index) => (
-                                                                        <label key={category.id} className="flex items-center mt-1 cursor-pointer">
-                                                                            <input
-                                                                                disabled={colorTags}
-                                                                                type="radio"
-                                                                                className="form-radio text-success peer w-6 h-6"
-                                                                                name="radioOption"
-                                                                                value={category.name_category}
-                                                                                onChange={(e) => {
-                                                                                    setIsReset(false);
-                                                                                    handleInputChange({ value: e.target.value, percentage: category.discount_category });
-                                                                                    setSelectedCategory(category.id);
-                                                                                }}
-                                                                            />
-                                                                            <span className="text-white-dark">{category.name_category}</span>
-                                                                        </label>
-                                                                    ))}
-                                                                </div>
-                                                            </>
-                                                        )}
+                                                <div className="h-full">
+                                                    <BarcodePrinted
+                                                        barcode={input.new_barcode_product}
+                                                        category={input.new_category_product}
+                                                        newPrice={formatRupiah(input.new_price_product)}
+                                                        oldPrice={formatRupiah(input.old_price_product.toString())}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-1  ss:grid-cols-1 sm:grid-cols-1">
+                                                {colorTags && parseFloat(input.old_price_product) < 100000 && (
+                                                    <div className="flex flex-col panel gap-4">
+                                                        <h1 className="flex justify-start text-lg font-bold">Tag Color</h1>
+                                                        <div className="flex items-center gap-x-2">
+                                                            <div style={{ background: colorTags.hexa_code_color }} className="h-4 w-4 rounded" />
+                                                            <div>{colorTags.name_color}</div>
+                                                        </div>
                                                     </div>
+                                                )}
+                                                {parseFloat(input.old_price_product) >= 100000 && productData?.new_category_product && (
+                                                    <div className="flex flex-col panel gap-4">
+                                                        <h1 className="flex justify-start text-lg font-bold">Category</h1>
+                                                        <div className="grid grid-cols-5 gap-4">
+                                                            {dataCategories?.map((category, index) => (
+                                                                <label key={category.id} className="flex items-center col-span-1 mt-1 cursor-pointer">
+                                                                    <input
+                                                                        type="radio"
+                                                                        className="form-radio text-success peer w-6 h-6"
+                                                                        name="radioOption"
+                                                                        value={category.name_category}
+                                                                        onChange={(e) => {
+                                                                            setIsReset(false);
+                                                                            handleNewPrice({ value: e.target.value, percentage: category.discount_category });
+                                                                            setSelectedCategory(category.id);
+                                                                        }}
+                                                                    />
+                                                                    <span className="text-white-dark">{category.name_category}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {parseFloat(input.old_price_product) >= 100000 && !productData?.new_category_product && (
+                                                    <div className="flex flex-col panel gap-4">
+                                                        <h1 className="flex justify-start text-lg font-bold">Category</h1>
+                                                        <div className="grid grid-cols-5 gap-4">
+                                                            {dataCategories?.map((category, index) => (
+                                                                <label key={category.id} className="flex items-center col-span-1 mt-1 cursor-pointer">
+                                                                    <input
+                                                                        type="radio"
+                                                                        className="form-radio text-success peer w-6 h-6"
+                                                                        name="radioOption"
+                                                                        value={category.name_category}
+                                                                        onChange={(e) => {
+                                                                            setIsReset(false);
+                                                                            handleNewPrice({ value: e.target.value, percentage: category.discount_category });
+                                                                            setSelectedCategory(category.id);
+                                                                        }}
+                                                                    />
+                                                                    <span className="text-white-dark">{category.name_category}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
 
-                                                    <div className="flex justify-end items-center mt-8">
-                                                        {isBarcode ? (
-                                                            <button type="button" className=" px-2 btn btn-outline-danger" onClick={() => setRepair(false)}>
-                                                                <IconArrowBackward className="flex mx-2" fill={true} /> Kembali
-                                                            </button>
-                                                        ) : (
-                                                            <Link to="/repair_station/list_product_repair">
-                                                                <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
-                                                                    To Display
-                                                                </button>
-                                                            </Link>
-                                                        )}
-                                                    </div>
+                                                <div className="flex justify-end items-center mt-8 gap-x-2">
+                                                    <button type="button" className=" px-2 btn btn-outline-danger" onClick={() => setRepair(false)}>
+                                                        <IconArrowBackward className="flex mx-2" fill={true} /> Kembali
+                                                    </button>
+                                                    <Link to="/repair_station/list_product_repair">
+                                                        <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleRepairSend(selectedItem || 0)}>
+                                                            To Display
+                                                        </button>
+                                                    </Link>
                                                 </div>
                                             </div>
                                         </div>
