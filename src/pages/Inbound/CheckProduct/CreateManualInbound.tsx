@@ -7,10 +7,11 @@ import { Tab } from '@headlessui/react';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import { useAddProductMutation } from '../../../store/services/productOldsApi';
 import BarcodePrinted from './BarcodePrinted';
+import { Alert } from '../../../commons';
 
 const CreateManualInbound = () => {
     const { data: dataCategories, isSuccess: isSuccessCategories } = useGetCategoriesQuery(undefined);
-    const [addProduct] = useAddProductMutation();
+    const [addProduct, results] = useAddProductMutation();
     const [isBarcode, setIsBarcode] = useState(false);
     const [diskon, setDiskon] = useState('0');
     const [response, setResponse] = useState<{
@@ -118,6 +119,10 @@ const CreateManualInbound = () => {
         const pricedDiscount = (parseFloat(input.new_price_product) - parseFloat(input.new_price_product) * (parseFloat(diskon) / 100)).toString();
         setInput((prev) => ({ ...prev, price_discount: pricedDiscount }));
     }, [input.new_price_product, diskon]);
+
+    if (results?.isError) {
+        return <Alert message="Anda tidak berhak mengakses halaman ini" />;
+    }
 
     return (
         <>
