@@ -9,19 +9,31 @@ import { useAddProductMutation } from '../../../store/services/productOldsApi';
 import BarcodePrinted from './BarcodePrinted';
 
 const CreateManualInbound = () => {
-    const { data: dataCategories, isSuccess: isSuccessCategories, refetch } = useGetCategoriesQuery(undefined);
+    const { data: dataCategories, isSuccess: isSuccessCategories } = useGetCategoriesQuery(undefined);
     const [addProduct] = useAddProductMutation();
     const [isBarcode, setIsBarcode] = useState(false);
+    const [diskon, setDiskon] = useState('0');
     const [response, setResponse] = useState<{
         new_barcode_product: string;
         new_category_product: string;
         new_date_in_product: string;
         new_name_product: string;
         new_price_product: string;
+        price_discount: string;
         new_quality: string;
         new_quantity_product: string;
         new_status_product: string;
-    }>({ new_barcode_product: '', new_category_product: '', new_date_in_product: '', new_name_product: '', new_price_product: '', new_quality: '', new_quantity_product: '', new_status_product: '' });
+    }>({
+        new_barcode_product: '',
+        new_category_product: '',
+        new_date_in_product: '',
+        new_name_product: '',
+        new_price_product: '',
+        new_quality: '',
+        new_quantity_product: '',
+        new_status_product: '',
+        price_discount: '',
+    });
 
     const categoryList = useMemo(() => {
         if (isSuccessCategories) {
@@ -50,6 +62,7 @@ const CreateManualInbound = () => {
         new_price_product: '0',
         new_status_product: '',
         new_category_product: '',
+        price_discount: '',
         condition: '',
         description: '',
     });
@@ -64,25 +77,30 @@ const CreateManualInbound = () => {
                 new_price_product: input.new_price_product,
                 new_status_product: 'display',
                 new_category_product: input.new_category_product,
+                price_discount: input.price_discount,
                 condition: input.condition,
                 description: input.description,
             };
             await addProduct(body)
                 .unwrap()
                 .then((res) => {
-                    toast.success('Product berhasil ditambah'),
-                        setResponse(res),
-                        setIsBarcode(true),
-                        setInput({
-                            new_barcode_product: generateBarcode() ?? '',
-                            new_name_product: '',
-                            new_quantity_product: '1',
-                            new_price_product: '0',
-                            new_status_product: '',
-                            new_category_product: '',
-                            condition: '',
-                            description: '',
-                        });
+                    if (parseFloat(input.new_price_product) >= 100000 && input.condition === 'lolos') {
+                        setIsBarcode(true);
+                    }
+                    toast.success('Product berhasil ditambah');
+                    setResponse(res);
+                    setInput({
+                        new_barcode_product: generateBarcode() ?? '',
+                        new_name_product: '',
+                        new_quantity_product: '1',
+                        new_price_product: '0',
+                        new_status_product: '',
+                        new_category_product: '',
+                        price_discount: '',
+                        condition: '',
+                        description: '',
+                    });
+                    setDiskon('0');
                 })
                 .catch((err: any) => toast.error(err.message));
         } catch (err: any) {
@@ -95,6 +113,11 @@ const CreateManualInbound = () => {
             setInput((prev) => ({ ...prev, new_category_product: '' }));
         }
     }, [input.new_price_product]);
+
+    useEffect(() => {
+        const pricedDiscount = (parseFloat(input.new_price_product) - parseFloat(input.new_price_product) * (parseFloat(diskon) / 100)).toString();
+        setInput((prev) => ({ ...prev, price_discount: pricedDiscount }));
+    }, [input.new_price_product, diskon]);
 
     return (
         <>
@@ -122,7 +145,7 @@ const CreateManualInbound = () => {
                             <button type="button" onClick={() => setIsBarcode(false)} className="btn btn-primary mb-4">
                                 New Product
                             </button>
-                            <BarcodePrinted barcode={response.new_barcode_product} newPrice={response.new_price_product} oldPrice={'0'} category={response.new_category_product} />
+                            <BarcodePrinted barcode={response.new_barcode_product} newPrice={response.price_discount} oldPrice={response.new_price_product} category={response.new_category_product} />
                         </div>
                     ) : (
                         <form className="w-full flex gap-x-2" onSubmit={handleSubmit}>
@@ -184,114 +207,116 @@ const CreateManualInbound = () => {
                             </div>
                             <div className="w-3/5 gap-4">
                                 <div className="mb-5 panel">
-                                    <>
-                                        <Tab.Group>
-                                            <div className="mx-10 mb-5 sm:mb-0">
-                                                <Tab.List className="mt-3 mb-6 flex border-b border-white-light gap-4 dark:border-[#191e3a]">
-                                                    <Tab as={Fragment}>
-                                                        {({ selected }) => (
-                                                            <button
-                                                                className={`${
-                                                                    selected ? 'bg-info text-white !outline-none' : ''
-                                                                } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
-                                                                onClick={(e) => {
-                                                                    setInput((prev) => ({ ...prev, description: '', new_category_product: '' }));
-                                                                }}
-                                                            >
-                                                                Lolos
-                                                            </button>
-                                                        )}
-                                                    </Tab>
-                                                    <Tab as={Fragment}>
-                                                        {({ selected }) => (
-                                                            <button
-                                                                className={`${
-                                                                    selected ? 'bg-info text-white !outline-none' : ''
-                                                                } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
-                                                                onClick={(e) => {
-                                                                    setInput((prev) => ({ ...prev, description: '', new_category_product: '' }));
-                                                                }}
-                                                            >
-                                                                Damaged
-                                                            </button>
-                                                        )}
-                                                    </Tab>
-                                                    <Tab as={Fragment}>
-                                                        {({ selected }) => (
-                                                            <button
-                                                                className={`${
-                                                                    selected ? 'bg-info text-white !outline-none' : ''
-                                                                } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
-                                                                onClick={(e) => {
-                                                                    setInput((prev) => ({ ...prev, description: '', new_category_product: '' }));
-                                                                }}
-                                                            >
-                                                                Abnormal
-                                                            </button>
-                                                        )}
-                                                    </Tab>
-                                                </Tab.List>
-                                            </div>
-                                            <Tab.Panels>
-                                                <Tab.Panel>
-                                                    <div className="grid grid-cols-3 gap-4">
-                                                        {categoryList?.length !== 0 &&
-                                                            categoryList?.map((option: any) => (
-                                                                <label key={option.id} className="flex items-center mt-1 cursor-pointer">
-                                                                    <input
-                                                                        type="radio"
-                                                                        disabled={parseFloat(input.new_price_product) < 100000 || !parseFloat(input.new_price_product)}
-                                                                        className="form-radio text-success peer w-6 h-6"
-                                                                        name="radioOption"
-                                                                        value={option.name_category}
-                                                                        checked={option.name_category === input.new_category_product}
-                                                                        onChange={(e) =>
-                                                                            setInput((prev) => ({ ...prev, condition: 'lolos', description: '', new_category_product: option.name_category }))
-                                                                        }
-                                                                    />
-                                                                    <span className="text-white-dark">{option.name_category}</span>
-                                                                </label>
-                                                            ))}
-                                                    </div>
-                                                </Tab.Panel>
-                                                <Tab.Panel>
-                                                    <div>
-                                                        <div className="flex items-start pt-5">
-                                                            <div className="flex-auto">
-                                                                <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
-                                                                <textarea
-                                                                    value={input.description}
-                                                                    onChange={(e) => setInput((prev) => ({ ...prev, condition: 'damaged', description: e.target.value }))}
-                                                                    rows={4}
-                                                                    className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
-                                                                ></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Tab.Panel>
-                                                <Tab.Panel>
-                                                    <div>
-                                                        <div className="flex items-start pt-5">
-                                                            <div className="flex-auto">
-                                                                <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
-                                                                <textarea
-                                                                    rows={4}
-                                                                    value={input.description}
-                                                                    onChange={(e) => setInput((prev) => ({ ...prev, condition: 'damaged', description: e.target.value }))}
-                                                                    className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
-                                                                ></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Tab.Panel>
-                                            </Tab.Panels>
-                                        </Tab.Group>
-                                        <div className="flex justify-end">
-                                            <button type="submit" className="w-full btn btn-info mt-4">
-                                                SEND
-                                            </button>
+                                    <Tab.Group>
+                                        <div className="mx-10 mb-5 sm:mb-0">
+                                            <Tab.List className="mt-3 mb-6 flex border-b border-white-light gap-4 dark:border-[#191e3a]">
+                                                <Tab as={Fragment}>
+                                                    {({ selected }) => (
+                                                        <button
+                                                            className={`${
+                                                                selected ? 'bg-info text-white !outline-none' : ''
+                                                            } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
+                                                            onClick={() => {
+                                                                setInput((prev) => ({ ...prev, description: '', new_category_product: '' }));
+                                                                setDiskon('0');
+                                                            }}
+                                                        >
+                                                            Lolos
+                                                        </button>
+                                                    )}
+                                                </Tab>
+                                                <Tab as={Fragment}>
+                                                    {({ selected }) => (
+                                                        <button
+                                                            className={`${
+                                                                selected ? 'bg-info text-white !outline-none' : ''
+                                                            } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
+                                                            onClick={() => {
+                                                                setInput((prev) => ({ ...prev, description: '', new_category_product: '' }));
+                                                                setDiskon('0');
+                                                            }}
+                                                        >
+                                                            Damaged
+                                                        </button>
+                                                    )}
+                                                </Tab>
+                                                <Tab as={Fragment}>
+                                                    {({ selected }) => (
+                                                        <button
+                                                            className={`${
+                                                                selected ? 'bg-info text-white !outline-none' : ''
+                                                            } -mb-[1px] block rounded p-3.5 py-2 before:inline-block hover:bg-info hover:text-white w-full`}
+                                                            onClick={() => {
+                                                                setInput((prev) => ({ ...prev, description: '', new_category_product: '' }));
+                                                                setDiskon('0');
+                                                            }}
+                                                        >
+                                                            Abnormal
+                                                        </button>
+                                                    )}
+                                                </Tab>
+                                            </Tab.List>
                                         </div>
-                                    </>
+                                        <Tab.Panels>
+                                            <Tab.Panel>
+                                                <div className="grid grid-cols-3 gap-4">
+                                                    {categoryList?.length !== 0 &&
+                                                        categoryList?.map((option: any) => (
+                                                            <label key={option.id} className="flex items-center mt-1 cursor-pointer">
+                                                                <input
+                                                                    type="radio"
+                                                                    disabled={parseFloat(input.new_price_product) < 100000 || !parseFloat(input.new_price_product)}
+                                                                    className="form-radio text-success peer w-6 h-6"
+                                                                    name="radioOption"
+                                                                    value={option.name_category}
+                                                                    checked={option.name_category === input.new_category_product}
+                                                                    onChange={() => {
+                                                                        setInput((prev) => ({ ...prev, condition: 'lolos', description: '', new_category_product: option.name_category }));
+                                                                        setDiskon(option.discount_category);
+                                                                    }}
+                                                                />
+                                                                <span className="text-white-dark">{option.name_category}</span>
+                                                            </label>
+                                                        ))}
+                                                </div>
+                                            </Tab.Panel>
+                                            <Tab.Panel>
+                                                <div>
+                                                    <div className="flex items-start pt-5">
+                                                        <div className="flex-auto">
+                                                            <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
+                                                            <textarea
+                                                                value={input.description}
+                                                                onChange={(e) => setInput((prev) => ({ ...prev, condition: 'damaged', description: e.target.value }))}
+                                                                rows={4}
+                                                                className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                                            ></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Tab.Panel>
+                                            <Tab.Panel>
+                                                <div>
+                                                    <div className="flex items-start pt-5">
+                                                        <div className="flex-auto">
+                                                            <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
+                                                            <textarea
+                                                                rows={4}
+                                                                value={input.description}
+                                                                onChange={(e) => setInput((prev) => ({ ...prev, condition: 'damaged', description: e.target.value }))}
+                                                                className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                                            ></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Tab.Panel>
+                                        </Tab.Panels>
+                                    </Tab.Group>
+                                    <div className="flex justify-end">
+                                        <button type="submit" className="w-full btn btn-info mt-4">
+                                            SEND
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </form>
