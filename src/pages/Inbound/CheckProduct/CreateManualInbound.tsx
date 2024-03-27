@@ -117,68 +117,73 @@ const CreateManualInbound = () => {
                     <div className="flex justify-between items-center">
                         <h1 className="text-lg font-bold my-4">ADD DATA NEW</h1>
                     </div>
-                    <form className="w-full flex gap-x-2" onSubmit={handleSubmit}>
-                        <div className="w-2/5">
-                            <div className="space-y-5 col-span-2 panel w-full">
-                                <div className="flex items-center  justify-between mb-2">
-                                    <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Barcode:
-                                    </label>
-                                    <input
-                                        id="barcode"
-                                        type="text"
-                                        className="form-input w-[300px]"
-                                        value={input.new_barcode_product}
-                                        onChange={(e) => setInput((prev) => ({ ...prev, new_barcode_product: e.target.value }))}
-                                        required
-                                    />
-                                </div>
-                                <div className="flex items-center  justify-between mb-2">
-                                    <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Nama Barang:
-                                    </label>
-                                    <input
-                                        id="categoryName"
-                                        type="text"
-                                        className="form-input w-[300px]"
-                                        value={input.new_name_product}
-                                        onChange={(e) => setInput((prev) => ({ ...prev, new_name_product: e.target.value }))}
-                                        required
-                                    />
-                                </div>
-                                <div className="flex items-center  justify-between mb-2">
-                                    <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Harga :
-                                    </label>
-                                    <input
-                                        id="categoryName"
-                                        type="number"
-                                        className="form-input w-[300px]"
-                                        value={input.new_price_product}
-                                        onChange={(e) => setInput((prev) => ({ ...prev, new_price_product: e.target.value }))}
-                                        required
-                                    />
-                                </div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
-                                        QTY :
-                                    </label>
-                                    <input
-                                        id="qty"
-                                        type="number"
-                                        className="form-input w-[300px]"
-                                        value={input.new_quantity_product}
-                                        onChange={(e) => setInput((prev) => ({ ...prev, new_quantity_product: e.target.value }))}
-                                        required
-                                    />
+                    {isBarcode ? (
+                        <div className="panel">
+                            <button type="button" onClick={() => setIsBarcode(false)} className="btn btn-primary mb-4">
+                                New Product
+                            </button>
+                            <BarcodePrinted barcode={response.new_barcode_product} newPrice={response.new_price_product} oldPrice={'0'} category={response.new_category_product} />
+                        </div>
+                    ) : (
+                        <form className="w-full flex gap-x-2" onSubmit={handleSubmit}>
+                            <div className="w-2/5">
+                                <div className="space-y-5 col-span-2 panel w-full">
+                                    <div className="flex items-center  justify-between mb-2">
+                                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                            Barcode:
+                                        </label>
+                                        <input
+                                            id="barcode"
+                                            type="text"
+                                            className="form-input w-[300px]"
+                                            value={input.new_barcode_product}
+                                            onChange={(e) => setInput((prev) => ({ ...prev, new_barcode_product: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex items-center  justify-between mb-2">
+                                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                            Nama Barang:
+                                        </label>
+                                        <input
+                                            id="categoryName"
+                                            type="text"
+                                            className="form-input w-[300px]"
+                                            value={input.new_name_product}
+                                            onChange={(e) => setInput((prev) => ({ ...prev, new_name_product: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex items-center  justify-between mb-2">
+                                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                            Harga :
+                                        </label>
+                                        <input
+                                            id="categoryName"
+                                            type="number"
+                                            className="form-input w-[300px]"
+                                            value={input.new_price_product}
+                                            onChange={(e) => setInput((prev) => ({ ...prev, new_price_product: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                                            QTY :
+                                        </label>
+                                        <input
+                                            id="qty"
+                                            type="number"
+                                            className="form-input w-[300px]"
+                                            value={input.new_quantity_product}
+                                            onChange={(e) => setInput((prev) => ({ ...prev, new_quantity_product: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="w-3/5 gap-4">
-                            <div className="mb-5 panel">
-                                {isBarcode ? (
-                                    <BarcodePrinted barcode={response.new_barcode_product} newPrice={response.new_price_product} oldPrice={'0'} category={response.new_category_product} />
-                                ) : (
+                            <div className="w-3/5 gap-4">
+                                <div className="mb-5 panel">
                                     <>
                                         <Tab.Group>
                                             <div className="mx-10 mb-5 sm:mb-0">
@@ -287,10 +292,10 @@ const CreateManualInbound = () => {
                                             </button>
                                         </div>
                                     </>
-                                )}
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    )}
                 </div>
             </div>
         </>
