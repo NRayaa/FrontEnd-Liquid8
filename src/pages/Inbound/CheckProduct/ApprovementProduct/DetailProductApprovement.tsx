@@ -101,7 +101,7 @@ const DetailProductApprovement = () => {
             <div className="mt-10 p-6 panel">
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-xl font-bold">Detail Product</h1>
-                    <Link to="/inbound/check_product/approvment_product/detail" state={{ code_document: dataDetailProduct?.code_document }}>
+                    <Link to="/inbound/check_product/approvment_product" state={{ code_document: dataDetailProduct?.code_document }}>
                         <button type="button" className=" px-2 btn btn-outline-danger">
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
                         </button>

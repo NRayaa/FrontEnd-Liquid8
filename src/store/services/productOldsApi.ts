@@ -17,8 +17,15 @@ export const productOldsApi = createApi({
                 url: `/product_olds/${id}`,
                 method: 'DELETE',
             }),
-        })
+        }),
+        addProduct: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/add_product',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery, useDeleteProductOldMutation, useLazyDetailProductOldQuery } = productOldsApi;
+export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery } = productOldsApi;
