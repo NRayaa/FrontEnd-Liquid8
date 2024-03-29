@@ -130,13 +130,7 @@ const Repair = () => {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (item) =>  {
-                                    if (item.repair_products && item.repair_products.length > 0) {
-                                        return <span className="badge whitespace-nowrap bg-primary">{item.repair_products[0].new_status_product}</span>;
-                                    } else {
-                                        return <span className="badge whitespace-nowrap bg-primary">No Status</span>; // Placeholder jika data tidak ada
-                                    }
-                                },
+                                render: (item) => <span className="badge whitespace-nowrap bg-primary">{item.product_status}</span>,
                             },
                             {
                                 accessor: 'action',

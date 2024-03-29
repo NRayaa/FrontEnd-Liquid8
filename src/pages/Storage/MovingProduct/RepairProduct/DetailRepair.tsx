@@ -1,29 +1,33 @@
 import { DataTable } from 'mantine-datatable';
 import { Link, useParams } from 'react-router-dom';
-import { Fragment, useEffect, useMemo } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
-import { useGetShowRepairMovingProductsQuery, useUpdateThrowsDetailMutation } from '../../../../store/services/repairMovingApi';
+import { useGetShowRepairMovingProductsQuery, useUpdateThrowsRepairMutation } from '../../../../store/services/repairMovingApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
-import { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import toast from 'react-hot-toast';
 
 const DetailRepair = () => {
     const { id }: any = useParams();
     const { data, isSuccess, refetch } = useGetShowRepairMovingProductsQuery(id);
-    const [updateThrows, results] = useUpdateThrowsDetailMutation();
-    const [throws, setThrows] = useState(false);
     const [selectedItem, setSelectedItem] = useState<number | null>(null);
+    const [throws, setThrows] = useState(false);
+    const [updateThrows, results] = useUpdateThrowsRepairMutation();
+
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
             return data?.data.resource;
         }
     }, [data]);
 
+    const handleThrows = (id: number) => {
+        setSelectedItem(id);
+        setThrows(true);
+    };
+
     const handleThrowsConfirmation = async (id: number) => {
         try {
-            console.log('ID:', id); // Cetak nilai ID untuk memeriksa apakah ID diterima dengan benar
             await updateThrows(id);
             refetch();
         } catch (err) {
@@ -33,10 +37,6 @@ const DetailRepair = () => {
         }
     };
 
-    const handleThrows = (id: number) => {
-        setSelectedItem(id);
-        setThrows(true);
-    };
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
@@ -63,6 +63,61 @@ const DetailRepair = () => {
                     <span>Detail Repair</span>
                 </li>
             </ul>
+
+            <div className="mb-5">
+                <Transition appear show={throws} as={Fragment}>
+                    <Dialog as="div" open={throws} onClose={() => setThrows(false)}>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <div className="fixed inset-0" />
+                        </Transition.Child>
+                        <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                            <div className="flex items-start justify-center min-h-screen px-4">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel as="div" className="panel border-0 p-0 rounded-lg overflow-hidden my-8 w-full max-w-lg text-black dark:text-white-dark">
+                                        <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                                            <div className="text-lg font-bold">QCD List Product</div>
+                                        </div>
+                                        <div className="p-5">
+                                            <div>
+                                                <form className="space-y-5">
+                                                    <div>
+                                                        <h1>Apakah Anda yakin ingin melakukan QCD?</h1>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div className="flex justify-end items-center mt-8">
+                                                <button type="button" className="btn btn-outline-danger" onClick={() => setThrows(false)}>
+                                                    Kembali
+                                                </button>
+                                                <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={() => handleThrowsConfirmation(selectedItem || 0)}>
+                                                    QCD
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </div>
+                        </div>
+                    </Dialog>
+                </Transition>
+            </div>
+
             <div>
                 <h1 className="text-lg font-semibold py-4">Detail Repair</h1>
             </div>
@@ -134,12 +189,14 @@ const DetailRepair = () => {
                                 { accessor: 'new_price_product', title: 'Harga', sortable: true },
                                 {
                                     accessor: 'action',
-                                    title: 'Opsi',
+                                    title: 'OPSI',
                                     titleClassName: '!text-center',
                                     render: (item) => (
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleThrows(item.id)}>
-                                            QCD
-                                        </button>
+                                        <div className="flex items-center w-max mx-auto gap-6">
+                                            <button type="button" className="btn btn-outline-danger" onClick={() => handleThrows(item.id)}>
+                                                QCD
+                                            </button>
+                                        </div>
                                     ),
                                 },
                             ]}

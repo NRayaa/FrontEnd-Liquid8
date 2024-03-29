@@ -85,6 +85,19 @@ const DetailProduct = () => {
                 ...prevState,
                 [e.target.name]: e.target.value,
             }));
+            const price = parseFloat(e.target.value);
+            if (price >= 100000) {
+                const randomBarcode = Math.floor(Math.random() * 90000) + 10000; 
+                setInput((prevState) => ({
+                    ...prevState,
+                    new_barcode_product: `LQD${randomBarcode}`, 
+                }));
+            } else if (price < 100000) {
+                setInput((prevState) => ({
+                    ...prevState,
+                    new_barcode_product : dataDetailProduct?.new_barcode_product ?? '',
+                }));
+            }
             handleLiveSearch(e.target.value !== '' ? e.target.value : '0');
         } else {
             setInput((prevState) => ({
