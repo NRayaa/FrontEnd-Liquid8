@@ -69,7 +69,7 @@ const NotificationHeader = () => {
                     </span>
                 }
             >
-                <ul className="!py-0 text-dark dark:text-white-dark w-[300px] sm:w-[350px] divide-y dark:divide-white/10">
+                <ul className="!py-0 text-dark dark:text-white-dark w-[300px] sm:w-[350px] divide-y dark:divide-white/10 overflow-y-auto max-h-[600px]">
                     <li>
                         <div className="flex items-center px-4 py-2 justify-between font-semibold">
                             <h4 className="text-lg">Notifikasi</h4>
