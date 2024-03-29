@@ -899,6 +899,7 @@ interface GetListProductRepairItem {
 }
 
 interface GetListProductRepair {
+    id: number;
     data: {
         status: boolean;
         message: string;
@@ -1342,6 +1343,7 @@ interface RepairResponse {
 }
 
 interface DetailRepairResponse {
+    resource: any;
     data: {
         status: boolean;
         message: string;
@@ -1355,6 +1357,7 @@ interface DetailRepairResponse {
             created_at: string;
             updated_at: string;
             repair_products: {
+                id: number;
                 new_barcode_product: string;
                 new_name_product: string;
                 new_quantity_product: number;
