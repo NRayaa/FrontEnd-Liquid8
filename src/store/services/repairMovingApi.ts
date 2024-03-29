@@ -40,8 +40,8 @@ export const repairMovingProductsApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        updateThrowsRepair: builder.mutation<any, any>({
-            query: (id) => ({
+        updateThrowsDetail: builder.mutation<any, any>({
+            query: (id,) => ({
                 url: `/update-repair-dump/${id}`,
                 method: 'PUT',
             }),
@@ -57,5 +57,5 @@ export const {
     useCreateRepairMovingProductsMutation,
     useGetShowRepairMovingProductsQuery,
     useUnrepairMovingProductMutation,
-    useUpdateThrowsRepairMutation,
+    useUpdateThrowsDetailMutation,
 } = repairMovingProductsApi;
