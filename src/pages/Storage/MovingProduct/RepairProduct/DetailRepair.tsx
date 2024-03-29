@@ -1,5 +1,5 @@
 import { DataTable } from 'mantine-datatable';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 import { useGetShowRepairMovingProductsQuery, useUpdateThrowsRepairMutation } from '../../../../store/services/repairMovingApi';
@@ -10,10 +10,11 @@ import toast from 'react-hot-toast';
 
 const DetailRepair = () => {
     const { id }: any = useParams();
-    const { data, isSuccess, refetch } = useGetShowRepairMovingProductsQuery(id);
+    const { data, isSuccess, refetch, isError } = useGetShowRepairMovingProductsQuery(id);
     const [selectedItem, setSelectedItem] = useState<number | null>(null);
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsRepairMutation();
+    const navigate = useNavigate();
 
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
@@ -45,6 +46,12 @@ const DetailRepair = () => {
             toast.error(results?.data?.data?.message);
         }
     }, [results]);
+
+    useEffect(() => {
+        if (isError) {
+            navigate('/storage/moving_product/repair');
+        }
+    }, [isError]);
 
     return (
         <div>
