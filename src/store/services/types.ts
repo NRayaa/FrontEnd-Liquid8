@@ -1355,6 +1355,7 @@ interface DetailRepairResponse {
             created_at: string;
             updated_at: string;
             repair_products: {
+                id: number;
                 new_barcode_product: string;
                 new_name_product: string;
                 new_quantity_product: number;

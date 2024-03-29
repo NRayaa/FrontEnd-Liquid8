@@ -130,7 +130,7 @@ const Repair = () => {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (item) => <span className="badge whitespace-nowrap bg-primary">{item.repair_products[0].new_status_product}</span>,
+                                render: (item) => <span className="badge whitespace-nowrap bg-primary">{item.product_status}</span>,
                             },
                             {
                                 accessor: 'action',
