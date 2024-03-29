@@ -84,6 +84,10 @@ const Repair = () => {
         }
     }, [results]);
 
+    useEffect(() => {
+        refetch();
+    }, []);
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
