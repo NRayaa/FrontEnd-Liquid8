@@ -1,20 +1,21 @@
 import { DataTable } from 'mantine-datatable';
-import { Link, useParams } from 'react-router-dom';
-import { Fragment, useEffect, useMemo } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
 import { useGetShowRepairMovingProductsQuery, useUpdateThrowsDetailMutation } from '../../../../store/services/repairMovingApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
-import { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import toast from 'react-hot-toast';
 
 const DetailRepair = () => {
     const { id }: any = useParams();
-    const { data, isSuccess, refetch } = useGetShowRepairMovingProductsQuery(id);
-    const [updateThrows, results] = useUpdateThrowsDetailMutation();
-    const [throws, setThrows] = useState(false);
+    const { data, isSuccess, refetch, isError } = useGetShowRepairMovingProductsQuery(id);
     const [selectedItem, setSelectedItem] = useState<number | null>(null);
+    const [throws, setThrows] = useState(false);
+    const [updateThrows, results] = useUpdateThrowsDetailMutation();
+    const navigate = useNavigate();
+
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
             return data.data.resource;
@@ -45,6 +46,12 @@ const DetailRepair = () => {
             toast.error(results?.data?.data?.message);
         }
     }, [results]);
+
+    useEffect(() => {
+        if (isError) {
+            navigate('/storage/moving_product/repair');
+        }
+    }, [isError]);
 
     return (
         <div>
