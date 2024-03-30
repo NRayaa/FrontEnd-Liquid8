@@ -18,3 +18,4 @@ interface GeneratesData {
 }
 
 export type { GeneratesData };
+

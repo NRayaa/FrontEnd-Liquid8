@@ -81,6 +81,17 @@ const ProductByColor = () => {
         refetch();
     }, [data, refetch]);
 
+    // const [dataImport, setDataImport] = useState<ImportProduct | undefined>();
+    // const getImportData = (data: ImportProduct) => {
+    //     setDataImport(data);
+    // };
+
+    // const message = useMemo(() => {
+    //     if (dataImport) {
+    //         return dataImport?.data?.resource;
+    //     }
+    // }, [dataImport]);
+
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);

@@ -211,7 +211,8 @@ const CreateMovingBundleProduct = () => {
                                     onChange={(e) => {
                                         const selectedNameCategory = e.target.selectedOptions[0].getAttribute('data-name-category');
                                         setSelectedCategory(selectedNameCategory);
-                                        const priceDiscount = (Number(filterBundles?.data?.data.resource.total_new_price) * Number(e.target.value)) / 100;
+                                        const totalNewPrice = Number(filterBundles?.data?.data.resource.total_new_price);
+                                        const priceDiscount = (totalNewPrice - (totalNewPrice * Number(e.target.value)) / 100);
                                         setCustomPrice(JSON.stringify(priceDiscount));
                                     }}
                                 >

@@ -899,6 +899,7 @@ interface GetListProductRepairItem {
 }
 
 interface GetListProductRepair {
+    id: number;
     data: {
         status: boolean;
         message: string;
