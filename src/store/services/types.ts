@@ -1343,7 +1343,6 @@ interface RepairResponse {
 }
 
 interface DetailRepairResponse {
-    resource: any;
     data: {
         status: boolean;
         message: string;
