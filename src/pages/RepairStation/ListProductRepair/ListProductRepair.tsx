@@ -230,8 +230,8 @@ const ListProductRepair = () => {
     const [calculatedPrice, setCalculatedPrice] = useState<string>('0');
 
     useEffect(() => {
+        const oldPrice = parseFloat(input?.old_price_product ?? '0');
         const calculatedDiscount = calculateDiscount();
-        const oldPrice = parseFloat(productData?.old_price_product ?? '0');
         const discountedPrice = oldPrice - oldPrice * (calculatedDiscount / 100);
         setCalculatedPrice(discountedPrice.toFixed(2));
     }, [selectedCategory, productData]);
