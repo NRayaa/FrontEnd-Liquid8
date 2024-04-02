@@ -128,7 +128,7 @@ const MovingBundleProduct = () => {
                             { accessor: 'barcode', title: 'Barcode Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.barcode_bundle}</span> },
                             { accessor: 'firstName', title: 'Nama Bundle', sortable: true, render: (item: BundleItem) => <span>{item?.name_bundle}</span> },
                             { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: BundleItem) => <span>{item?.total_product_bundle}</span> },
-                            { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: BundleItem) => <span>{formatRupiah(item?.total_price_bundle)}</span> },
+                            { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: BundleItem) => <span>{formatRupiah(item?.total_price_custom_bundle)}</span> },
                             {
                                 accessor: 'status',
                                 title: 'Status',
