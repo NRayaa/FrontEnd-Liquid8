@@ -8,9 +8,10 @@ interface BarcodePrint {
     newPrice: string;
     barcode: string;
     category: string;
+    showPrintButton: boolean;
 }
 
-const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, category }) => {
+const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, category, showPrintButton }) => {
     const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
         if (containerElement) {
@@ -31,6 +32,7 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
             console.error('Container not found');
         }
     };
+
     return (
         <div>
             <div style={{ width: '7cm', height: '4cm', display: 'flex', justifyContent: 'start', alignItems: 'start', fontFamily: 'sans-serif' }} className="print-container">
@@ -58,9 +60,11 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
                     </div>
                 </div>
             </div>
-            <button onClick={handlePrint} className="py-2 px-8 bg-primary text-white rounded-full mt-6">
-                Print
-            </button>
+            {showPrintButton && (
+                <button onClick={handlePrint} className="py-2 px-8 bg-primary text-white rounded-full mt-6">
+                    Print
+                </button>
+            )}
         </div>
     );
 };

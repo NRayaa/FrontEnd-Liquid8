@@ -17,6 +17,7 @@ const DetailProduct = () => {
     const { data, isSuccess, refetch, isError } = useDetailProductNewQuery(id);
     const productNew = useGetAllProductNewQuery({ page: 1, q: '' });
     const [editDetailProduct, results] = useEditDetailProductMutation();
+    const [showPrintButton, setShowPrintButton] = useState(false);
     const [updatePriceByProductOld, resultsUpdate] = useLazyUpdatePriceByProductOldQuery();
     const [categories, setCategories] = useState<{ id: number; name_category: string; discount_category: number; max_price_category: number }[]>([]);
     const [category, setCategory] = useState('');
@@ -129,6 +130,7 @@ const DetailProduct = () => {
             };
             await editDetailProduct({ id, body });
             refetch();
+            setShowPrintButton(true);
         } catch (err) {
             console.log(err);
         }
@@ -224,7 +226,13 @@ const DetailProduct = () => {
                         )}
                     </div>
                     <div className="w-1/3 flex justify-center">
-                        <BarcodePrinted barcode={dataDetailProduct?.new_barcode_product ?? ''} category={category} newPrice={input.new_price_product ?? ''} oldPrice={input.old_price_product ?? ''} />
+                        <BarcodePrinted
+                            barcode={dataDetailProduct?.new_barcode_product ?? ''}
+                            category={category}
+                            newPrice={input.new_price_product ?? ''}
+                            oldPrice={input.old_price_product ?? ''}
+                            showPrintButton={showPrintButton} 
+                        />
                     </div>
                 </div>
 
@@ -233,7 +241,7 @@ const DetailProduct = () => {
                     className="btn btn-primary px-16 uppercase mt-6"
                     onClick={() => {
                         hanldeEditProduct();
-                        setIsRedirect(true);
+                        // setIsRedirect(true);
                     }}
                 >
                     Edit Product
