@@ -194,13 +194,14 @@ const ListProductRepair = () => {
                 old_barcode_product: input.old_barcode_product,
                 old_price_product: input.old_price_product,
                 new_status_product: input.new_status_product,
-                new_barcode_product: input.old_barcode_product,
+                new_barcode_product: input.new_barcode_product,
                 new_name_product: input?.new_name_product,
                 new_price_product: input.new_price_product,
                 new_quantity_product: input?.new_quantity_product,
                 new_category_product: input?.new_category_product,
             };
             await updateProductRepair({ id, body });
+            console.log("DATA SENT", body)
         } catch (err) {
             console.error(err);
         }

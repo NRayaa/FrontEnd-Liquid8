@@ -87,16 +87,17 @@ const DetailProduct = () => {
             }));
             const price = parseFloat(e.target.value);
             if (price >= 100000) {
-                const randomBarcode = Math.floor(Math.random() * 90000) + 10000; 
+                const randomBarcode = Math.floor(Math.random() * 90000) + 10000;
                 setInput((prevState) => ({
                     ...prevState,
-                    new_barcode_product: `LQD${randomBarcode}`, 
+                    new_barcode_product: `LQD${randomBarcode}`,
                 }));
             } else if (price < 100000) {
                 setInput((prevState) => ({
                     ...prevState,
-                    new_barcode_product : dataDetailProduct?.new_barcode_product ?? '',
+                    new_barcode_product: dataDetailProduct?.new_barcode_product ?? '',
                 }));
+                setCategory('');
             }
             handleLiveSearch(e.target.value !== '' ? e.target.value : '0');
         } else {
@@ -182,7 +183,7 @@ const DetailProduct = () => {
                             <NewBarcodeData
                                 header="New Data"
                                 barcode={input.new_barcode_product ?? ''}
-                                harga={input.old_price_product ?? ''}
+                                harga={input.new_price_product ?? ''}
                                 qty={input.new_quantity_product ?? ''}
                                 nama={input.new_name_product ?? ''}
                                 handleChangeInput={handleChangeInput}
@@ -223,12 +224,7 @@ const DetailProduct = () => {
                         )}
                     </div>
                     <div className="w-1/3 flex justify-center">
-                        <BarcodePrinted
-                            barcode={dataDetailProduct?.new_barcode_product ?? ''}
-                            category={dataDetailProduct?.new_category_product ?? ''}
-                            newPrice={input.new_price_product ?? ''}
-                            oldPrice={input.old_price_product ?? ''}
-                        />
+                        <BarcodePrinted barcode={dataDetailProduct?.new_barcode_product ?? ''} category={category} newPrice={input.new_price_product ?? ''} oldPrice={input.old_price_product ?? ''} />
                     </div>
                 </div>
 
