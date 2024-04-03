@@ -1536,6 +1536,17 @@ interface DumpProps {
     };
 }
 
+interface GetCountColor {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            biru: number;
+            merah: number;
+        };
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -1630,4 +1641,5 @@ export type {
     DumpProps,
     QCDResponse,
     DetailQCDResponse,
+    GetCountColor,
 };

@@ -36,6 +36,12 @@ export const listDumpApi = createApi({
         exportDump: builder.query<any, number>({
             query: (id) => `/export-dumps-excel/${id}`,
         }),
+        deleteNewProduct: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/new_products/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -50,4 +56,5 @@ export const {
     useDetailDumpQuery,
     useDeleteListDumpMutation,
     useExportDumpQuery,
+    useDeleteNewProductMutation,
 } = listDumpApi;

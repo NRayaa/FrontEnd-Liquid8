@@ -2,7 +2,15 @@ import React, { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'rea
 import { Link, useNavigate } from 'react-router-dom';
 import { formatRupiah, generateRandomStringFormatQCD } from '../../../helper/functions';
 import { DataTable } from 'mantine-datatable';
-import { useAddFilterDumpMutation, useAddListDumpMutation, useDeleteFilterDumpMutation, useGetDumpsQuery, useGetFilterDumpQuery, useGetListDumpQuery } from '../../../store/services/listDumpApi';
+import {
+    useAddFilterDumpMutation,
+    useAddListDumpMutation,
+    useDeleteFilterDumpMutation,
+    useDeleteNewProductMutation,
+    useGetDumpsQuery,
+    useGetFilterDumpQuery,
+    useGetListDumpQuery,
+} from '../../../store/services/listDumpApi';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
@@ -18,6 +26,7 @@ const CreateDump = () => {
     const [addFilterDump] = useAddFilterDumpMutation();
     const [addListDump] = useAddListDumpMutation();
     const [deleteFilterDump] = useDeleteFilterDumpMutation();
+    const [deleteNewProduct, results] = useDeleteNewProductMutation();
 
     // dataFilter
     const dataFilterSelected = useMemo(() => {
@@ -108,6 +117,26 @@ const CreateDump = () => {
             })
             .catch((err) => toast.error(err.data.message));
     };
+
+    const handleDeleteNewProduct = async (id: number) => {
+        try {
+            await deleteNewProduct(id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+            refetchDump();
+            refetchFilter();
+        } else if (results.isError) {
+            toast.error(results.data?.data?.message);
+        }
+        refetchDump();
+        refetchFilter();
+    }, [results]);
 
     useEffect(() => {
         if (parseFloat(input.total_price_bundle) >= 100000) {
@@ -320,6 +349,9 @@ const CreateDump = () => {
                                             <div className="flex items-center w-max mx-auto gap-6">
                                                 <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilter(item.id)}>
                                                     Add
+                                                </button>
+                                                <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteNewProduct(item.id)}>
+                                                    Delete
                                                 </button>
                                             </div>
                                         ),
