@@ -24,6 +24,8 @@ import MovingBundleProduct from '../pages/Storage/MovingProduct/BundleProduct/Mo
 import Notification from '../pages/Notification/Notification';
 import PalletDetail from '../pages/Storage/Pallet/DetailPallet';
 import CreateManualInbound from '../pages/Inbound/CheckProduct/CreateManualInbound';
+import CreateDump from '../pages/RepairStation/ListDump/CreateDump';
+import DetailDump from '../pages/RepairStation/ListDump/DetailDump';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -281,6 +283,16 @@ const routes = [
     {
         path: '/repair_station/list_dump',
         element: <ListDump />,
+        layout: 'default',
+    },
+    {
+        path: '/repair_station/create_dump',
+        element: <CreateDump />,
+        layout: 'default',
+    },
+    {
+        path: '/repair_station/detail_dump/:id',
+        element: <DetailDump />,
         layout: 'default',
     },
     // Outbound

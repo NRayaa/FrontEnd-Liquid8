@@ -135,8 +135,8 @@ function countPastTime(timestamp: string) {
     }
 }
 
+const characters = '0123456789';
 function generateRandomStringFormatBundle() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let randomString = 'LQB';
 
     for (let i = 0; i < 6; i++) {
@@ -146,5 +146,26 @@ function generateRandomStringFormatBundle() {
 
     return randomString;
 }
+function generateRandomStringFormatQCD() {
+    let randomString = 'QCD';
 
-export { formatTimestamp, formatRupiah, formatDate, generateRandomString, formatYearToDay, convertPercentage, formatCurrency, countPastTime, generateRandomStringFormatBundle };
+    for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomString += characters.charAt(randomIndex);
+    }
+
+    return randomString;
+}
+
+export {
+    formatTimestamp,
+    formatRupiah,
+    formatDate,
+    generateRandomString,
+    formatYearToDay,
+    convertPercentage,
+    formatCurrency,
+    countPastTime,
+    generateRandomStringFormatBundle,
+    generateRandomStringFormatQCD,
+};
