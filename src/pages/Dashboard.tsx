@@ -539,7 +539,7 @@ const Index = () => {
 
                 <div className="panel h-full">
                     <div className="flex items-center mb-5">
-                        <h5 className="font-semibold text-lg dark:text-white-light">Expired By Category</h5>
+                        <h5 className="font-semibold text-lg dark:text-white-light">Slow Moving By Category</h5>
                     </div>
                     <div>
                         <div className="bg-white dark:bg-black rounded-lg overflow-hidden">

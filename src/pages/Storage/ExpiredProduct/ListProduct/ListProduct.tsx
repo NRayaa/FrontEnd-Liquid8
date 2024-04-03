@@ -104,7 +104,7 @@ const ListProduct = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Expired Product</span>
+                    <span>Slow Moving</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
                     <span>List Product</span>
@@ -120,8 +120,8 @@ const ListProduct = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        highlightOnHover
-                        className="whitespace-nowrap table-hover "
+                        // highlightOnHover
+                        // className="whitespace-nowrap table-hover "
                         records={expiredProducts}
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{(page - 1) * expiredProducts?.length + (index + 1)}</span> },
@@ -133,7 +133,13 @@ const ListProduct = () => {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (item: ProductExpiredItem) => <span className="badge whitespace-nowrap bg-danger capitalize">{item.new_status_product}</span>,
+                                render: (item: ProductExpiredItem) => {
+                                    if (item.new_status_product === 'expired') {
+                                        return <span className="badge whitespace-nowrap bg-danger capitalize">Slow Moving</span>;
+                                    } else {
+                                        return <span className="badge whitespace-nowrap bg-warning capitalize">{item.new_status_product}</span>;
+                                    }
+                                },
                             },
                             {
                                 accessor: 'action',

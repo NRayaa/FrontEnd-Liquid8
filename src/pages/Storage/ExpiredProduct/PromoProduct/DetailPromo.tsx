@@ -116,7 +116,7 @@ const DetailPromo = () => {
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
                     <Link to="/storage/expired_product/promo_product">
-                        <span>Expired Product</span>
+                        <span>Slow Moving</span>
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
