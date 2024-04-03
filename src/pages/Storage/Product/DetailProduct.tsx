@@ -144,7 +144,7 @@ const DetailProduct = () => {
     useEffect(() => {
         setDiskon(categories.find((item: any) => item.name_category === category)?.discount_category ?? 0);
         setInput((prev) => ({ ...prev, new_price_product: (parseFloat(input.old_price_product) - parseFloat(input.old_price_product) * (diskon / 100)).toString() }));
-    }, [diskon, input.old_price_product]);
+    }, [diskon]);
 
     useEffect(() => {
         if (results.isSuccess) {
