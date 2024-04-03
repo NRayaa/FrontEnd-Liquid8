@@ -127,7 +127,6 @@ const ListProductRepair = () => {
     const [countPercentage, setCountPercentage] = useState<number>(0);
     const [isReset, setIsReset] = useState<boolean>(false);
     const [isBarcode, setIsBarcode] = useState<boolean>(false);
-    
 
     const dataListProductRepair: any = useMemo(() => {
         return listProductData?.data?.resource?.data;

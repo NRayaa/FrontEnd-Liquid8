@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetListMigrate } from './types';
+import { GetCountColor, GetListMigrate } from './types';
 import { baseQuery } from './prepareHeader';
 
 interface GetListMigrateIndex {
@@ -75,7 +75,17 @@ export const migrateApi = createApi({
         getShowMigrate: builder.query<GetShowMigrateProps, string | undefined>({
             query: (id) => `/migrate-documents/${id}`,
         }),
+        getColorCount: builder.query<GetCountColor, undefined>({
+            query: () => '/countColor',
+        }),
+        addMigrate: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/bundleMigrate',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery } = migrateApi;
+export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery, useGetColorCountQuery, useAddMigrateMutation } = migrateApi;
