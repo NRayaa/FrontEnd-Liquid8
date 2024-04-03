@@ -22,7 +22,7 @@ const ListDump = () => {
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const { data, isSuccess, refetch } = useGetListDumpQuery({ page, q: search });
+    const { data, isSuccess, refetch, isError } = useGetListDumpQuery({ page, q: search });
     const dataListDump = useMemo(() => {
         if (isSuccess) {
             return data?.data?.resource?.data;
@@ -163,6 +163,10 @@ const ListDump = () => {
     useEffect(() => {
         refetch();
     }, []);
+
+    if (isError && !data?.data?.status) {
+        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    }
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
