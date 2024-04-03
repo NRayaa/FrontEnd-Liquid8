@@ -101,7 +101,7 @@ const PromoProduct = () => {
                     </Link>
                 </li>
                 <li className="text-primary hover:underline before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Expired Product</span>
+                    <span>Slow Moving</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
                     <span>Promo Product</span>

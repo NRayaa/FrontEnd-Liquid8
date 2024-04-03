@@ -154,14 +154,6 @@ const CreateDump = () => {
                 total_price_custom_bundle: dataFilter?.data.resource.total_new_price.toString(),
                 total_product_bundle: dataFilter?.data.resource.data.total.toString(),
             }));
-
-            if (dataFilter?.data.resource.total_new_price >= 100000) {
-                setIsCategory(true);
-                setInput((prev) => ({ ...prev, name_color: '' }));
-            } else {
-                setIsCategory(false);
-                setInput((prev) => ({ ...prev, name_color: dataFilter.data.resource.data.data[0]?.new_tag_product[0].name_color ?? '', category: '' }));
-            }
         }
     }, [dataFilter]);
 
@@ -203,42 +195,6 @@ const CreateDump = () => {
                             </label>
                             <input disabled id="categoryName" type="text" placeholder="Rp" className="form-input w-[250px]" required value={formatRupiah(input.total_price_bundle)} />
                         </div>
-                        {!isCategory && (
-                            <div className="flex items-center justify-between mb-2 mt-2">
-                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Color Name:
-                                </label>
-                                <input id="Color Name" disabled type="text" className=" form-input w-[250px]" required value={input.name_color} />
-                            </div>
-                        )}
-                        {isCategory && (
-                            <div className="flex items-center justify-between mb-2">
-                                <label htmlFor="kategori" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Kategori :
-                                </label>
-                                <select
-                                    id="gridState"
-                                    className="form-input w-[250px]"
-                                    value={input.category}
-                                    onChange={(e) => {
-                                        const selectedNameCategory = e.target.value;
-                                        setInput((prev) => ({ ...prev, category: selectedNameCategory ?? '' }));
-                                        const totalNewPrice = Number(dataFilter?.data.resource.total_new_price);
-                                        const priceDiscount = totalNewPrice - totalNewPrice * (Number(e.target.selectedOptions[0].getAttribute('data-name-category')) / 100);
-                                        setInput((prev) => ({ ...prev, total_price_custom_bundle: priceDiscount.toString() }));
-                                    }}
-                                >
-                                    <option>Choose...</option>
-                                    {categories?.map((item: any, index: any) => {
-                                        return (
-                                            <option key={index} value={item.name_category} data-name-category={item.discount_category}>
-                                                {item.name_category} {item.discount_category + '%'}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                            </div>
-                        )}
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Custom Harga :
@@ -351,7 +307,7 @@ const CreateDump = () => {
                                                     Add
                                                 </button>
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteNewProduct(item.id)}>
-                                                    Delete
+                                                    To Scraph
                                                 </button>
                                             </div>
                                         ),
