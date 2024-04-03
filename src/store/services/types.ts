@@ -594,6 +594,38 @@ interface BundleResponse {
         };
     };
 }
+interface QCDResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: QCDItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+interface QCDItem {
+    id: number;
+    name_bundle: string;
+    total_price_bundle: string;
+    total_price_custom_bundle: string;
+    total_product_bundle: string;
+    barcode_bundle: string;
+    created_at: string;
+    updated_at: string;
+    product_qcds: BundleSubItem[];
+}
 interface DetailBundleResponse {
     data: {
         status: boolean;
@@ -606,6 +638,23 @@ interface DetailBundleResponse {
             total_product_bundle: string;
             barcode_bundle: string;
             product_bundles: NewProductItem[];
+            created_at: string;
+            updated_at: string;
+        };
+    };
+}
+interface DetailQCDResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            name_bundle: string;
+            total_price_bundle: string;
+            total_price_custom_bundle: string;
+            total_product_bundle: string;
+            barcode_bundle: string;
+            product_qcds: NewProductItem[];
             created_at: string;
             updated_at: string;
         };
@@ -1465,6 +1514,28 @@ interface SubSalesProductsProps {
     created_date: string;
 }
 
+interface DumpProps {
+    data: {
+        message: string;
+        resource: {
+            current_page: number;
+            data: SubPaletItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: string | null;
+            path: string;
+            per_page: number;
+            prev_page_url: string | null;
+            to: number;
+            total: number;
+            status: boolean;
+        };
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -1556,4 +1627,7 @@ export type {
     SubPaletItem,
     SaleProductsProps,
     SubSalesProductsProps,
+    DumpProps,
+    QCDResponse,
+    DetailQCDResponse,
 };
