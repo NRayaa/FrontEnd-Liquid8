@@ -230,7 +230,7 @@ const ListDump = () => {
                                             UNBUNDLE
                                         </button>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlertDelete({ type: 11, id: item.id })}>
-                                            TO SCRAPH BUNDLE
+                                            TO SCRAP BUNDLE
                                         </button>
                                     </div>
                                 ),

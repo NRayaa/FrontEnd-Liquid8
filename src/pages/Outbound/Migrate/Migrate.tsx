@@ -44,6 +44,11 @@ const Migrate = () => {
                 product_total: input.total,
             };
             await createMigrate(body);
+            setInput({
+                destination: '',
+                color: '',
+                total: 0,
+            });
         } catch (err) {}
     };
 
