@@ -85,7 +85,14 @@ export const migrateApi = createApi({
                 body,
             }),
         }),
+        migrate: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/migrates',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery, useGetColorCountQuery, useAddMigrateMutation } = migrateApi;
+export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery, useGetColorCountQuery, useAddMigrateMutation, useMigrateMutation } = migrateApi;

@@ -120,8 +120,6 @@ const ListProduct = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        // highlightOnHover
-                        // className="whitespace-nowrap table-hover "
                         records={expiredProducts}
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{(page - 1) * expiredProducts?.length + (index + 1)}</span> },
