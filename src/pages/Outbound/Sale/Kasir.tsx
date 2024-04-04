@@ -174,6 +174,15 @@ const Kasir = () => {
         setAddBuyerOpen(true);
     };
 
+    useEffect(() => {
+        if (listSaleData && listSaleData.data && listSaleData.data.resource && listSaleData.data.resource.sale_buyer_id) {
+            setInputBuyer((prevState) => ({
+                ...prevState,
+                id: listSaleData.data.resource.sale_buyer_id,
+            }));
+        }
+    }, [listSaleData]);
+
     if (isLoading) {
         return <p>Loading...</p>;
     }

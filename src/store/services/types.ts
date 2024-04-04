@@ -1100,6 +1100,7 @@ interface GetListSale {
         message: string;
         resource: {
             code_document_sale: string;
+            sale_buyer_id: number;
             current_page: number;
             data: GetListSaleItem[];
             first_page_url: string;
