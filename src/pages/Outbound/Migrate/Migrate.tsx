@@ -1,13 +1,13 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAddMigrateMutation, useGetColorCountQuery, useMigrateFinishMutation } from '../../../store/services/migrateApi';
+import { useAddMigrateMutation, useGetColorCountQuery, useMigrateFinishMutation, useMigrateMutation } from '../../../store/services/migrateApi';
 import toast from 'react-hot-toast';
 
 const Migrate = () => {
     const navigate = useNavigate();
     const { data: getColorCount } = useGetColorCountQuery(undefined);
     const [colorOptions, setColorOptions] = useState<{ label: string; value: string }[]>([]);
-    const [createMigrate, results] = useAddMigrateMutation();
+    const [createMigrate, results] = useMigrateMutation();
     const [sendMigrate, resultSend] = useMigrateFinishMutation();
 
     const handleSendMigrate = async (e: { preventDefault: () => void }) => {
@@ -39,9 +39,9 @@ const Migrate = () => {
         e.preventDefault();
         try {
             const body = {
-                destination: input.destination,
-                color: input.color,
-                total: input.total,
+                destiny_document_migrate: input.destination,
+                product_color: input.color,
+                product_total: input.total,
             };
             await createMigrate(body);
         } catch (err) {}

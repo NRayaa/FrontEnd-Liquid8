@@ -307,7 +307,7 @@ const CreateDump = () => {
                                                     Add
                                                 </button>
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteNewProduct(item.id)}>
-                                                    To Scraph
+                                                    To Scraph 
                                                 </button>
                                             </div>
                                         ),
