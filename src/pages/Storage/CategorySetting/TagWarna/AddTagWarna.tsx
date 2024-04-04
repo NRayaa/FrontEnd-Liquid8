@@ -42,11 +42,11 @@ const AddTagWarna = () => {
     };
 
     useEffect(() => {
-        if (results.isSuccess) {
-            toast.success(results.data.data.message);
+        if (results && results.isSuccess) {
+            toast.success(results?.data?.data?.message);
             navigate('/storage/categorysetting/tag_warna');
-        } else if (results.isError) {
-            toast.error(results.data.data.message);
+        } else if (results && results.isError) {
+            toast.error(results?.data?.data?.message);
         }
     }, [results]);
 
