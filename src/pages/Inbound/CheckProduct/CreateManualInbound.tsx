@@ -91,7 +91,7 @@ const CreateManualInbound = () => {
             await addProduct(body)
                 .unwrap()
                 .then((res) => {
-                    if (parseFloat(input.new_price_product) >= 100000 && input.condition === 'lolos') {
+                    if (parseFloat(input.old_price_product) >= 100000 && input.condition === 'lolos') {
                         setIsBarcode(true);
                     }
                     toast.success('Product berhasil ditambah');
