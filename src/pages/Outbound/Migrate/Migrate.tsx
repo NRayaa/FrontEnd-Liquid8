@@ -52,6 +52,15 @@ const Migrate = () => {
         } catch (err) {}
     };
 
+    useEffect(() => {
+        if (resultSend.isSuccess) {
+            toast.success(resultSend.data.data.message);
+            // navigate('/akun/akun/list_akun');
+        } else if (resultSend.isError) {
+            toast.error(resultSend.data?.data?.message);
+        }
+    }, [resultSend]);
+
     const colorData = useMemo(() => {
         return getColorCount?.data?.resource ?? {};
     }, [getColorCount]);
