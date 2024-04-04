@@ -56,10 +56,6 @@ const DetailMigrate = () => {
                             <ul className="space-y-3 list-inside list-disc font-semibold">{ShowMigrate?.total_product_document_migrate}</ul>
                         </div>
                         <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">PRICE TOTAL :</div>
-                            <div className="whitespace-nowrap">{formatRupiah(ShowMigrate?.total_price_document_migrate.toString() ?? '0')}</div>
-                        </div>
-                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
                             <div className="text-white-dark mr-2">DESTINATION :</div>
                             <div className="whitespace-nowrap">{ShowMigrate?.destiny_document_migrate}</div>
                         </div>
@@ -80,18 +76,9 @@ const DetailMigrate = () => {
                             records={ShowMigrate?.migrates}
                             columns={[
                                 { accessor: 'id', title: 'No', render: (e, index) => index + 1 },
-                                { accessor: 'new_barcode_product', title: 'Barcode LQD' },
-                                {
-                                    accessor: 'new_name_product',
-                                    title: 'Nama Produk',
-                                    render: (e) => (
-                                        <p title={e.new_name_product} className="max-w-[calc(100vw-800px)] truncate overflow-hidden">
-                                            {e.new_name_product}
-                                        </p>
-                                    ),
-                                },
-                                { accessor: 'new_qty_product', title: 'QTY' },
-                                { accessor: 'new_price_product', title: 'Harga', render: (e) => formatRupiah(e.new_price_product.toString()) },
+                                { accessor: 'product_color', title: 'Product Color' },
+                                { accessor: 'product_total', title: 'QTY' },
+                                { accessor: 'status_migrate', title: 'Status' },
                             ]}
                             minHeight={200}
                         />
