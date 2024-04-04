@@ -25,7 +25,10 @@ export const productOldsApi = createApi({
                 body,
             }),
         }),
+        latestPrice: builder.query<any, string>({
+            query: (price) => `/get-latestPrice?old_price_product=${price}`,
+        }),
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery } = productOldsApi;
+export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery } = productOldsApi;
