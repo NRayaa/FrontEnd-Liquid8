@@ -5,42 +5,37 @@ import { useCheckPriceMutation } from '../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
 import { Tab } from '@headlessui/react';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
-import { useAddProductMutation } from '../../../store/services/productOldsApi';
+import { useAddProductMutation, useLatestPriceQuery } from '../../../store/services/productOldsApi';
 import BarcodePrinted from './BarcodePrinted';
 import { Alert } from '../../../commons';
 
 const CreateManualInbound = () => {
-    const { data: dataCategories, isSuccess: isSuccessCategories } = useGetCategoriesQuery(undefined);
     const [addProduct, results] = useAddProductMutation();
     const [isBarcode, setIsBarcode] = useState(false);
     const [diskon, setDiskon] = useState('0');
     const [response, setResponse] = useState<{
         new_barcode_product: string;
-        new_category_product: string;
-        new_date_in_product: string;
         new_name_product: string;
-        new_price_product: string;
-        price_discount: string;
-        new_quality: string;
         new_quantity_product: string;
+        new_price_product: string;
         new_status_product: string;
+        new_category_product: string;
+        new_tag_product: string | null;
+        new_date_in_product: string;
+        new_quality: string;
+        old_price_product: string;
     }>({
         new_barcode_product: '',
-        new_category_product: '',
-        new_date_in_product: '',
         new_name_product: '',
-        new_price_product: '',
-        new_quality: '',
         new_quantity_product: '',
+        new_price_product: '0',
         new_status_product: '',
-        price_discount: '',
+        new_category_product: '',
+        new_tag_product: '',
+        new_date_in_product: '',
+        new_quality: '',
+        old_price_product: '0',
     });
-
-    const categoryList = useMemo(() => {
-        if (isSuccessCategories) {
-            return dataCategories?.data.resource;
-        }
-    }, [dataCategories, isSuccessCategories]);
 
     const generateBarcode = () => {
         const prefix = 'LQD';
@@ -63,10 +58,20 @@ const CreateManualInbound = () => {
         new_price_product: '0',
         new_status_product: '',
         new_category_product: '',
-        price_discount: '',
         condition: '',
         description: '',
+        old_price_product: '0',
+        new_tag_product: '',
     });
+
+    const { data: latestPrices, isSuccess: isSuccessLatestPrice } = useLatestPriceQuery(input.old_price_product !== '' ? input.old_price_product : '0');
+
+    const dataLatestPrices: any = useMemo(() => {
+        if (isSuccessLatestPrice) {
+            return latestPrices.data.resource;
+        }
+    }, [isSuccessLatestPrice, latestPrices]);
+    console.log(input);
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -75,10 +80,11 @@ const CreateManualInbound = () => {
                 new_barcode_product: input.new_barcode_product,
                 new_name_product: input.new_name_product,
                 new_quantity_product: input.new_quantity_product,
-                new_price_product: input.new_price_product,
+                old_price_product: input.old_price_product,
                 new_status_product: 'display',
                 new_category_product: input.new_category_product,
-                price_discount: input.price_discount,
+                new_price_product: input.new_price_product,
+                new_tag_product: input.new_tag_product,
                 condition: input.condition,
                 description: input.description,
             };
@@ -97,9 +103,10 @@ const CreateManualInbound = () => {
                         new_price_product: '0',
                         new_status_product: '',
                         new_category_product: '',
-                        price_discount: '',
                         condition: '',
                         description: '',
+                        old_price_product: '',
+                        new_tag_product: '',
                     });
                     setDiskon('0');
                 })
@@ -110,15 +117,17 @@ const CreateManualInbound = () => {
     };
 
     useEffect(() => {
-        if (parseFloat(input.new_price_product) < 100000) {
-            setInput((prev) => ({ ...prev, new_category_product: '' }));
-        }
-    }, [input.new_price_product]);
+        const pricedDiscount = (parseFloat(input.old_price_product) - parseFloat(input.old_price_product) * (parseFloat(diskon) / 100)).toString();
+        setInput((prev) => ({ ...prev, new_price_product: pricedDiscount }));
+    }, [input.old_price_product, diskon]);
 
     useEffect(() => {
-        const pricedDiscount = (parseFloat(input.new_price_product) - parseFloat(input.new_price_product) * (parseFloat(diskon) / 100)).toString();
-        setInput((prev) => ({ ...prev, price_discount: pricedDiscount }));
-    }, [input.new_price_product, diskon]);
+        setInput((prev) => ({ ...prev, new_tag_product: dataLatestPrices?.warna?.name_color ?? '' }));
+        if (dataLatestPrices?.warna?.name_color) {
+            setInput((prev) => ({ ...prev, new_category_product: '' }));
+            setDiskon('0');
+        }
+    }, [dataLatestPrices]);
 
     if (results?.isError) {
         return <Alert message="Anda tidak berhak mengakses halaman ini" />;
@@ -150,7 +159,12 @@ const CreateManualInbound = () => {
                             <button type="button" onClick={() => setIsBarcode(false)} className="btn btn-primary mb-4">
                                 New Product
                             </button>
-                            <BarcodePrinted barcode={response.new_barcode_product} newPrice={response.price_discount} oldPrice={response.new_price_product} category={response.new_category_product} />
+                            <BarcodePrinted
+                                barcode={response.new_barcode_product}
+                                newPrice={response.new_price_product}
+                                oldPrice={response.old_price_product}
+                                category={response.new_category_product}
+                            />
                         </div>
                     ) : (
                         <form className="w-full flex gap-x-2" onSubmit={handleSubmit}>
@@ -190,8 +204,8 @@ const CreateManualInbound = () => {
                                             id="categoryName"
                                             type="number"
                                             className="form-input w-[300px]"
-                                            value={input.new_price_product}
-                                            onChange={(e) => setInput((prev) => ({ ...prev, new_price_product: e.target.value }))}
+                                            value={input.old_price_product}
+                                            onChange={(e) => setInput((prev) => ({ ...prev, old_price_product: e.target.value }))}
                                             required
                                         />
                                     </div>
@@ -205,6 +219,19 @@ const CreateManualInbound = () => {
                                             className="form-input w-[300px]"
                                             value={input.new_quantity_product}
                                             onChange={(e) => setInput((prev) => ({ ...prev, new_quantity_product: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex items-center  justify-between mb-2">
+                                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                            Harga Diskon :
+                                        </label>
+                                        <input
+                                            id="categoryName"
+                                            type="number"
+                                            className="form-input w-[300px]"
+                                            value={input.new_price_product}
+                                            onChange={(e) => setInput((prev) => ({ ...prev, new_price_product: e.target.value }))}
                                             required
                                         />
                                     </div>
@@ -265,12 +292,16 @@ const CreateManualInbound = () => {
                                         <Tab.Panels>
                                             <Tab.Panel>
                                                 <div className="grid grid-cols-3 gap-4">
-                                                    {categoryList?.length !== 0 &&
-                                                        categoryList?.map((option: any) => (
+                                                    {dataLatestPrices?.warna?.name_color ? (
+                                                        <div className="h-10">
+                                                            Tag Warna: <span className="font-bold">{dataLatestPrices?.warna?.name_color}</span>
+                                                        </div>
+                                                    ) : (
+                                                        dataLatestPrices?.category.map((option: any) => (
                                                             <label key={option.id} className="flex items-center mt-1 cursor-pointer">
                                                                 <input
                                                                     type="radio"
-                                                                    disabled={parseFloat(input.new_price_product) < 100000 || !parseFloat(input.new_price_product)}
+                                                                    disabled={parseFloat(input.old_price_product) < 100000 || !parseFloat(input.old_price_product)}
                                                                     className="form-radio text-success peer w-6 h-6"
                                                                     name="radioOption"
                                                                     value={option.name_category}
@@ -282,7 +313,8 @@ const CreateManualInbound = () => {
                                                                 />
                                                                 <span className="text-white-dark">{option.name_category}</span>
                                                             </label>
-                                                        ))}
+                                                        ))
+                                                    )}
                                                 </div>
                                             </Tab.Panel>
                                             <Tab.Panel>
