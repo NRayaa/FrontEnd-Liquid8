@@ -92,7 +92,7 @@ const Migrate = () => {
                                     Destination :
                                 </label>
                                 <select id="destination" name="destination" className="mb-2 form-select w-[250px]" onChange={handleInputChange} value={input.destination}>
-                                    <option disabled>Select</option>
+                                    <option>Select</option>
                                     <option value="DKT">DKT</option>
                                     <option value="DKTO">DKTO</option>
                                 </select>{' '}
@@ -102,7 +102,7 @@ const Migrate = () => {
                                     Color :
                                 </label>
                                 <select id="color" name="color" className="mb-2 form-select w-[250px]" onChange={handleInputChange} value={input.color}>
-                                    <option disabled>Select</option>
+                                    <option>Select</option>
                                     {colorOptions.map((option) => (
                                         <option key={option.value} value={option.value}>
                                             {option.label}
