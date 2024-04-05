@@ -28,6 +28,46 @@ const ReportTable = () => {
         }
     };
 
+    function terbilang(n: number): string {
+        var bilangan = [
+            '', 'satu', 'dua', 'tiga', 'empat', 'lima',
+            'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh',
+            'sebelas'
+        ];
+    
+        if (n < 12) {
+            return bilangan[n];
+        } else if (n < 20) {
+            return bilangan[n - 10] + ' belas';
+        } else if (n < 100) {
+            return bilangan[Math.floor(n / 10)] + ' puluh ' + bilangan[n % 10];
+        } else if (n < 200) {
+            return 'seratus ' + terbilang(n - 100);
+        } else if (n < 1000) {
+            return bilangan[Math.floor(n / 100)] + ' ratus ' + terbilang(n % 100);
+        } else if (n < 2000) {
+            return 'seribu ' + terbilang(n - 1000);
+        } else if (n < 1000000) {
+            return terbilang(Math.floor(n / 1000)) + ' ribu ' + terbilang(n % 1000);
+        } else if (n < 1000000000) {
+            return terbilang(Math.floor(n / 1000000)) + ' juta ' + terbilang(n % 1000000);
+        } else if (n < 1000000000000) {
+            return terbilang(Math.floor(n / 1000000000)) + ' milyar ' + terbilang(n % 1000000000);
+        } else {
+            return 'Angka terlalu besar';
+        }
+    }
+    
+    function formatRupiah(angka: number): string {
+        var formatted = terbilang(angka) + ' rupiah';
+        return formatted;
+    }
+    
+    const totalHargaString: string | undefined = String(data?.data?.NameBarcode_report[data?.data?.NameBarcode_report.length - 1][1]);
+    const totalHargaAngka: number = totalHargaString ? parseFloat(totalHargaString) : 0;
+    const totalHargaFormatted: string = totalHargaAngka.toLocaleString('id-ID');
+    const totalHargaTerbilang: string = formatRupiah(totalHargaAngka).toUpperCase(); 
+
     return (
         <>
             <div className="print-container" style={{ fontFamily: 'sans-serif' }}>
@@ -137,9 +177,9 @@ const ReportTable = () => {
                     </p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ width: 200, borderBottom: '2 solid black' }}>
-                            <h3 style={{ fontWeight: 'bold' }}>Rp</h3>
+                            <h3 style={{ fontWeight: 'bold' }}>Rp. {totalHargaFormatted}</h3>
                         </div>
-                        <p>(Nol Rupiah)</p>
+                        <p style={{ fontWeight: 'bold', fontSize: 12 }}>({totalHargaTerbilang})</p>
                     </div>
                     <div>
                         <p> ke rekening di bawah ini :</p>
