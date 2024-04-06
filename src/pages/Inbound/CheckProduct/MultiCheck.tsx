@@ -114,7 +114,15 @@ const MultiCheck = () => {
             const body = {
                 code_document: state?.codeDocument,
             };
-            await checkAllDocument(body);
+            await checkAllDocument(body)
+                .unwrap()
+                .then((res) => {
+                    toast.success(res.data.message);
+                    navigate('/inbound/check_history');
+                })
+                .catch((err) => {
+                    toast.success(err.data.errors.code_document[0]);
+                });
         }
     };
 
@@ -134,13 +142,6 @@ const MultiCheck = () => {
 
         setNewPricePercentage(JSON.stringify(result));
     }, [percentageState]);
-
-    useEffect(() => {
-        if (checkResults.isSuccess) {
-            toast.success(checkResults.data.data.message);
-            navigate('/inbound/check_history');
-        }
-    }, [checkResults]);
 
     useEffect(() => {
         if (results.isSuccess && results.data.data.status) {
@@ -170,7 +171,7 @@ const MultiCheck = () => {
         setCodeBarcode(newBarcode);
     }, [oldData?.old_price_product, oldData?.old_barcode_product]);
 
-    if ((results.isError && !results.data?.data.status) || checkResults.isError) {
+    if (results.isError && !results.data?.data.status) {
         return <Alert message={results.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
     }
 
