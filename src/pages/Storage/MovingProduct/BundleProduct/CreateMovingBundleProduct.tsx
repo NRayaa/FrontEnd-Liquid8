@@ -3,7 +3,7 @@ import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetDisplayExpiredQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
-import { formatRupiah, generateRandomStringFormatBundle } from '../../../../helper/functions';
+import { formatRupiah, generateRandomStringFormatBundle, useDebounce } from '../../../../helper/functions';
 import {
     useCreateBundleMutation,
     useDeleteFilterProductBundlesMutation,
@@ -19,7 +19,8 @@ const CreateMovingBundleProduct = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
+    const debounceValue = useDebounce(searchLeftTable);
+    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: debounceValue });
     const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
     const [filterProductBundle, results] = useFilterProductBundleMutation();
     const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
@@ -212,7 +213,7 @@ const CreateMovingBundleProduct = () => {
                                         const selectedNameCategory = e.target.selectedOptions[0].getAttribute('data-name-category');
                                         setSelectedCategory(selectedNameCategory);
                                         const totalNewPrice = Number(filterBundles?.data?.data.resource.total_new_price);
-                                        const priceDiscount = (totalNewPrice - (totalNewPrice * Number(e.target.value)) / 100);
+                                        const priceDiscount = totalNewPrice - (totalNewPrice * Number(e.target.value)) / 100;
                                         setCustomPrice(JSON.stringify(priceDiscount));
                                     }}
                                 >

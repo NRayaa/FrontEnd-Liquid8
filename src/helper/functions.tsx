@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 function formatTimestamp(timestamp: string) {
     const date = new Date(timestamp);
 
@@ -157,6 +159,22 @@ function generateRandomStringFormatQCD() {
     return randomString;
 }
 
+function useDebounce<T>(value: T, delay?: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay ?? 500);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
+
 export {
     formatTimestamp,
     formatRupiah,
@@ -168,4 +186,5 @@ export {
     countPastTime,
     generateRandomStringFormatBundle,
     generateRandomStringFormatQCD,
+    useDebounce,
 };

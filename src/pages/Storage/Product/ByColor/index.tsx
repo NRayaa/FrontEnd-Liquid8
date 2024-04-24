@@ -4,7 +4,7 @@ import { BreadCrumbs } from '../../../../components';
 import { DataTable } from 'mantine-datatable';
 import { useDeleteProductNewMutation, useGetAllProductNewQuery, useProductByColorQuery } from '../../../../store/services/productNewApi';
 import { NewProductItem } from '../../../../store/services/types';
-import { formatDate, formatRupiah } from '../../../../helper/functions';
+import { formatDate, formatRupiah, useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
@@ -12,7 +12,8 @@ import { Alert } from '../../../../commons';
 const ProductByColor = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isError, refetch, isSuccess } = useProductByColorQuery({ page, q: search });
+    const debounceValue = useDebounce(search);
+    const { data, isError, refetch, isSuccess } = useProductByColorQuery({ page, q: debounceValue });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
     const showAlert = async ({ type, id }: any) => {
