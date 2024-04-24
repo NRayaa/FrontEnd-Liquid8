@@ -3,7 +3,7 @@ import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetDisplayExpiredQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
-import { formatRupiah, generateRandomString } from '../../../../helper/functions';
+import { formatRupiah, generateRandomString, useDebounce } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
 import {
     useCreateRepairMovingProductsMutation,
@@ -18,7 +18,8 @@ const CreateRepair = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: searchLeftTable });
+    const debounceValue = useDebounce(searchLeftTable);
+    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: debounceValue });
     const filterRepair = useGetFilterRepairMovingProductsQuery(rightTablePage);
     const [filterProductRepair, results] = useFilterRepairMovingProductsMutation();
     const [deleteFilterProductRepair, resultsDeleteRepair] = useDeleteFilterRepairMovingProductsMutation();

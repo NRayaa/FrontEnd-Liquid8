@@ -8,7 +8,7 @@ import { useGetSaleProductsQuery } from '../../../store/services/productNewApi';
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import IconSearch from '../../../components/Icon/IconSearch';
-import { formatRupiah } from '../../../helper/functions';
+import { formatRupiah, useDebounce } from '../../../helper/functions';
 import toast from 'react-hot-toast';
 import { useAddBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 import { Alert } from '../../../commons';
@@ -20,12 +20,13 @@ const Kasir = () => {
     const [addBuyer] = useAddBuyerMutation();
     const [saleFinish] = useSaleFinishMutation();
     const [search, setSearch] = useState('');
+    const debounceValue = useDebounce(search);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const [addBuyerOpen, setAddBuyerOpen] = useState(false);
-    const { data: listSaleData, isError, isLoading, refetch } = useGetListSaleQuery({ page, q: search });
-    const { data: listProduct } = useGetSaleProductsQuery({ page, q: search });
-    const { data: listBuyer } = useGetListBuyerQuery({ page, q: search });
+    const { data: listSaleData, isError, isLoading, refetch } = useGetListSaleQuery({ page, q: debounceValue });
+    const { data: listProduct } = useGetSaleProductsQuery({ page, q: debounceValue });
+    const { data: listBuyer } = useGetListBuyerQuery({ page, q: debounceValue });
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
@@ -130,14 +131,17 @@ const Kasir = () => {
             sale_barcode: selectedProductBarcode,
         }));
         setIsModalOpen(false);
+        setSearch('');
     };
 
     const handleSearchButtonClick = () => {
         setIsModalOpen(true);
+        setSearch('');
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+        setSearch('');
     };
 
     const [inputBuyer, setInputBuyer] = useState({
@@ -158,6 +162,7 @@ const Kasir = () => {
             name_buyer: selectedBuyerItem.name_buyer,
         });
         setListBuyerOpen(false);
+        setSearch('');
     };
 
     const handleSearchBuyerButtonClick = () => {
@@ -167,6 +172,7 @@ const Kasir = () => {
 
     const handleCloseModalBuyer = () => {
         setListBuyerOpen(false);
+        setSearch('');
     };
 
     const handleAddBuyerButtonClick = () => {
