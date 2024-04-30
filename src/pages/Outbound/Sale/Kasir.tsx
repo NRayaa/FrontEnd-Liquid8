@@ -15,18 +15,22 @@ import { Alert } from '../../../commons';
 
 const Kasir = () => {
     const navigate = useNavigate();
-    const [page, setPage] = useState<number>(1);
+    const [pageSales, setPageSales] = useState<number>(1);
+    const [pageProduct, setPageProduct] = useState<number>(1);
+    const [pageBuyer, setPageBuyer] = useState<number>(1);
     const [addSale] = useAddSaleMutation();
     const [addBuyer] = useAddBuyerMutation();
     const [saleFinish] = useSaleFinishMutation();
-    const [search, setSearch] = useState('');
-    const debounceValue = useDebounce(search);
+    const [searchBuyer, setSearchBuyer] = useState('');
+    const [searchSales, setSearchSales] = useState('');
+    const debounceValueBuyer = useDebounce(searchBuyer);
+    const debounceValueSales = useDebounce(searchSales);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const [addBuyerOpen, setAddBuyerOpen] = useState(false);
-    const { data: listSaleData, isError, isLoading, refetch } = useGetListSaleQuery({ page, q: debounceValue });
-    const { data: listProduct } = useGetSaleProductsQuery({ page, q: debounceValue });
-    const { data: listBuyer } = useGetListBuyerQuery({ page, q: debounceValue });
+    const { data: listSaleData, isError, isLoading, refetch } = useGetListSaleQuery(pageSales);
+    const { data: listProduct } = useGetSaleProductsQuery({ page: pageProduct, q: debounceValueSales });
+    const { data: listBuyer } = useGetListBuyerQuery({ page: pageBuyer, q: debounceValueBuyer });
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
@@ -131,17 +135,16 @@ const Kasir = () => {
             sale_barcode: selectedProductBarcode,
         }));
         setIsModalOpen(false);
-        setSearch('');
+        setSearchSales('');
     };
 
     const handleSearchButtonClick = () => {
         setIsModalOpen(true);
-        setSearch('');
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSearch('');
+        setSearchSales('');
     };
 
     const [inputBuyer, setInputBuyer] = useState({
@@ -162,7 +165,7 @@ const Kasir = () => {
             name_buyer: selectedBuyerItem.name_buyer,
         });
         setListBuyerOpen(false);
-        setSearch('');
+        setSearchBuyer('');
     };
 
     const handleSearchBuyerButtonClick = () => {
@@ -172,7 +175,7 @@ const Kasir = () => {
 
     const handleCloseModalBuyer = () => {
         setListBuyerOpen(false);
-        setSearch('');
+        setSearchBuyer('');
     };
 
     const handleAddBuyerButtonClick = () => {
@@ -202,7 +205,14 @@ const Kasir = () => {
             <BreadCrumbs base="Home" basePath="/" sub="Sales" subPath="/outbound/sale/kasir" current="Cashier" />
             <div>
                 <Transition appear show={listBuyerOpen} as={Fragment}>
-                    <Dialog as="div" open={listBuyerOpen} onClose={() => setListBuyerOpen(false)}>
+                    <Dialog
+                        as="div"
+                        open={listBuyerOpen}
+                        onClose={() => {
+                            setListBuyerOpen(false);
+                            setSearchBuyer('');
+                        }}
+                    >
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
@@ -234,8 +244,8 @@ const Kasir = () => {
                                                 <input
                                                     className="form-input mr-2"
                                                     placeholder="Search..."
-                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-                                                    value={search}
+                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchBuyer(e.target.value)}
+                                                    value={searchBuyer}
                                                     autoFocus
                                                 />
                                             </div>
@@ -284,8 +294,8 @@ const Kasir = () => {
                                                 ]}
                                                 totalRecords={listBuyer?.data.resource.total ?? 0}
                                                 recordsPerPage={listBuyer?.data.resource.per_page ?? 10}
-                                                page={page}
-                                                onPageChange={(prevPage) => setPage(prevPage)}
+                                                page={pageBuyer}
+                                                onPageChange={(prevPage) => setPageBuyer(prevPage)}
                                             />
                                         </div>
                                         <div className="flex justify-end items-center mt-8">
@@ -361,7 +371,14 @@ const Kasir = () => {
                 </Transition>
 
                 <Transition appear show={isModalOpen} as={Fragment}>
-                    <Dialog as="div" open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <Dialog
+                        as="div"
+                        open={isModalOpen}
+                        onClose={() => {
+                            setIsModalOpen(false);
+                            setSearchSales('');
+                        }}
+                    >
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
@@ -389,7 +406,13 @@ const Kasir = () => {
                                             <div className="text-lg font-bold">Pilih Product</div>
                                         </div>
                                         <div className="w-1/2 mt-5">
-                                            <input className="form-input" placeholder="Search..." onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)} value={search} autoFocus />
+                                            <input
+                                                className="form-input"
+                                                placeholder="Search..."
+                                                onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchSales(e.target.value)}
+                                                value={searchSales}
+                                                autoFocus
+                                            />
                                         </div>
                                         <div className="max-h-[290px] overflow-y-scroll rounded-md mt-5">
                                             <DataTable
@@ -433,8 +456,8 @@ const Kasir = () => {
                                                 minHeight={200}
                                                 totalRecords={listProduct?.data.resource.total ?? 0}
                                                 recordsPerPage={listProduct?.data.resource.per_page ?? 10}
-                                                page={page}
-                                                onPageChange={(prevPage) => setPage(prevPage)}
+                                                page={pageProduct}
+                                                onPageChange={(prevPage) => setPageProduct(prevPage)}
                                             />
                                         </div>
                                         <div className="flex justify-end items-center mt-8">
@@ -579,8 +602,8 @@ const Kasir = () => {
                             ]}
                             totalRecords={listSaleData?.data.resource.total ?? 0}
                             recordsPerPage={listSaleData?.data.resource.per_page ?? 10}
-                            page={page}
-                            onPageChange={(prevPage) => setPage(prevPage)}
+                            page={pageSales}
+                            onPageChange={(prevPage) => setPageSales(prevPage)}
                         />
                     </div>
                 </div>

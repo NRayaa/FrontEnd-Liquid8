@@ -6,8 +6,8 @@ export const saleApi = createApi({
     reducerPath: 'saleApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        getListSale: builder.query<GetListSale, { page: number; q: string }>({
-            query: ({ page, q }) => `/sales?page=${page}&q=${q}`,
+        getListSale: builder.query<GetListSale, number>({
+            query: (page) => `/sales?page=${page}`,
         }),
         addSale: builder.mutation<any, any>({
             query: (body) => ({
