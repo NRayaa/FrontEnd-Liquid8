@@ -28,9 +28,9 @@ const Kasir = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const [addBuyerOpen, setAddBuyerOpen] = useState(false);
-    const { data: listSaleData, isError, isLoading, refetch } = useGetListSaleQuery(pageSales);
-    const { data: listProduct } = useGetSaleProductsQuery({ page: pageProduct, q: debounceValueSales });
-    const { data: listBuyer } = useGetListBuyerQuery({ page: pageBuyer, q: debounceValueBuyer });
+    const { data: listSaleData, isError, isLoading, refetch: refetchListSale } = useGetListSaleQuery(pageSales);
+    const { data: listProduct, refetch: refetchSaleProduct } = useGetSaleProductsQuery({ page: pageProduct, q: debounceValueSales });
+    const { data: listBuyer, refetch: refetchListBuyer } = useGetListBuyerQuery({ page: pageBuyer, q: debounceValueBuyer });
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
 
     const listSale = useMemo(() => {
@@ -72,7 +72,7 @@ const Kasir = () => {
                     toast.success(res.data.message);
                     setInput((prev) => ({ ...prev, sale_barcode: '' }));
                     navigate('/outbound/sale/kasir');
-                    refetch();
+                    refetchListSale();
                 })
                 .catch((err) => toast.error(err.data.data.message));
         } catch (err) {}
@@ -92,7 +92,7 @@ const Kasir = () => {
                     toast.success(res.data.message);
                     setAddBuyerOpen(false);
                     navigate('/outbound/sale/kasir');
-                    refetch();
+                    refetchListSale();
                 })
                 .catch((err) => toast.error(err.data.data.message));
         } catch (err) {}
@@ -106,7 +106,7 @@ const Kasir = () => {
                     toast.success(res.data.message);
                     navigate('/outbound/sale/list_kasir');
                     setInput((prev) => ({ ...prev, sale_barcode: '' }));
-                    refetch();
+                    refetchListSale();
                 })
                 .catch((err) => toast.error(err.data.data.message));
         } catch (err) {
@@ -121,7 +121,7 @@ const Kasir = () => {
                 .then((res) => {
                     toast.success(res.data.message);
                     navigate('/outbound/sale/kasir');
-                    refetch();
+                    refetchListSale();
                 })
                 .catch((err) => toast.error(err.data.data.message));
         } catch (err) {
@@ -170,7 +170,7 @@ const Kasir = () => {
 
     const handleSearchBuyerButtonClick = () => {
         setListBuyerOpen(true);
-        refetch();
+        refetchListSale();
     };
 
     const handleCloseModalBuyer = () => {
@@ -191,6 +191,17 @@ const Kasir = () => {
             }));
         }
     }, [listSaleData]);
+
+    useEffect(() => {
+        refetchListSale();
+        setPageSales(1);
+        setPageProduct(1);
+        setPageBuyer(1);
+        setSearchBuyer('');
+        setSearchSales('');
+        refetchSaleProduct();
+        refetchListBuyer();
+    }, []);
 
     if (isLoading) {
         return <p>Loading...</p>;
