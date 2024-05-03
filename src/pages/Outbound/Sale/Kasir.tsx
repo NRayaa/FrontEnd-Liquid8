@@ -12,6 +12,7 @@ import { formatRupiah, useDebounce } from '../../../helper/functions';
 import toast from 'react-hot-toast';
 import { useAddBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 import { Alert } from '../../../commons';
+import Swal from 'sweetalert2';
 
 const Kasir = () => {
     const navigate = useNavigate();
@@ -114,21 +115,6 @@ const Kasir = () => {
         }
     };
 
-    const handleDeleteSale = async (id: number) => {
-        try {
-            await deleteSale(id)
-                .unwrap()
-                .then((res) => {
-                    toast.success(res.data.message);
-                    navigate('/outbound/sale/kasir');
-                    refetchListSale();
-                })
-                .catch((err) => toast.error(err.data.data.message));
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     const handleProductSelection = (selectedProductBarcode: string) => {
         setInput((prevState) => ({
             ...prevState,
@@ -181,6 +167,65 @@ const Kasir = () => {
     const handleAddBuyerButtonClick = () => {
         setListBuyerOpen(false);
         setAddBuyerOpen(true);
+    };
+
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menhapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (resultsDeleteSale) => {
+                    if (resultsDeleteSale.value) {
+                        await deleteSale(id);
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                        refetchListSale();
+                    } else if (resultsDeleteSale.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+        if (type === 15) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Berhasil Dikirim',
+                padding: '10px 20px',
+            });
+        }
+        if (type == 20) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Data Berhasil Ditambah',
+                padding: '10px 20px',
+            });
+        }
     };
 
     useEffect(() => {
@@ -603,7 +648,9 @@ const Kasir = () => {
                                     title: 'Opsi',
                                     render: (item: GetListSaleItem) => (
                                         <div className="flex items-center w-max mx-auto gap-6">
-                                            <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteSale(item.id)}>
+                                            <button type="button" className="btn btn-outline-danger" 
+                                            onClick={() => showAlert({ type: 11, id: item.id })}
+                                            >
                                                 Delete
                                             </button>
                                         </div>
