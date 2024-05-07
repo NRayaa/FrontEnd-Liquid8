@@ -142,9 +142,11 @@ const DetailProduct = () => {
     }, [dataDetailProduct]);
 
     useEffect(() => {
-        setDiskon(categories.find((item: any) => item.name_category === category)?.discount_category ?? 0);
-        setInput((prev) => ({ ...prev, new_price_product: (parseFloat(input.old_price_product) - parseFloat(input.old_price_product) * (diskon / 100)).toString() }));
-    }, [diskon]);
+        if (diskon && input.new_price_product) {
+            setDiskon(categories.find((item: any) => item.name_category === category)?.discount_category ?? 0);
+            setInput((prev) => ({ ...prev, new_price_product: (parseFloat(input.old_price_product) - parseFloat(input.old_price_product) * (diskon / 100)).toString() }));
+        }
+    }, [diskon, input.new_price_product]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -161,6 +163,10 @@ const DetailProduct = () => {
             toast.error('Product updated failed');
         }
     }, [results]);
+
+    useEffect(() => {
+        refetch();
+    }, []);
 
     if (isError && !data?.data.status) {
         return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -231,7 +237,7 @@ const DetailProduct = () => {
                             category={category}
                             newPrice={input.new_price_product ?? ''}
                             oldPrice={input.old_price_product ?? ''}
-                            showPrintButton={showPrintButton} 
+                            showPrintButton={showPrintButton}
                         />
                     </div>
                 </div>
