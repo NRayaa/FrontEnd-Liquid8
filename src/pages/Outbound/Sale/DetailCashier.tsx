@@ -22,7 +22,6 @@ const DetailCashier = () => {
     const ShowSale = useMemo(() => {
         return ShowSaleData?.data.resource;
     }, [ShowSaleData]);
-    console.log('SHOW', ShowSale);
 
     if (isLoading) {
         return <p>Loading...</p>;

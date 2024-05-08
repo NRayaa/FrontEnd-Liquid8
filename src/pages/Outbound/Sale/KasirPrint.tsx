@@ -59,10 +59,9 @@ const ReportTable = () => {
         return formatted;
     }
 
-    const totalHargaString: string | undefined = String(data?.data?.NameBarcode_report[data?.data?.NameBarcode_report.length - 1][1]);
-    const totalHargaAngka: number = totalHargaString ? parseFloat(totalHargaString) : 0;
-    const totalHargaFormatted: string = totalHargaAngka.toLocaleString('id-ID');
-    const totalHargaTerbilang: string = formatRupiah(totalHargaAngka).toUpperCase();
+    const totalHarga: number | undefined = data?.data?.category_report.total_harga ?? 0;
+    const totalHargaFormatted: string = totalHarga.toLocaleString('id-ID');
+    const totalHargaTerbilang: string = formatRupiah(totalHarga).toUpperCase();
 
     return (
         <>
@@ -140,38 +139,14 @@ const ReportTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.data.category_report &&
-                                data?.data.category_report.map((item, index) => (
+                            {data?.data.category_report.category_list &&
+                                data?.data.category_report.category_list.map((item, index) => (
                                     <tr key={index}>
                                         <td>{item.category}</td>
                                         <td>{item.total_quantity}</td>
                                         <td>{formatCurrency(item.total_price)}</td>
                                     </tr>
                                 ))}
-                        </tbody>
-                    </table>
-                    <table border={1}>
-                        <thead>
-                            <tr>
-                                <th>Barang</th>
-                                <th>Nama Produk</th>
-                                <th>Barcode</th>
-                                <th>Total Harga</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data?.data?.NameBarcode_report &&
-                                data?.data?.NameBarcode_report.slice(0, data?.data?.NameBarcode_report.length - 1).map((item, index) => (
-                                    <tr key={index}>
-                                        {item.map((subItem, subIndex) => (
-                                            <td key={subIndex}>{subItem.toString().includes('Total Harga:') ? formatCurrency(parseFloat(subItem.toString().split(' ')[2])) : subItem}</td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            <tr>
-                                <td>{data?.data?.NameBarcode_report[data?.data?.NameBarcode_report.length - 1][0]}</td>
-                                <td>{formatCurrency(parseFloat(data?.data?.NameBarcode_report[data?.data?.NameBarcode_report.length - 1][1].toString() ?? '0'))}</td>
-                            </tr>
                         </tbody>
                     </table>
                     <p style={{ marginTop: 12, fontSize: 12 }}>

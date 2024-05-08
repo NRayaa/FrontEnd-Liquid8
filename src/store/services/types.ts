@@ -1418,11 +1418,13 @@ interface DetailRepairResponse {
 interface SaleReportResponse {
     data: {
         category_report: {
-            category: string | null;
-            total_quantity: number;
-            total_price: number;
-        }[];
-        NameBarcode_report: string[][] | number[][];
+            category_list: {
+                category: string | null;
+                total_quantity: number;
+                total_price: number;
+            }[];
+            total_harga: number;
+        };
     };
     message: string;
     buyer: {
