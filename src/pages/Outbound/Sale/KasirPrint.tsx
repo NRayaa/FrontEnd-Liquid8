@@ -1,7 +1,7 @@
 import { useGetSaleReportQuery } from '../../../store/services/saleApi';
 import { useParams } from 'react-router-dom';
 import LogoLiquid from '/assets/images/logo-barcode.png';
-import { formatDate, formatTimestamp } from '../../../helper/functions';
+import { formatCurrency, formatDate, formatTimestamp } from '../../../helper/functions';
 
 const ReportTable = () => {
     const { code_document_sale } = useParams();
@@ -29,12 +29,8 @@ const ReportTable = () => {
     };
 
     function terbilang(n: number): string {
-        var bilangan = [
-            '', 'satu', 'dua', 'tiga', 'empat', 'lima',
-            'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh',
-            'sebelas'
-        ];
-    
+        var bilangan = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
+
         if (n < 12) {
             return bilangan[n];
         } else if (n < 20) {
@@ -57,16 +53,16 @@ const ReportTable = () => {
             return 'Angka terlalu besar';
         }
     }
-    
+
     function formatRupiah(angka: number): string {
         var formatted = terbilang(angka) + ' rupiah';
         return formatted;
     }
-    
+
     const totalHargaString: string | undefined = String(data?.data?.NameBarcode_report[data?.data?.NameBarcode_report.length - 1][1]);
     const totalHargaAngka: number = totalHargaString ? parseFloat(totalHargaString) : 0;
     const totalHargaFormatted: string = totalHargaAngka.toLocaleString('id-ID');
-    const totalHargaTerbilang: string = formatRupiah(totalHargaAngka).toUpperCase(); 
+    const totalHargaTerbilang: string = formatRupiah(totalHargaAngka).toUpperCase();
 
     return (
         <>
@@ -79,7 +75,7 @@ const ReportTable = () => {
                                 <td>FORM VALIDASI</td>
                             </tr>
                             <tr>
-                                <td>/LMS/I/2024</td>
+                                <td className="pl-5">/LMS/I/2024</td>
                             </tr>
                         </table>
                         <table border={1}>
@@ -144,13 +140,14 @@ const ReportTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.data.category_report.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.category}</td>
-                                    <td>{item.total_quantity}</td>
-                                    <td>{item.total_price}</td>
-                                </tr>
-                            ))}
+                            {data?.data.category_report &&
+                                data?.data.category_report.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.category}</td>
+                                        <td>{item.total_quantity}</td>
+                                        <td>{formatCurrency(item.total_price)}</td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                     <table border={1}>
@@ -163,13 +160,18 @@ const ReportTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.data?.NameBarcode_report.map((item, index) => (
-                                <tr key={index}>
-                                    {item.map((subItem, subIndex) => (
-                                        <td key={subIndex}>{subItem}</td>
-                                    ))}
-                                </tr>
-                            ))}
+                            {data?.data?.NameBarcode_report &&
+                                data?.data?.NameBarcode_report.slice(0, data?.data?.NameBarcode_report.length - 1).map((item, index) => (
+                                    <tr key={index}>
+                                        {item.map((subItem, subIndex) => (
+                                            <td key={subIndex}>{subItem.toString().includes('Total Harga:') ? formatCurrency(parseFloat(subItem.toString().split(' ')[2])) : subItem}</td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            <tr>
+                                <td>{data?.data?.NameBarcode_report[data?.data?.NameBarcode_report.length - 1][0]}</td>
+                                <td>{formatCurrency(parseFloat(data?.data?.NameBarcode_report[data?.data?.NameBarcode_report.length - 1][1].toString() ?? '0'))}</td>
+                            </tr>
                         </tbody>
                     </table>
                     <p style={{ marginTop: 12, fontSize: 12 }}>
