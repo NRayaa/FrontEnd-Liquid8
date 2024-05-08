@@ -111,7 +111,7 @@ const ReportTable = () => {
                         <tr>
                             <td style={{ width: '50%' }}>
                                 <h5>Nama : {data?.buyer.buyer_name_document_sale}</h5>
-                                <h5>Asal : {data?.buyer.buyer_address_document_sale}</h5>
+                                <h5>Alamat : {data?.buyer.buyer_address_document_sale}</h5>
                                 <h5>HP : {data?.buyer.buyer_phone_document_sale}</h5>
                                 <h5>NPWP : -</h5>
                                 <h5>Tanggal : {formatTimestamp(data?.buyer.created_at ?? '')}</h5>
