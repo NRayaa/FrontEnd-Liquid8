@@ -74,7 +74,7 @@ const ReportTable = () => {
                                 <td>FORM VALIDASI</td>
                             </tr>
                             <tr>
-                                <td className="pl-5">/LMS/I/2024</td>
+                                <td>{data?.buyer.code_document_sale}/LMS/I/2024</td>
                             </tr>
                         </table>
                         <table border={1}>
