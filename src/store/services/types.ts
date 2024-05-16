@@ -1080,43 +1080,6 @@ interface GetListAkun {
     };
 }
 
-
-interface GaborSaleItem{
-    id: number;
-    code_document_sale?: string;
-    product_name_sale?: string;
-    product_price_sale: string;
-    product_qty_sale?: string;
-    created_at: string;
-    updated_at: string;
-}
-
-interface GaborSale {
-    data: {
-        status: boolean;
-        message: string;
-        resource: {
-            code_document_sale: string;
-            sale_buyer_id: number;
-            current_page: number;
-            data: GetListSaleItem[];
-            first_page_url: string;
-            from: number;
-            last_page: number;
-            last_page_url: string;
-            links: Links[];
-            next_page_url: string | null;
-            path: string;
-            per_page: number;
-            prev_page_url: string | null;
-            sale_buyer_name: string;
-            to: number;
-            total: number;
-            total_sale: number;
-        };
-    };
-}
-
 interface GetTotalSaleItem {
     total_sale: string;
 }
@@ -1683,6 +1646,4 @@ export type {
     QCDResponse,
     DetailQCDResponse,
     GetCountColor,
-    GaborSale,
-    GaborSaleItem,
 };
