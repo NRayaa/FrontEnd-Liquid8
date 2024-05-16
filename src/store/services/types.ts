@@ -1080,18 +1080,19 @@ interface GetListAkun {
     };
 }
 
+interface GetTotalSaleItem {
+    total_sale: string;
+}
+
 interface GetListSaleItem {
     id: number;
     code_document_sale?: string;
     product_name_sale?: string;
     product_price_sale: string;
     product_qty_sale?: string;
+    status_sale?: string;
     created_at: string;
     updated_at: string;
-}
-
-interface GetTotalSaleItem {
-    total_sale: string;
 }
 
 interface GetListSale {
