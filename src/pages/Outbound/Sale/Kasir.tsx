@@ -1,9 +1,9 @@
 import { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
-import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation } from '../../../store/services/saleApi';
-import { GetListBuyerItem, GetListSaleItem, NewProductItem, SubSalesProductsProps } from '../../../store/services/types';
+import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation, usePutGaborMutation } from '../../../store/services/saleApi';
+import { GetListBuyerItem, GetListSaleItem, SubSalesProductsProps } from '../../../store/services/types';
 import { useGetSaleProductsQuery } from '../../../store/services/productNewApi';
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
@@ -29,10 +29,12 @@ const Kasir = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const [addBuyerOpen, setAddBuyerOpen] = useState(false);
-    const { data: listSaleData, isError, isLoading, refetch: refetchListSale } = useGetListSaleQuery(pageSales);
+    const { data: listSaleData, isError, isLoading, isSuccess, refetch: refetchListSale } = useGetListSaleQuery(pageSales);
     const { data: listProduct, refetch: refetchSaleProduct } = useGetSaleProductsQuery({ page: pageProduct, q: debounceValueSales });
     const { data: listBuyer, refetch: refetchListBuyer } = useGetListBuyerQuery({ page: pageBuyer, q: debounceValueBuyer });
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
+    const { id } = useParams();
+    const [putGabor, results] = usePutGaborMutation();
 
     const listSale = useMemo(() => {
         return listSaleData?.data.resource.data;
@@ -40,7 +42,7 @@ const Kasir = () => {
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
     }, [listProduct]);
-
+    
     const listBuyerData = useMemo(() => {
         return listBuyer?.data.resource.data;
     }, [listBuyer]);
@@ -51,7 +53,57 @@ const Kasir = () => {
         name_buyer: '',
         phone_buyer: '',
         address_buyer: '',
+        product_price_sale: ''
     });
+    
+    const [currentId, setCurrentId] = useState<number | null>(null);
+    
+    useEffect(() => {
+        if (isSuccess && listSale && Array.isArray(listSale)) {
+            const saleItem = listSale.find(item => item.status_sale === 'proses');
+            if (saleItem) {
+                setInput((prevState) => ({
+                    ...prevState,
+                    product_price_sale: saleItem.product_price_sale,
+                    // Update other fields as necessary
+                }));
+                setCurrentId(saleItem.id);  // Memperbarui id terpisah
+            } else {
+                // console.log('No item with status "proses" found in listSale');
+            }
+        } else {
+            if (!listSale) {
+                // console.log('listSale is undefined');
+            } else if (!Array.isArray(listSale)) {
+                // console.log('listSale is not an array');
+            }
+        }
+    }, [listSale, isSuccess]);
+    
+    const handleGabor = async () => {
+        try {
+            const { product_price_sale } = input;
+            if (currentId === null || currentId === undefined) {
+                return;
+            }
+            const body = {
+                product_price_sale,
+                _method: 'PUT',
+            };
+            await putGabor({ id: currentId, body });
+            refetchListSale();
+        } catch (err) {
+            console.log('Error in handleGabor:', err);
+        }
+    };
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
+        }
+    }, [results]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setInput((prevState) => ({
@@ -168,6 +220,8 @@ const Kasir = () => {
         setListBuyerOpen(false);
         setAddBuyerOpen(true);
     };
+
+    
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -640,6 +694,24 @@ const Kasir = () => {
                                 },
                                 {
                                     accessor: 'product_price_sale',
+                                    title: 'Gabor',
+                                    render: (item: GetListSaleItem) => (
+                                        <div>
+                                            <input
+                                                type="text"
+                                                name="product_price_sale"
+                                                onChange={handleInputChange}
+                                                value={input.product_price_sale ?? ''}
+                                                className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                            />
+                                            <button className="btn w-full btn-outline-primary mt-4 px-16" onClick={handleGabor}>
+                                                Send
+                                            </button>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    accessor: 'product_price_sale',
                                     title: 'Price',
                                     render: (item: GetListSaleItem) => <span className="font-semibold">{formatRupiah(item.product_price_sale)}</span>,
                                 },
@@ -648,9 +720,7 @@ const Kasir = () => {
                                     title: 'Opsi',
                                     render: (item: GetListSaleItem) => (
                                         <div className="flex items-center w-max mx-auto gap-6">
-                                            <button type="button" className="btn btn-outline-danger" 
-                                            onClick={() => showAlert({ type: 11, id: item.id })}
-                                            >
+                                            <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                                 Delete
                                             </button>
                                         </div>
