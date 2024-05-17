@@ -57,6 +57,32 @@ const Kasir = () => {
     });
     
     const [currentId, setCurrentId] = useState<number | null>(null);
+    const [inputs, setInputs] = useState<{ [key: number]: string }>({});
+
+    useEffect(() => {
+        if (listSale && Array.isArray(listSale)) {
+            const initialInputs = listSale.reduce((acc, item) => {
+                acc[item.id] = ''; // Mengosongkan semua input pada awal
+                return acc;
+            }, {} as { [key: number]: string });
+            setInputs(initialInputs);
+        }
+    }, [listSale]);
+
+
+    const handleInputChanges = (id: number, value: string) => {
+        setInputs(prevInputs => ({
+            ...prevInputs,
+            [id]: value
+        }));
+    };
+
+    const clearInput = (id: number) => {
+        setInputs(prevInputs => ({
+            ...prevInputs,
+            [id]: ''
+        }));
+    };
     
     useEffect(() => {
         if (isSuccess && listSale && Array.isArray(listSale)) {
@@ -80,18 +106,21 @@ const Kasir = () => {
         }
     }, [listSale, isSuccess]);
     
-    const handleGabor = async () => {
+    const handleGabor = async (id: number) => {
         try {
-            const { product_price_sale } = input;
-            if (currentId === null || currentId === undefined) {
-                return;
+            const product_price_sale = inputs[id];
+            if (!product_price_sale) {
+                console.log('Product price sale is undefined or empty');
+                return; // Tidak melanjutkan jika product_price_sale tidak ada
             }
             const body = {
                 product_price_sale,
                 _method: 'PUT',
             };
-            await putGabor({ id: currentId, body });
+            console.log('Sending data to putGabor:', { id, body });
+            await putGabor({ id, body });
             refetchListSale();
+            clearInput(id);
         } catch (err) {
             console.log('Error in handleGabor:', err);
         }
@@ -700,11 +729,11 @@ const Kasir = () => {
                                             <input
                                                 type="text"
                                                 name="product_price_sale"
-                                                onChange={handleInputChange}
-                                                value={input.product_price_sale ?? ''}
+                                                onChange={(e) => handleInputChanges(item.id, e.target.value)}
+                                                value={inputs[item.id] ?? item.product_price_sale}
                                                 className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                                             />
-                                            <button className="btn w-full btn-outline-primary mt-4 px-16" onClick={handleGabor}>
+                                            <button className="btn w-full btn-outline-primary mt-4 px-16" onClick={() => handleGabor(item.id)}>
                                                 Send
                                             </button>
                                         </div>
