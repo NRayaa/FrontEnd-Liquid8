@@ -729,9 +729,9 @@ const Kasir = () => {
                                     render: (item: GetListSaleItem, index: number) => <span>{index + 1}</span>,
                                 },
                                 {
-                                    accessor: 'code_document_sale',
+                                    accessor: 'product_barcode_sale',
                                     title: 'Barcode',
-                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.code_document_sale}</span>,
+                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_barcode_sale}</span>,
                                 },
                                 {
                                     accessor: 'product_name_sale',
