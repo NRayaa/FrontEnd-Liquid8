@@ -1081,6 +1081,7 @@ interface GetListAkun {
 }
 
 interface GetTotalSaleItem {
+    status_sale: string;
     total_sale: string;
 }
 
