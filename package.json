@@ -30,6 +30,7 @@
     "@types/react-text-mask": "^5.4.14",
     "@x1mrdonut1x/nouislider-react": "^3.4.3",
     "apexcharts": "^3.45.0",
+    "clsx": "^2.1.1",
     "easymde": "^2.18.0",
     "formik": "^2.4.5",
     "highlight.js": "^11.9.0",

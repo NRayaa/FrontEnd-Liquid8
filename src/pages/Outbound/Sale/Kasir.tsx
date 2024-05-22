@@ -1,4 +1,4 @@
-import { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, Fragment, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { useAddBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 import { Alert } from '../../../commons';
 import Swal from 'sweetalert2';
+import { clsx } from '@mantine/core';
 
 const Kasir = () => {
     const navigate = useNavigate();
@@ -36,13 +37,16 @@ const Kasir = () => {
     const { id } = useParams();
     const [putGabor, results] = usePutGaborMutation();
 
+    const [scanProduct, setScanProduct] = useState('');
+    const validScan = useDebounce(scanProduct, 1000);
+
     const listSale = useMemo(() => {
         return listSaleData?.data.resource.data;
     }, [listSaleData]);
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
     }, [listProduct]);
-    
+
     const listBuyerData = useMemo(() => {
         return listBuyer?.data.resource.data;
     }, [listBuyer]);
@@ -53,9 +57,9 @@ const Kasir = () => {
         name_buyer: '',
         phone_buyer: '',
         address_buyer: '',
-        product_price_sale: ''
+        product_price_sale: '',
     });
-    
+
     const [currentId, setCurrentId] = useState<number | null>(null);
     const [inputs, setInputs] = useState<{ [key: number]: string }>({});
 
@@ -69,31 +73,30 @@ const Kasir = () => {
         }
     }, [listSale]);
 
-
     const handleInputChanges = (id: number, value: string) => {
-        setInputs(prevInputs => ({
+        setInputs((prevInputs) => ({
             ...prevInputs,
-            [id]: value
+            [id]: value,
         }));
     };
 
     const clearInput = (id: number) => {
-        setInputs(prevInputs => ({
+        setInputs((prevInputs) => ({
             ...prevInputs,
-            [id]: ''
+            [id]: '',
         }));
     };
-    
+
     useEffect(() => {
         if (isSuccess && listSale && Array.isArray(listSale)) {
-            const saleItem = listSale.find(item => item.status_sale === 'proses');
+            const saleItem = listSale.find((item) => item.status_sale === 'proses');
             if (saleItem) {
                 setInput((prevState) => ({
                     ...prevState,
                     product_price_sale: saleItem.product_price_sale,
                     // Update other fields as necessary
                 }));
-                setCurrentId(saleItem.id);  // Memperbarui id terpisah
+                setCurrentId(saleItem.id); // Memperbarui id terpisah
             } else {
                 // console.log('No item with status "proses" found in listSale');
             }
@@ -105,7 +108,7 @@ const Kasir = () => {
             }
         }
     }, [listSale, isSuccess]);
-    
+
     const handleGabor = async (id: number) => {
         try {
             const product_price_sale = inputs[id];
@@ -141,17 +144,17 @@ const Kasir = () => {
         }));
     };
 
-    const handleAddSale = async (e: { preventDefault: () => void }) => {
-        e.preventDefault();
+    const handleAddSale = async (barcode_value: string) => {
         try {
             const body = {
-                sale_barcode: input.sale_barcode,
+                sale_barcode: barcode_value,
                 buyer_id: inputBuyer.id,
             };
             await addSale(body)
                 .unwrap()
                 .then((res) => {
                     toast.success(res.data.message);
+                    setScanProduct('');
                     setInput((prev) => ({ ...prev, sale_barcode: '' }));
                     navigate('/outbound/sale/kasir');
                     refetchListSale();
@@ -196,11 +199,9 @@ const Kasir = () => {
         }
     };
 
-    const handleProductSelection = (selectedProductBarcode: string) => {
-        setInput((prevState) => ({
-            ...prevState,
-            sale_barcode: selectedProductBarcode,
-        }));
+    const handleProductSelection = (e: MouseEvent<HTMLButtonElement>, selectedProductBarcode: string) => {
+        e.preventDefault();
+        handleAddSale(selectedProductBarcode);
         setIsModalOpen(false);
         setSearchSales('');
     };
@@ -249,8 +250,6 @@ const Kasir = () => {
         setListBuyerOpen(false);
         setAddBuyerOpen(true);
     };
-
-    
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -310,6 +309,12 @@ const Kasir = () => {
             });
         }
     };
+
+    useEffect(() => {
+        if (validScan) {
+            handleAddSale(validScan);
+        }
+    }, [validScan]);
 
     useEffect(() => {
         if (listSaleData && listSaleData.data && listSaleData.data.resource && listSaleData.data.resource.sale_buyer_id) {
@@ -585,7 +590,13 @@ const Kasir = () => {
                                                         titleClassName: '!text-center',
                                                         render: (item: SubSalesProductsProps) => (
                                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                                <button type="button" className="btn btn-outline-info" onClick={() => handleProductSelection(item.barcode)}>
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn btn-outline-info"
+                                                                    onClick={(e) => {
+                                                                        handleProductSelection(e, item.barcode);
+                                                                    }}
+                                                                >
                                                                     <IconSquareCheck className="ltr:mr-2 rtl:ml-2 " />
                                                                 </button>
                                                             </div>
@@ -671,33 +682,39 @@ const Kasir = () => {
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                    <label htmlFor="categoryName" className={clsx('text-[15px] font-semibold whitespace-nowrap', !inputBuyer.id && '-mt-6')}>
                                         Scan Product :
                                     </label>
-                                    <div className="relative flex w-[250px] mb-4">
+                                    <div className="relative flex w-[250px] flex-col mb-4">
                                         <input
                                             type="text"
-                                            className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                            className="form-input disabled:cursor-not-allowed flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                                             placeholder="Search..."
-                                            onChange={handleInputChange}
-                                            value={input.sale_barcode}
+                                            onChange={(e) => setScanProduct(e.target.value)}
+                                            value={scanProduct}
                                             name="sale_barcode"
+                                            disabled={!inputBuyer.id}
                                         />
+                                        {!inputBuyer.id && <p className="text-gray-700 text-xs mt-1">*Silahkan pilih buyer dahulu</p>}
                                         <button
                                             type="button"
-                                            className="h-7 w-7 absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
+                                            className={clsx(
+                                                'h-7 w-7 absolute right-1.5 disabled:cursor-not-allowed transform -translate-y-1/2 justify-center items-center border-green-500',
+                                                !inputBuyer.id ? 'top-4.5' : 'top-1/2'
+                                            )}
                                             onClick={handleSearchButtonClick}
+                                            disabled={!inputBuyer.id}
                                         >
                                             <IconSearch className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <button type="button" className="btn btn-primary uppercase px-6" onClick={handleAddSale}>
                                     Add Sale
                                 </button>
-                            </div>
+                            </div> */}
                         </form>
                     </div>
 
