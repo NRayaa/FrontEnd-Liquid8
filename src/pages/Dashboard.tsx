@@ -476,7 +476,7 @@ const Index = () => {
             {/* <h1 className="text-5xl font-bold mb-4">Test api</h1>
             <ul>{data?.length !== 0 && data?.map((item) => <li key={item.id}>{item.name}</li>)}</ul> */}
             <div className="grid xl:grid-cols-3 gap-6 mb-6">
-                <div className="panel h-full xl:col-span-2">
+                {/* <div className="panel h-full xl:col-span-2">
                     <div className="flex items-center justify-between dark:text-white-light mb-5">
                         <h5 className="font-semibold text-lg">Inbound Outbound </h5>
                     </div>
@@ -494,7 +494,7 @@ const Index = () => {
                             )}
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="panel h-full">
                     <div className="flex items-center mb-5">
@@ -537,7 +537,7 @@ const Index = () => {
                     </div>
                 </div>
 
-                <div className="panel h-full">
+                {/* <div className="panel h-full">
                     <div className="flex items-center mb-5">
                         <h5 className="font-semibold text-lg dark:text-white-light">Slow Moving By Category</h5>
                     </div>
@@ -554,7 +554,7 @@ const Index = () => {
                             )}
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="panel h-full">
                     <div className="flex items-center mb-5">
