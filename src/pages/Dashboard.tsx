@@ -232,7 +232,7 @@ const Index = () => {
                     height: 10,
                     offsetX: -2,
                 },
-                height: 50,
+                height: 100,
                 offsetY: 20,
             },
             plotOptions: {
@@ -325,7 +325,7 @@ const Index = () => {
                     height: 10,
                     offsetX: -2,
                 },
-                height: 50,
+                height: 125,
                 offsetY: 20,
             },
             plotOptions: {
@@ -496,7 +496,7 @@ const Index = () => {
                     </div>
                 </div> */}
 
-                <div className="panel h-full">
+                <div className="panel h-full col-span-3">
                     <div className="flex items-center mb-5">
                         <h5 className="font-semibold text-lg dark:text-white-light">Sales By Category</h5>
                     </div>
@@ -556,7 +556,7 @@ const Index = () => {
                     </div>
                 </div> */}
 
-                <div className="panel h-full">
+                <div className="panel h-full col-span-2">
                     <div className="flex items-center mb-5">
                         <h5 className="font-semibold text-lg dark:text-white-light">Product By Category</h5>
                     </div>
