@@ -35,6 +35,13 @@ export const saleApi = createApi({
                 body,
             }),
         }),
+        updatePrice: builder.mutation<any, any>({
+            query: ({id, body}) => ({
+                url: `/update_price_sales/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
         getListSaleDocument: builder.query<GetListSaleDocument, { page: number; q: string }>({
             query: ({ page, q }) => `/sale-documents?page=${page}&q=${q}`,
         }),
@@ -47,4 +54,4 @@ export const saleApi = createApi({
     }),
 });
 
-export const { useGetListSaleQuery, useAddSaleMutation, useSaleFinishMutation, useDeleteSaleMutation, useGetListSaleDocumentQuery, useGetShowSaleQuery, useGetSaleReportQuery, usePutGaborMutation } = saleApi;
+export const { useGetListSaleQuery, useAddSaleMutation, useSaleFinishMutation, useDeleteSaleMutation, useGetListSaleDocumentQuery, useGetShowSaleQuery, useGetSaleReportQuery, usePutGaborMutation, useUpdatePriceMutation } = saleApi;
