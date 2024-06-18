@@ -2,7 +2,7 @@ import { ChangeEvent, Fragment, MouseEvent, useEffect, useMemo, useState } from 
 import { DataTable } from 'mantine-datatable';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
-import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation, usePutGaborMutation } from '../../../store/services/saleApi';
+import { useAddSaleMutation, useDeleteSaleMutation, useGetListSaleQuery, useSaleFinishMutation, usePutGaborMutation, useUpdatePriceMutation } from '../../../store/services/saleApi';
 import { GetListBuyerItem, GetListSaleItem, SubSalesProductsProps } from '../../../store/services/types';
 import { useGetSaleProductsQuery } from '../../../store/services/productNewApi';
 import { Dialog, Transition } from '@headlessui/react';
@@ -36,6 +36,7 @@ const Kasir = () => {
     const [deleteSale, resultsDeleteSale] = useDeleteSaleMutation();
     const { id } = useParams();
     const [putGabor, results] = usePutGaborMutation();
+    const [updatePrice, resultsUpdate] = useUpdatePriceMutation();
 
     const [scanProduct, setScanProduct] = useState('');
     const validScan = useDebounce(scanProduct, 1000);
@@ -61,32 +62,44 @@ const Kasir = () => {
     });
 
     const [currentId, setCurrentId] = useState<number | null>(null);
-    const [inputs, setInputs] = useState<{ [key: number]: string }>({});
+    const [inputs, setInputs] = useState<{ [key: number]: { [key: string]: string } }>({});
+
 
     useEffect(() => {
         if (listSale && Array.isArray(listSale)) {
             const initialInputs = listSale.reduce((acc, item) => {
-                acc[item.id] = ''; // Mengosongkan semua input pada awal
+                acc[item.id] = {
+                    product_price_sale: '',
+                    update_price_sale: '',
+                };
                 return acc;
-            }, {} as { [key: number]: string });
+            }, {} as { [key: number]: { [key: string]: string } });
             setInputs(initialInputs);
         }
     }, [listSale]);
+    
 
-    const handleInputChanges = (id: number, value: string) => {
+    const handleInputChanges = (id: number, name: string, value: string) => {
         setInputs((prevInputs) => ({
             ...prevInputs,
-            [id]: value,
+            [id]: {
+                ...prevInputs[id],
+                [name]: value,
+            },
         }));
     };
+    
 
     const clearInput = (id: number) => {
         setInputs((prevInputs) => ({
             ...prevInputs,
-            [id]: '',
+            [id]: {
+                product_price_sale: '',
+                update_price_sale: '',
+            },
         }));
     };
-
+    
     useEffect(() => {
         if (isSuccess && listSale && Array.isArray(listSale)) {
             const saleItem = listSale.find((item) => item.status_sale === 'proses');
@@ -111,7 +124,7 @@ const Kasir = () => {
 
     const handleGabor = async (id: number) => {
         try {
-            const product_price_sale = inputs[id];
+            const product_price_sale = inputs[id]?.product_price_sale;
             if (!product_price_sale) {
                 console.log('Product price sale is undefined or empty');
                 return; // Tidak melanjutkan jika product_price_sale tidak ada
@@ -129,6 +142,26 @@ const Kasir = () => {
         }
     };
 
+    const handleUpdate = async (id: number) => {
+        try {
+            const update_price_sale = inputs[id]?.update_price_sale;
+            if (!update_price_sale) {
+                console.log('Update price sale is undefined or empty');
+                return; // Tidak melanjutkan jika update_price_sale tidak ada
+            }
+            const body = {
+                update_price_sale,
+                _method: 'PUT',
+            };
+            console.log('Sending data to updatePrice:', { id, body });
+            await updatePrice({ id, body });
+            refetchListSale();
+            clearInput(id);
+        } catch (err) {
+            console.log('Error in handleUpdate:', err);
+        }
+    };
+
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
@@ -136,6 +169,14 @@ const Kasir = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+
+    useEffect(() => {
+        if (resultsUpdate.isSuccess) {
+            toast.success(resultsUpdate.data.data.message);
+        } else if (resultsUpdate.isError) {
+            toast.error(resultsUpdate.data.data.message);
+        }
+    }, [resultsUpdate]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setInput((prevState) => ({
@@ -746,12 +787,30 @@ const Kasir = () => {
                                             <input
                                                 type="text"
                                                 name="product_price_sale"
-                                                onChange={(e) => handleInputChanges(item.id, e.target.value)}
-                                                value={inputs[item.id] ?? item.product_price_sale}
+                                                onChange={(e) => handleInputChanges(item.id, e.target.name, e.target.value)}
+                                                value={inputs[item.id]?.product_price_sale ?? item.product_price_sale}
                                                 className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                                             />
                                             <button className="btn w-full btn-outline-primary mt-4 px-16" onClick={() => handleGabor(item.id)}>
                                                 Send
+                                            </button>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    accessor: 'update_price_sale',
+                                    title: 'Update Price',
+                                    render: (item: GetListSaleItem) => (
+                                        <div>
+                                            <input
+                                                type="text"
+                                                name="update_price_sale"
+                                                onChange={(e) => handleInputChanges(item.id, e.target.name, e.target.value)}
+                                                value={inputs[item.id]?.update_price_sale ?? item.product_price_sale}
+                                                className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                            />
+                                            <button className="btn w-full btn-outline-primary mt-4 px-16" onClick={() => handleUpdate(item.id)}>
+                                                Update
                                             </button>
                                         </div>
                                     ),
