@@ -7,6 +7,8 @@ import { formatRupiah, formatYearToDay, generateRandomString } from '../../../he
 import BarcodePrinted from './BarcodePrinted';
 import toast from 'react-hot-toast';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import Swal from 'sweetalert2';
+import { NewProduct, ProdcutItem } from '../../../store/services/types';
 
 interface ProductCheck {
     oldData: {
@@ -64,6 +66,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     const [descriptionDamaged, setDescriptionDamaged] = useState<string>('');
     const [descriptionAbnormal, setDescriptionAbnormal] = useState<string>('');
     const [barcodeStatus, setBarcodeStatus] = useState<'LOLOS' | 'TIDAK LOLOS'>('LOLOS');
+    const [dataSecond, setDataSecond] = useState<NewProduct | any>();
 
     // hideBarcode();
 
@@ -181,22 +184,69 @@ const ProductCheck: React.FC<ProductCheck> = ({
         getSelectedCategory(value);
     };
 
+    const showAlert = async (type: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Kode Barcode sudah direkam!',
+                    text: 'Konfirmasi jika anda ingin memasukan barcode yang sama!',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Konfirmasi',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    if (result.value) {
+                        await newProduct(dataSecond);
+                        swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Data tidak jadi direkam', 'success');
+                    }
+                });
+        }
+    };
+
     useEffect(() => {
         if (results.isSuccess) {
-            toast.success(results.data.data.message);
-            resetValueMultiCheck();
-            if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
-                showBarcode();
-                resetProductCheckShow();
+            if (results.data?.data.needConfirmation) {
+                toast.error(results.data?.data.message);
+                setDataSecond(results.data);
+                showAlert(11);
             } else {
-                hideBarcode();
-                resetProductCheckShow();
+                toast.success(results.data.data.message);
+                resetValueMultiCheck();
+                if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
+                    showBarcode();
+                    resetProductCheckShow();
+                } else {
+                    hideBarcode();
+                    resetProductCheckShow();
+                }
             }
         } else if (results.isError) {
             const fetchError = results.error as FetchBaseQueryError;
             toast.error((fetchError.data as any)?.old_barcode_product ?? 'error');
         }
     }, [results]);
+
+    useEffect(() => {
+        if (dataSecond !== undefined) {
+            setDataSecond((prev: { data: { resource: any } }) => ({
+                ...prev,
+                data: { ...prev?.data, needConfirmation: false },
+            }));
+        }
+    }, []);
 
     useEffect(() => {
         refetch();
