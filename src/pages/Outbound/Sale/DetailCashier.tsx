@@ -74,10 +74,17 @@ const DetailCashier = () => {
                         </div>
                     </div>
                 </div>
-                <div className=" flex justify-end my-8">
-                    <Link to={`/outbound/sale/kasir/print/${ShowSale?.code_document_sale}`} type="button" className="btn btn-lg lg:btn btn-primary uppercase">
-                        Export data
-                    </Link>
+                <div className='flex justify-end'>
+                    <div className=" flex justify-end my-8 mr-4 ">
+                        <Link to={`/outbound/sale/kasir/print_product/${ShowSale?.code_document_sale}`} type="button" className="btn btn-lg lg:btn btn-primary uppercase">
+                            Export By Product
+                        </Link>
+                    </div>
+                    <div className=" flex justify-end my-8 ml-4">
+                        <Link to={`/outbound/sale/kasir/print/${ShowSale?.code_document_sale}`} type="button" className="btn btn-lg lg:btn btn-primary uppercase">
+                            Export data
+                        </Link>
+                    </div>
                 </div>
                 <div className="mt-8 panel">
                     <div className="flex items-center justify-between mb-4">

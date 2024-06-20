@@ -62,6 +62,7 @@ const Migrate = lazy(() => import('../pages/Outbound/Migrate/Migrate'));
 const ListMigrate = lazy(() => import('../pages/Outbound/Migrate/ListMigrate'));
 const DetailMigrate = lazy(() => import('../pages/Outbound/Migrate/DetailMigrate'));
 const KasirPrint = lazy(() => import('../pages/Outbound/Sale/KasirPrint'));
+const KasirProductPrint = lazy(() => import('../pages/Outbound/Sale/KasirProductPrint'));
 
 const routes = [
     // Authentication
@@ -367,6 +368,11 @@ const routes = [
     {
         path: '/outbound/sale/kasir/print/:code_document_sale',
         element: <KasirPrint />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/sale/kasir/print_product/:code_document_sale',
+        element: <KasirProductPrint />,
         layout: 'default',
     },
     {
