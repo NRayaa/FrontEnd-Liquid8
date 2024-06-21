@@ -286,6 +286,8 @@ interface ProdcutItem {
 interface NewProduct {
     data: {
         status: boolean;
+        isMultiple: boolean;
+        needConfirmation: boolean;
         message: string;
         resource: ProdcutItem;
     };
