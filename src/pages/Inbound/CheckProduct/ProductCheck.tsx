@@ -207,8 +207,37 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await newProduct(dataSecond);
-                        swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
+                        if (dataSecond !== undefined) {
+                            const body = {
+                                data: {
+                                    needConfirmation: true,
+                                    resource: dataSecond,
+                                },
+                            };
+                            console.log(body);
+                            try {
+                                await newProduct(body)
+                                    .then((res: any) => {
+                                        console.log('res', res);
+                                        swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
+                                        toast.success(res.data.data.message);
+                                        resetValueMultiCheck();
+                                        if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
+                                            showBarcode();
+                                            resetProductCheckShow();
+                                        } else {
+                                            hideBarcode();
+                                            resetProductCheckShow();
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        console.log('err', err);
+                                        swalWithBootstrapButtons.fire('Something went wrong', 'Data tidak jadi direkam', 'error');
+                                    });
+                            } catch (error) {
+                                swalWithBootstrapButtons.fire('Something went wrong', 'Data tidak jadi direkam', 'error');
+                            }
+                        }
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Data tidak jadi direkam', 'success');
                     }
@@ -216,11 +245,13 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
     };
 
+    console.log(results.data);
+
     useEffect(() => {
         if (results.isSuccess) {
-            if (results.data?.data.needConfirmation) {
+            if (results.data?.data.needConfirmation === false) {
                 toast.error(results.data?.data.message);
-                setDataSecond(results.data);
+                setDataSecond(results.data.data.resource);
                 showAlert(11);
             } else {
                 toast.success(results.data.data.message);
@@ -238,15 +269,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
             toast.error((fetchError.data as any)?.old_barcode_product ?? 'error');
         }
     }, [results]);
-
-    useEffect(() => {
-        if (dataSecond !== undefined) {
-            setDataSecond((prev: { data: { resource: any } }) => ({
-                ...prev,
-                data: { ...prev?.data, needConfirmation: false },
-            }));
-        }
-    }, []);
 
     useEffect(() => {
         refetch();
