@@ -60,7 +60,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total By Category
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_product_category}</td>
-                    <td className="px-6 py-4">{detailCheckData?.percentage_category ?? '1'}%</td>
+                    <td className="px-6 py-4"></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">4</td>
@@ -68,7 +68,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                         Total Data Damaged
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.total_data_damaged}</td>
-                    <td className="px-6 py-4">{detailCheckData?.percentage_damaged ?? '1'}%</td>
+                    <td className="px-6 py-4"></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">5</td>
