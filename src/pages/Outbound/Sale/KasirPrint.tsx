@@ -136,6 +136,7 @@ const ReportTable = () => {
                                 <th>Category</th>
                                 <th>Total Quantity</th>
                                 <th>Total Price</th>
+                                <th>Discount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,6 +146,7 @@ const ReportTable = () => {
                                         <td>{item.category}</td>
                                         <td>{item.total_quantity}</td>
                                         <td>{formatCurrency(item.total_price)}</td>
+                                        <td>{item.total_discount}%</td>
                                     </tr>
                                 ))}
                         </tbody>

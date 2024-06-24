@@ -47,6 +47,22 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td className="px-6 py-4">{detailCheckData?.percentage_lolos ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">3</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total By Color
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_product_color}</td>
+                    <td className="px-6 py-4">{detailCheckData?.percentage_color ?? '1'}%</td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">3</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total By Category
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_product_category}</td>
+                    <td className="px-6 py-4">{detailCheckData?.percentage_category ?? '1'}%</td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">4</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Data Damaged
