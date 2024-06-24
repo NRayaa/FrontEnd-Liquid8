@@ -351,12 +351,16 @@ interface CheckAllProducts {
             total_data_damaged: number;
             total_data_abnormal: number;
             total_discrepancy: number;
+            total_product_category: number;
+            total_product_color: number;
             precentage_total_data: number;
             percentage_in: number;
             percentage_lolos: number;
             percentage_damaged: number;
             percentage_abnormal: number;
             percentage_discrepancy: number;
+            percentage_by_color: number;
+            percentage_by_category: number;
             updated_at: string;
             created_at: string;
             id: number;
@@ -389,9 +393,13 @@ interface GetRiwayatcheckItem {
     percentage_damaged: string;
     percentage_abnormal: string;
     percentage_discrepancy: string;
+    percentage_color: string;
+    percentage_category: string;
     status_approve: string;
     total_price_discrepancy: number;
     total_price: number;
+    total_product_category: number;
+    total_product_color: number;
     created_at: string;
     updated_at: string;
     damaged: {
@@ -1428,6 +1436,7 @@ interface SaleReportResponse {
                 category: string | null;
                 total_quantity: number;
                 total_price: number;
+                total_discount: number;
             }[];
             total_harga: number;
         };
