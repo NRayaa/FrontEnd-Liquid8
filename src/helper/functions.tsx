@@ -59,6 +59,17 @@ function generateRandomString(length: number) {
 
     return randomString;
 }
+function generateRandomBarcode(length: number) {
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let randomString = '';
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomString += characters.charAt(randomIndex);
+    }
+
+    return randomString;
+}
 
 function formatYearToDay(timestamp: string) {
     // Ubah string timestamp ke objek Date
@@ -187,4 +198,5 @@ export {
     generateRandomStringFormatBundle,
     generateRandomStringFormatQCD,
     useDebounce,
+    generateRandomBarcode,
 };
