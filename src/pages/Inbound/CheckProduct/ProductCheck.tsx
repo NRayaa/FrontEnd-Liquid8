@@ -178,10 +178,19 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
     };
 
+    console.log('data', dataSecond);
+
     const handleSelectedLolosOption = ({ value, percentage }: { value: string; percentage: string }) => {
         setSelectedOption(value);
         countPercentage(percentage);
         getSelectedCategory(value);
+    };
+
+    const bodySecond = {
+        data: {
+            needConfirmation: true,
+            resource: dataSecond,
+        },
     };
 
     const showAlert = async (type: any) => {
@@ -206,15 +215,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
                     padding: '2em',
                 })
                 .then(async (result) => {
-                    if (result.value) {
-                        const body = {
-                            data: {
-                                needConfirmation: true,
-                                resource: dataSecond,
-                            },
-                        };
+                    if (result.isConfirmed) {
                         try {
-                            await newProduct(body)
+                            await newProduct(bodySecond)
                                 .then((res: any) => {
                                     swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
                                     toast.success(res.data.data.message);
@@ -227,7 +230,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                                         resetProductCheckShow();
                                     }
                                 })
-                                .catch((err) => {
+                                .catch((err: any) => {
                                     console.log('err', err);
                                     swalWithBootstrapButtons.fire('Something went wrong', 'Data tidak jadi direkam', 'error');
                                 });
@@ -246,7 +249,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
             if (results.data?.data.needConfirmation === false) {
                 toast.error(results.data?.data.message);
                 setDataSecond(results.data.data.resource);
-                showAlert(11);
             } else {
                 toast.success(results.data.data.message);
                 resetValueMultiCheck();
@@ -262,11 +264,14 @@ const ProductCheck: React.FC<ProductCheck> = ({
             const fetchError = results.error as FetchBaseQueryError;
             toast.error((fetchError.data as any)?.old_barcode_product ?? 'error');
         }
-    }, [results]);
+    }, [results.isSuccess]);
 
     useEffect(() => {
         if (dataSecond && dataSecond.old_price_product < 100000 && dataSecond.old_barcode_product === dataSecond.new_barcode_product) {
             setDataSecond((prev: any) => ({ ...prev, new_barcode_product: generateRandomBarcode(10) }));
+        }
+        if (dataSecond) {
+            showAlert(11);
         }
     }, [dataSecond]);
 
