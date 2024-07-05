@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetProductApprovesQuery } from '../../../../store/services/categoriesApi';
 import { CheckProductDocumentItem, ProductApprovmentItem } from '../../../../store/services/types';
-import { formatDate, formatRupiah } from '../../../../helper/functions';
+import { formatDate, formatRupiah, useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import { useDeleteApproveMutation } from '../../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
@@ -12,8 +12,9 @@ import { Alert } from '../../../../commons';
 const ApprovementProduct = () => {
     const [search, setSearch] = useState<string>('');
     const [page, setPage] = useState<number>(1);
-    const { data, refetch, isError, isSuccess } = useGetProductApprovesQuery(page);
     const [deleteApprove, results] = useDeleteApproveMutation();
+    const searchDebounce = useDebounce(search);
+    const { data, refetch, isError, isSuccess } = useGetProductApprovesQuery({ p: page, q: searchDebounce });
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
