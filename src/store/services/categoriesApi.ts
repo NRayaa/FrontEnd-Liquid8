@@ -16,8 +16,8 @@ export const categoriesApi = createApi({
                 body,
             }),
         }),
-        getProductApproves: builder.query<ProductApprovment, number>({
-            query: (page) => `/product-approves?page=${page}`,
+        getProductApproves: builder.query<ProductApprovment, { p: number; q: string }>({
+            query: ({ p, q }) => `/product-approves?page=${p}&q=${q}`,
         }),
         getDetailProductApprovesByDoc: builder.query<any, string | undefined>({
             query: (code_document) => `productApprovesByDoc?search=${code_document}`,
