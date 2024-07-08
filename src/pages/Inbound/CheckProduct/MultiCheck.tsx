@@ -96,11 +96,6 @@ const MultiCheck = () => {
             return results.data?.data.resource.product.old_price_product;
         }
     }, [results]);
-    const newBarcode = useMemo(() => {
-        if (results.isSuccess && results.data.data.status) {
-            return results.data?.data.resource.new_barcode;
-        }
-    }, [results]);
 
     const handleCheckDoneAll = async () => {
         const resAlert = await Swal.fire({
@@ -168,7 +163,6 @@ const MultiCheck = () => {
 
     useEffect(() => {
         setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));
-        setCodeBarcode(newBarcode);
     }, [oldData?.old_price_product, oldData?.old_barcode_product]);
 
     if (results.isError && !results.data?.data.status) {
@@ -234,7 +228,7 @@ const MultiCheck = () => {
                             {!tagColor || tagColor === undefined ? (
                                 <NewBarcodeDataMulti
                                     header="NEW DATA"
-                                    barcode={!isResetValue ? newBarcode : ''}
+                                    barcode={''}
                                     nama={!isResetValue ? oldData?.old_name_product : ''}
                                     newPrice={!isResetValue ? newPricePercentage : ''}
                                     qty={!isResetValue ? oldData?.old_quantity_product : ''}
@@ -269,6 +263,7 @@ const MultiCheck = () => {
                         handleSetNewPriceProduct={handleSetNewPriceProduct}
                         customQuantity={customQuantity}
                         codeBarcode={codeBarcode}
+                        setCodeBarcode={setCodeBarcode}
                         isQuantity={isQuantity}
                         getSelectedCategory={getSelectedCategory}
                     />
