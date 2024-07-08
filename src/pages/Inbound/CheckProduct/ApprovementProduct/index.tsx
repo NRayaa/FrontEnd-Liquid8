@@ -166,13 +166,18 @@ const ApprovementProduct = () => {
                                 render: (item: ProductApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <Link to={`/inbound/check_product/approvment_product/detail/${item.id}`} state={{ code_document: item.code_document }}>
-                                            <button type="button" className="btn btn-outline-info">
-                                                Detail
+                                            <button type="button" className="btn btn-outline-success">
+                                                Approve
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                            Delete
-                                        </button>
+                                        <Link to={`/inbound/check_product/approvment_product/detail/${item.id}`} state={{ code_document: item.code_document }}>
+                                            <button type="button" className="btn btn-outline-info">
+                                                Details
+                                            </button>
+                                        </Link>
+                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                            Reject
+                                        </button> */}
                                     </div>
                                 ),
                                 textAlignment: 'center',

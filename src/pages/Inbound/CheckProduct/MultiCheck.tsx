@@ -96,6 +96,7 @@ const MultiCheck = () => {
             return results.data?.data.resource.product.old_price_product;
         }
     }, [results]);
+    
     const newBarcode = useMemo(() => {
         if (results.isSuccess && results.data.data.status) {
             return results.data?.data.resource.new_barcode;

@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { formatCurrencyRp } from '../../../helper/functions';
 
-interface NewBarcodeDataMulti {
+interface NewBarcodeDataMultiProps {
     barcode: string;
     nama: string;
     newPrice: string;
@@ -11,12 +12,12 @@ interface NewBarcodeDataMulti {
     handleIsQuantity: () => void;
 }
 
-const NewBarcodeDataMulti: React.FC<NewBarcodeDataMulti> = ({ barcode, nama, newPrice, qty, header, handleSetNewPercentagePriceInput, handleSetCustomQuantityInput, handleIsQuantity }) => {
+const NewBarcodeDataMulti: React.FC<NewBarcodeDataMultiProps> = ({ barcode, nama, newPrice, qty, header, handleSetNewPercentagePriceInput, handleSetCustomQuantityInput, handleIsQuantity }) => {
     const [inputQuantity, setInputQuantity] = useState<string>('');
     const [inputPrice, setInputPrice] = useState<string>('');
 
     useEffect(() => {
-        setInputPrice(newPrice);
+        setInputPrice(formatCurrencyRp(newPrice));
         setInputQuantity(qty);
     }, [qty, newPrice]);
 
@@ -25,15 +26,17 @@ const NewBarcodeDataMulti: React.FC<NewBarcodeDataMulti> = ({ barcode, nama, new
         setInputQuantity(e.target.value);
         handleSetCustomQuantityInput(e.target.value);
     };
+
     const handleInputPrice = (e: ChangeEvent<HTMLInputElement>) => {
-        setInputPrice(e.target.value);
-        handleSetNewPercentagePriceInput(e.target.value);
+        const formattedPrice = formatCurrencyRp(e.target.value);
+        setInputPrice(formattedPrice);
+        handleSetNewPercentagePriceInput(e.target.value.replace(/[^0-9]/g, ''));
     };
 
     return (
         <div className="flex flex-col gap-4">
             <h1 className="flex justify-center text-lg font-bold">{header}</h1>
-            <div>
+            <div hidden >
                 <label htmlFor="gridBarcode1">Barcode</label>
                 <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
             </div>
@@ -43,7 +46,7 @@ const NewBarcodeDataMulti: React.FC<NewBarcodeDataMulti> = ({ barcode, nama, new
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="text" placeholder="Enter Nama" className="form-input" value={inputPrice} onChange={handleInputPrice} />
+                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" value={inputPrice} onChange={handleInputPrice} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>

@@ -8,6 +8,7 @@ import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import { useAddProductMutation, useLatestPriceQuery } from '../../../store/services/productOldsApi';
 import BarcodePrinted from './BarcodePrinted';
 import { Alert } from '../../../commons';
+import { formatRupiah } from '../../../helper/functions';
 
 const CreateManualInbound = () => {
     const [addProduct, results] = useAddProductMutation();
@@ -161,8 +162,8 @@ const CreateManualInbound = () => {
                             </button>
                             <BarcodePrinted
                                 barcode={response.new_barcode_product}
-                                newPrice={response.new_price_product}
-                                oldPrice={response.old_price_product}
+                                newPrice={formatRupiah(response.new_price_product)}
+                                oldPrice={formatRupiah(response.old_price_product)}
                                 category={response.new_category_product}
                             />
                         </div>

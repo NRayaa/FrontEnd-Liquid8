@@ -10,6 +10,7 @@ import { Alert } from '../../../commons';
 import BarcodePrinted from './BarcodePrinted';
 import { debounce } from 'lodash';
 import { ChevronIcon } from '@mantine/core';
+import { formatRupiah } from '../../../helper/functions';
 
 const DetailProduct = () => {
     const { id } = useParams();
@@ -235,8 +236,8 @@ const DetailProduct = () => {
                         <BarcodePrinted
                             barcode={dataDetailProduct?.new_barcode_product ?? ''}
                             category={category}
-                            newPrice={input.new_price_product ?? ''}
-                            oldPrice={input.old_price_product ?? ''}
+                            newPrice={formatRupiah(input.new_price_product ?? '')}
+                            oldPrice={formatRupiah(input.old_price_product ?? '')}
                             showPrintButton={showPrintButton}
                         />
                     </div>
