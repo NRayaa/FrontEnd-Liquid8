@@ -61,7 +61,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     getSelectedCategory,
     setCodeBarcode,
 }) => {
-    const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
+    const { data, isSuccess, refetch } = useGetCategoriesQuery('');
     const [newProduct, results] = useNewProductMutation();
 
     const [selectedOption, setSelectedOption] = useState<string>('');
