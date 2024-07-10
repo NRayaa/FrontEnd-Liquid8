@@ -25,7 +25,7 @@ const CreateRepair = () => {
     const [deleteFilterProductRepair, resultsDeleteRepair] = useDeleteFilterRepairMovingProductsMutation();
     const [createRepair, resultsCreateRepair] = useCreateRepairMovingProductsMutation();
     const navigate = useNavigate();
-    const repairLists = useGetRepairMovingProductsQuery(undefined);
+    const repairLists = useGetRepairMovingProductsQuery('');
 
     const [nameRepair, setNameRepair] = useState<string>('');
     const [totalPrice, setTotalPrice] = useState<string>('');
