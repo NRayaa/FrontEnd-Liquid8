@@ -2,7 +2,7 @@ import { DataTable } from 'mantine-datatable';
 import { Link } from 'react-router-dom';
 import IconPlus from '../../../../components/Icon/IconPlus';
 import { useEffect, useMemo, useState } from 'react';
-import { formatRupiah } from '../../../../helper/functions';
+import { formatRupiah, useDebounce } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
 import { useGetRepairMovingProductsQuery, useUnrepairMovingProductMutation } from '../../../../store/services/repairMovingApi';
 import Swal from 'sweetalert2';
@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
 const Repair = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess, refetch } = useGetRepairMovingProductsQuery(undefined);
+    const searchDebounce = useDebounce(search);
+    const { data, isSuccess, refetch } = useGetRepairMovingProductsQuery(searchDebounce);
     const [unrepairMovingProduct, results] = useUnrepairMovingProductMutation();
 
     const dataRepairMovingProduct: any = useMemo(() => {

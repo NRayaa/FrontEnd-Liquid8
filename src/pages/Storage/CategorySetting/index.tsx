@@ -1,17 +1,19 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { DataTable } from 'mantine-datatable';
 import { GetCategoriesItem } from '../../../store/services/types';
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from '../../../store/services/categoriesApi';
-import { formatRupiah } from '../../../helper/functions';
+import { formatRupiah, useDebounce } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 
 const CategorySetting = () => {
     const navigate = useNavigate();
-    const { data, refetch, isError } = useGetCategoriesQuery(undefined);
+    const [search, setSearch] = useState<string>('');
+    const searchDebounce = useDebounce(search);
+    const { data, refetch, isError } = useGetCategoriesQuery(searchDebounce);
     const [deleteCategory, results] = useDeleteCategoryMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -101,6 +103,8 @@ const CategorySetting = () => {
                             type="text"
                             className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                             placeholder="Search..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                         />
                         <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
                             <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
