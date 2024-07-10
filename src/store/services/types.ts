@@ -144,6 +144,7 @@ interface CheckProductDocument {
         };
     };
 }
+
 interface ProductApprovmentItem {
     id: number;
     code_document: string;
@@ -161,6 +162,7 @@ interface ProductApprovmentItem {
     created_at: string;
     updated_at: string;
 }
+
 interface ProductApprovment {
     data: {
         status: boolean;
@@ -181,6 +183,72 @@ interface ProductApprovment {
             total: number;
         };
     };
+}
+
+interface DocumentApprovment {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: DocumentApprovmentItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: CheckProductDocumentLinks[];
+            next_page_url: null;
+            path: string;
+            per_page: number;
+            prev_page_url: null;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface DocumentApprovmentItem {
+    id: number;
+    user_id: number;
+    notification_name: string;
+    status: string;
+    role: string;
+    riwayat_check_id: number;
+    reat_at: number;
+    riwayat_check?: { 
+        id: number;
+        user_id: number;
+        code_document: string;
+        base_document: string;
+        total_data: number;
+        total_data_in: number;
+        total_data_lolos: number;
+        total_data_damaged: number;
+        total_data_abnormal: number
+        total_discrepancy: number;
+        created_at: string;
+        updated_at: string;
+    };
+    created_at: string;
+    updated_at: string;
+}
+
+interface CheckDocumentApprovmentItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: number;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string
+    new_status_product: string;
+    new_quality: string;
+    new_category_product : string;
+    new_tag_product: string;
+    created_at: string;
+    updated_at: string;
 }
 
 interface GetBarcodeBody {
@@ -1652,6 +1720,9 @@ export type {
     SaleReportResponse,
     ProductApprovmentItem,
     ProductApprovment,
+    DocumentApprovment,
+    DocumentApprovmentItem,
+    CheckDocumentApprovmentItem,
     DetailPalletProps,
     SubPaletItem,
     SaleProductsProps,

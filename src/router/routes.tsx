@@ -26,6 +26,7 @@ import PalletDetail from '../pages/Storage/Pallet/DetailPallet';
 import CreateManualInbound from '../pages/Inbound/CheckProduct/CreateManualInbound';
 import CreateDump from '../pages/RepairStation/ListDump/CreateDump';
 import DetailDump from '../pages/RepairStation/ListDump/DetailDump';
+import DetailApproveDocument from '../pages/Inbound/CheckProduct/ApprovementProduct/DetailApproveDocument';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -383,6 +384,11 @@ const routes = [
     {
         path: '/inbound/check_product/approvment_product/detail',
         element: <DetailApproveProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_document/detail/:id',
+        element: <DetailApproveDocument />,
         layout: 'default',
     },
     {

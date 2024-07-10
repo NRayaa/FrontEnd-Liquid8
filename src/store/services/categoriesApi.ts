@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ProductApprovment, GetCategories, NewProduct, NewProductBody } from './types';
+import { ProductApprovment, GetCategories, NewProduct, NewProductBody, DocumentApprovment } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const categoriesApi = createApi({
@@ -19,9 +19,15 @@ export const categoriesApi = createApi({
         getProductApproves: builder.query<ProductApprovment, { p: number; q: string }>({
             query: ({ p, q }) => `/product-approves?page=${p}&q=${q}`,
         }),
-        getDetailProductApprovesByDoc: builder.query<any, string | undefined>({
-            query: (code_document) => `productApprovesByDoc?search=${code_document}`,
+        getDocumentApproves: builder.query<DocumentApprovment, { p: number; q: string }>({
+            query: ({ p, q }) => `/documents-approve?page=${p}&q=${q}`,
         }),
+        getDetailProductApprovesByDoc: builder.query<any, number | undefined>({
+            query: (code_document) => `/product-approveByDoc/${code_document}`,
+        }),
+        // getDetailProductApprovesByDoc: builder.query<any, string | undefined>({
+        //     query: (code_document) => `productApprovesByDoc?search=${code_document}`,
+        // }),
         getDetailProductApproves: builder.query<any, number | undefined>({
             query: (idProduct) => `/product-approves/${idProduct}`,
         }),
@@ -62,6 +68,7 @@ export const {
     useUpdateCategoryMutation,
     useDeleteCategoryMutation,
     useGetProductApprovesQuery,
+    useGetDocumentApprovesQuery,
     useGetDetailProductApprovesByDocQuery,
     useGetDetailProductApprovesQuery,
     useEditProductApprovesMutation,
