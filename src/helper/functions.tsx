@@ -113,6 +113,12 @@ function formatCurrency(value: number) {
     return formattedValue;
 }
 
+const formatCurrencyRp = (value: string): string => {
+    if (!value) return '';
+    const number = parseFloat(value.replace(/[^0-9]/g, ''));
+    return 'Rp ' + number.toLocaleString('id-ID');
+};
+
 function countPastTime(timestamp: string) {
     // Mengonversi timestamp ke objek Date
     const waktuSekarang: any = new Date();
@@ -186,6 +192,7 @@ function useDebounce<T>(value: T, delay?: number): T {
     return debouncedValue;
 }
 
+
 export {
     formatTimestamp,
     formatRupiah,
@@ -194,6 +201,7 @@ export {
     formatYearToDay,
     convertPercentage,
     formatCurrency,
+    formatCurrencyRp,
     countPastTime,
     generateRandomStringFormatBundle,
     generateRandomStringFormatQCD,

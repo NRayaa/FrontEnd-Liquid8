@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatRupiah } from '../../../helper/functions';
 
 interface TagColorData {
     tag: string;
@@ -21,7 +22,7 @@ const TagColorData: React.FC<TagColorData> = ({ tag, nama, harga, qty }) => {
             </div>
             <div>
                 <label htmlFor="gridNama4">Harga</label>
-                <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" value={harga} />
+                <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga ?? "0")} />
             </div>
             <div>
                 <label htmlFor="gridQTY2">QTY</label>

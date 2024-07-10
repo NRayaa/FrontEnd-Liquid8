@@ -35,7 +35,7 @@ const ListData = () => {
             });
             swalWithBootstrapButtons
                 .fire({
-                    title: 'Yakin ingin menhapus item ini?',
+                    title: 'Yakin ingin menghapus item ini?',
                     text: 'Data tidak bisa di kembalikan setelah di hapus',
                     icon: 'warning',
                     showCancelButton: true,
