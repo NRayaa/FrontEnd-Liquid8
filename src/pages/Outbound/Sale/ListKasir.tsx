@@ -4,13 +4,14 @@ import { BreadCrumbs } from '../../../components';
 import { useGetListSaleDocumentQuery } from '../../../store/services/saleApi';
 import { GetListSaleDocumentItem } from '../../../store/services/types';
 import { DataTable } from 'mantine-datatable';
-import { formatRupiah } from '../../../helper/functions';
+import { formatRupiah, useDebounce } from '../../../helper/functions';
 import { Alert } from '../../../commons';
 
 const ListKasir = () => {
     const [page, setPage] = useState<number>(1);
-    const [search] = useState<string>('');
-    const { data: listSaleDocumentData, isError, isLoading } = useGetListSaleDocumentQuery({ page, q: search });
+    const [search, setSearch] = useState<string>('');
+    const searchDebounce = useDebounce(search);
+    const { data: listSaleDocumentData, isError, isLoading } = useGetListSaleDocumentQuery({ page, q: searchDebounce });
 
     const listSaleDocument: any = useMemo(() => {
         return listSaleDocumentData?.data.resource.data;
@@ -30,6 +31,11 @@ const ListKasir = () => {
             <div className="panel mt-6 min-h-[450px] pr-12">
                 <div className="mb-8">
                     <h5 className="font-semibold text-lg dark:text-white-light mb-2">Sale Cashier</h5>
+                </div>
+                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    <div className="ltr:mr-auto rtl:ml-auto mx-6">
+                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                    </div>
                 </div>
                 <div className="relative w-[220px]">
                     <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">

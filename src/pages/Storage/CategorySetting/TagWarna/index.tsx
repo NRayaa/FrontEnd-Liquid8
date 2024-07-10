@@ -5,7 +5,7 @@ import { DataTable } from 'mantine-datatable';
 import { useDeleteColorTagMutation, useGetAllColorTagQuery, useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
 import { ColorTagItem } from '../../../../store/services/types';
 import IconPlus from '../../../../components/Icon/IconPlus';
-import { formatRupiah } from '../../../../helper/functions';
+import { formatRupiah, useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
@@ -13,7 +13,8 @@ import { Alert } from '../../../../commons';
 const TagWarna = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, refetch, isError } = useGetAllColorTagQuery({ page, q: search });
+    const searchDebounce = useDebounce(search);
+    const { data, refetch, isError } = useGetAllColorTagQuery({ page, q: searchDebounce });
     const [deleteColorTag, deleteResults] = useDeleteColorTagMutation();
 
     const showAlert = async ({ type, id }: any) => {

@@ -3,14 +3,16 @@ import { useDeleteRiwayatCheckMutation, useGetRiwayatChecksQuery } from '../../.
 import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { GetRiwayatcheckItem } from '../../../store/services/types';
-import { formatDate } from '../../../helper/functions';
+import { formatDate, useDebounce } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 
 const CheckHistory = () => {
     const [page, setPage] = useState<number>(1);
-    const { data, refetch, isSuccess, isError } = useGetRiwayatChecksQuery(page);
+    const [search, setSearch] = useState<string>('');
+    const searchDebounce = useDebounce(search);
+    const { data, refetch, isSuccess, isError } = useGetRiwayatChecksQuery({ page: page, search: searchDebounce });
     const [deleteRiwayatCheck, results] = useDeleteRiwayatCheckMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -97,6 +99,11 @@ const CheckHistory = () => {
     return (
         <div className="panel mt-6 min-h-[450px]">
             <h5 className="font-semibold text-lg dark:text-white-light mb-5">Riwayat Check</h5>
+            <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                <div className="ltr:ml-auto rtl:mr-auto mx-6">
+                    <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                </div>
+            </div>
             <DataTable
                 records={riwayatCheckData}
                 columns={[

@@ -8,14 +8,15 @@ import Swal from 'sweetalert2';
 import { IRootState } from '../../../../store';
 import { useDeleteProductNewMutation, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
-import { formatRupiah } from '../../../../helper/functions';
+import { formatRupiah, useDebounce } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 
 const ListProduct = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
-    const { data, isSuccess, refetch, isError } = useGetExpiredProductsQuery({ page, q: search });
+    const searchDebounce = useDebounce(search);
+    const { data, isSuccess, refetch, isError } = useGetExpiredProductsQuery({ page, q: searchDebounce });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
     const expiredProducts: any = useMemo(() => {

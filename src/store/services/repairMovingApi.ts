@@ -6,8 +6,8 @@ export const repairMovingProductsApi = createApi({
     reducerPath: 'repairMovingProductsApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        getRepairMovingProducts: builder.query<RepairResponse, any>({
-            query: () => '/repair-mv',
+        getRepairMovingProducts: builder.query<RepairResponse, string>({
+            query: (search) => `/repair-mv?q=${search}`,
         }),
         getFilterRepairMovingProducts: builder.query({
             query: (page) => `/repair-mv/filter_product?page=${page}`,
@@ -41,7 +41,7 @@ export const repairMovingProductsApi = createApi({
             }),
         }),
         updateThrowsDetail: builder.mutation<any, any>({
-            query: (id,) => ({
+            query: (id) => ({
                 url: `/update-repair-dump/${id}`,
                 method: 'PUT',
             }),

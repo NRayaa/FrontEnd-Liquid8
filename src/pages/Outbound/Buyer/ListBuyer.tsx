@@ -11,6 +11,7 @@ import { useDeleteBuyerMutation, useGetListBuyerQuery } from '../../../store/ser
 import { GetListBuyerItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
+import { useDebounce } from '../../../helper/functions';
 
 const rowData = [
     {
@@ -518,8 +519,9 @@ const rowData = [
 const ListBuyer = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
-    const [search] = useState<string>('');
-    const { data, refetch, isError } = useGetListBuyerQuery({ page, q: search });
+    const [search, setSearch] = useState<string>('');
+    const searchDebounce = useDebounce(search);
+    const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
     const [deleteBuyer, results] = useDeleteBuyerMutation();
     const [initialRecords2, setInitialRecords2] = useState(sortBy(rowData, 'firstName'));
     const [recordsData2, setRecordsData2] = useState(initialRecords2);
@@ -558,6 +560,11 @@ const ListBuyer = () => {
                     <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/buyer/buyer/list_buyer/add_buyer')}>
                         Add Buyer
                     </button>
+                </div>
+                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    <div className="ltr:mr-auto rtl:ml-auto mx-6">
+                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                    </div>
                 </div>
                 <div className="datatables">
                     <DataTable
