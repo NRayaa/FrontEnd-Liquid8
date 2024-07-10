@@ -481,6 +481,9 @@ const Sidebar = () => {
                                             <li>
                                                 <NavLink to="/outbound/migrate/list_migrate">{'List Migrate'}</NavLink>
                                             </li>
+                                            <li>
+                                                <NavLink to="/outbound/migrate/list_destination">{'Destination'}</NavLink>
+                                            </li>
                                         </ul>
                                     </AnimateHeight>
                                 </li>

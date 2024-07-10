@@ -1234,6 +1234,37 @@ interface GetListMigrate {
     };
 }
 
+interface GetListDestinationItem {
+    id: number;
+    shop_name: string;
+    phone_number: string;
+    alamat: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListDestination {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListDestinationItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
 interface GetListSaleDocumentItem {
     id: number;
     code_document_sale: string;
@@ -1699,6 +1730,8 @@ export type {
     GetListSaleItem,
     GetListMigrate,
     GetListMigrateItem,
+    GetListDestination,
+    GetListDestinationItem,
     GetListSaleDocument,
     GetListSaleDocumentItem,
     ItemDetailOldsProduct,

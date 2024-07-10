@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useDeleteDocumentMutation, useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
 import { CheckProductDocumentItem } from '../../../store/services/types';
-import { formatDate } from '../../../helper/functions';
+import { formatDate, useDebounce } from '../../../helper/functions';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 
@@ -17,9 +17,10 @@ const ListData = () => {
     });
 
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess, refetch, isError } = useDocumentsCheckProductsQuery(page);
-    const [deleteDocument, results] = useDeleteDocumentMutation();
     const [search, setSearch] = useState<string>('');
+    const searchDebounce = useDebounce(search);
+    const { data, isSuccess, refetch, isError } = useDocumentsCheckProductsQuery({ page: page, search: searchDebounce });
+    const [deleteDocument, results] = useDeleteDocumentMutation();
     const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
 
     const showAlert = async ({ type, id }: any) => {

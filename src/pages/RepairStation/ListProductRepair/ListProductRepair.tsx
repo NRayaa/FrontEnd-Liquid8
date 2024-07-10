@@ -112,7 +112,7 @@ const ListProductRepair = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const { data: listProductData, refetch, isError } = useGetListProductRepairQuery({ page, q: search });
-    const { data: categoriesData } = useGetCategoriesQuery(undefined);
+    const { data: categoriesData } = useGetCategoriesQuery('');
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
@@ -200,7 +200,7 @@ const ListProductRepair = () => {
                 new_category_product: input?.new_category_product,
             };
             await updateProductRepair({ id, body });
-            console.log("DATA SENT", body)
+            console.log('DATA SENT', body);
         } catch (err) {
             console.error(err);
         }

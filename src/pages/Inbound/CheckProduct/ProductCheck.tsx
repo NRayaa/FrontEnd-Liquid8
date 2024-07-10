@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, Fragment, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import Barcode from 'react-barcode';
 
@@ -42,6 +42,7 @@ interface ProductCheck {
     codeBarcode: string;
     isQuantity: boolean;
     getSelectedCategory: (selected: string) => void;
+    setCodeBarcode: Dispatch<SetStateAction<string>>;
 }
 
 const ProductCheck: React.FC<ProductCheck> = ({
@@ -58,8 +59,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
     codeBarcode,
     isQuantity,
     getSelectedCategory,
+    setCodeBarcode,
 }) => {
-    const { data, isSuccess, refetch } = useGetCategoriesQuery(undefined);
+    const { data, isSuccess, refetch } = useGetCategoriesQuery('');
     const [newProduct, results] = useNewProductMutation();
 
     const [selectedOption, setSelectedOption] = useState<string>('');
@@ -246,6 +248,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
 
     useEffect(() => {
         if (results.isSuccess) {
+            if (results.data?.data.resource.new_barcode_product) {
+                setCodeBarcode(results.data?.data.resource.new_barcode_product ? results.data?.data.resource.new_barcode_product : '');
+            }
             if (results.data?.data.needConfirmation === false) {
                 toast.error(results.data?.data.message);
                 setDataSecond(results.data.data.resource);

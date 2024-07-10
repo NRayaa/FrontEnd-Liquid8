@@ -6,8 +6,8 @@ export const categoriesApi = createApi({
     reducerPath: 'categoriesApi',
     baseQuery: baseQuery,
     endpoints: (builder) => ({
-        getCategories: builder.query<GetCategories, undefined>({
-            query: () => '/categories',
+        getCategories: builder.query<GetCategories, string>({
+            query: (search) => `/categories?q=${search}`,
         }),
         newProduct: builder.mutation<NewProduct, any>({
             query: (body) => ({

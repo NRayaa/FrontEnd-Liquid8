@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useGetListMigrateQuery } from '../../../store/services/migrateApi';
 import { GetListMigrateItem } from '../../../store/services/types';
 import { Alert } from '../../../commons';
+import { useDebounce } from '../../../helper/functions';
 
 const ListMigrate = () => {
     const dispatch = useDispatch();
@@ -15,7 +16,8 @@ const ListMigrate = () => {
     });
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState('');
-    const { data: ListMigrateData, refetch, isError } = useGetListMigrateQuery({ page, q: search });
+    const searchDebounce = useDebounce(search);
+    const { data: ListMigrateData, refetch, isError } = useGetListMigrateQuery({ page, q: searchDebounce });
 
     const listMigrate: any = useMemo(() => {
         return ListMigrateData?.data.resource.data;
@@ -59,7 +61,11 @@ const ListMigrate = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListMigrateItem, index: number) => <span><span>{(page - 1) * listMigrate?.length + (index + 1)}</span></span>,
+                                render: (item: GetListMigrateItem, index: number) => (
+                                    <span>
+                                        <span>{(page - 1) * listMigrate?.length + (index + 1)}</span>
+                                    </span>
+                                ),
                             },
                             {
                                 accessor: 'code_document_migrate',
