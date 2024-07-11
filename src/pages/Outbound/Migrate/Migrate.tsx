@@ -295,7 +295,7 @@ const Migrate = () => {
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item) => (
+                                render: (item: any) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
