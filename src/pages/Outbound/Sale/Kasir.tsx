@@ -761,7 +761,6 @@ const Kasir = () => {
 
                     <div className="datatables">
                         <DataTable
-                            className="whitespace-nowrap table-hover"
                             records={listSale}
                             columns={[
                                 {

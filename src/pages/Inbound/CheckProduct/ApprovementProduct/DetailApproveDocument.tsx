@@ -9,6 +9,7 @@ import { useDeleteApproveMutation, useDeleteDocumentMutation } from '../../../..
 import { CheckDocumentApprovmentItem } from '../../../../store/services/types';
 import { Alert } from '../../../../commons';
 import { useGetDetailProductApprovesByDocQuery } from '../../../../store/services/categoriesApi';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const DetailApproveDocument = () => {
     const dispatch = useDispatch();
@@ -122,6 +123,11 @@ const DetailApproveDocument = () => {
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    <Link to="/inbound/check_product/approvment_product">
+                        <button type="button" className=" px-2 btn btn-outline-danger">
+                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                        </button>
+                    </Link>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
