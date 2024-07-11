@@ -50,6 +50,9 @@ export const migrateApi = createApi({
         getListMigrate: builder.query<GetListMigrate, { page: number; q: string }>({
             query: ({ page, q }) => `/migrate-documents?page=${page}&q=${q}`,
         }),
+        getDisplayMigrate: builder.query<GetDisplayMigrate, any>({
+            query: () => `/displayMigrate`,
+        }),
         getIndexMigrate: builder.query<GetListMigrateIndex, { q: string; migratePage: number; productPage: number }>({
             query: ({ q, migratePage, productPage }) => `/migrates?migrate_page=${migratePage}&product_page=${productPage}&q=${q}`,
         }),
