@@ -1576,6 +1576,7 @@ interface DetailPalletProps {
             total_price_palet: string;
             total_product_palet: number;
             palet_barcode: string;
+            total_harga_lama: string;
             created_at: string;
             updated_at: string;
             palet_products: SubPaletItem[];

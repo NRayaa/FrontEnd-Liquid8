@@ -66,9 +66,15 @@ const PalletDetail = () => {
                             </label>
                             <input id="categoryName" disabled type="text" value={detailDataPallet?.category_palet} placeholder="Rp" className=" form-input w-[250px]" required />
                         </div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Harga Lama :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={formatRupiah(detailDataPallet?.total_harga_lama ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
+                        </div>
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Total Harga :
+                                Total Harga Baru:
                             </label>
                             <input
                                 id="categoryName"
@@ -85,7 +91,8 @@ const PalletDetail = () => {
                         <BarcodePalet
                             barcode={detailDataPallet?.palet_barcode ?? ''}
                             category={detailDataPallet?.category_palet ?? ''}
-                            price={detailDataPallet?.total_price_palet ?? '0'}
+                            newPrice={formatRupiah(detailDataPallet?.total_price_palet ?? '0')}
+                            oldPrice={formatRupiah(detailDataPallet?.total_price_palet ?? '0')}
                             namePalet={detailDataPallet?.name_palet ?? ''}
                         />
                     </div>
@@ -106,7 +113,6 @@ const PalletDetail = () => {
                     <div className="datatables xl:col-span-3">
                         <DataTable
                             highlightOnHover
-                            className="whitespace-nowrap table-hover "
                             records={detailDataPallet?.palet_products}
                             columns={[
                                 { accessor: 'id', title: 'No', sortable: true, render: (item: SubPaletItem, index: number) => <span>{index + 1}</span> },
