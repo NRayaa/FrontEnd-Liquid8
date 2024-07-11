@@ -4,13 +4,14 @@ import LogoLiquid from '/assets/images/logo-barcode.png';
 import { Spinner } from '../../../commons';
 
 interface BarcodePrint {
-    price: string;
+    newPrice: string;
+    oldPrice: string;
     namePalet: string;
     barcode: string;
     category: string;
 }
 
-const BarcodePalet: React.FC<BarcodePrint> = ({ price, namePalet, barcode, category }) => {
+const BarcodePalet: React.FC<BarcodePrint> = ({ newPrice, oldPrice, namePalet, barcode, category }) => {
     const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
         if (containerElement) {
@@ -51,8 +52,12 @@ const BarcodePalet: React.FC<BarcodePrint> = ({ price, namePalet, barcode, categ
                                 <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {namePalet}</td>
                             </tr>
                             <tr>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga</td>
-                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {price}</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga Lama</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black', textDecoration: 'line-through' }}>: {oldPrice}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>Harga Baru</td>
+                                <td style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>: {newPrice}</td>
                             </tr>
                         </table>
                     </div>

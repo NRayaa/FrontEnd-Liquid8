@@ -123,6 +123,7 @@ const DetailApproveDocument = () => {
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    {/* add button back */}
                     <Link to="/inbound/check_product/approvment_product">
                         <button type="button" className=" px-2 btn btn-outline-danger">
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
