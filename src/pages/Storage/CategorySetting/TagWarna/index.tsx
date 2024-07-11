@@ -76,7 +76,7 @@ const TagWarna = () => {
     };
 
     const dataColorTag: any = useMemo(() => {
-        return data?.data.resource.data;
+        return data?.data.resource;
     }, [data]);
 
     useEffect(() => {

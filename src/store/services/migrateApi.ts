@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetCountColor, GetListMigrate } from './types';
+import { GetCountColor, GetDisplayMigrate, GetListMigrate } from './types';
 import { baseQuery } from './prepareHeader';
 
 interface GetListMigrateIndex {
@@ -50,6 +50,9 @@ export const migrateApi = createApi({
         getListMigrate: builder.query<GetListMigrate, { page: number; q: string }>({
             query: ({ page, q }) => `/migrate-documents?page=${page}&q=${q}`,
         }),
+        getDisplayMigrate: builder.query<GetDisplayMigrate, any>({
+            query: () => `/displayMigrate`,
+        }),
         getIndexMigrate: builder.query<GetListMigrateIndex, { q: string; migratePage: number; productPage: number }>({
             query: ({ q, migratePage, productPage }) => `/migrates?migrate_page=${migratePage}&product_page=${productPage}&q=${q}`,
         }),
@@ -95,4 +98,15 @@ export const migrateApi = createApi({
     }),
 });
 
-export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery, useGetColorCountQuery, useAddMigrateMutation, useMigrateMutation } = migrateApi;
+export const {
+    useGetListMigrateQuery,
+    useGetIndexMigrateQuery,
+    usePostMigrateMutation,
+    useDeleteMigrateMutation,
+    useMigrateFinishMutation,
+    useGetShowMigrateQuery,
+    useGetColorCountQuery,
+    useAddMigrateMutation,
+    useMigrateMutation,
+    useGetDisplayMigrateQuery,
+} = migrateApi;
