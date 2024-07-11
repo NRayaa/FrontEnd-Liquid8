@@ -171,7 +171,7 @@ const Sidebar = () => {
                                                     <NavLink to="/inbound/check_product/list_data">{'Manifest Inbound'}</NavLink>
                                                 </li>
                                                 <li>
-                                                    <NavLink to="/inbound/check_product/approvment_product">{'Approvment Product'}</NavLink>
+                                                    <NavLink to="/inbound/check_product/approvment_product">{'Approvment Document'}</NavLink>
                                                 </li>
                                                 <li>
                                                     <NavLink to="/inbound/check_product/manual_inbound">{'Manual Inbound'}</NavLink>
@@ -480,6 +480,9 @@ const Sidebar = () => {
                                             </li>
                                             <li>
                                                 <NavLink to="/outbound/migrate/list_migrate">{'List Migrate'}</NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/outbound/migrate/list_destination">{'Destination'}</NavLink>
                                             </li>
                                         </ul>
                                     </AnimateHeight>

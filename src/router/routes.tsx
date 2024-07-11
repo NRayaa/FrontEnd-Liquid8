@@ -26,6 +26,10 @@ import PalletDetail from '../pages/Storage/Pallet/DetailPallet';
 import CreateManualInbound from '../pages/Inbound/CheckProduct/CreateManualInbound';
 import CreateDump from '../pages/RepairStation/ListDump/CreateDump';
 import DetailDump from '../pages/RepairStation/ListDump/DetailDump';
+import DetailApproveDocument from '../pages/Inbound/CheckProduct/ApprovementProduct/DetailApproveDocument';
+import ListDestination from '../pages/Outbound/Migrate/ListDestination';
+import AddDestination from '../pages/Outbound/Migrate/AddDestinnation';
+import EditDestination from '../pages/Outbound/Migrate/EditDestination';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -313,6 +317,21 @@ const routes = [
         layout: 'default',
     },
     {
+        path: '/outbound/migrate/list_destination',
+        element: <ListDestination />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/migrate/list_destination/add_destination',
+        element: <AddDestination />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/migrate/list_destination/edit_destination/:id',
+        element: <EditDestination />,
+        layout: 'default',
+    },
+    {
         path: '/outbound/sale/kasir',
         element: <Kasir />,
         layout: 'default',
@@ -383,6 +402,11 @@ const routes = [
     {
         path: '/inbound/check_product/approvment_product/detail',
         element: <DetailApproveProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_document/detail/:id',
+        element: <DetailApproveDocument />,
         layout: 'default',
     },
     {

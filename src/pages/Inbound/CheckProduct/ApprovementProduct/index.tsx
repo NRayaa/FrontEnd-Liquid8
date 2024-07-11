@@ -1,24 +1,37 @@
 import { DataTable } from 'mantine-datatable';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGetProductApprovesQuery } from '../../../../store/services/categoriesApi';
-import { CheckProductDocumentItem, ProductApprovmentItem } from '../../../../store/services/types';
-import { formatDate, formatRupiah, useDebounce } from '../../../../helper/functions';
+import { useGetDocumentApprovesQuery } from '../../../../store/services/categoriesApi';
+import { DocumentApprovmentItem } from '../../../../store/services/types';
+import { useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import { useDeleteApproveMutation } from '../../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
+import { useLazySpvApprovalQuery } from '../../../../store/services/notificationsApi';
 
 const ApprovementProduct = () => {
     const [search, setSearch] = useState<string>('');
     const [page, setPage] = useState<number>(1);
     const [deleteApprove, results] = useDeleteApproveMutation();
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError, isSuccess } = useGetProductApprovesQuery({ p: page, q: searchDebounce });
+    const { data, refetch, isError, isSuccess } = useGetDocumentApprovesQuery({ p: page, q: searchDebounce });
+    const [spvApproval, resultsApprove] = useLazySpvApprovalQuery();
+
+    const handleApprove = async (id: number) => {
+        await spvApproval(id);
+    };
+
+    useEffect(() => {
+        if (resultsApprove.isSuccess && resultsApprove.data.data.status) {
+            refetch();
+            toast.success(resultsApprove.data.data.message);
+        }
+    }, [resultsApprove]);
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
-            return data?.data.resource.data;
+            return data?.data?.resource;
         }
     }, [data]);
 
@@ -110,7 +123,7 @@ const ApprovementProduct = () => {
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST APPROVE PRODUCT</h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST APPROVE DOCUMENT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -123,56 +136,45 @@ const ApprovementProduct = () => {
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: ProductApprovmentItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
+                                render: (item: DocumentApprovmentItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'Kode Dokumen',
                                 title: 'Kode Dokumen',
-                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.code_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.code_document}</span>,
                             },
                             {
-                                accessor: 'Old Barcode',
-                                title: 'Old Barcode',
-                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.old_barcode_product}</span>,
+                                accessor: 'Base Dokumen',
+                                title: 'Base Dokumen',
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.base_document}</span>,
                             },
                             {
-                                accessor: 'New Barcode',
-                                title: 'New Barcode',
-                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.new_barcode_product}</span>,
-                            },
-                            {
-                                accessor: 'Name',
-                                title: 'Name',
-                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.new_name_product}</span>,
-                            },
-                            {
-                                accessor: 'QTY',
-                                title: 'QTY',
-                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{item.new_quantity_product}</span>,
-                            },
-                            {
-                                accessor: 'Price',
-                                title: 'Price',
-                                render: (item: ProductApprovmentItem) => <span className="font-semibold">{formatRupiah(item.new_price_product)}</span>,
+                                accessor: 'Total Data In',
+                                title: 'Total Data In',
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.total_data_in}</span>,
                             },
                             {
                                 accessor: 'Status',
                                 title: 'Status',
-                                render: (item: ProductApprovmentItem) => <span className="badge whitespace-nowrap bg-primary ">{item.new_status_product}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="badge whitespace-nowrap bg-primary ">{item?.status}</span>,
                             },
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item: ProductApprovmentItem) => (
+                                render: (item: DocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/approvment_product/detail/${item.id}`} state={{ code_document: item.code_document }}>
+                                        <button onClick={() => handleApprove(item.id)} type="button" className="btn btn-outline-success">
+                                            Approve
+                                        </button>
+                                        <Link to={`/inbound/check_product/approvment_document/detail/${item.id}`} state={{ code_document: item?.riwayat_check?.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
-                                                Detail
+                                                Details
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                            Delete
-                                        </button>
+
+                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                            Reject
+                                        </button> */}
                                     </div>
                                 ),
                                 textAlignment: 'center',

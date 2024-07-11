@@ -1,27 +1,30 @@
 import { DataTable } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
-import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { useDeleteDocumentMutation, useDocumentsCheckProductsQuery } from '../../../store/services/checkProduct';
-import { CheckProductDocumentItem } from '../../../store/services/types';
-import { formatDate, useDebounce } from '../../../helper/functions';
 import toast from 'react-hot-toast';
-import { Alert } from '../../../commons';
+import { setPageTitle } from '../../../../store/themeConfigSlice';
+import { useDeleteApproveMutation, useDeleteDocumentMutation } from '../../../../store/services/checkProduct';
+import { CheckDocumentApprovmentItem } from '../../../../store/services/types';
+import { Alert } from '../../../../commons';
+import { useGetDetailProductApprovesByDocQuery } from '../../../../store/services/categoriesApi';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
-const ListData = () => {
+const DetailApproveDocument = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const { code_document } = location.state;
+
     useEffect(() => {
-        dispatch(setPageTitle('List Data'));
-    });
+        dispatch(setPageTitle('List Detail Dokumen'));
+    }, [dispatch]);
 
     const [page, setPage] = useState<number>(1);
+    const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery(code_document);
+    const [deleteApproveProduct, results] = useDeleteApproveMutation();
     const [search, setSearch] = useState<string>('');
-    const searchDebounce = useDebounce(search);
-    const { data, isSuccess, refetch, isError } = useDocumentsCheckProductsQuery({ page: page, search: searchDebounce });
-    const [deleteDocument, results] = useDeleteDocumentMutation();
-    const [listsData, setListsData] = useState<CheckProductDocumentItem[] | []>([]);
+    const [listsData, setListsData] = useState<CheckDocumentApprovmentItem[] | []>([]);
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -46,7 +49,7 @@ const ListData = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteDocument(id);
+                        await deleteApproveProduct(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
@@ -83,10 +86,10 @@ const ListData = () => {
 
     useEffect(() => {
         if (isSuccess && data.data.status) {
-            setListsData(data.data.resource.data);
+            setListsData(data.data.resource);
         }
         refetch();
-    }, [data, refetch]);
+    }, [data, isSuccess, refetch]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -95,7 +98,7 @@ const ListData = () => {
         } else if (results.isError) {
             toast.error(results.data.data.message);
         }
-    }, [results]);
+    }, [results, refetch]);
 
     if (isError && !data?.data?.status) {
         return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -113,13 +116,19 @@ const ListData = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>List Data</span>
+                    <span>Approvment Product</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT </h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    {/* add button back */}
+                    <Link to="/inbound/check_product/approvment_product">
+                        <button type="button" className=" px-2 btn btn-outline-danger">
+                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                        </button>
+                    </Link>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
@@ -131,56 +140,55 @@ const ListData = () => {
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: CheckProductDocumentItem, index: number) => <span>{(page - 1) * listsData?.length + (index + 1)}</span>,
+                                render: (item: CheckDocumentApprovmentItem, index: number) => <span>{(page - 1) * listsData?.length + (index + 1)}</span>,
                             },
                             {
-                                accessor: 'base_document',
-                                title: 'Nama Data',
-                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.base_document}</span>,
-                            },
-
-                            {
-                                accessor: 'date_document',
-                                title: 'Tanggal',
-                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{formatDate(item.date_document)}</span>,
+                                accessor: 'Kode Dokumen',
+                                title: 'Kode Dokumen',
+                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.code_document}</span>,
                             },
                             {
-                                accessor: 'total_column_in_document',
-                                title: 'Total Barang',
-                                render: (item: CheckProductDocumentItem) => <span className="font-semibold">{item.total_column_in_document}</span>,
+                                accessor: 'old_barcode_product',
+                                title: 'Old Barcode',
+                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.old_barcode_product}</span>,
+                            },
+                            {
+                                accessor: 'new_barcode_product',
+                                title: 'New Barcode',
+                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.new_barcode_product}</span>,
+                            },
+                            {
+                                accessor: 'new_name_product',
+                                title: 'Name',
+                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.new_name_product}</span>,
                             },
                             {
                                 accessor: 'status_document',
                                 title: 'Status',
-                                render: (item: CheckProductDocumentItem) => (
+                                render: (item: CheckDocumentApprovmentItem) => (
                                     <span
                                         className={`badge whitespace-nowrap ${
-                                            item.status_document === 'completed'
+                                            item?.new_status_product === 'display'
                                                 ? 'bg-primary'
-                                                : item.status_document === 'Pending'
+                                                : item?.new_status_product === 'pending'
                                                 ? 'bg-secondary'
-                                                : item.status_document === 'In Progress'
+                                                : item?.new_status_product === 'In Progress'
                                                 ? 'bg-success'
-                                                : item.status_document === 'Canceled'
+                                                : item?.new_status_product === 'Canceled'
                                                 ? 'bg-danger'
                                                 : 'bg-primary'
                                         }`}
                                     >
-                                        {item.status_document}
+                                        {item?.new_status_product}
                                     </span>
                                 ),
                             },
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item: CheckProductDocumentItem) => (
+                                render: (item: CheckDocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/check_product/multi_check" state={{ codeDocument: item.code_document }}>
-                                            <button type="button" className="btn btn-outline-success">
-                                                Check
-                                            </button>
-                                        </Link>
-                                        <Link to="/inbound/check_product/detail_data" state={{ codeDocument: item.code_document, baseDocument: item.base_document }}>
+                                        <Link to={`/inbound/check_product/approvment_product/detail/${item.id}`} state={{ code_document: item.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
@@ -204,4 +212,4 @@ const ListData = () => {
     );
 };
 
-export default ListData;
+export default DetailApproveDocument;

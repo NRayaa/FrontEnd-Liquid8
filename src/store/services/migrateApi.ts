@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetCountColor, GetDisplayMigrate, GetListMigrate } from './types';
+import { GetCountColor, GetListDestination, GetListMigrate } from './types';
 import { baseQuery } from './prepareHeader';
 
 interface GetListMigrateIndex {
@@ -95,18 +95,30 @@ export const migrateApi = createApi({
                 body,
             }),
         }),
+        getListDestination: builder.query<GetListDestination, { page: number; q: string }>({
+            query: ({ page, q }) => `/destinations?page=${page}&q=${q}`,
+        }),
+        createDestination: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/destinations',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updateDestination: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/destinations/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        deleteDestination: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/destinations/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const {
-    useGetListMigrateQuery,
-    useGetIndexMigrateQuery,
-    usePostMigrateMutation,
-    useDeleteMigrateMutation,
-    useMigrateFinishMutation,
-    useGetShowMigrateQuery,
-    useGetColorCountQuery,
-    useAddMigrateMutation,
-    useMigrateMutation,
-    useGetDisplayMigrateQuery,
-} = migrateApi;
+export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery, useGetColorCountQuery, useAddMigrateMutation, useMigrateMutation, useGetListDestinationQuery, useCreateDestinationMutation, useUpdateDestinationMutation, useDeleteDestinationMutation } = migrateApi;
