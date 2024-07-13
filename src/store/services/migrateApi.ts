@@ -115,7 +115,10 @@ export const migrateApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        getListDestinationOption: builder.query<GetListDestination, undefined>({
+            query: () => `/destinations`,
+        }),
     }),
 });
 
-export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery, useGetColorCountQuery, useAddMigrateMutation, useMigrateMutation, useGetListDestinationQuery, useCreateDestinationMutation, useUpdateDestinationMutation, useDeleteDestinationMutation } = migrateApi;
+export const { useGetListMigrateQuery, useGetIndexMigrateQuery, usePostMigrateMutation, useDeleteMigrateMutation, useMigrateFinishMutation, useGetShowMigrateQuery, useGetColorCountQuery, useAddMigrateMutation, useMigrateMutation, useGetListDestinationQuery, useCreateDestinationMutation, useUpdateDestinationMutation, useDeleteDestinationMutation, useGetListDestinationOptionQuery } = migrateApi;

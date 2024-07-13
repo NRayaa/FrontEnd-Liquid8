@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { BundleResponse, DetailBundleResponse, DeleteBundleResponse, FilterProduct, GetFilterProductBundles, CreateBundle, CreateBundleBody } from './types';
+import { BundleResponse, DetailBundleResponse, DeleteBundleResponse, FilterProduct, GetFilterProductBundles, CreateBundle, CreateBundleBody, ExportToExcel } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const bundleProductApi = createApi({
@@ -40,6 +40,13 @@ export const bundleProductApi = createApi({
                 body,
             }),
         }),
+        exportToExcelDetailBundle: builder.mutation<ExportToExcel, { id: number | undefined }>({
+            query: (body) => ({
+                url: '/history/exportToExcel',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -51,4 +58,5 @@ export const {
     useGetFilterProductBundlesQuery,
     useDeleteFilterProductBundlesMutation,
     useCreateBundleMutation,
+    useExportToExcelDetailBundleMutation,
 } = bundleProductApi;

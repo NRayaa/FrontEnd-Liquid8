@@ -711,6 +711,7 @@ interface DetailBundleResponse {
         resource: {
             id: number;
             name_bundle: string;
+            category: string;
             total_price_bundle: string;
             total_price_custom_bundle: string;
             total_product_bundle: string;
@@ -759,6 +760,7 @@ interface GetFilterProductBundles {
         resource: {
             total_new_price: number;
             category: any;
+            name_bundle: any;
             data: {
                 current_page: number;
                 data: ProductExpiredItem[];

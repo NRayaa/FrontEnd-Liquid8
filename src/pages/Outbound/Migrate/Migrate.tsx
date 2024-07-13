@@ -1,10 +1,19 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAddMigrateMutation, useGetColorCountQuery, useMigrateFinishMutation, useMigrateMutation } from '../../../store/services/migrateApi';
+import {
+    useAddMigrateMutation,
+    useGetColorCountQuery,
+    useGetListDestinationOptionQuery,
+    useGetListDestinationQuery,
+    useMigrateFinishMutation,
+    useMigrateMutation,
+} from '../../../store/services/migrateApi';
 import toast from 'react-hot-toast';
+import { GetListDestinationItem } from '../../../store/services/types';
 
 const Migrate = () => {
     const navigate = useNavigate();
+    const { data: getDestination } = useGetListDestinationOptionQuery(undefined);
     const { data: getColorCount } = useGetColorCountQuery(undefined);
     const [colorOptions, setColorOptions] = useState<{ label: string; value: string }[]>([]);
     const [createMigrate, results] = useMigrateMutation();
@@ -65,6 +74,10 @@ const Migrate = () => {
         return getColorCount?.data?.resource ?? {};
     }, [getColorCount]);
 
+    const destinationData: GetListDestinationItem[] = useMemo(() => {
+        return Array.isArray(getDestination?.data?.resource?.data) ? getDestination.data.resource.data : [];
+    }, [getDestination]);
+
     useEffect(() => {
         if (colorData) {
             const options = Object.entries(colorData).map(([color, count]) => ({
@@ -78,7 +91,6 @@ const Migrate = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
-            // navigate('/akun/akun/list_akun');
         } else if (results.isError) {
             toast.error(results.data?.data?.message);
         }
@@ -107,8 +119,11 @@ const Migrate = () => {
                                 </label>
                                 <select id="destination" name="destination" className="mb-2 form-select w-[250px]" onChange={handleInputChange} value={input.destination}>
                                     <option>Select</option>
-                                    <option value="DKT">DKT</option>
-                                    <option value="DKTO">DKTO</option>
+                                    {destinationData.map((destination) => (
+                                        <option key={destination.id} value={destination.shop_name}>
+                                            {destination.shop_name}
+                                        </option>
+                                    ))}
                                 </select>{' '}
                             </div>
                             <div className="flex items-center justify-between ">
