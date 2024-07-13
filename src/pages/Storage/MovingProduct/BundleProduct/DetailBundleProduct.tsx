@@ -333,9 +333,9 @@ const DetailBundleProduct = () => {
                             {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
                                 Add
                             </button> */}
-                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
+                            {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
                                 Export data
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     <div className="datatables xl:col-span-3">
@@ -354,18 +354,18 @@ const DetailBundleProduct = () => {
                                     sortable: true,
                                     render: (item: NewProductItem) => <span className="badge whitespace-nowrap bg-primary">{item.new_status_product}</span>,
                                 },
-                                // {
-                                //     accessor: 'Aksi',
-                                //     title: 'Aksi',
-                                //     render: (item: NewProductItem) => (
-                                //         <div className="flex items-center w-max mx-auto gap-6">
-                                //             <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                //                 Remove
-                                //             </button>
-                                //         </div>
-                                //     ),
-                                //     textAlignment: 'center',
-                                // },
+                                {
+                                    accessor: 'Aksi',
+                                    title: 'Aksi',
+                                    render: (item: NewProductItem) => (
+                                        <div className="flex items-center w-max mx-auto gap-6">
+                                            <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ),
+                                    textAlignment: 'center',
+                                },
                             ]}
                         />
                     </div>
