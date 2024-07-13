@@ -333,9 +333,9 @@ const DetailBundleProduct = () => {
                             {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
                                 Add
                             </button> */}
-                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
+                            {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
                                 Export data
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     <div className="datatables xl:col-span-3">
