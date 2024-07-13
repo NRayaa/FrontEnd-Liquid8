@@ -120,8 +120,6 @@ const MovingBundleProduct = () => {
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        highlightOnHover
-                        className="whitespace-nowrap table-hover "
                         records={dataBundleProduct}
                         columns={[
                             { accessor: 'id', title: 'No', sortable: true, render: (item: BundleItem, index: number) => <span>{(page - 1) * dataBundleProduct?.length + (index + 1)}</span> },

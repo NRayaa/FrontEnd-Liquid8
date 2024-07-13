@@ -132,7 +132,7 @@ const CreateMovingBundleProduct = () => {
     useEffect(() => {
         if ((filterBundles?.data?.data?.resource?.total_new_price as any) >= 100000 && (filterBundles?.data?.data?.resource?.category as any) !== null) {
             setIsCategory(true);
-            setCategories(filterBundles?.data?.data?.resource?.category);
+            setCategories(filterBundles?.data?.data?.resource?.category ?? []);
             setColorName('');
             setCustomPrice(JSON.stringify(filterBundles?.data?.data?.resource?.total_new_price));
         } else {
@@ -246,7 +246,7 @@ const CreateMovingBundleProduct = () => {
                         <div className="ml-12">
                             <BarcodePrinted
                                 barcode={barcode}
-                                category={selectedCategory}
+                                category={nameBundle}
                                 newPrice={formatRupiah(customDisplay)}
                                 oldPrice={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
                                 isBundle

@@ -118,6 +118,9 @@ export const migrateApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        getListDestinationOption: builder.query<GetListDestination, undefined>({
+            query: () => `/destinations`,
+        }),
     }),
 });
 
@@ -136,4 +139,5 @@ export const {
     useUpdateDestinationMutation,
     useDeleteDestinationMutation,
     useGetDisplayMigrateQuery,
+    useGetListDestinationOptionQuery,
 } = migrateApi;
