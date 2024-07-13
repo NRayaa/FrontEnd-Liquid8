@@ -330,9 +330,9 @@ const DetailBundleProduct = () => {
                             </button>
                         </Link>
                         <div className="flex items-center justify-between mb-4">
-                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
+                            {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
                                 Add
-                            </button>
+                            </button> */}
                             <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
                                 Export data
                             </button>
