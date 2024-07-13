@@ -1213,6 +1213,35 @@ interface GetListMigrateItem {
     created_at: string;
     updated_at: string;
 }
+interface GetDisplayMigrate {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            destionation: string;
+            data: {
+                id: number;
+                code_document_migrate: string;
+                destiny_document_migrate: string;
+                total_product_document_migrate: 0;
+                status_document_migrate: string;
+                created_at: string;
+                updated_at: string;
+                user_id: number;
+                migrates: {
+                    id: number;
+                    code_document_migrate: string;
+                    product_color: string;
+                    product_total: number;
+                    status_migrate: string;
+                    created_at: string;
+                    updated_at: string;
+                    user_id: number;
+                }[];
+            };
+        };
+    };
+}
 
 interface GetListMigrate {
     data: {
@@ -1767,4 +1796,5 @@ export type {
     QCDResponse,
     DetailQCDResponse,
     GetCountColor,
+    GetDisplayMigrate,
 };
