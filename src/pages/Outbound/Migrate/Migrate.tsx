@@ -8,7 +8,7 @@ import { GetListDestinationItem } from '../../../store/services/types';
 
 const Migrate = () => {
     const navigate = useNavigate();
-    const { data: getDestination } = useGetListDestinationOptionQuery(undefined);
+    const { data: getDestination } = useGetListDestinationOptionQuery([]);
     const { data: getColorCount, refetch: refetchGetColorCount } = useGetColorCountQuery(undefined);
     const { data: getDisplayMigrate, refetch: refetchDisplayMigrate } = useGetDisplayMigrateQuery(undefined);
     const [colorOptions, setColorOptions] = useState<{ label: string; value: string }[]>([]);
@@ -160,9 +160,12 @@ const Migrate = () => {
     }, [getColorCount]);
 
     const destinationData: GetListDestinationItem[] = useMemo(() => {
-        return Array.isArray(getDestination?.data?.resource?.data) ? getDestination.data.resource.data : [];
+        if (getDestination?.data?.resource?.data) {
+            return getDestination.data.resource.data;
+        }
+        return [];
     }, [getDestination]);
-
+    
     useEffect(() => {
         if (getDisplayMigrate?.data.resource.destionation === 'disable') {
             setInput((prev) => ({ ...prev, destination: getDisplayMigrate?.data.resource.data.destiny_document_migrate ?? '' }));
@@ -233,9 +236,9 @@ const Migrate = () => {
                                     disabled={getDisplayMigrate?.data.resource.destionation === 'disable'}
                                 >
                                     <option>Select</option>
-                                    {destinationData.map((destination) => (
-                                        <option key={destination.id} value={destination.shop_name}>
-                                            {destination.shop_name}
+                                    {destinationData.map((destination: any) => (
+                                        <option key={destination.id} value={destination?.shop_name}>
+                                            {destination?.shop_name}
                                         </option>
                                     ))}
                                 </select>{' '}

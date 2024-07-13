@@ -354,18 +354,18 @@ const DetailBundleProduct = () => {
                                     sortable: true,
                                     render: (item: NewProductItem) => <span className="badge whitespace-nowrap bg-primary">{item.new_status_product}</span>,
                                 },
-                                {
-                                    accessor: 'Aksi',
-                                    title: 'Aksi',
-                                    render: (item: NewProductItem) => (
-                                        <div className="flex items-center w-max mx-auto gap-6">
-                                            <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                                Remove
-                                            </button>
-                                        </div>
-                                    ),
-                                    textAlignment: 'center',
-                                },
+                                // {
+                                //     accessor: 'Aksi',
+                                //     title: 'Aksi',
+                                //     render: (item: NewProductItem) => (
+                                //         <div className="flex items-center w-max mx-auto gap-6">
+                                //             <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                //                 Remove
+                                //             </button>
+                                //         </div>
+                                //     ),
+                                //     textAlignment: 'center',
+                                // },
                             ]}
                         />
                     </div>
