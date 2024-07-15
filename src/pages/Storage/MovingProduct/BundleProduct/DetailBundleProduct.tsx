@@ -1,9 +1,8 @@
 import { DataTable } from 'mantine-datatable';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import {
     useAddDetailBundleProductMutation,
-    useDeleteBundleProductMutation,
     useDeleteDetailBundleProductMutation,
     useDetailBundleProductQuery,
     useExportToExcelDetailBundleMutation,
@@ -14,25 +13,19 @@ import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import { NewProductItem, ProductExpiredItem } from '../../../../store/services/types';
 import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
 import { Dialog, Transition } from '@headlessui/react';
-import { useGetDisplayExpiredQuery, useGetSaleProductsQuery } from '../../../../store/services/productNewApi';
+import { useGetDisplayExpiredQuery } from '../../../../store/services/productNewApi';
 import IconSquareCheck from '../../../../components/Icon/IconSquareCheck';
 import toast from 'react-hot-toast';
-import { useAddSaleMutation, useGetListSaleQuery } from '../../../../store/services/saleApi';
 
 const DetailBundleProduct = () => {
-    const navigate = useNavigate();
     const { id }: any = useParams();
     const { data, isSuccess, refetch } = useDetailBundleProductQuery(id);
     const [exportToExcel, results] = useExportToExcelDetailBundleMutation();
     const [searchProductBundle, setSearchProductBundle] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [pageProduct, setPageProduct] = useState<number>(1);
-    const [pageProductBundle, setPageProductBundle] = useState<number>(1);
     const debounceValueProductBundle = useDebounce(searchProductBundle);
-    const { data: listSaleData, isError, isLoading, refetch: refetchListSale } = useGetListSaleQuery(pageProductBundle);
     const { data: listProduct } = useGetDisplayExpiredQuery({ page: pageProduct, q: debounceValueProductBundle });
-    const [addSale] = useAddSaleMutation();
-    const [scanProduct, setScanProduct] = useState('');
     const [deleteBundle, resultsDeleteBundle] = useDeleteDetailBundleProductMutation();
     const [addDetailBundleProduct] = useAddDetailBundleProductMutation();
 
@@ -49,23 +42,6 @@ const DetailBundleProduct = () => {
         setSearchProductBundle('');
     };
 
-    // const handleAddSale = async (barcode_value: string) => {
-    //     try {
-    //         const body = {
-    //             id: id,
-    //         };
-    //         await addSale(body)
-    //             .unwrap()
-    //             .then((res) => {
-    //                 toast.success(res.data.message);
-    //                 setScanProduct('');
-    //                 navigate('/outbound/sale/kasir');
-    //                 refetchListSale();
-    //             })
-    //             .catch((err) => toast.error(err.data.data.message));
-    //     } catch (err) {}
-    // };
-
     const handleAddDetailProduct = async (e: MouseEvent<HTMLButtonElement>, selectedProductId: string) => {
         e.preventDefault();
         try {
@@ -73,19 +49,12 @@ const DetailBundleProduct = () => {
             toast.success('Produk berhasil ditambahkan ke bundle.');
             setIsModalOpen(false);
             setSearchProductBundle('');
-            refetch(); // Lakukan refetch data bundle untuk memperbarui tampilan
+            refetch();
         } catch (error) {
             toast.error('Gagal menambahkan produk ke bundle.');
             console.error('Error adding product to bundle:', error);
         }
     };
-
-    // const handleProductSelection = (e: MouseEvent<HTMLButtonElement>, selectedProductBarcode: string) => {
-    //     e.preventDefault();
-    //     handleAddSale(selectedProductBarcode);
-    //     setIsModalOpen(false);
-    //     setSearchProductBundle('');
-    // };
 
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
@@ -93,30 +62,25 @@ const DetailBundleProduct = () => {
         }
     }, [data]);
 
-    // const handleProductSelection = async (e: MouseEvent<HTMLButtonElement>, selectedProductBarcode: string) => {
-    //     e.preventDefault();
-    //     try {
-    //         await addDetailBundleProduct.mutate(id, selectedProductBarcode); // id adalah id bundle, selectedProductBarcode adalah id produk
-    //         toast.success('Produk berhasil ditambahkan ke bundle.');
-    //         setIsModalOpen(false);
-    //         setSearchProductBundle('');
-    //         refetch(); // Lakukan refetch data bundle untuk memperbarui tampilan
-    //     } catch (error) {
-    //         toast.error('Gagal menambahkan produk ke bundle.');
-    //         console.error('Error adding product to bundle:', error);
-    //     }
-    // };
-
     const handleExportData = async () => {
         try {
-            const body = {
-                id: detailDataBundle?.id,
-            };
-            await exportToExcel(body);
+            const response = await exportToExcel({ id }).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1); 
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName; 
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+    
+            toast.success('Data Pallet berhasil diekspor ke Excel.');
         } catch (err) {
-            console.log(err);
+            toast.error('Gagal mengekspor data Pallet.');
+            console.error('Error exporting Pallet to Excel:', err);
         }
     };
+    
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -265,7 +229,7 @@ const DetailBundleProduct = () => {
                                                                     type="button"
                                                                     className="btn btn-outline-info"
                                                                     onClick={(e) => {
-                                                                        handleAddDetailProduct(e, item.id.toString()); 
+                                                                        handleAddDetailProduct(e, item.id.toString());
                                                                     }}
                                                                 >
                                                                     <IconSquareCheck className="ltr:mr-2 rtl:ml-2 " />
@@ -375,9 +339,9 @@ const DetailBundleProduct = () => {
                             <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
                                 Add
                             </button>
-                            {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
                                 Export data
-                            </button> */}
+                            </button>
                         </div>
                     </div>
                     <div className="datatables xl:col-span-3">

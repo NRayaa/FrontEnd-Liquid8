@@ -40,13 +40,6 @@ export const bundleProductApi = createApi({
                 body,
             }),
         }),
-        exportToExcelDetailBundle: builder.mutation<ExportToExcel, { id: number | undefined }>({
-            query: (body) => ({
-                url: '/history/exportToExcel',
-                method: 'POST',
-                body,
-            }),
-        }),
         deleteDetailBundleProduct: builder.mutation<DeleteBundleResponse, number | undefined>({
             query: (id) => ({
                 url: `/product-bundle/${id}`,
@@ -57,6 +50,13 @@ export const bundleProductApi = createApi({
             query: ({ productId, bundleId }) => ({
                 url: `/product-bundle/${bundleId}/${productId}/add`,
                 method: 'GET',
+            }),
+        }),
+        exportToExcelDetailBundle: builder.mutation<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/exportBundlesDetail/${id}`,
+                method: 'POST',
+                responseType: 'blob',
             }),
         }),
     }),
@@ -70,7 +70,7 @@ export const {
     useGetFilterProductBundlesQuery,
     useDeleteFilterProductBundlesMutation,
     useCreateBundleMutation,
-    useExportToExcelDetailBundleMutation,
     useDeleteDetailBundleProductMutation,
     useAddDetailBundleProductMutation,
+    useExportToExcelDetailBundleMutation,
 } = bundleProductApi;

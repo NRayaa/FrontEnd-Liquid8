@@ -32,6 +32,7 @@ const DetailCheckHistory = () => {
             return detailProductData?.data.resource;
         }
     }, [detailProductData]);
+    
     const handleExportData = async () => {
         try {
             const body = {
