@@ -1,11 +1,17 @@
 import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { useDetailBundleProductQuery, useExportToExcelDetailBundleMutation } from '../../../../store/services/bundleProductApi';
+import {
+    useAddDetailBundleProductMutation,
+    useDeleteBundleProductMutation,
+    useDeleteDetailBundleProductMutation,
+    useDetailBundleProductQuery,
+    useExportToExcelDetailBundleMutation,
+} from '../../../../store/services/bundleProductApi';
 import { ChangeEvent, Fragment, MouseEvent, useMemo, useState } from 'react';
 import { formatRupiah, useDebounce } from '../../../../helper/functions';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
-import { NewProductItem, ProductExpiredItem, SubSalesProductsProps } from '../../../../store/services/types';
+import { NewProductItem, ProductExpiredItem } from '../../../../store/services/types';
 import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
 import { Dialog, Transition } from '@headlessui/react';
 import { useGetDisplayExpiredQuery, useGetSaleProductsQuery } from '../../../../store/services/productNewApi';
@@ -16,17 +22,19 @@ import { useAddSaleMutation, useGetListSaleQuery } from '../../../../store/servi
 const DetailBundleProduct = () => {
     const navigate = useNavigate();
     const { id }: any = useParams();
-    const { data, isSuccess } = useDetailBundleProductQuery(id);
+    const { data, isSuccess, refetch } = useDetailBundleProductQuery(id);
     const [exportToExcel, results] = useExportToExcelDetailBundleMutation();
-    const [searchSales, setSearchSales] = useState('');
+    const [searchProductBundle, setSearchProductBundle] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [pageProduct, setPageProduct] = useState<number>(1);
-    const [pageSales, setPageSales] = useState<number>(1);
-    const debounceValueSales = useDebounce(searchSales);
-    const { data: listSaleData, isError, isLoading, refetch: refetchListSale } = useGetListSaleQuery(pageSales);
-    const {  data: listProduct, refetch } = useGetDisplayExpiredQuery({ page: pageProduct, q: debounceValueSales });
+    const [pageProductBundle, setPageProductBundle] = useState<number>(1);
+    const debounceValueProductBundle = useDebounce(searchProductBundle);
+    const { data: listSaleData, isError, isLoading, refetch: refetchListSale } = useGetListSaleQuery(pageProductBundle);
+    const { data: listProduct } = useGetDisplayExpiredQuery({ page: pageProduct, q: debounceValueProductBundle });
     const [addSale] = useAddSaleMutation();
     const [scanProduct, setScanProduct] = useState('');
+    const [deleteBundle, resultsDeleteBundle] = useDeleteDetailBundleProductMutation();
+    const [addDetailBundleProduct] = useAddDetailBundleProductMutation();
 
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
@@ -38,38 +46,66 @@ const DetailBundleProduct = () => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSearchSales('');
+        setSearchProductBundle('');
     };
 
-    const handleAddSale = async (barcode_value: string) => {
-        try {
-            const body = {
-                sale_barcode: barcode_value,
-            };
-            await addSale(body)
-                .unwrap()
-                .then((res) => {
-                    toast.success(res.data.message);
-                    setScanProduct('');
-                    navigate('/outbound/sale/kasir');
-                    refetchListSale();
-                })
-                .catch((err) => toast.error(err.data.data.message));
-        } catch (err) {}
-    };
+    // const handleAddSale = async (barcode_value: string) => {
+    //     try {
+    //         const body = {
+    //             id: id,
+    //         };
+    //         await addSale(body)
+    //             .unwrap()
+    //             .then((res) => {
+    //                 toast.success(res.data.message);
+    //                 setScanProduct('');
+    //                 navigate('/outbound/sale/kasir');
+    //                 refetchListSale();
+    //             })
+    //             .catch((err) => toast.error(err.data.data.message));
+    //     } catch (err) {}
+    // };
 
-    const handleProductSelection = (e: MouseEvent<HTMLButtonElement>, selectedProductBarcode: string) => {
+    const handleAddDetailProduct = async (e: MouseEvent<HTMLButtonElement>, selectedProductId: string) => {
         e.preventDefault();
-        handleAddSale(selectedProductBarcode);
-        setIsModalOpen(false);
-        setSearchSales('');
+        try {
+            await addDetailBundleProduct({ productId: id, bundleId: selectedProductId });
+            toast.success('Produk berhasil ditambahkan ke bundle.');
+            setIsModalOpen(false);
+            setSearchProductBundle('');
+            refetch(); // Lakukan refetch data bundle untuk memperbarui tampilan
+        } catch (error) {
+            toast.error('Gagal menambahkan produk ke bundle.');
+            console.error('Error adding product to bundle:', error);
+        }
     };
+
+    // const handleProductSelection = (e: MouseEvent<HTMLButtonElement>, selectedProductBarcode: string) => {
+    //     e.preventDefault();
+    //     handleAddSale(selectedProductBarcode);
+    //     setIsModalOpen(false);
+    //     setSearchProductBundle('');
+    // };
 
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
             return data.data.resource;
         }
     }, [data]);
+
+    // const handleProductSelection = async (e: MouseEvent<HTMLButtonElement>, selectedProductBarcode: string) => {
+    //     e.preventDefault();
+    //     try {
+    //         await addDetailBundleProduct.mutate(id, selectedProductBarcode); // id adalah id bundle, selectedProductBarcode adalah id produk
+    //         toast.success('Produk berhasil ditambahkan ke bundle.');
+    //         setIsModalOpen(false);
+    //         setSearchProductBundle('');
+    //         refetch(); // Lakukan refetch data bundle untuk memperbarui tampilan
+    //     } catch (error) {
+    //         toast.error('Gagal menambahkan produk ke bundle.');
+    //         console.error('Error adding product to bundle:', error);
+    //     }
+    // };
 
     const handleExportData = async () => {
         try {
@@ -105,8 +141,9 @@ const DetailBundleProduct = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        // await deleteDocument(id);
+                        await deleteBundle(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                        refetch();
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -149,7 +186,7 @@ const DetailBundleProduct = () => {
                         open={isModalOpen}
                         onClose={() => {
                             setIsModalOpen(false);
-                            setSearchSales('');
+                            setSearchProductBundle('');
                         }}
                     >
                         <Transition.Child
@@ -182,8 +219,8 @@ const DetailBundleProduct = () => {
                                             <input
                                                 className="form-input"
                                                 placeholder="Search..."
-                                                onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchSales(e.target.value)}
-                                                value={searchSales}
+                                                onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchProductBundle(e.target.value)}
+                                                value={searchProductBundle}
                                                 autoFocus
                                             />
                                         </div>
@@ -197,6 +234,11 @@ const DetailBundleProduct = () => {
                                                         accessor: 'No',
                                                         title: 'No',
                                                         render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span>,
+                                                    },
+                                                    {
+                                                        accessor: 'id product',
+                                                        title: 'Id Produk',
+                                                        render: (item: ProductExpiredItem) => <span className="font-semibold">{item.id}</span>,
                                                     },
                                                     {
                                                         accessor: 'barcode',
@@ -223,7 +265,7 @@ const DetailBundleProduct = () => {
                                                                     type="button"
                                                                     className="btn btn-outline-info"
                                                                     onClick={(e) => {
-                                                                        handleProductSelection(e, item.old_barcode_product);
+                                                                        handleAddDetailProduct(e, item.id.toString()); 
                                                                     }}
                                                                 >
                                                                     <IconSquareCheck className="ltr:mr-2 rtl:ml-2 " />
@@ -330,9 +372,9 @@ const DetailBundleProduct = () => {
                             </button>
                         </Link>
                         <div className="flex items-center justify-between mb-4">
-                            {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
                                 Add
-                            </button> */}
+                            </button>
                             {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
                                 Export data
                             </button> */}
@@ -354,18 +396,18 @@ const DetailBundleProduct = () => {
                                     sortable: true,
                                     render: (item: NewProductItem) => <span className="badge whitespace-nowrap bg-primary">{item.new_status_product}</span>,
                                 },
-                                // {
-                                //     accessor: 'Aksi',
-                                //     title: 'Aksi',
-                                //     render: (item: NewProductItem) => (
-                                //         <div className="flex items-center w-max mx-auto gap-6">
-                                //             <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                //                 Remove
-                                //             </button>
-                                //         </div>
-                                //     ),
-                                //     textAlignment: 'center',
-                                // },
+                                {
+                                    accessor: 'Aksi',
+                                    title: 'Aksi',
+                                    render: (item: NewProductItem) => (
+                                        <div className="flex items-center w-max mx-auto gap-6">
+                                            <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ),
+                                    textAlignment: 'center',
+                                },
                             ]}
                         />
                     </div>

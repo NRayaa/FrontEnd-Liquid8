@@ -47,6 +47,18 @@ export const bundleProductApi = createApi({
                 body,
             }),
         }),
+        deleteDetailBundleProduct: builder.mutation<DeleteBundleResponse, number | undefined>({
+            query: (id) => ({
+                url: `/product-bundle/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        addDetailBundleProduct: builder.mutation<any, { productId: string, bundleId: string }>({
+            query: ({ productId, bundleId }) => ({
+                url: `/product-bundle/${bundleId}/${productId}/add`,
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -59,4 +71,6 @@ export const {
     useDeleteFilterProductBundlesMutation,
     useCreateBundleMutation,
     useExportToExcelDetailBundleMutation,
+    useDeleteDetailBundleProductMutation,
+    useAddDetailBundleProductMutation,
 } = bundleProductApi;
