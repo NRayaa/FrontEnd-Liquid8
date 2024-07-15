@@ -46,6 +46,12 @@ export const productNewApi = createApi({
         updatePriceByProductOld: builder.query<any, string | undefined>({
             query: (oldProduct) => `/get-latestPrice?old_price_product=${oldProduct}`,
         }),
+        deleteProductBundle: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-bundle/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -61,4 +67,5 @@ export const {
     useProductByCategoryQuery,
     useProductByColorQuery,
     useLazyUpdatePriceByProductOldQuery,
+    useDeleteProductBundleMutation,
 } = productNewApi;

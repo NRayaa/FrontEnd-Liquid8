@@ -121,6 +121,7 @@ export const migrateApi = createApi({
         getListDestinationOption: builder.query<GetListDestination, any>({
             query: () => `/destinations`,
         }),
+        
     }),
 });
 

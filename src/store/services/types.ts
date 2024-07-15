@@ -351,6 +351,7 @@ interface ProdcutItem {
     created_at: string;
     id: number;
 }
+
 interface NewProduct {
     data: {
         status: boolean;
@@ -894,6 +895,7 @@ interface PaletListItemArray {
     created_at: null | string;
     updated_at: null | string;
 }
+
 interface PaletListItem {
     id: number;
     name_palet: string;
@@ -1615,6 +1617,14 @@ interface DetailPalletProps {
     };
 }
 
+interface DeleteDetailPalleteResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: null;
+    };
+}
+
 interface SubPaletItem {
     id: number;
     palet_id: number;
@@ -1789,6 +1799,7 @@ export type {
     DocumentApprovmentItem,
     CheckDocumentApprovmentItem,
     DetailPalletProps,
+    DeleteDetailPalleteResponse,
     SubPaletItem,
     SaleProductsProps,
     SubSalesProductsProps,

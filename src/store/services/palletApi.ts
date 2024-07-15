@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CreatePaletBody, CreatePaletResponse, DeletePaletList, DetailPalletProps, DisplayPallet, FilterDisplayPallet, PaletLists, filterPalletLists } from './types';
+import { CreatePaletBody, CreatePaletResponse, DeleteDetailPalleteResponse, DeletePaletList, DetailPalletProps, DisplayPallet, ExportToExcel, FilterDisplayPallet, PaletLists, filterPalletLists } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const palletApi = createApi({
@@ -43,6 +43,32 @@ export const palletApi = createApi({
         showPallet: builder.query<DetailPalletProps, number>({
             query: (id) => `/palet/${id}`,
         }),
+        deleteDetailPalletProduct: builder.mutation<DeleteDetailPalleteResponse, number | undefined>({
+            query: (id) => ({
+                url: `/product-palet/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        addDetailPalletProduct: builder.mutation<any, { productId: string, palletId: string }>({
+            query: ({ productId, palletId }) => ({
+                url: `/product-palet/${palletId}/${productId}/add`,
+                method: 'GET',
+            }),
+        }),
+        updateDetailPallet: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/palet/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        exportToExcelDetailPallet: builder.mutation<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/exportPalletsDetail/${id}`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
@@ -55,4 +81,8 @@ export const {
     useDeleteFilterProductMutation,
     useCreatePalleteMutation,
     useShowPalletQuery,
+    useDeleteDetailPalletProductMutation,
+    useAddDetailPalletProductMutation,
+    useUpdateDetailPalletMutation,
+    useExportToExcelDetailPalletMutation,
 } = palletApi;
