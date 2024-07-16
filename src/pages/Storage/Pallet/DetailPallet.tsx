@@ -29,7 +29,7 @@ const PalletDetail = () => {
     const { data: listProduct } = useDisplayPalletListsQuery({ page: pageProduct, q: debounceValueProductBundle });
     const [addDetailPalletProduct] = useAddDetailPalletProductMutation();
     const [updateDetailPallet] = useUpdateDetailPalletMutation();
-    const [exportToExcel, results] = useExportToExcelDetailPalletMutation();
+    const [exportToExcel] = useExportToExcelDetailPalletMutation();
 
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;

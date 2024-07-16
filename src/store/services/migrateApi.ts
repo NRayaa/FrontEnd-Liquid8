@@ -121,7 +121,13 @@ export const migrateApi = createApi({
         getListDestinationOption: builder.query<GetListDestination, any>({
             query: () => `/destinations`,
         }),
-        
+        exportToExcelDetailListMigrate: builder.mutation<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/exportMigrateDetail/${id}`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
@@ -141,4 +147,5 @@ export const {
     useDeleteDestinationMutation,
     useGetDisplayMigrateQuery,
     useGetListDestinationOptionQuery,
+    useExportToExcelDetailListMigrateMutation,
 } = migrateApi;

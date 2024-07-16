@@ -52,6 +52,20 @@ export const productNewApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        exportToExcelProductByCategory: builder.mutation<any, any>({
+            query: () => ({
+                url: `/export_product_byCategory`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
+        exportToExcelSlowMovingListProduct: builder.mutation<any, any>({
+            query: () => ({
+                url: `/exportProductExpired`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
@@ -68,4 +82,6 @@ export const {
     useProductByColorQuery,
     useLazyUpdatePriceByProductOldQuery,
     useDeleteProductBundleMutation,
+    useExportToExcelProductByCategoryMutation,
+    useExportToExcelSlowMovingListProductMutation,
 } = productNewApi;

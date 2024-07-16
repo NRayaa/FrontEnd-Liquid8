@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../../components';
 import { DataTable } from 'mantine-datatable';
-import { useDeleteProductNewMutation, useGetAllProductNewQuery, useProductByCategoryQuery } from '../../../../store/services/productNewApi';
+import { useDeleteProductNewMutation, useExportToExcelProductByCategoryMutation, useGetAllProductNewQuery, useProductByCategoryQuery } from '../../../../store/services/productNewApi';
 import { NewProductItem } from '../../../../store/services/types';
 import { formatDate, formatRupiah, useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
@@ -15,6 +15,25 @@ const ProductByCategory = () => {
     const debounceValue = useDebounce(search);
     const { data, isError, refetch, isSuccess } = useProductByCategoryQuery({ page, q: debounceValue });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
+    const [exportToExcel] = useExportToExcelProductByCategoryMutation();
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({}).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success('Data Pallet berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data Pallet.');
+            console.error('Error exporting Pallet to Excel:', err);
+        }
+    };
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -28,7 +47,7 @@ const ProductByCategory = () => {
             });
             swalWithBootstrapButtons
                 .fire({
-                    title: 'Yakin ingin menhapus item ini?',
+                    title: 'Yakin ingin menghapus item ini?',
                     text: 'Data tidak bisa di kembalikan setelah di hapus',
                     icon: 'warning',
                     showCancelButton: true,
@@ -100,26 +119,31 @@ const ProductByCategory = () => {
             <BreadCrumbs base="Storage" basePath="storage/product" current="Produk" />
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product By Category</h5>
-                <div className="relative w-[220px] ms-auto mb-4">
-                    <input
-                        type="text"
-                        className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
-                        placeholder="Search..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                    <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
-                        <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
-                            <path d="M18.5 18.5L22 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                        </svg>
+                <div className="flex items-center justify-between mb-4">
+                    <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mb-4" onClick={handleExportData}>
+                        Export data
                     </button>
-                    <button type="button" className="hover:opacity-80 sm:hidden block absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-                            <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                        </svg>
-                    </button>
+                    <div className="relative w-[220px] ms-auto mb-4">
+                        <input
+                            type="text"
+                            className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                            placeholder="Search..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <button type="button" className="absolute w-9 h-9 inset-0 ltr:right-auto rtl:left-auto appearance-none peer-focus:text-primary">
+                            <svg className="mx-auto" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+                                <path d="M18.5 18.5L22 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            </svg>
+                        </button>
+                        <button type="button" className="hover:opacity-80 sm:hidden block absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                                <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div className="datatables">
                     <DataTable

@@ -46,6 +46,13 @@ export const repairMovingProductsApi = createApi({
                 method: 'PUT',
             }),
         }),
+        exportToExcelDetailRepair: builder.mutation<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/exportRepairDetail/${id}`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
@@ -58,4 +65,5 @@ export const {
     useGetShowRepairMovingProductsQuery,
     useUnrepairMovingProductMutation,
     useUpdateThrowsDetailMutation,
+    useExportToExcelDetailRepairMutation,
 } = repairMovingProductsApi;

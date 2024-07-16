@@ -2,7 +2,7 @@ import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
 import 'tippy.js/dist/tippy.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDeleteAccountMutation, useGetListAkunQuery } from '../../../store/services/listAkunApi';
+import { useDeleteAccountMutation, useExportToExcelListAccountMutation, useGetListAkunQuery } from '../../../store/services/listAkunApi';
 import { GetListAkunItem, GetListRoleItem } from '../../../store/services/types';
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import toast from 'react-hot-toast';
@@ -15,6 +15,7 @@ const ListAkun = () => {
     const { data: listAkunData, refetch, isError } = useGetListAkunQuery({ page, q: search });
     const { data: listRoleData, refetch: listRefetch } = useGetListRoleQuery(undefined);
     const [deleteAccount, results] = useDeleteAccountMutation();
+    const [exportToExcel] = useExportToExcelListAccountMutation();
 
     const listAkun: any = useMemo(() => {
         return listAkunData?.data.resource.data;
@@ -35,6 +36,24 @@ const ListAkun = () => {
             await deleteAccount(id);
         } catch (err) {
             console.log(err);
+        }
+    };
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({}).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success('Data list akun berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data list akun.');
+            console.error('Error exporting list akun to Excel:', err);
         }
     };
 
@@ -59,9 +78,14 @@ const ListAkun = () => {
             <div className="panel mt-6">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Akun</h5>
                 <div className="mb-4 flex justify-end">
-                    <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/akun/akun/list_akun/add_akun')}>
-                        Add Akun
-                    </button>
+                    <div className="flex items-center justify-between">
+                        <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/akun/akun/list_akun/add_akun')}>
+                            Add Akun
+                        </button>
+                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                            Export Data
+                        </button>
+                    </div>
                 </div>
                 <div className="datatables">
                     <DataTable
@@ -71,7 +95,7 @@ const ListAkun = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListAkunItem, index: number) =><span>{(page - 1) * listAkun?.length + (index + 1)}</span>,
+                                render: (item: GetListAkunItem, index: number) => <span>{(page - 1) * listAkun?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name',
