@@ -29,7 +29,14 @@ export const buyerApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        exportToExcelBuyer: builder.mutation<any, any>({
+            query: () => ({
+                url: `/exportBuyers`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
-export const { useGetListBuyerQuery, useAddBuyerMutation, useUpdatedBuyerMutation, useDeleteBuyerMutation } = buyerApi;
+export const { useGetListBuyerQuery, useAddBuyerMutation, useUpdatedBuyerMutation, useDeleteBuyerMutation, useExportToExcelBuyerMutation } = buyerApi;

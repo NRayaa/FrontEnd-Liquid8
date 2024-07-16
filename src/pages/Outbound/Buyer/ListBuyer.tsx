@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import IconPencil from '../../../components/Icon/IconPencil';
 import IconTrashLines from '../../../components/Icon/IconTrashLines';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDeleteBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
+import { useDeleteBuyerMutation, useExportToExcelBuyerMutation, useGetListBuyerQuery } from '../../../store/services/buyerApi';
 import { GetListBuyerItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
@@ -524,7 +524,7 @@ const ListBuyer = () => {
     const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
     const [deleteBuyer, results] = useDeleteBuyerMutation();
     const [initialRecords2, setInitialRecords2] = useState(sortBy(rowData, 'firstName'));
-    const [recordsData2, setRecordsData2] = useState(initialRecords2);
+    const [exportToExcel] = useExportToExcelBuyerMutation();
 
     const listBuyer: any = useMemo(() => {
         return data?.data.resource.data;
@@ -535,6 +535,24 @@ const ListBuyer = () => {
             await deleteBuyer(id);
         } catch (err) {
             console.log(err);
+        }
+    };
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({}).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success('Data buyer berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data buyer.');
+            console.error('Error exporting buyer to Excel:', err);
         }
     };
 
@@ -556,14 +574,23 @@ const ListBuyer = () => {
         <div>
             <div className="panel mt-6">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Buyer</h5>
-                <div className="mb-4 flex justify-end">
-                    <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/buyer/buyer/list_buyer/add_buyer')}>
-                        Add Buyer
-                    </button>
-                </div>
-                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:mr-auto rtl:ml-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="flex items-center justify-between mb-4">
+                    <div className="relative w-1/2">
+                        <input
+                            type="text"
+                            className="form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                            placeholder="Search..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/buyer/buyer/list_buyer/add_buyer')}>
+                            Add Buyer
+                        </button>
+                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                            Export Data
+                        </button>
                     </div>
                 </div>
                 <div className="datatables">

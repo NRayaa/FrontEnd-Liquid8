@@ -163,7 +163,7 @@ const ApprovementProduct = () => {
                                 title: 'Aksi',
                                 render: (item: DocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <button onClick={() => handleApprove(item.id)} type="button" className="btn btn-outline-success">
+                                        <button onClick={() => handleApprove(item.id)} type="button" className="btn btn-outline-success" disabled={item.status === 'done'}>
                                             Approve
                                         </button>
                                         <Link to={`/inbound/check_product/approvment_document/detail/${item.id}`} state={{ code_document: item?.riwayat_check?.code_document }}>

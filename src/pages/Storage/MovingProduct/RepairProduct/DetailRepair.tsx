@@ -2,7 +2,7 @@ import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { formatRupiah } from '../../../../helper/functions';
-import { useGetShowRepairMovingProductsQuery, useUpdateThrowsDetailMutation } from '../../../../store/services/repairMovingApi';
+import { useExportToExcelDetailRepairMutation, useGetShowRepairMovingProductsQuery, useUpdateThrowsDetailMutation } from '../../../../store/services/repairMovingApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
 import { Dialog, Transition } from '@headlessui/react';
@@ -15,12 +15,32 @@ const DetailRepair = () => {
     const [throws, setThrows] = useState(false);
     const [updateThrows, results] = useUpdateThrowsDetailMutation();
     const navigate = useNavigate();
+    const [exportToExcel] = useExportToExcelDetailRepairMutation();
 
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
             return data.data.resource;
         }
     }, [data]);
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({ id }).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1); 
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName; 
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+    
+            toast.success('Data detail repair berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data detail repair.');
+            console.error('Error exporting detail repair to Excel:', err);
+        }
+    };
 
     const handleThrowsConfirmation = async (id: number) => {
         try {
@@ -127,6 +147,14 @@ const DetailRepair = () => {
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
                             </button>
                         </Link>
+                        <div className="flex items-center justify-between mb-4">
+                            {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
+                                Add
+                            </button> */}
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
+                                Export data
+                            </button>
+                        </div>
                     </div>
                     <div className="datatables xl:col-span-3">
                         <DataTable

@@ -29,7 +29,14 @@ export const listAkunApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        exportToExcelListAccount: builder.mutation<any, any>({
+            query: () => ({
+                url: `/exportUsers`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
-export const { useGetListAkunQuery, useCreateAccountMutation, useUpdateAccountMutation, useDeleteAccountMutation } = listAkunApi;
+export const { useGetListAkunQuery, useCreateAccountMutation, useUpdateAccountMutation, useDeleteAccountMutation, useExportToExcelListAccountMutation } = listAkunApi;
