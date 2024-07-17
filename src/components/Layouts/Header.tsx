@@ -7,10 +7,15 @@ import { useTranslation } from 'react-i18next';
 import Dropdown from '../Dropdown';
 import { Spinner } from '../../commons';
 import NotificationHeader from './NotificationHeader';
+import { useWifiIndikatorQuery } from '../../store/services/notificationsApi';
+import axios from 'axios';
 
 const Header = () => {
+    const { data } = useWifiIndikatorQuery(undefined);
+    console.log(data);
     const location = useLocation();
     const navigate = useNavigate();
+    const [ping, setPing] = useState<number | null>(null);
     useEffect(() => {
         const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
         if (selector) {
@@ -48,10 +53,32 @@ const Header = () => {
         navigate('/auth/login');
     };
 
+    const handleGetSpeed = async () => {
+        const startTime = performance.now();
+        try {
+            await axios.get('https://server.wms-liquid8.online/storage/image-for-check-connection/423kb_image.png', { responseType: 'blob' });
+            const endTime = performance.now();
+            const duration = endTime - startTime;
+            setPing(duration);
+        } catch (error) {
+            setPing(null);
+        }
+    };
+
+    console.log(ping);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            handleGetSpeed();
+        }, 30000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <header className={`z-40 ${themeConfig.semidark && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
             <div className="shadow-sm">
-                <div className="relative bg-white flex w-full items-center px-5 py-2.5 dark:bg-black">
+                <div className="relative bg-white flex w-full items-center px-5 py-2.5 dark:bg-black justify-between lg:justify-end">
                     <div className="horizontal-logo flex lg:hidden justify-between items-center ltr:mr-2 rtl:ml-2">
                         <Link to="/" className="main-logo flex items-center shrink-0">
                             <img className="w-52 flex-none" src={themeConfig.theme === 'dark' ? darkImage : lightImage} alt="logo" />
@@ -71,8 +98,24 @@ const Header = () => {
                         </button>
                     </div>
 
-                    <div className="sm:flex-1 ltr:sm:ml-0 ltr:ml-auto sm:rtl:mr-0 rtl:mr-auto flex items-center space-x-1.5 lg:space-x-2 rtl:space-x-reverse dark:text-[#d0d2d6]">
-                        <div className="sm:ltr:mr-auto sm:rtl:ml-auto"></div>
+                    <div className="flex items-center space-x-1.5 lg:space-x-2 dark:text-[#d0d2d6]">
+                        <div className="w-9 h-9 rounded-full bg-gray-100 flex justify-center items-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="lucide lucide-wifi w-5 h-5"
+                            >
+                                <path d="M12 20h.01" />
+                                <path d="M2 8.82a15 15 0 0 1 20 0" />
+                                <path d="M5 12.859a10 10 0 0 1 14 0" />
+                                <path d="M8.5 16.429a5 5 0 0 1 7 0" />
+                            </svg>
+                        </div>
 
                         {/* dropdown notification */}
                         <NotificationHeader />

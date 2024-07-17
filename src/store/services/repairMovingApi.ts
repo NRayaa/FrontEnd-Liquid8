@@ -46,6 +46,22 @@ export const repairMovingProductsApi = createApi({
                 method: 'PUT',
             }),
         }),
+        deleteReprair: builder.mutation({
+            query: (id) => ({
+                url: `/product-repair/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        updateReprair: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/product-repair/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        getProductRepair: builder.query<any, any>({
+            query: (id) => `/repair-product-mv/${id}`,
+        }),
     }),
 });
 
@@ -58,4 +74,7 @@ export const {
     useGetShowRepairMovingProductsQuery,
     useUnrepairMovingProductMutation,
     useUpdateThrowsDetailMutation,
+    useDeleteReprairMutation,
+    useUpdateReprairMutation,
+    useGetProductRepairQuery,
 } = repairMovingProductsApi;
