@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BreadCrumbs } from '../../../components';
 import { DataTable } from 'mantine-datatable';
 import { GetCategoriesItem } from '../../../store/services/types';
-import { useDeleteCategoryMutation, useGetCategoriesQuery } from '../../../store/services/categoriesApi';
+import { useDeleteCategoryMutation, useExportToExcelSubCategoryMutation, useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 import { formatRupiah, useDebounce } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
@@ -15,7 +15,26 @@ const CategorySetting = () => {
     const searchDebounce = useDebounce(search);
     const { data, refetch, isError } = useGetCategoriesQuery(searchDebounce);
     const [deleteCategory, results] = useDeleteCategoryMutation();
+    const [exportToExcel] = useExportToExcelSubCategoryMutation();
 
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({}).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success('Data sub kategori berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data sub kategori.');
+            console.error('Error exporting sub kategori to Excel:', err);
+        }
+    };
+    
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
@@ -97,7 +116,7 @@ const CategorySetting = () => {
             <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/" current="SubKategori" />
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Sub Kategori</h5>
-                <div className="mb-4 flex justify-between">
+                <div className="flex items-center justify-between mb-4">
                     <div className="relative w-1/2">
                         <input
                             type="text"
@@ -119,9 +138,14 @@ const CategorySetting = () => {
                             </svg>
                         </button>
                     </div>
-                    <button type="button" className="btn btn-primary uppercase px-6" onClick={() => navigate('/storage/categorysetting/add_category')}>
-                        add data
+                    <div className="flex items-center justify-between">
+                    <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/categorysetting/add_category')}>
+                        Add Data
                     </button>
+                    <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                        Export Data
+                    </button>
+                    </div>
                 </div>
                 <div className="datatables">
                     <DataTable

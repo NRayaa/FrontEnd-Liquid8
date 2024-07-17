@@ -130,22 +130,27 @@ const CreateMovingBundleProduct = () => {
     }, [resultsCreateBundle]);
 
     useEffect(() => {
-        if ((filterBundles?.data?.data?.resource?.total_new_price as any) >= 100000 && (filterBundles?.data?.data?.resource?.category as any) !== null) {
+        const resource = filterBundles?.data?.data?.resource;
+    
+        if (resource && resource.total_new_price >= 100000 && resource.category !== null) {
             setIsCategory(true);
-            setCategories(filterBundles?.data?.data?.resource?.category);
+            setCategories(resource.category ?? []);
             setColorName('');
-            setCustomPrice(JSON.stringify(filterBundles?.data?.data?.resource?.total_new_price));
+            setCustomPrice(JSON.stringify(resource.total_new_price));
         } else {
             setIsCategory(false);
-            if (filterBundles?.data?.data?.resource.data.data.length !== 0) {
-                setCustomPrice(filterBundles?.data?.data?.resource.data.data[0]?.new_tag_product[0]?.fixed_price_color ?? '0');
-                setColorName(filterBundles?.data?.data?.resource.data.data[0]?.new_tag_product[0]?.name_color ?? '');
+            if (resource && Array.isArray(resource.data) && resource.data.length > 0) {
+                const firstProduct = resource.data[0];
+                const firstTag = firstProduct?.new_tag_product?.[0];
+    
+                setCustomPrice(firstTag?.fixed_price_color ?? '0');
+                setColorName(firstTag?.name_color ?? '');
             } else {
                 setCustomPrice('0');
                 setColorName('');
             }
         }
-    }, [filterBundles?.data?.data.resource.total_new_price]);
+    }, [filterBundles?.data?.data?.resource]);
 
     return (
         <div>
@@ -190,7 +195,7 @@ const CreateMovingBundleProduct = () => {
                                 placeholder="Rp"
                                 className="form-input w-[250px]"
                                 required
-                                value={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
+                                value={formatRupiah(filterBundles?.data?.data?.resource?.total_new_price?.toString() ?? '0')}
                             />
                         </div>
                         {!isCategory && (
@@ -246,7 +251,7 @@ const CreateMovingBundleProduct = () => {
                         <div className="ml-12">
                             <BarcodePrinted
                                 barcode={barcode}
-                                category={selectedCategory}
+                                category={nameBundle}
                                 newPrice={formatRupiah(customDisplay)}
                                 oldPrice={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
                                 isBundle

@@ -351,6 +351,7 @@ interface ProdcutItem {
     created_at: string;
     id: number;
 }
+
 interface NewProduct {
     data: {
         status: boolean;
@@ -711,6 +712,7 @@ interface DetailBundleResponse {
         resource: {
             id: number;
             name_bundle: string;
+            category: string;
             total_price_bundle: string;
             total_price_custom_bundle: string;
             total_product_bundle: string;
@@ -759,6 +761,7 @@ interface GetFilterProductBundles {
         resource: {
             total_new_price: number;
             category: any;
+            name_bundle: any;
             data: {
                 current_page: number;
                 data: ProductExpiredItem[];
@@ -892,6 +895,7 @@ interface PaletListItemArray {
     created_at: null | string;
     updated_at: null | string;
 }
+
 interface PaletListItem {
     id: number;
     name_palet: string;
@@ -1613,6 +1617,14 @@ interface DetailPalletProps {
     };
 }
 
+interface DeleteDetailPalleteResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: null;
+    };
+}
+
 interface SubPaletItem {
     id: number;
     palet_id: number;
@@ -1787,6 +1799,7 @@ export type {
     DocumentApprovmentItem,
     CheckDocumentApprovmentItem,
     DetailPalletProps,
+    DeleteDetailPalleteResponse,
     SubPaletItem,
     SaleProductsProps,
     SubSalesProductsProps,

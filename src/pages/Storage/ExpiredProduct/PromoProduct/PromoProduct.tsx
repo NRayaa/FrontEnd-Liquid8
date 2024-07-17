@@ -153,9 +153,9 @@ const PromoProduct = () => {
                                                 DETAIL
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id, idProduct: item.new_product.id })}>
+                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id, idProduct: item.new_product.id })}>
                                             UNBUNDLE
-                                        </button>
+                                        </button> */}
                                     </div>
                                 ),
                             },
