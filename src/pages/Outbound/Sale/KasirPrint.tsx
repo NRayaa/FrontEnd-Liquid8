@@ -7,6 +7,33 @@ const ReportTable = () => {
     const { code_document_sale } = useParams();
     const { data } = useGetSaleReportQuery(code_document_sale);
 
+    function convertToRoman(num: number): string {
+        const romanNumerals: { value: number; symbol: string }[] = [
+            { value: 1000, symbol: 'M' },
+            { value: 900, symbol: 'CM' },
+            { value: 500, symbol: 'D' },
+            { value: 400, symbol: 'CD' },
+            { value: 100, symbol: 'C' },
+            { value: 90, symbol: 'XC' },
+            { value: 50, symbol: 'L' },
+            { value: 40, symbol: 'XL' },
+            { value: 10, symbol: 'X' },
+            { value: 9, symbol: 'IX' },
+            { value: 5, symbol: 'V' },
+            { value: 4, symbol: 'IV' },
+            { value: 1, symbol: 'I' },
+        ];
+
+        let result = '';
+        for (const { value, symbol } of romanNumerals) {
+            while (num >= value) {
+                result += symbol;
+                num -= value;
+            }
+        }
+        return result;
+    }
+
     const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
         if (containerElement) {
@@ -74,15 +101,9 @@ const ReportTable = () => {
                                 <td>FORM VALIDASI</td>
                             </tr>
                             <tr>
-                                <td>{data?.buyer.code_document_sale}/LMS/I/2024</td>
-                            </tr>
-                        </table>
-                        <table border={1}>
-                            <tr>
-                                <td>Sales Reference</td>
-                            </tr>
-                            <tr>
-                                <td style={{ height: 18 }}></td>
+                                <td>
+                                    {data?.buyer.code_document_sale}/LMS/{convertToRoman(new Date().getMonth())}/2024
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -102,7 +123,24 @@ const ReportTable = () => {
                 </div>
                 <div style={{ marginTop: 16, marginBottom: 16 }}>
                     <h3 style={{ fontSize: 12 }}>A. Identitas Buyer</h3>
-                    <table border={1}>
+                    <div style={{ border: '1px solid #000', width: '100%', display: 'flex' }}>
+                        <div style={{ borderRight: '1px solid #000', width: '100%', padding: '8px', display: 'flex', flexDirection: 'column' }}>
+                            <h5 style={{ margin: '0px' }}>Nama : {data?.buyer.buyer_name_document_sale}</h5>
+                            <h5 style={{ margin: '0px' }}>Alamat : {data?.buyer.buyer_address_document_sale}</h5>
+                            <h5 style={{ margin: '0px' }}>HP : {data?.buyer.buyer_phone_document_sale}</h5>
+                            <h5 style={{ margin: '0px' }}>NPWP : -</h5>
+                            <h5 style={{ margin: '0px' }}>Tanggal : {formatTimestamp(data?.buyer.created_at ?? '')}</h5>
+                        </div>
+                        <div style={{ width: '100%', padding: '8px' }}>
+                            <h5 style={{ textDecoration: 'underline', fontWeight: 'bold', margin: '0px' }}>Catatan Pembelian</h5>
+                            <p style={{ fontSize: 12, margin: '0px', marginTop: '4px' }}>
+                                Masing-masing pihak tidak bertanggung jawab atas, perbuatan melawan hukum, kelalaian, pelanggaran atau segala kerugian, kerusakan, ongkos atau biaya dalam bentuk apapun
+                                yang harus dibayar atau diderita oleh pihak yang lain (a) baik yang bersifat tidak langsung atau konsekuensial atau (b) yang terkait dengan kerugian ekonomi, keuntungan
+                                atau reputasi bisnis.
+                            </p>
+                        </div>
+                    </div>
+                    {/* <table border={1}>
                         <tr>
                             <td style={{ width: '50%' }}>
                                 <h5>Nama : {data?.buyer.buyer_name_document_sale}</h5>
@@ -120,7 +158,7 @@ const ReportTable = () => {
                                 </p>
                             </td>
                         </tr>
-                    </table>
+                    </table> */}
                     <p style={{ marginTop: 12, fontSize: 12 }}>
                         Bahwa yang bersangkutan di atas telah melakukan pemilihan dan pemilahan atas barang yang berada di area Liquid8 Wholesale dan sepakat untuk melakukan pembelian sebagaimana
                         detail barang & harga berlaku di bawah:
@@ -164,24 +202,20 @@ const ReportTable = () => {
                         <p> ke rekening di bawah ini :</p>
                     </div>
                     <div style={{ width: '100%' }}>
-                        <table border={1} style={{ width: '100%' }}>
-                            <tr>
-                                <td style={{ width: '100%' }}>
-                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                                        <p>NOMOR REKENING :</p>
-                                        <p>178-499-8811</p>
-                                    </div>
-                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                                        <p>NAMA PEMILIK:</p>
-                                        <p>178-499-8811</p>
-                                    </div>
-                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                                        <p>BANK REKENING:</p>
-                                        <p>BCA</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                        <div style={{ border: '1px solid #000', width: '100%', display: 'flex', flexDirection: 'column', padding: '8px' }}>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                                <p style={{ margin: '0px' }}>NOMOR REKENING :</p>
+                                <p style={{ margin: '0px' }}>178-499-8811</p>
+                            </div>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                                <p style={{ margin: '0px' }}>NAMA PEMILIK:</p>
+                                <p style={{ margin: '0px' }}>PT Likuid Megah Semesta</p>
+                            </div>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                                <p style={{ margin: '0px' }}>BANK REKENING:</p>
+                                <p style={{ margin: '0px' }}>BCA</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -217,7 +251,7 @@ const ReportTable = () => {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 16 }}>
                         <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
-                            <h5>Buyer</h5>
+                            <h5>{data?.buyer.buyer_name_document_sale}</h5>
                         </div>
                         <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <h5>Dibuat:</h5>

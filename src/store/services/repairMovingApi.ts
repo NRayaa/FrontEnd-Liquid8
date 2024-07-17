@@ -46,7 +46,23 @@ export const repairMovingProductsApi = createApi({
                 method: 'PUT',
             }),
         }),
-        exportToExcelDetailRepair: builder.mutation<any, { id: string }>({
+        deleteReprair: builder.mutation({
+            query: (id) => ({
+                url: `/product-repair/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        updateReprair: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/product-repair/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        getProductRepair: builder.query<any, any>({
+            query: (id) => `/repair-product-mv/${id}`,
+        }),
+          exportToExcelDetailRepair: builder.mutation<any, { id: string }>({
             query: ({ id }) => ({
                 url: `/exportRepairDetail/${id}`,
                 method: 'POST',
@@ -65,5 +81,8 @@ export const {
     useGetShowRepairMovingProductsQuery,
     useUnrepairMovingProductMutation,
     useUpdateThrowsDetailMutation,
-    useExportToExcelDetailRepairMutation,
+    useDeleteReprairMutation,
+    useUpdateReprairMutation,
+    useGetProductRepairQuery,
+      useExportToExcelDetailRepairMutation,
 } = repairMovingProductsApi;
