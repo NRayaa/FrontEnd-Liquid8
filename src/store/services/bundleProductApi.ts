@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { BundleResponse, DetailBundleResponse, DeleteBundleResponse, FilterProduct, GetFilterProductBundles, CreateBundle, CreateBundleBody } from './types';
+import { BundleResponse, DetailBundleResponse, DeleteBundleResponse, FilterProduct, GetFilterProductBundles, CreateBundle, CreateBundleBody, ExportToExcel } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const bundleProductApi = createApi({
@@ -40,6 +40,25 @@ export const bundleProductApi = createApi({
                 body,
             }),
         }),
+        deleteDetailBundleProduct: builder.mutation<DeleteBundleResponse, number | undefined>({
+            query: (id) => ({
+                url: `/product-bundle/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        addDetailBundleProduct: builder.mutation<any, { productId: string, bundleId: string }>({
+            query: ({ productId, bundleId }) => ({
+                url: `/product-bundle/${bundleId}/${productId}/add`,
+                method: 'GET',
+            }),
+        }),
+        exportToExcelDetailBundle: builder.mutation<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/exportBundlesDetail/${id}`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
@@ -51,4 +70,7 @@ export const {
     useGetFilterProductBundlesQuery,
     useDeleteFilterProductBundlesMutation,
     useCreateBundleMutation,
+    useDeleteDetailBundleProductMutation,
+    useAddDetailBundleProductMutation,
+    useExportToExcelDetailBundleMutation,
 } = bundleProductApi;

@@ -58,6 +58,13 @@ export const categoriesApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        exportToExcelSubCategory: builder.mutation<any, any>({
+            query: () => ({
+                url: `/exportCategory`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
@@ -72,4 +79,5 @@ export const {
     useGetDetailProductApprovesByDocQuery,
     useGetDetailProductApprovesQuery,
     useEditProductApprovesMutation,
+    useExportToExcelSubCategoryMutation,
 } = categoriesApi;

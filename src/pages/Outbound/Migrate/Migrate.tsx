@@ -1,12 +1,14 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAddMigrateMutation, useDeleteMigrateMutation, useGetColorCountQuery, useGetDisplayMigrateQuery, useMigrateFinishMutation, useMigrateMutation } from '../../../store/services/migrateApi';
+import { useAddMigrateMutation, useDeleteMigrateMutation, useGetColorCountQuery, useGetDisplayMigrateQuery, useGetListDestinationOptionQuery, useMigrateFinishMutation, useMigrateMutation } from '../../../store/services/migrateApi';
 import toast from 'react-hot-toast';
 import { DataTable } from 'mantine-datatable';
 import Swal from 'sweetalert2';
+import { GetListDestinationItem } from '../../../store/services/types';
 
 const Migrate = () => {
     const navigate = useNavigate();
+    const { data: getDestination } = useGetListDestinationOptionQuery([]);
     const { data: getColorCount, refetch: refetchGetColorCount } = useGetColorCountQuery(undefined);
     const { data: getDisplayMigrate, refetch: refetchDisplayMigrate } = useGetDisplayMigrateQuery(undefined);
     const [colorOptions, setColorOptions] = useState<{ label: string; value: string }[]>([]);
@@ -157,6 +159,13 @@ const Migrate = () => {
         return getColorCount?.data?.resource ?? {};
     }, [getColorCount]);
 
+    const destinationData: GetListDestinationItem[] = useMemo(() => {
+        if (getDestination?.data?.resource?.data) {
+            return getDestination.data.resource.data;
+        }
+        return [];
+    }, [getDestination]);
+    
     useEffect(() => {
         if (getDisplayMigrate?.data.resource.destionation === 'disable') {
             setInput((prev) => ({ ...prev, destination: getDisplayMigrate?.data.resource.data.destiny_document_migrate ?? '' }));
@@ -227,8 +236,11 @@ const Migrate = () => {
                                     disabled={getDisplayMigrate?.data.resource.destionation === 'disable'}
                                 >
                                     <option>Select</option>
-                                    <option value="DKT">DKT</option>
-                                    <option value="DKTO">DKTO</option>
+                                    {destinationData.map((destination: any) => (
+                                        <option key={destination.id} value={destination?.shop_name}>
+                                            {destination?.shop_name}
+                                        </option>
+                                    ))}
                                 </select>{' '}
                             </div>
                             <div className="flex items-center justify-between ">

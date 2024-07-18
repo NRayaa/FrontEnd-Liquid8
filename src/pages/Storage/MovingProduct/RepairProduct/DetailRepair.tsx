@@ -8,6 +8,7 @@ import {
     useGetShowRepairMovingProductsQuery,
     useUpdateReprairMutation,
     useUpdateThrowsDetailMutation,
+      useExportToExcelDetailRepairMutation
 } from '../../../../store/services/repairMovingApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
@@ -27,6 +28,7 @@ const DetailRepair = () => {
     const [updateRepair, resultUpdateRepair] = useUpdateReprairMutation();
     const navigate = useNavigate();
     const [input, setInput] = useState({ barcode: '', name: '', qty: 0, price: 0, category: '' });
+    const [exportToExcel] = useExportToExcelDetailRepairMutation();
 
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
@@ -34,6 +36,25 @@ const DetailRepair = () => {
         }
     }, [data]);
     const detailDataProduct = dataProduct?.data.resource;
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({ id }).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1); 
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName; 
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+    
+            toast.success('Data detail repair berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data detail repair.');
+            console.error('Error exporting detail repair to Excel:', err);
+        }
+    };
 
     const handleThrowsConfirmation = async (id: number) => {
         try {
@@ -216,6 +237,14 @@ const DetailRepair = () => {
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
                             </button>
                         </Link>
+                        <div className="flex items-center justify-between mb-4">
+                            {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
+                                Add
+                            </button> */}
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
+                                Export data
+                            </button>
+                        </div>
                     </div>
                     <div className="datatables xl:col-span-3">
                         <DataTable

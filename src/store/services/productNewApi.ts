@@ -46,6 +46,26 @@ export const productNewApi = createApi({
         updatePriceByProductOld: builder.query<any, string | undefined>({
             query: (oldProduct) => `/get-latestPrice?old_price_product=${oldProduct}`,
         }),
+        deleteProductBundle: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-bundle/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        exportToExcelProductByCategory: builder.mutation<any, any>({
+            query: () => ({
+                url: `/export_product_byCategory`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
+        exportToExcelSlowMovingListProduct: builder.mutation<any, any>({
+            query: () => ({
+                url: `/exportProductExpired`,
+                method: 'POST',
+                responseType: 'blob',
+            }),
+        }),
     }),
 });
 
@@ -61,4 +81,7 @@ export const {
     useProductByCategoryQuery,
     useProductByColorQuery,
     useLazyUpdatePriceByProductOldQuery,
+    useDeleteProductBundleMutation,
+    useExportToExcelProductByCategoryMutation,
+    useExportToExcelSlowMovingListProductMutation,
 } = productNewApi;

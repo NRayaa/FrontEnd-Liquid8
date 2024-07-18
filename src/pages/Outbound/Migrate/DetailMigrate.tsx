@@ -5,21 +5,42 @@ import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import IconSend from '../../../components/Icon/IconSend';
-import { useGetShowMigrateQuery } from '../../../store/services/migrateApi';
+import { useExportToExcelDetailListMigrateMutation, useGetShowMigrateQuery } from '../../../store/services/migrateApi';
 import { formatRupiah } from '../../../helper/functions';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import toast from 'react-hot-toast';
 
 const DetailMigrate = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('List Data'));
     });
-    const { id } = useParams();
+    const { id }: any = useParams();
     const { data: ShowMigrateData } = useGetShowMigrateQuery(id);
+    const [exportToExcel] = useExportToExcelDetailListMigrateMutation();
 
     const ShowMigrate = useMemo(() => {
         return ShowMigrateData?.data.resource;
     }, [ShowMigrateData]);
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({ id }).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            toast.success('Data Pallet berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data Pallet.');
+            console.error('Error exporting Pallet to Excel:', err);
+        }
+    };
 
     return (
         <div>
@@ -68,6 +89,11 @@ const DetailMigrate = () => {
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
                             </button>
                         </Link>
+                        <div className="flex items-center justify-between mb-4">
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
+                                Export data
+                            </button>
+                        </div>
                     </div>
                     <div className="datatables xl:col-span-3">
                         <DataTable

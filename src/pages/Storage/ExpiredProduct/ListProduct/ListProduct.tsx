@@ -1,12 +1,8 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
+import { DataTable } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
-import sortBy from 'lodash/sortBy';
-import { setPageTitle } from '../../../../store/themeConfigSlice';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { IRootState } from '../../../../store';
-import { useDeleteProductNewMutation, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
+import { useDeleteProductNewMutation, useExportToExcelSlowMovingListProductMutation, useGetExpiredProductsQuery } from '../../../../store/services/productNewApi';
 import { ProductExpiredItem } from '../../../../store/services/types';
 import { formatRupiah, useDebounce } from '../../../../helper/functions';
 import toast from 'react-hot-toast';
@@ -18,12 +14,31 @@ const ListProduct = () => {
     const searchDebounce = useDebounce(search);
     const { data, isSuccess, refetch, isError } = useGetExpiredProductsQuery({ page, q: searchDebounce });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
+    const [exportToExcel] = useExportToExcelSlowMovingListProductMutation();
 
     const expiredProducts: any = useMemo(() => {
         if (isSuccess) {
             return data?.data.resource.data;
         }
     }, [data]);
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({}).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success('Data List Product berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data List Product.');
+            console.error('Error exporting List Product to Excel:', err);
+        }
+    };
 
     const showAlert = async ({ type, id }: { type: number; id: number }) => {
         if (type === 11) {
@@ -114,7 +129,10 @@ const ListProduct = () => {
 
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">List Data Product</h1>
-                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                <div className="flex items-center justify-between">
+                    <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                        Export Data
+                    </button>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>

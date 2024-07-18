@@ -114,7 +114,7 @@ const ReportTable = () => {
                             </tr>
                             <tr>
                                 <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46 }}>
-                                    <h1 style={{ fontSize: 36 }}>{data?.buyer.id}</h1>
+                                    <h1 style={{ fontSize: 36 }}>{data?.data?.transactions_today}</h1>
                                 </td>
                             </tr>
                         </table>
@@ -255,7 +255,10 @@ const ReportTable = () => {
                         </div>
                         <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <h5>Dibuat:</h5>
-                            <h5>Admin Kasir:</h5>
+                            <div>
+                                <h5>Admin Kasir:</h5>
+                                <h5>{data?.data?.name_user}</h5>
+                            </div>
                         </div>
                     </div>
                 </div>
