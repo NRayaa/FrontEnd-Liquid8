@@ -523,7 +523,6 @@ const ListBuyer = () => {
     const searchDebounce = useDebounce(search);
     const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
     const [deleteBuyer, results] = useDeleteBuyerMutation();
-    const [initialRecords2, setInitialRecords2] = useState(sortBy(rowData, 'firstName'));
     const [exportToExcel] = useExportToExcelBuyerMutation();
 
     const listBuyer: any = useMemo(() => {
