@@ -537,6 +537,8 @@ interface NewProductItem {
     new_quality: string;
     new_category_product: string;
     new_tag_product: null | string;
+    new_discount: string;
+    display_price: string
     condition?: string;
     deskripsi?: string;
     created_at: string;
@@ -1563,6 +1565,8 @@ interface DetailRepairResponse {
 }
 interface SaleReportResponse {
     data: {
+        name_user: string;
+        transactions_today: number;
         category_report: {
             category_list: {
                 category: string | null;

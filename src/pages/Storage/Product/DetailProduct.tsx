@@ -23,6 +23,7 @@ const DetailProduct = () => {
     const [categories, setCategories] = useState<{ id: number; name_category: string; discount_category: number; max_price_category: number }[]>([]);
     const [category, setCategory] = useState('');
     const [diskon, setDiskon] = useState<number>(0);
+    const [hargaDisplay, setHargaDisplay] = useState<number>(0);
     const [isRedirect, setIsRedirect] = useState<boolean>(false);
 
     const dataDetailProduct = useMemo(() => {
@@ -51,6 +52,8 @@ const DetailProduct = () => {
         new_name_product: '',
         new_quantity_product: '',
         new_price_product: '',
+        diskon: '',
+        hargaDisplay: ''
     });
 
     const hideRedirect = () => {
@@ -68,7 +71,11 @@ const DetailProduct = () => {
                 new_name_product: dataDetailProduct?.new_name_product ?? '',
                 new_quantity_product: dataDetailProduct?.new_quantity_product ?? '',
                 new_price_product: dataDetailProduct?.new_price_product ?? '',
+                diskon: dataDetailProduct?.new_discount ?? '',
+                hargaDisplay: dataDetailProduct?.display_price ?? ''
             }));
+            setDiskon(parseFloat(dataDetailProduct?.new_discount ?? '0'));
+            setHargaDisplay(parseFloat(dataDetailProduct?.display_price ?? '0'));
         }
     }, [dataDetailProduct]);
 
@@ -81,13 +88,56 @@ const DetailProduct = () => {
             .catch((err: any) => console.log(err));
     }, 1000);
 
+    // const handleChangeInput = async (e: ChangeEvent<HTMLInputElement>) => {
+    //     if (e.target.name === 'old_price_product') {
+    //         setInput((prevState) => ({
+    //             ...prevState,
+    //             [e.target.name]: e.target.value,
+    //         }));
+    //         const price = parseFloat(e.target.value);
+    //         if (price >= 100000) {
+    //             const randomBarcode = Math.floor(Math.random() * 90000) + 10000;
+    //             setInput((prevState) => ({
+    //                 ...prevState,
+    //                 new_barcode_product: `LQD${randomBarcode}`,
+    //             }));
+    //         } else if (price < 100000) {
+    //             setInput((prevState) => ({
+    //                 ...prevState,
+    //                 new_barcode_product: dataDetailProduct?.new_barcode_product ?? '',
+    //             }));
+    //             setCategory('');
+    //         }
+    //         handleLiveSearch(e.target.value !== '' ? e.target.value : '0');
+    //     } else if (e.target.name === 'diskon') {
+    //         setDiskon(parseFloat(e.target.value));
+    //     } else if (e.target.name === 'hargaDisplay') {
+    //         setHargaDisplay(parseFloat(e.target.value));
+    //     } else {
+    //         setInput((prevState) => ({
+    //             ...prevState,
+    //             [e.target.name]: e.target.value,
+    //         }));
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     if (diskon && input.new_price_product) {
+    //         setInput((prev) => ({
+    //             ...prev,
+    //             hargaDisplay: (parseFloat(input.new_price_product) - parseFloat(input.new_price_product) * (diskon / 100)).toString()
+    //         }));
+    //     }
+    // }, [diskon, input.new_price_product]);
+
     const handleChangeInput = async (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.name === 'old_price_product') {
+        const { name, value } = e.target;
+        if (name === 'old_price_product') {
             setInput((prevState) => ({
                 ...prevState,
-                [e.target.name]: e.target.value,
+                [name]: value,
             }));
-            const price = parseFloat(e.target.value);
+            const price = parseFloat(value);
             if (price >= 100000) {
                 const randomBarcode = Math.floor(Math.random() * 90000) + 10000;
                 setInput((prevState) => ({
@@ -101,14 +151,39 @@ const DetailProduct = () => {
                 }));
                 setCategory('');
             }
-            handleLiveSearch(e.target.value !== '' ? e.target.value : '0');
+            handleLiveSearch(value !== '' ? value : '0');
+        } else if (name === 'diskon') {
+            const newDiskon = parseFloat(value);
+            setDiskon(newDiskon);
+            if (input.new_price_product) {
+                const newPrice = parseFloat(input.new_price_product);
+                const calculatedDisplayPrice = newPrice - (newPrice * (newDiskon / 100));
+                setInput((prevState) => ({
+                    ...prevState,
+                    hargaDisplay: calculatedDisplayPrice.toFixed(2)
+                }));
+            }
+        } else if (name === 'hargaDisplay') {
+            setHargaDisplay(parseFloat(value));
         } else {
             setInput((prevState) => ({
                 ...prevState,
-                [e.target.name]: e.target.value,
+                [name]: value,
             }));
         }
     };
+    
+    useEffect(() => {
+        if (diskon && input.new_price_product) {
+            const newPrice = parseFloat(input.new_price_product);
+            const calculatedDisplayPrice = newPrice - (newPrice * (diskon / 100));
+            setInput((prev) => ({
+                ...prev,
+                hargaDisplay: diskon !== null ? calculatedDisplayPrice.toFixed(2) : input.new_price_product
+            }));
+        }
+    }, [diskon, input.new_price_product]);
+    
 
     const hanldeEditProduct = async () => {
         try {
@@ -128,6 +203,8 @@ const DetailProduct = () => {
                 new_tag_product: dataDetailProduct?.new_tag_product,
                 deskripsi: dataDetailProduct?.deskripsi,
                 _method: 'PUT',
+                new_discount: diskon,
+                display_price: input.hargaDisplay,
             };
             await editDetailProduct({ id, body });
             refetch();
@@ -143,13 +220,6 @@ const DetailProduct = () => {
     }, [dataDetailProduct]);
 
     useEffect(() => {
-        if (diskon && input.new_price_product) {
-            setDiskon(categories.find((item: any) => item.name_category === category)?.discount_category ?? 0);
-            setInput((prev) => ({ ...prev, new_price_product: (parseFloat(input.old_price_product) - parseFloat(input.old_price_product) * (diskon / 100)).toString() }));
-        }
-    }, [diskon, input.new_price_product]);
-
-    useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message ?? 'Product updated');
             if (isRedirect) {
@@ -161,7 +231,7 @@ const DetailProduct = () => {
             }
             productNew.refetch();
         } else if (results.isError) {
-            toast.error('Product updated failed');
+            toast.error('Product update failed');
         }
     }, [results]);
 
@@ -170,7 +240,7 @@ const DetailProduct = () => {
     }, []);
 
     if (isError && !data?.data.status) {
-        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+        return <Alert message={data?.data.message ?? 'Anda tidak berhak mengakses halaman ini'} />;
     }
 
     return (
@@ -232,14 +302,40 @@ const DetailProduct = () => {
                             </div>
                         )}
                     </div>
-                    <div className="w-1/3 flex justify-center">
+                    <div className="w-1/3 justify-center">
                         <BarcodePrinted
                             barcode={dataDetailProduct?.new_barcode_product ?? ''}
                             category={category}
-                            newPrice={formatRupiah(input.new_price_product ?? '')}
+                            newPrice={formatRupiah(input.hargaDisplay ?? '')}
                             oldPrice={formatRupiah(input.old_price_product ?? '')}
                             showPrintButton={showPrintButton}
                         />
+                        <div className="flex flex-col gap-4 w-full panel">
+                            <div>
+                                <label htmlFor="gridDiskon">Diskon</label>
+                                <input
+                                    id="gridDiskon"
+                                    name="diskon"
+                                    type="number"
+                                    placeholder="Enter Diskon"
+                                    className="form-input"
+                                    value={diskon ?? dataDetailProduct?.new_discount }
+                                    onChange={handleChangeInput}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="gridHargaDisplay">Harga Display</label>
+                                <input
+                                    id="gridHargaDisplay"
+                                    name="hargaDisplay"
+                                    type="number"
+                                    placeholder="Enter Harga Display"
+                                    className="form-input"
+                                    value={input.hargaDisplay}
+                                    onChange={handleChangeInput}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
