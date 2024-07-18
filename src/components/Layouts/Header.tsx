@@ -9,10 +9,10 @@ import { Spinner } from '../../commons';
 import NotificationHeader from './NotificationHeader';
 import { useWifiIndikatorQuery } from '../../store/services/notificationsApi';
 import axios from 'axios';
+import { clsx } from '@mantine/core';
 
 const Header = () => {
     const { data } = useWifiIndikatorQuery(undefined);
-    console.log(data);
     const location = useLocation();
     const navigate = useNavigate();
     const [ping, setPing] = useState<number | null>(null);
@@ -99,7 +99,7 @@ const Header = () => {
                     </div>
 
                     <div className="flex items-center space-x-1.5 lg:space-x-2 dark:text-[#d0d2d6]">
-                        <div className="w-9 h-9 rounded-full bg-gray-100 flex justify-center items-center">
+                        <div className={'w-auto h-9 rounded-full bg-gray-100 flex justify-center items-center gap-2 px-3'}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -115,6 +115,8 @@ const Header = () => {
                                 <path d="M5 12.859a10 10 0 0 1 14 0" />
                                 <path d="M8.5 16.429a5 5 0 0 1 7 0" />
                             </svg>
+                            {ping === null && <p className="text-xs px-3 py-0.5 bg-gray-300 rounded-full">checking...</p>}
+                            {ping && <p className={clsx('text-xs px-3 py-0.5 rounded-full', ping < 80 ? 'bg-green-300' : ping < 150 ? 'bg-yellow-300' : 'bg-red-300')}>{ping}ms</p>}
                         </div>
 
                         {/* dropdown notification */}

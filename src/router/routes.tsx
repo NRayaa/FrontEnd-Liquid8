@@ -30,6 +30,7 @@ import DetailApproveDocument from '../pages/Inbound/CheckProduct/ApprovementProd
 import ListDestination from '../pages/Outbound/Migrate/ListDestination';
 import AddDestination from '../pages/Outbound/Migrate/AddDestinnation';
 import EditDestination from '../pages/Outbound/Migrate/EditDestination';
+import Analystic from '../pages/Analystic';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -79,6 +80,11 @@ const routes = [
     {
         path: '/',
         element: <Dashboard />,
+        layout: 'default',
+    },
+    {
+        path: '/analystic',
+        element: <Analystic />,
         layout: 'default',
     },
     // dashboard
