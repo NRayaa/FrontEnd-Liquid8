@@ -13,6 +13,7 @@ import { useLazyGetProductRepairQuery } from '../../../store/services/checkProdu
 import { formatRupiah } from '../../../helper/functions';
 import BarcodePrinted from './BarcodePrinted';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import IconPlus from '../../../components/Icon/IconPlus';
 
 interface OldBarcodeDataProps {
     barcode: string;
@@ -500,6 +501,12 @@ const ListProductRepair = () => {
 
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Product Repair</h5>
+                <Link to="/repair_station/list_product_repair/create">
+                    <button className="btn btn-info">
+                        <IconPlus />
+                        Create
+                    </button>
+                </Link>
                 <div className="relative w-[220px] ms-auto mb-4">
                     <input
                         type="text"

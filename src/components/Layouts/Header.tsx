@@ -59,18 +59,16 @@ const Header = () => {
             await axios.get('https://server.wms-liquid8.online/storage/image-for-check-connection/423kb_image.png', { responseType: 'blob' });
             const endTime = performance.now();
             const duration = endTime - startTime;
-            setPing(duration);
+            setPing(Math.round(duration));
         } catch (error) {
             setPing(null);
         }
     };
 
-    console.log(ping);
-
     useEffect(() => {
         const interval = setInterval(() => {
             handleGetSpeed();
-        }, 30000);
+        }, 15000);
 
         return () => clearInterval(interval);
     }, []);

@@ -81,24 +81,113 @@ const data = [
         value: 4200000,
     },
 ];
-const sales = [
+const salesQty = [
     {
         label: 'Electronics Hv (>1JT)',
-        value: 3500,
+        value: 109,
     },
     {
         label: 'Electronics Art (0-1JT)',
-        value: 3500,
+        value: 239,
     },
     {
         label: 'Mainan Hv',
-        value: 3500,
+        value: 0,
+    },
+    {
+        label: 'Baby Products (Popok, Susu, Pampers)',
+        value: 316,
+    },
+    {
+        label: 'Other & Art',
+        value: 260,
+    },
+    {
+        label: 'FMCG',
+        value: 13,
+    },
+    {
+        label: 'Toys & Hobbies (200-699)',
+        value: 9,
+    },
+    {
+        label: 'Fashion',
+        value: 565,
+    },
+    {
+        label: 'Otomotif Mobil',
+        value: 6,
+    },
+    {
+        label: 'Otomotif Motor',
+        value: 129,
+    },
+    {
+        label: 'Toys & Hobbies (1-199)',
+        value: 38,
+    },
+    {
+        label: 'Otomotif',
+        value: 3,
+    },
+    {
+        label: 'ATK',
+        value: 24,
+    },
+    {
+        label: 'Accessories LV (1-499rb)',
+        value: 21,
+    },
+    {
+        label: 'Accessories HV (>500rb)',
+        value: 2,
+    },
+    {
+        label: 'Electronics HV',
+        value: 5,
+    },
+    {
+        label: 'Electronics ART/ Mainan HV',
+        value: 37,
+    },
+    {
+        label: 'Baby Products/ Pampers',
+        value: 5,
+    },
+    {
+        label: 'Other,ART,Beauty,Toys(200-699)',
+        value: 65,
+    },
+    {
+        label: 'Fashion,Otomotif,Toys(1-199)',
+        value: 111,
+    },
+    {
+        label: 'Toys & Hobbies HV (700rb<)',
+        value: 2,
+    },
+    {
+        label: 'ART HV (Kompor)',
+        value: 6,
     },
 ];
 
 const getCurrentMonthData = () => {
     const currentMonth = new Date().getMonth();
     return data[currentMonth];
+};
+
+const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
+    if (active && payload && label) {
+        return (
+            <div className="bg-white rounded px-3 py-1.5 border text-xs dark:bg-gray-900 shadow-sm">
+                <p className="text-sm font-bold">{label}</p>
+                <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
+                <p className="">Qty: {payload[0].value}</p>
+            </div>
+        );
+    }
+    return null;
 };
 
 const Analystic = () => {
@@ -217,17 +306,10 @@ const Analystic = () => {
             </div>
             <div className="flex flex-col w-full rounded-md bg-gradient-to-tl from-indigo-500/20 to-indigo-500/0 shadow px-5 py-3">
                 <h5 className="font-semibold text-lg">Sales per Quantity</h5>
-                <div className="w-full flex justify-end h-[200px]">
+                <div className="w-full flex justify-end h-[300px] xl:h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
-                            onMouseMove={(state) => {
-                                if (state.isTooltipActive && state.activePayload) {
-                                    const { payload } = state.activePayload[0];
-                                    setHoveredValue(payload.transactions);
-                                }
-                            }}
-                            onMouseLeave={() => setHoveredValue(null)}
-                            data={data}
+                            data={salesQty}
                             margin={{
                                 top: 5,
                                 right: 10,
@@ -235,8 +317,79 @@ const Analystic = () => {
                                 bottom: 5,
                             }}
                         >
-                            <Tooltip active={false} />
-                            <Bar type="monotone" dataKey="customers" stroke="#6366f1" />
+                            <XAxis
+                                dataKey="label"
+                                stroke="#888888"
+                                fontSize={12}
+                                axisLine={false}
+                                padding={{ left: 0, right: 35 }}
+                                height={85}
+                                textAnchor="start"
+                                style={{ fontSize: '10px' }}
+                                angle={25}
+                            />
+                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
+                            <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+            <div className="flex flex-col w-full rounded-md bg-gradient-to-tl from-indigo-500/20 to-indigo-500/0 shadow px-5 py-3">
+                <h5 className="font-semibold text-lg">Sales per Display Price</h5>
+                <div className="w-full flex justify-end h-[300px] xl:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={salesQty}
+                            margin={{
+                                top: 5,
+                                right: 10,
+                                left: 30,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis
+                                dataKey="label"
+                                stroke="#888888"
+                                fontSize={12}
+                                axisLine={false}
+                                padding={{ left: 0, right: 35 }}
+                                height={85}
+                                textAnchor="start"
+                                style={{ fontSize: '10px' }}
+                                angle={25}
+                            />
+                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
+                            <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+            <div className="flex flex-col w-full rounded-md bg-gradient-to-tl from-indigo-500/20 to-indigo-500/0 shadow px-5 py-3">
+                <h5 className="font-semibold text-lg">Sales per After Discount</h5>
+                <div className="w-full flex justify-end h-[300px] xl:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={salesQty}
+                            margin={{
+                                top: 5,
+                                right: 10,
+                                left: 30,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis
+                                dataKey="label"
+                                stroke="#888888"
+                                fontSize={12}
+                                axisLine={false}
+                                padding={{ left: 0, right: 35 }}
+                                height={85}
+                                textAnchor="start"
+                                style={{ fontSize: '10px' }}
+                                angle={25}
+                            />
+                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
+                            <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
