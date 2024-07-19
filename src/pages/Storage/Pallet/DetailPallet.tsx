@@ -369,7 +369,7 @@ const PalletDetail = () => {
                             barcode={detailDataPallet?.palet_barcode ?? ''}
                             category={detailDataPallet?.category_palet ?? ''}
                             newPrice={formatRupiah(detailDataPallet?.total_price_palet ?? '0')}
-                            oldPrice={formatRupiah(detailDataPallet?.total_price_palet ?? '0')}
+                            oldPrice={formatRupiah(detailDataPallet?.total_harga_lama ?? '0')}
                             namePalet={detailDataPallet?.name_palet ?? ''}
                         />
                     </div>

@@ -72,6 +72,9 @@ export const productNewApi = createApi({
                 responseType: 'blob',
             }),
         }),
+        updatePriceByProductOldRepair: builder.query<any, number | undefined>({
+            query: (oldProduct) => `/get-latestPrice?old_price_product=${oldProduct}`,
+        }),
     }),
 });
 
@@ -92,4 +95,5 @@ export const {
     useExportToExcelSlowMovingListProductMutation,
     useGetRepairLeftQuery,
     useGetRepairRightQuery,
+  useLazyUpdatePriceByProductOldRepairQuery,
 } = productNewApi;
