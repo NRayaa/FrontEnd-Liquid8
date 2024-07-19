@@ -187,6 +187,7 @@ const ContentTooltip = ({ active, payload, label }: { active: boolean | undefine
             </div>
         );
     }
+    return null;
 };
 
 const Analystic = () => {
