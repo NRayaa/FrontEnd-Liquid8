@@ -81,7 +81,7 @@ const data = [
         value: 4200000,
     },
 ];
-const sales = [
+const salesQty = [
     {
         label: 'Electronics Hv (>1JT)',
         value: 109,
@@ -309,7 +309,67 @@ const Analystic = () => {
                 <div className="w-full flex justify-end h-[300px] xl:h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
-                            data={sales}
+                            data={salesQty}
+                            margin={{
+                                top: 5,
+                                right: 10,
+                                left: 30,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis
+                                dataKey="label"
+                                stroke="#888888"
+                                fontSize={12}
+                                axisLine={false}
+                                padding={{ left: 0, right: 35 }}
+                                height={85}
+                                textAnchor="start"
+                                style={{ fontSize: '10px' }}
+                                angle={25}
+                            />
+                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
+                            <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+            <div className="flex flex-col w-full rounded-md bg-gradient-to-tl from-indigo-500/20 to-indigo-500/0 shadow px-5 py-3">
+                <h5 className="font-semibold text-lg">Sales per Display Price</h5>
+                <div className="w-full flex justify-end h-[300px] xl:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={salesQty}
+                            margin={{
+                                top: 5,
+                                right: 10,
+                                left: 30,
+                                bottom: 5,
+                            }}
+                        >
+                            <XAxis
+                                dataKey="label"
+                                stroke="#888888"
+                                fontSize={12}
+                                axisLine={false}
+                                padding={{ left: 0, right: 35 }}
+                                height={85}
+                                textAnchor="start"
+                                style={{ fontSize: '10px' }}
+                                angle={25}
+                            />
+                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
+                            <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+            <div className="flex flex-col w-full rounded-md bg-gradient-to-tl from-indigo-500/20 to-indigo-500/0 shadow px-5 py-3">
+                <h5 className="font-semibold text-lg">Sales per After Discount</h5>
+                <div className="w-full flex justify-end h-[300px] xl:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={salesQty}
                             margin={{
                                 top: 5,
                                 right: 10,

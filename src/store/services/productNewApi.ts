@@ -59,6 +59,12 @@ export const productNewApi = createApi({
                 responseType: 'blob',
             }),
         }),
+        getRepairLeft: builder.query<any, { page: number; q: string }>({
+            query: ({ page, q }) => `/repair?page=${page}&q=${q}`,
+        }),
+        getRepairRight: builder.query<any, number>({
+            query: (page) => `/repair-mv?page=${page}`,
+        }),
         exportToExcelSlowMovingListProduct: builder.mutation<any, any>({
             query: () => ({
                 url: `/exportProductExpired`,
@@ -84,4 +90,6 @@ export const {
     useDeleteProductBundleMutation,
     useExportToExcelProductByCategoryMutation,
     useExportToExcelSlowMovingListProductMutation,
+    useGetRepairLeftQuery,
+    useGetRepairRightQuery,
 } = productNewApi;
