@@ -59,6 +59,13 @@ export const bundleProductApi = createApi({
                 responseType: 'blob',
             }),
         }),
+        updateDetailBundle: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/bundle/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -73,4 +80,5 @@ export const {
     useDeleteDetailBundleProductMutation,
     useAddDetailBundleProductMutation,
     useExportToExcelDetailBundleMutation,
+    useUpdateDetailBundleMutation,
 } = bundleProductApi;

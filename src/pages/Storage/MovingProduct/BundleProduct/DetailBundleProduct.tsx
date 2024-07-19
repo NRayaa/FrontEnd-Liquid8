@@ -6,8 +6,9 @@ import {
     useDeleteDetailBundleProductMutation,
     useDetailBundleProductQuery,
     useExportToExcelDetailBundleMutation,
+    useUpdateDetailBundleMutation,
 } from '../../../../store/services/bundleProductApi';
-import { ChangeEvent, Fragment, MouseEvent, useMemo, useState } from 'react';
+import { ChangeEvent, Fragment, MouseEvent, useEffect, useMemo, useState } from 'react';
 import { formatRupiah, useDebounce } from '../../../../helper/functions';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import { NewProductItem, ProductExpiredItem } from '../../../../store/services/types';
@@ -25,9 +26,10 @@ const DetailBundleProduct = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [pageProduct, setPageProduct] = useState<number>(1);
     const debounceValueProductBundle = useDebounce(searchProductBundle);
-    const { data: listProduct } = useGetDisplayExpiredQuery({ page: pageProduct, q: debounceValueProductBundle });
+    const { data: listProduct, refetch: refetchListProduct } = useGetDisplayExpiredQuery({ page: pageProduct, q: debounceValueProductBundle });
     const [deleteBundle, resultsDeleteBundle] = useDeleteDetailBundleProductMutation();
     const [addDetailBundleProduct] = useAddDetailBundleProductMutation();
+    const [updateDetailBundle] = useUpdateDetailBundleMutation();
 
     const productNewData = useMemo(() => {
         return listProduct?.data.resource.data;
@@ -80,7 +82,51 @@ const DetailBundleProduct = () => {
             console.error('Error exporting Pallet to Excel:', err);
         }
     };
-    
+
+    const [editFormData, setEditFormData] = useState({
+        name_bundle: '',
+        category: '',
+        total_price_custom_bundle: '',
+        total_price_bundle: '',
+    });
+
+    useEffect(() => {
+        if (isSuccess && data) {
+            const resource = data.data.resource;
+            setEditFormData({
+                name_bundle: resource.name_bundle,
+                category: resource.category,
+                total_price_custom_bundle: resource.total_price_custom_bundle,
+                total_price_bundle: resource.total_price_bundle,
+            });
+        }
+    }, [data, isSuccess]);
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEditFormData({
+            ...editFormData,
+            [name]: value,
+        });
+    };
+
+    const handleSaveEdit = async (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+        try {
+            const body = {
+                name_bundle: editFormData.name_bundle,
+                category: editFormData.category,
+                total_price_custom_bundle: editFormData.total_price_custom_bundle,
+                total_price_bundle: editFormData.total_price_bundle,
+            };
+            await updateDetailBundle({ id, body });
+            toast.success('Data Pallet berhasil diperbarui.');
+            refetch();
+        } catch (error) {
+            toast.error('Gagal memperbarui data Pallet.');
+            console.error('Error updating Pallet:', error);
+        }
+    };
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -277,7 +323,7 @@ const DetailBundleProduct = () => {
             </div>
             <div>
                 <div className="flex gap-4 items-center mb-4 divide-x divide-gray-500">
-                    <form className="w-[400px]">
+                    <form className="w-[400px]" onSubmit={handleSaveEdit}>
                         {/* <button type="submit" className="btn btn-primary mb-4 px-16">
                         Create Bundle
                     </button> */}
@@ -292,29 +338,29 @@ const DetailBundleProduct = () => {
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Nama Bundle :
                             </label>
-                            <input id="categoryName" type="text" value={detailDataBundle?.name_bundle} className=" form-input w-[250px]" required />
+                            <input id="categoryName" type="text" className=" form-input w-[250px]" onChange={handleInputChange} name="name_bundle" value={editFormData.name_bundle} required />
                         </div>
                         <div className="flex items-center justify-between mb-2 mt-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Kategori :
                             </label>
-                            <input id="categoryName" type="text" value={detailDataBundle?.category} className=" form-input w-[250px]" required />
+                            <input id="categoryName" type="text" onChange={handleInputChange} name="category" value={editFormData.category} className=" form-input w-[250px]" required />
                         </div>
                         <div className="flex items-center justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Total Awal :
                             </label>
-                            <input id="categoryName" type="text" value={formatRupiah(detailDataBundle?.total_price_bundle ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
+                            <input id="categoryName" type="text" onChange={handleInputChange} name="total_price_bundle" value={editFormData.total_price_bundle} placeholder="Rp" className=" form-input w-[250px]" required />
                         </div>
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Custom Display :
                             </label>
-                            <input id="categoryName" type="text" value={formatRupiah(detailDataBundle?.total_price_custom_bundle ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
+                            <input id="categoryName" type="text" onChange={handleInputChange} name="total_price_custom_bundle" value={editFormData.total_price_custom_bundle} placeholder="Rp" className=" form-input w-[250px]" required />
                         </div>
                         <div className="flex items-center mt-4">
-                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
-                                Edit
+                            <button type="submit" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto">
+                                Update
                             </button>
                         </div>
                     </form>

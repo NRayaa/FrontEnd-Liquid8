@@ -179,7 +179,7 @@ const DetailProduct = () => {
             const calculatedDisplayPrice = newPrice - (newPrice * (diskon / 100));
             setInput((prev) => ({
                 ...prev,
-                hargaDisplay: diskon !== null ? calculatedDisplayPrice.toFixed(2) : input.new_price_product
+                hargaDisplay: calculatedDisplayPrice.toFixed(2) // membulatkan ke 2 desimal
             }));
         }
     }, [diskon, input.new_price_product]);
