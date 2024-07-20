@@ -31,6 +31,7 @@ import ListDestination from '../pages/Outbound/Migrate/ListDestination';
 import AddDestination from '../pages/Outbound/Migrate/AddDestinnation';
 import EditDestination from '../pages/Outbound/Migrate/EditDestination';
 import Analystic from '../pages/Analystic';
+import CreateLPRepair from '../pages/RepairStation/ListProductRepair/CreateRepair';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -284,6 +285,11 @@ const routes = [
     {
         path: '/repair_station/list_product_repair',
         element: <ListProductRepair />,
+        layout: 'default',
+    },
+    {
+        path: '/repair_station/list_product_repair/create',
+        element: <CreateLPRepair />,
         layout: 'default',
     },
     {

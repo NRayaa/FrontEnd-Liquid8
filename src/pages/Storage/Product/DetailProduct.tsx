@@ -53,7 +53,7 @@ const DetailProduct = () => {
         new_quantity_product: '',
         new_price_product: '',
         diskon: '',
-        hargaDisplay: ''
+        hargaDisplay: '',
     });
 
     const hideRedirect = () => {
@@ -72,7 +72,7 @@ const DetailProduct = () => {
                 new_quantity_product: dataDetailProduct?.new_quantity_product ?? '',
                 new_price_product: dataDetailProduct?.new_price_product ?? '',
                 diskon: dataDetailProduct?.new_discount ?? '',
-                hargaDisplay: dataDetailProduct?.display_price ?? ''
+                hargaDisplay: dataDetailProduct?.display_price ?? '',
             }));
             setDiskon(parseFloat(dataDetailProduct?.new_discount ?? '0'));
             setHargaDisplay(parseFloat(dataDetailProduct?.display_price ?? '0'));
@@ -157,10 +157,10 @@ const DetailProduct = () => {
             setDiskon(newDiskon);
             if (input.new_price_product) {
                 const newPrice = parseFloat(input.new_price_product);
-                const calculatedDisplayPrice = newPrice - (newPrice * (newDiskon / 100));
+                const calculatedDisplayPrice = newPrice - newPrice * (newDiskon / 100);
                 setInput((prevState) => ({
                     ...prevState,
-                    hargaDisplay: calculatedDisplayPrice.toFixed(2)
+                    hargaDisplay: calculatedDisplayPrice.toFixed(2),
                 }));
             }
         } else if (name === 'hargaDisplay') {
@@ -172,18 +172,18 @@ const DetailProduct = () => {
             }));
         }
     };
-    
+
     useEffect(() => {
-        if (diskon && input.new_price_product) {
-            const newPrice = parseFloat(input.new_price_product);
-            const calculatedDisplayPrice = newPrice - (newPrice * (diskon / 100));
+        if (diskon && input.old_price_product) {
+            const newPrice = parseFloat(input.old_price_product);
+            const calculatedDisplayPrice = newPrice - newPrice * (diskon / 100);
             setInput((prev) => ({
                 ...prev,
-                hargaDisplay: calculatedDisplayPrice.toFixed(2) // membulatkan ke 2 desimal
+                hargaDisplay: calculatedDisplayPrice.toFixed(2), // membulatkan ke 2 desimal
             }));
         }
-    }, [diskon, input.new_price_product]);
-    
+    }, [diskon, input.old_price_product]);
+
     const hanldeEditProduct = async () => {
         try {
             const body = {
@@ -318,7 +318,7 @@ const DetailProduct = () => {
                                     type="number"
                                     placeholder="Enter Diskon"
                                     className="form-input"
-                                    value={diskon ?? dataDetailProduct?.new_discount }
+                                    value={diskon ?? dataDetailProduct?.new_discount}
                                     onChange={handleChangeInput}
                                 />
                             </div>
