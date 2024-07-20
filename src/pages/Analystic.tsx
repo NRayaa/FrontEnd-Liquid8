@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, LabelList, Cell, LabelProps } from 'recharts';
 import { formatCurrency } from '../helper/functions';
 import { Tab } from '@headlessui/react';
 import { clsx } from '@mantine/core';
@@ -86,105 +86,189 @@ const data = [
 const salesQty = [
     {
         label: 'Electronics Hv (>1JT)',
-        value: 109,
+        qty: 109,
+        dPrice: 196083010,
+        aDiscount: 137258107,
     },
     {
         label: 'Electronics Art (0-1JT)',
-        value: 239,
+        qty: 239,
+        dPrice: 70953736,
+        aDiscount: 42572242,
     },
     {
         label: 'Mainan Hv',
-        value: 0,
+        qty: 0,
+        dPrice: 0,
+        aDiscount: 0,
     },
     {
         label: 'Baby Products (Popok, Susu, Pampers)',
-        value: 316,
+        qty: 316,
+        dPrice: 135474208,
+        aDiscount: 81448000,
     },
     {
         label: 'Other & Art',
-        value: 260,
+        qty: 260,
+        dPrice: 42000000,
+        aDiscount: 21000000,
     },
     {
         label: 'FMCG',
-        value: 13,
+        qty: 13,
+        dPrice: 3138000,
+        aDiscount: 1514000,
     },
     {
         label: 'Toys & Hobbies (200-699)',
-        value: 9,
+        qty: 9,
+        dPrice: 2227000,
+        aDiscount: 1113000,
     },
     {
         label: 'Fashion',
-        value: 565,
+        qty: 565,
+        dPrice: 99671000,
+        aDiscount: 39868000,
     },
     {
         label: 'Otomotif Mobil',
-        value: 6,
+        qty: 6,
+        dPrice: 1166000,
+        aDiscount: 466000,
     },
     {
         label: 'Otomotif Motor',
-        value: 129,
+        qty: 129,
+        dPrice: 30292000,
+        aDiscount: 12117000,
     },
     {
         label: 'Toys & Hobbies (1-199)',
-        value: 38,
+        qty: 38,
+        dPrice: 4999000,
+        aDiscount: 1999000,
     },
     {
         label: 'Otomotif',
-        value: 3,
+        qty: 3,
+        dPrice: 535000,
+        aDiscount: 214000,
     },
     {
         label: 'Accessories LV (1-499rb)',
-        value: 21,
+        qty: 21,
+        dPrice: 3583000,
+        aDiscount: 1769000,
     },
     {
         label: 'Accessories HV (>500rb)',
-        value: 2,
+        qty: 2,
+        dPrice: 3626000,
+        aDiscount: 1450000,
     },
     {
         label: 'Electronics HV',
-        value: 5,
+        qty: 5,
+        dPrice: 1348000,
+        aDiscount: 674000,
     },
     {
         label: 'Electronics ART/ Mainan HV',
-        value: 37,
+        qty: 37,
+        dPrice: 8984000,
+        aDiscount: 6288000,
     },
     {
         label: 'Baby Products/ Pampers',
-        value: 5,
+        qty: 5,
+        dPrice: 9781000,
+        aDiscount: 5744000,
     },
     {
         label: 'Other,ART,Beauty,Toys(200-699)',
-        value: 65,
+        qty: 65,
+        dPrice: 1134000,
+        aDiscount: 680000,
     },
     {
         label: 'Fashion,Otomotif,Toys(1-199)',
-        value: 111,
+        qty: 111,
+        dPrice: 10872000,
+        aDiscount: 5436000,
     },
     {
         label: 'Toys & Hobbies HV (700rb<)',
-        value: 2,
+        qty: 2,
+        dPrice: 20648000,
+        aDiscount: 8099000,
     },
     {
         label: 'ART HV (Kompor)',
-        value: 6,
+        qty: 6,
+        dPrice: 2000000,
+        aDiscount: 1200000,
     },
     {
         label: 'ATK',
-        value: 24,
+        qty: 24,
+        dPrice: 1383000,
+        aDiscount: 830000,
     },
 ];
 
-const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
+const ContentTooltip = ({
+    active,
+    payload,
+    label,
+    qty = false,
+    dPrice = false,
+    aDiscount = false,
+}: {
+    active: boolean | undefined;
+    payload: any;
+    label: string;
+    qty?: boolean;
+    dPrice?: boolean;
+    aDiscount?: boolean;
+}) => {
     if (active && payload && label) {
         return (
             <div className="bg-white rounded px-3 py-1.5 border text-xs dark:bg-gray-900 shadow-sm">
                 <p className="text-sm font-bold">{label}</p>
                 <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
-                <p className="">Qty: {payload[0].value}</p>
+                {qty && <p>Qty: {payload[0].value}</p>}
+                {dPrice && <p>Display Price: {formatCurrency(parseFloat(payload[0].value))}</p>}
+                {aDiscount && <p>After Discount: {formatCurrency(parseFloat(payload[0].value))}</p>}
             </div>
         );
     }
     return null;
+};
+
+export const getLabelPosition = (value: number, threshold: number) => {
+    return value >= threshold ? 'inside' : 'top';
+};
+
+const thresholdADiscount = Math.max(...salesQty.map((d) => d.aDiscount)) / 2;
+
+const renderCustomizedLabel = (props: LabelProps) => {
+    const { x, y, width, height, value } = props;
+    if (x && y && width && height && value) {
+        const xNumber = parseFloat(x.toString());
+        const yNumber = parseFloat(y.toString());
+        const widthNumber = parseFloat(width.toString());
+        const heightNumber = parseFloat(height.toString());
+        console.log(xNumber, yNumber, widthNumber, heightNumber);
+        const fireOffset = value.toString().length < 5;
+        const offset = fireOffset ? -40 : 5;
+        return (
+            <text x={xNumber + widthNumber - 5} y={yNumber + heightNumber - offset} fill={fireOffset ? '#285A64' : '#fff'} textAnchor="end" style={{ rotate: '90deg' }}>
+                {value}
+            </text>
+        );
+    }
 };
 
 const Analystic = () => {
@@ -377,22 +461,32 @@ const Analystic = () => {
                                                 style={{ fontSize: '10px' }}
                                                 angle={25}
                                             />
-                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
-                                            <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} qty />} />
+                                            <Bar dataKey="qty" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className="flex flex-col w-[216px] h-full gap-3 flex-none">
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10 justify-between">
-                                        <h3 className="font-semibold">Total Quantity</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total Quantity</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
                                         <p className="text-xl font-bold text-end">5000</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
-                                        <h3 className="font-semibold">Total Display Price</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total Display Price</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
                                         <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
-                                        <h3 className="font-semibold">Total After Discount</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total After Discount</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
+
                                         <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
                                     </div>
                                 </div>
@@ -422,22 +516,32 @@ const Analystic = () => {
                                                 style={{ fontSize: '10px' }}
                                                 angle={25}
                                             />
-                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
-                                            <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} dPrice />} />
+                                            <Bar dataKey="dPrice" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className="flex flex-col w-[216px] h-full gap-3 flex-none">
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
-                                        <h3 className="font-semibold">Total Quantity</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total Quantity</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
                                         <p className="text-xl font-bold text-end">5000</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10 justify-between">
-                                        <h3 className="font-semibold">Total Display Price</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total Display Price</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
                                         <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
-                                        <h3 className="font-semibold">Total After Discount</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total After Discount</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
+
                                         <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
                                     </div>
                                 </div>
@@ -467,22 +571,34 @@ const Analystic = () => {
                                                 style={{ fontSize: '10px' }}
                                                 angle={25}
                                             />
-                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
-                                            <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} aDiscount />} />
+                                            <Bar dataKey="aDiscount" fill="#0ea5e9" radius={[4, 4, 0, 0]}>
+                                                <LabelList dataKey={'aDiscount'} content={renderCustomizedLabel} position="inside" angle={90} />
+                                            </Bar>
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className="flex flex-col w-[216px] h-full gap-3 flex-none">
-                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
-                                        <h3 className="font-semibold">Total Quantity</h3>
+                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500  justify-between">
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total Quantity</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
                                         <p className="text-xl font-bold text-end">5000</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
-                                        <h3 className="font-semibold">Total Display Price</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total Display Price</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
                                         <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10 justify-between">
-                                        <h3 className="font-semibold">Total After Discount</h3>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total After Discount</h3>
+                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                        </div>
+
                                         <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
                                     </div>
                                 </div>

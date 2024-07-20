@@ -71,7 +71,7 @@ const DetailProduct = () => {
                 new_name_product: dataDetailProduct?.new_name_product ?? '',
                 new_quantity_product: dataDetailProduct?.new_quantity_product ?? '',
                 new_price_product: dataDetailProduct?.new_price_product ?? '',
-                diskon: dataDetailProduct?.new_discount ?? '',
+                diskon: Math.round(parseFloat(dataDetailProduct?.new_discount ?? '0')).toString() ?? '',
                 hargaDisplay: dataDetailProduct?.display_price ?? '',
             }));
             setDiskon(parseFloat(dataDetailProduct?.new_discount ?? '0'));
@@ -154,7 +154,7 @@ const DetailProduct = () => {
             handleLiveSearch(value !== '' ? value : '0');
         } else if (name === 'diskon') {
             const newDiskon = parseFloat(value);
-            setDiskon(newDiskon);
+            setInput((prev) => ({ ...prev, diskon: newDiskon.toString() }));
             if (input.new_price_product) {
                 const newPrice = parseFloat(input.new_price_product);
                 const calculatedDisplayPrice = newPrice - newPrice * (newDiskon / 100);
@@ -179,7 +179,7 @@ const DetailProduct = () => {
             const calculatedDisplayPrice = newPrice - newPrice * (diskon / 100);
             setInput((prev) => ({
                 ...prev,
-                hargaDisplay: calculatedDisplayPrice.toFixed(2), // membulatkan ke 2 desimal
+                new_price_product: calculatedDisplayPrice.toFixed(2), // membulatkan ke 2 desimal
             }));
         }
     }, [diskon, input.old_price_product]);
@@ -305,22 +305,14 @@ const DetailProduct = () => {
                         <BarcodePrinted
                             barcode={dataDetailProduct?.new_barcode_product ?? ''}
                             category={category}
-                            newPrice={formatRupiah(input.hargaDisplay ?? '')}
+                            newPrice={formatRupiah(input.new_price_product ?? '')}
                             oldPrice={formatRupiah(input.old_price_product ?? '')}
                             showPrintButton={showPrintButton}
                         />
                         <div className="flex flex-col gap-4 w-full panel">
                             <div>
                                 <label htmlFor="gridDiskon">Diskon</label>
-                                <input
-                                    id="gridDiskon"
-                                    name="diskon"
-                                    type="number"
-                                    placeholder="Enter Diskon"
-                                    className="form-input"
-                                    value={diskon ?? dataDetailProduct?.new_discount}
-                                    onChange={handleChangeInput}
-                                />
+                                <input id="gridDiskon" name="diskon" type="number" placeholder="Enter Diskon" className="form-input" value={input.diskon} onChange={handleChangeInput} />
                             </div>
                             <div>
                                 <label htmlFor="gridHargaDisplay">Harga Display</label>
