@@ -184,7 +184,6 @@ const DetailProduct = () => {
         }
     }, [diskon, input.new_price_product]);
     
-
     const hanldeEditProduct = async () => {
         try {
             const body = {

@@ -67,7 +67,7 @@ const EditCategory = () => {
                     </div>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Discount :
+                            % Discount :
                         </label>
                         <input id="categoryName" type="text" className="form-input w-[250px]" required onChange={handleInputChange} name="discount_category" value={input.discount_category} />
                     </div>
