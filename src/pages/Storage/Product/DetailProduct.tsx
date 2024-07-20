@@ -305,7 +305,7 @@ const DetailProduct = () => {
                         <BarcodePrinted
                             barcode={dataDetailProduct?.new_barcode_product ?? ''}
                             category={category}
-                            newPrice={formatRupiah(input.hargaDisplay ?? '')}
+                            newPrice={formatRupiah(input.new_price_product ?? '')}
                             oldPrice={formatRupiah(input.old_price_product ?? '')}
                             showPrintButton={showPrintButton}
                         />
