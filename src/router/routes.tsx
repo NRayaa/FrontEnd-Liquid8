@@ -32,6 +32,9 @@ import AddDestination from '../pages/Outbound/Migrate/AddDestinnation';
 import EditDestination from '../pages/Outbound/Migrate/EditDestination';
 import Analystic from '../pages/Analystic';
 import CreateLPRepair from '../pages/RepairStation/ListProductRepair/CreateRepair';
+import ListProductApprove from '../pages/Inbound/CheckProduct/ListProduct/ListProduct';
+import DetailApproveProductDocument from '../pages/Inbound/CheckProduct/ListProduct/DetailApproveProduct';
+import DetailApproveProductItem from '../pages/Inbound/CheckProduct/ListProduct/DetailApproveProductItem';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -429,6 +432,21 @@ const routes = [
     {
         path: '/inbound/check_product/manual_inbound',
         element: <CreateManualInbound />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/product_approve_document',
+        element: <ListProductApprove />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/product_approve_document/detail/:id',
+        element: <DetailApproveProductDocument />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/product_approve_document_Item/detail/:id',
+        element: <DetailApproveProductItem />,
         layout: 'default',
     },
 ];

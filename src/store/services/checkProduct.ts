@@ -34,7 +34,19 @@ export const checkProduct = createApi({
                 body,
             }),
         }),
+        deleteAllByCodeDocument: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/delete_all_by_codeDocument?code_document=${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        deleteApproveDocumentItem: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-approves/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery, useCheckPriceMutation } = checkProduct;
+export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery, useCheckPriceMutation, useDeleteAllByCodeDocumentMutation, useDeleteApproveDocumentItemMutation } = checkProduct;

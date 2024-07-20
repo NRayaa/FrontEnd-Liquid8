@@ -171,6 +171,9 @@ const Sidebar = () => {
                                                     <NavLink to="/inbound/check_product/list_data">{'Manifest Inbound'}</NavLink>
                                                 </li>
                                                 <li>
+                                                    <NavLink to="/inbound/check_product/product_approve_document">{'Product Approve'}</NavLink>
+                                                </li>
+                                                <li>
                                                     <NavLink to="/inbound/check_product/approvment_product">{'Approvment Document'}</NavLink>
                                                 </li>
                                                 <li>

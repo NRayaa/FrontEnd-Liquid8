@@ -5,24 +5,24 @@ import { Link, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
-import { useDeleteApproveMutation, useDeleteDocumentMutation } from '../../../../store/services/checkProduct';
+import { useDeleteApproveDocumentItemMutation, useDeleteApproveMutation, useDeleteDocumentMutation } from '../../../../store/services/checkProduct';
 import { CheckDocumentApprovmentItem } from '../../../../store/services/types';
 import { Alert } from '../../../../commons';
 import { useGetDetailProductApprovesByDocQuery } from '../../../../store/services/categoriesApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
-const DetailApproveDocument = () => {
+const DetailApproveProductDocument = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const { code_document } = location.state;
 
     useEffect(() => {
-        dispatch(setPageTitle('List Detail Dokumen'));
+        dispatch(setPageTitle('List Detail Produk'));
     }, [dispatch]);
 
     const [page, setPage] = useState<number>(1);
     const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery(code_document);
-    const [deleteApproveProduct, results] = useDeleteApproveMutation();
+    const [deleteApproveProduct, results] = useDeleteApproveDocumentItemMutation();
     const [search, setSearch] = useState<string>('');
     const [listsData, setListsData] = useState<CheckDocumentApprovmentItem[] | []>([]);
 
@@ -116,15 +116,15 @@ const DetailApproveDocument = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Approvment Document</span>
+                    <span>Approvment Product</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT</h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA PRODUCT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     {/* add button back */}
-                    <Link to="/inbound/check_product/approvment_document">
+                    <Link to="/inbound/check_product/product_approve_document">
                         <button type="button" className=" px-2 btn btn-outline-danger">
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
                         </button>
@@ -188,7 +188,7 @@ const DetailApproveDocument = () => {
                                 title: 'Aksi',
                                 render: (item: CheckDocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/approvment_product/detail/${item.id}`} state={{ code_document: item.code_document }}>
+                                        <Link to={`/inbound/check_product/product_approve_document_Item/detail/${item.id}`} state={{ code_document: item.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
@@ -212,4 +212,4 @@ const DetailApproveDocument = () => {
     );
 };
 
-export default DetailApproveDocument;
+export default DetailApproveProductDocument;
