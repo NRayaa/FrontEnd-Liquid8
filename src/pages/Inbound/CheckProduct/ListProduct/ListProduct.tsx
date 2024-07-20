@@ -1,30 +1,49 @@
 import { DataTable } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useGetDocumentApproveProgressQuery } from '../../../../store/services/categoriesApi';
+import { useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
+import { useDeleteAllByCodeDocumentMutation } from '../../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
-import { setPageTitle } from '../../../../store/themeConfigSlice';
-import { useDeleteApproveMutation, useDeleteDocumentMutation } from '../../../../store/services/checkProduct';
-import { CheckDocumentApprovmentItem } from '../../../../store/services/types';
 import { Alert } from '../../../../commons';
-import { useGetDetailProductApprovesByDocQuery } from '../../../../store/services/categoriesApi';
-import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useLazySpvApprovalQuery } from '../../../../store/services/notificationsApi';
+import { DocumentApprovmentProgressItem } from '../../../../store/services/types';
 
-const DetailApproveDocument = () => {
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const { code_document } = location.state;
+const ListProductApprove = () => {
+    const [search, setSearch] = useState<string>('');
+    const [page, setPage] = useState<number>(1);
+    const [deleteApprove, results] = useDeleteAllByCodeDocumentMutation();
+    const searchDebounce = useDebounce(search);
+    const { data, refetch, isError, isSuccess } = useGetDocumentApproveProgressQuery({ p: page, q: searchDebounce });
+    const [spvApproval, resultsApprove] = useLazySpvApprovalQuery();
+
+    const handleApprove = async (id: number) => {
+        await spvApproval(id);
+    };
 
     useEffect(() => {
-        dispatch(setPageTitle('List Detail Dokumen'));
-    }, [dispatch]);
+        if (resultsApprove.isSuccess && resultsApprove.data.data.status) {
+            refetch();
+            toast.success(resultsApprove.data.data.message);
+        }
+    }, [resultsApprove]);
 
-    const [page, setPage] = useState<number>(1);
-    const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery(code_document);
-    const [deleteApproveProduct, results] = useDeleteApproveMutation();
-    const [search, setSearch] = useState<string>('');
-    const [listsData, setListsData] = useState<CheckDocumentApprovmentItem[] | []>([]);
+    const listApproveProduct: any = useMemo(() => {
+        if (isSuccess) {
+            console.log("RESPONSE", data?.data?.resource )
+            return data?.data?.resource?.data;
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (results.isSuccess) {
+            toast.success(results.data.data.message);
+            refetch();
+        } else if (results.isError) {
+            toast.error(results.data.data.message);
+        }
+    }, [results]);
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -38,7 +57,7 @@ const DetailApproveDocument = () => {
             });
             swalWithBootstrapButtons
                 .fire({
-                    title: 'Yakin ingin menghapus item ini?',
+                    title: 'Yakin ingin menhapus item ini?',
                     text: 'Data tidak bisa di kembalikan setelah di hapus',
                     icon: 'warning',
                     showCancelButton: true,
@@ -49,7 +68,7 @@ const DetailApproveDocument = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteApproveProduct(id);
+                        await deleteApprove(id);
                         swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
@@ -84,22 +103,6 @@ const DetailApproveDocument = () => {
         }
     };
 
-    useEffect(() => {
-        if (isSuccess && data.data.status) {
-            setListsData(data.data.resource);
-        }
-        refetch();
-    }, [data, isSuccess, refetch]);
-
-    useEffect(() => {
-        if (results.isSuccess) {
-            toast.success(results.data.data.message);
-            refetch();
-        } else if (results.isError) {
-            toast.error(results.data.data.message);
-        }
-    }, [results, refetch]);
-
     if (isError && !data?.data?.status) {
         return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
     }
@@ -116,84 +119,57 @@ const DetailApproveDocument = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Approvment Document</span>
+                    <span>Approvment Product</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT</h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST APPROVE PRODUCT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    {/* add button back */}
-                    <Link to="/inbound/check_product/approvment_document">
-                        <button type="button" className=" px-2 btn btn-outline-danger">
-                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
-                        </button>
-                    </Link>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
                     <DataTable
-                        records={listsData}
+                        records={listApproveProduct}
                         columns={[
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: CheckDocumentApprovmentItem, index: number) => <span>{(page - 1) * listsData?.length + (index + 1)}</span>,
+                                render: (item: DocumentApprovmentProgressItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'Kode Dokumen',
                                 title: 'Kode Dokumen',
-                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.code_document}</span>,
+                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.code_document}</span>,
                             },
                             {
-                                accessor: 'old_barcode_product',
-                                title: 'Old Barcode',
-                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.old_barcode_product}</span>,
+                                accessor: 'Base Dokumen',
+                                title: 'Base Dokumen',
+                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.base_document}</span>,
                             },
                             {
-                                accessor: 'new_barcode_product',
-                                title: 'New Barcode',
-                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.new_barcode_product}</span>,
+                                accessor: 'Total Data In Document',
+                                title: 'Total Data In Document',
+                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.total_column_in_document}</span>,
                             },
                             {
-                                accessor: 'new_name_product',
-                                title: 'Name',
-                                render: (item: CheckDocumentApprovmentItem) => <span className="font-semibold">{item?.new_name_product}</span>,
-                            },
-                            {
-                                accessor: 'status_document',
+                                accessor: 'Status',
                                 title: 'Status',
-                                render: (item: CheckDocumentApprovmentItem) => (
-                                    <span
-                                        className={`badge whitespace-nowrap ${
-                                            item?.new_status_product === 'display'
-                                                ? 'bg-primary'
-                                                : item?.new_status_product === 'pending'
-                                                ? 'bg-secondary'
-                                                : item?.new_status_product === 'In Progress'
-                                                ? 'bg-success'
-                                                : item?.new_status_product === 'Canceled'
-                                                ? 'bg-danger'
-                                                : 'bg-primary'
-                                        }`}
-                                    >
-                                        {item?.new_status_product}
-                                    </span>
-                                ),
+                                render: (item: DocumentApprovmentProgressItem) => <span className="badge whitespace-nowrap bg-primary ">{item?.status_document}</span>,
                             },
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item: CheckDocumentApprovmentItem) => (
+                                render: (item: DocumentApprovmentProgressItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/approvment_product/detail/${item.id}`} state={{ code_document: item.code_document }}>
+                                        <Link to={`/inbound/check_product/product_approve_document/detail/${item.id}`} state={{ code_document: item?.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
-                                                Detail
+                                                Details
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.code_document })}>
                                             Delete
                                         </button>
                                     </div>
@@ -212,4 +188,4 @@ const DetailApproveDocument = () => {
     );
 };
 
-export default DetailApproveDocument;
+export default ListProductApprove;

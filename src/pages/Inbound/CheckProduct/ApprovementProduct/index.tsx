@@ -118,7 +118,7 @@ const ApprovementProduct = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Approvment Product</span>
+                    <span>Approvment Document</span>
                 </li>
             </ul>
 

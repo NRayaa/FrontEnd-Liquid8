@@ -207,6 +207,40 @@ interface DocumentApprovment {
     };
 }
 
+interface DocumentApprovmentProgress {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: DocumentApprovmentProgressItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: CheckProductDocumentLinks[];
+            next_page_url: null;
+            path: string;
+            per_page: number;
+            prev_page_url: null;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface DocumentApprovmentProgressItem {
+    id: number;
+    code_document: string;
+    base_document: string;
+    total_column_document: number;
+    total_column_in_document: number;
+    date_document: string;
+    status_document: string;
+    created_at: string;
+    updated_at: string;
+}
+
 interface DocumentApprovmentItem {
     id: number;
     user_id: number;
@@ -1812,4 +1846,6 @@ export type {
     DetailQCDResponse,
     GetCountColor,
     GetDisplayMigrate,
+    DocumentApprovmentProgress,
+    DocumentApprovmentProgressItem,
 };

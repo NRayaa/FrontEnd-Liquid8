@@ -121,7 +121,7 @@ const DetailApproveProduct = () => {
                                     title: 'Aksi',
                                     render: (item: NewProductItem) => (
                                         <div className="flex items-center w-max mx-auto gap-6">
-                                            <Link to={`/inbound/check_product/approvment_product/detail/${item.id}`}>
+                                            <Link to={`/inbound/check_product/approvment_document/detail${item.id}`}>
                                                 <button type="button" className="btn btn-outline-info">
                                                     Detail
                                                 </button>

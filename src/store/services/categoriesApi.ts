@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ProductApprovment, GetCategories, NewProduct, NewProductBody, DocumentApprovment } from './types';
+import { ProductApprovment, GetCategories, NewProduct, NewProductBody, DocumentApprovment, DocumentApprovmentProgress } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const categoriesApi = createApi({
@@ -65,6 +65,9 @@ export const categoriesApi = createApi({
                 responseType: 'blob',
             }),
         }),
+        getDocumentApproveProgress: builder.query<DocumentApprovmentProgress, { p: number; q: string }>({
+            query: ({p, q }) => `/documentInProgress?page=${p}&q=${q}`,
+        }),
     }),
 });
 
@@ -80,4 +83,5 @@ export const {
     useGetDetailProductApprovesQuery,
     useEditProductApprovesMutation,
     useExportToExcelSubCategoryMutation,
+    useGetDocumentApproveProgressQuery,
 } = categoriesApi;

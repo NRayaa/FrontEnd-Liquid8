@@ -335,7 +335,6 @@ const DetailProduct = () => {
                     className="btn btn-primary px-16 uppercase mt-6"
                     onClick={() => {
                         hanldeEditProduct();
-                        // setIsRedirect(true);
                     }}
                 >
                     Edit Product
