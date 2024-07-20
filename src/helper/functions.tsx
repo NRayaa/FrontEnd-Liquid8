@@ -105,12 +105,12 @@ function convertPercentage(angka: string): string {
 }
 
 function formatCurrency(value: number) {
-    const formattedValue = new Intl.NumberFormat('id-ID', {
+    const formatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
-    }).format(value);
-
-    return formattedValue;
+        minimumFractionDigits: 0,
+    });
+    return formatter.format(value);
 }
 
 const formatCurrencyRp = (value: string): string => {
@@ -191,7 +191,6 @@ function useDebounce<T>(value: T, delay?: number): T {
 
     return debouncedValue;
 }
-
 
 export {
     formatTimestamp,
