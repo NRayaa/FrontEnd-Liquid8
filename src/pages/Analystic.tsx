@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, LabelList, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, LabelList, Cell, LabelProps } from 'recharts';
 import { formatCurrency } from '../helper/functions';
 import { Tab } from '@headlessui/react';
 import { clsx } from '@mantine/core';
@@ -252,6 +252,24 @@ export const getLabelPosition = (value: number, threshold: number) => {
 };
 
 const thresholdADiscount = Math.max(...salesQty.map((d) => d.aDiscount)) / 2;
+
+const renderCustomizedLabel = (props: LabelProps) => {
+    const { x, y, width, height, value } = props;
+    if (x && y && width && height && value) {
+        const xNumber = parseFloat(x.toString());
+        const yNumber = parseFloat(y.toString());
+        const widthNumber = parseFloat(width.toString());
+        const heightNumber = parseFloat(height.toString());
+        console.log(xNumber, yNumber, widthNumber, heightNumber);
+        const fireOffset = value.toString().length < 5;
+        const offset = fireOffset ? -40 : 5;
+        return (
+            <text x={xNumber + widthNumber - 5} y={yNumber + heightNumber - offset} fill={fireOffset ? '#285A64' : '#fff'} textAnchor="end" style={{ rotate: '90deg' }}>
+                {value}
+            </text>
+        );
+    }
+};
 
 const Analystic = () => {
     const [hoveredTransactions, setHoveredTransactions] = useState<number | null>(null);
@@ -555,24 +573,7 @@ const Analystic = () => {
                                             />
                                             <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} aDiscount />} />
                                             <Bar dataKey="aDiscount" fill="#0ea5e9" radius={[4, 4, 0, 0]}>
-                                                {salesQty.map((entry, index) => {
-                                                    const position = entry.aDiscount >= thresholdADiscount ? 'inside' : 'top';
-                                                    return (
-                                                        <Cell key={`cell-${index}`} fill="#8884d8">
-                                                            <text
-                                                                x={0}
-                                                                y={0}
-                                                                dx={0}
-                                                                dy={position === 'inside' ? -10 : 10}
-                                                                fontSize={12}
-                                                                fill={position === 'inside' ? 'white' : 'black'}
-                                                                textAnchor="middle"
-                                                            >
-                                                                {formatCurrency(entry.aDiscount)}
-                                                            </text>
-                                                        </Cell>
-                                                    );
-                                                })}
+                                                <LabelList dataKey={'aDiscount'} content={renderCustomizedLabel} position="inside" angle={90} />
                                             </Bar>
                                         </BarChart>
                                     </ResponsiveContainer>

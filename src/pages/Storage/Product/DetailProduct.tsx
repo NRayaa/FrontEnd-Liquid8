@@ -155,8 +155,8 @@ const DetailProduct = () => {
         } else if (name === 'diskon') {
             const newDiskon = parseFloat(value);
             setInput((prev) => ({ ...prev, diskon: newDiskon.toString() }));
-            if (input.old_price_product) {
-                const newPrice = parseFloat(input.old_price_product);
+            if (input.new_price_product) {
+                const newPrice = parseFloat(input.new_price_product);
                 const calculatedDisplayPrice = newPrice - newPrice * (newDiskon / 100);
                 setInput((prevState) => ({
                     ...prevState,
@@ -305,7 +305,7 @@ const DetailProduct = () => {
                         <BarcodePrinted
                             barcode={dataDetailProduct?.new_barcode_product ?? ''}
                             category={category}
-                            newPrice={formatRupiah(input.hargaDisplay ?? '')}
+                            newPrice={formatRupiah(input.new_price_product ?? '')}
                             oldPrice={formatRupiah(input.old_price_product ?? '')}
                             showPrintButton={showPrintButton}
                         />
