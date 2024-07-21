@@ -38,22 +38,7 @@ const CreateManualInbound = () => {
         old_price_product: '0',
     });
 
-    const generateBarcode = () => {
-        const prefix = 'LQD';
-        const numbers = '0123456789';
-        const length = 5;
-        let randomNumber = '';
-
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * numbers.length);
-            randomNumber += numbers[randomIndex];
-        }
-
-        return prefix + randomNumber;
-    };
-
     const [input, setInput] = useState({
-        new_barcode_product: generateBarcode() ?? '',
         new_name_product: '',
         new_quantity_product: '1',
         new_price_product: '0',
@@ -72,13 +57,11 @@ const CreateManualInbound = () => {
             return latestPrices.data.resource;
         }
     }, [isSuccessLatestPrice, latestPrices]);
-    console.log(input);
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
             const body = {
-                new_barcode_product: input.new_barcode_product,
                 new_name_product: input.new_name_product,
                 new_quantity_product: input.new_quantity_product,
                 old_price_product: input.old_price_product,
@@ -96,9 +79,8 @@ const CreateManualInbound = () => {
                         setIsBarcode(true);
                     }
                     toast.success('Product berhasil ditambah');
-                    setResponse(res);
+                    setResponse(res.data.resource);
                     setInput({
-                        new_barcode_product: generateBarcode() ?? '',
                         new_name_product: '',
                         new_quantity_product: '1',
                         new_price_product: '0',
@@ -171,19 +153,6 @@ const CreateManualInbound = () => {
                         <form className="w-full flex gap-x-2" onSubmit={handleSubmit}>
                             <div className="w-2/5">
                                 <div className="space-y-5 col-span-2 panel w-full">
-                                    <div className="flex items-center  justify-between mb-2">
-                                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                            Barcode:
-                                        </label>
-                                        <input
-                                            id="barcode"
-                                            type="text"
-                                            className="form-input w-[300px]"
-                                            value={input.new_barcode_product}
-                                            onChange={(e) => setInput((prev) => ({ ...prev, new_barcode_product: e.target.value }))}
-                                            required
-                                        />
-                                    </div>
                                     <div className="flex items-center  justify-between mb-2">
                                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                             Nama Barang:
