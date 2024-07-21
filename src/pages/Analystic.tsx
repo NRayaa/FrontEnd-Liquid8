@@ -253,22 +253,26 @@ export const getLabelPosition = (value: number, threshold: number) => {
 
 const thresholdADiscount = Math.max(...salesQty.map((d) => d.aDiscount)) / 2;
 
-const renderCustomizedLabel = (props: LabelProps) => {
-    const { x, y, width, height, value } = props;
-    if (x && y && width && height && value) {
-        const xNumber = parseFloat(x.toString());
-        const yNumber = parseFloat(y.toString());
-        const widthNumber = parseFloat(width.toString());
-        const heightNumber = parseFloat(height.toString());
-        console.log(xNumber, yNumber, widthNumber, heightNumber);
-        const fireOffset = value.toString().length < 5;
-        const offset = fireOffset ? -40 : 5;
-        return (
-            <text x={xNumber + widthNumber - 5} y={yNumber + heightNumber - offset} fill={fireOffset ? '#285A64' : '#fff'} textAnchor="end" style={{ rotate: '90deg' }}>
-                {value}
-            </text>
-        );
-    }
+type CustomLabelProps = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    value: number;
+    threshold: number;
+    formatter?: (value: number) => string;
+};
+
+const CustomLabel: React.FC<CustomLabelProps> = ({ x, y, width, height, value, threshold, formatter }) => {
+    const isAboveThreshold = value >= threshold;
+    const posX = x + width / 2;
+    const posY = isAboveThreshold ? y + height / 2 : y - 10;
+
+    return (
+        <text x={posX} y={posY} textAnchor="middle" fill={isAboveThreshold ? 'white' : 'black'} style={{ fontSize: '12px' }}>
+            {formatter ? formatter(value) : value}
+        </text>
+    );
 };
 
 const Analystic = () => {
@@ -572,9 +576,7 @@ const Analystic = () => {
                                                 angle={25}
                                             />
                                             <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} aDiscount />} />
-                                            <Bar dataKey="aDiscount" fill="#0ea5e9" radius={[4, 4, 0, 0]}>
-                                                <LabelList dataKey={'aDiscount'} content={renderCustomizedLabel} position="inside" angle={90} />
-                                            </Bar>
+                                            <Bar dataKey="aDiscount" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
