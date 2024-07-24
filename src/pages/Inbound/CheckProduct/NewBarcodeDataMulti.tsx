@@ -46,7 +46,7 @@ const NewBarcodeDataMulti: React.FC<NewBarcodeDataMultiProps> = ({ barcode, nama
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" value={inputPrice} onChange={handleInputPrice} />
+                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" value={inputPrice} onChange={handleInputPrice} disabled/>
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
