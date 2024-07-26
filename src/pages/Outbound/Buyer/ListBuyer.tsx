@@ -11,7 +11,7 @@ import { useDeleteBuyerMutation, useExportToExcelBuyerMutation, useGetListBuyerQ
 import { GetListBuyerItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
-import { useDebounce } from '../../../helper/functions';
+import { formatRupiah, useDebounce } from '../../../helper/functions';
 
 const rowData = [
     {
@@ -613,11 +613,20 @@ const ListBuyer = () => {
                                 render: (item: GetListBuyerItem) => <span className="font-semibold">{item.phone_buyer}</span>,
                             },
                             {
-                                accessor: 'address_buyer',
-                                title: 'Alamat',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.address_buyer}</span>,
+                                accessor: 'amount_transaction_buyer',
+                                title: 'Transaksi',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{formatRupiah(item.amount_transaction_buyer)}</span>,
                             },
-
+                            {
+                                accessor: 'amount_purchase_buyer',
+                                title: 'Purchase',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{formatRupiah(item.amount_purchase_buyer)}</span>,
+                            },
+                            // {
+                            //     accessor: 'address_buyer',
+                            //     title: 'Alamat',
+                            //     render: (item: GetListBuyerItem) => <span className="font-semibold">{item.address_buyer}</span>,
+                            // },
                             {
                                 accessor: 'action',
                                 title: 'Detail',
@@ -626,7 +635,7 @@ const ListBuyer = () => {
                                     <div className="flex items-center w-max mx-auto gap-2">
                                         <Link
                                             to={`/buyer/buyer/list_buyer/detail_buyer/${item.id}`}
-                                            state={{ name_buyer: item.name_buyer, phone_buyer: item.phone_buyer, address_buyer: item.address_buyer }}
+                                            state={{ name_buyer: item.name_buyer, phone_buyer: item.phone_buyer, address_buyer: item.address_buyer, amount_transaction_buyer: item.amount_transaction_buyer, amount_purchase_buyer: item.amount_purchase_buyer }}
                                         >
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
