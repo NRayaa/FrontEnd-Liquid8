@@ -127,6 +127,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             console.log(err);
         }
     };
+    
     const handleDamaged = async () => {
         try {
             const body = {
@@ -145,14 +146,16 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: descriptionDamaged,
             };
-            await newProduct(body);
             setBarcodeStatus('TIDAK LOLOS');
-            resetProductCheckShow();
-            hideBarcode();
+            handleSetNewPriceProduct(formatRupiah(newPrice));
+            await newProduct(body);
+            // resetProductCheckShow();
+            // hideBarcode();
         } catch (err) {
             console.log(err);
         }
     };
+
     const handleAbnormal = async () => {
         try {
             const body = {
@@ -171,10 +174,13 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: descriptionAbnormal,
             };
-            await newProduct(body);
             setBarcodeStatus('TIDAK LOLOS');
-            resetProductCheckShow();
-            hideBarcode();
+            handleSetNewPriceProduct(formatRupiah(newPrice));
+            await newProduct(body);
+            const response = await newProduct(body);
+            console.log('API Response:', response);
+            // resetProductCheckShow();
+            // hideBarcode();
         } catch (err) {
             console.log(err);
         }
