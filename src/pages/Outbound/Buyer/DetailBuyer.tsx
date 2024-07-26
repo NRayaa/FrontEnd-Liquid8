@@ -15,6 +15,8 @@ const DetailBuyer = () => {
         name_buyer: state?.name_buyer,
         phone_buyer: state?.phone_buyer,
         address_buyer: state?.address_buyer,
+        amount_transaction_buyer: state?.amount_transaction_buyer,
+        amount_purchase_buyer: state?.amount_purchase_buyer,
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -32,6 +34,8 @@ const DetailBuyer = () => {
                 name_buyer: input.name_buyer,
                 phone_buyer: input.phone_buyer,
                 address_buyer: input.address_buyer,
+                amount_transaction_buyer: input.amount_transaction_buyer,
+                amount_purchase_buyer: input.amount_purchase_buyer,
             };
             await updateBuyer({ id, body });
         } catch (err) {}
@@ -78,6 +82,18 @@ const DetailBuyer = () => {
                             Alamat :
                         </label>
                         <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="transaksi" className="text-[15px] font-semibold whitespace-nowrap">
+                            Transaksi :
+                        </label>
+                        <input id="transaksi" type="text" className="form-input w-[250px]" required name="amount_transaction_buyer" onChange={handleInputChange} value={input.amount_transaction_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="purchase" className="text-[15px] font-semibold whitespace-nowrap">
+                            Purcahse :
+                        </label>
+                        <input id="purchase" type="text" className="form-input w-[250px]" required name="amount_purchase_buyer" onChange={handleInputChange} value={input.amount_purchase_buyer} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16">
                         Update

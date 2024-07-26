@@ -1455,6 +1455,8 @@ interface GetListBuyerItem {
     name_buyer: string;
     phone_buyer: string;
     address_buyer: string;
+    amount_transaction_buyer: string;
+    amount_purchase_buyer: string;
     created_at: string;
     updated_at: string;
 }
