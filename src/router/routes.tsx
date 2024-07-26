@@ -35,6 +35,7 @@ import CreateLPRepair from '../pages/RepairStation/ListProductRepair/CreateRepai
 import ListProductApprove from '../pages/Inbound/CheckProduct/ListProduct/ListProduct';
 import DetailApproveProductDocument from '../pages/Inbound/CheckProduct/ListProduct/DetailApproveProduct';
 import DetailApproveProductItem from '../pages/Inbound/CheckProduct/ListProduct/DetailApproveProductItem';
+import BulkingProduct from '../pages/Inbound/BulkingProduct/BulkingProduct';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -101,6 +102,12 @@ const routes = [
     {
         path: '/inbound/data_process/data_input',
         element: <DataInput />,
+        layout: 'default',
+    },
+    // Inbound Bulkig Product
+    {
+        path: '/inbound/bulking_product',
+        element: <BulkingProduct />,
         layout: 'default',
     },
     //List Data

@@ -146,6 +146,21 @@ const Sidebar = () => {
                             </li>
 
                             <li className="nav-item">
+                                <NavLink to="/inbound/bulking_product" className="group">
+                                    <div className="flex items-center">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2 2H18V18H2V2Z" fill="#888EA8" />
+                                            <path d="M4 4H16V16H4V4Z" fill="white" />
+                                            <path d="M6 6H14V14H6V6Z" fill="#888EA8" />
+                                            <path d="M8 8H12V12H8V8Z" fill="white" />
+                                        </svg>
+
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Bulking Product')}</span>
+                                    </div>
+                                </NavLink>
+                            </li>
+
+                            <li className="nav-item">
                                 <ul>
                                     <li className="nav-item">
                                         <button type="button" className={`${currentMenu === 'check_product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('check_product')}>
