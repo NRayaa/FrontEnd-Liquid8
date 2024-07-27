@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BreadCrumbs } from '../../../../components';
 import { DataTable } from 'mantine-datatable';
-import { useDeleteProductNewMutation, useExportToExcelProductByCategoryMutation, useGetAllProductNewQuery, useProductByCategoryQuery } from '../../../../store/services/productNewApi';
+import { useDeleteProductNewMutation, useExportToExcelProductByCategoryMutation, useProductByCategoryQuery } from '../../../../store/services/productNewApi';
 import { NewProductItem } from '../../../../store/services/types';
 import { formatDate, formatRupiah, useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
@@ -99,7 +99,7 @@ const ProductByCategory = () => {
 
     useEffect(() => {
         refetch();
-    }, [data, refetch]);
+    }, [page, debounceValue, refetch]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -108,7 +108,7 @@ const ProductByCategory = () => {
         } else if (results.isError) {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
-    }, [results]);
+    }, [results, refetch]);
 
     if (isError && !data?.data.status) {
         return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
