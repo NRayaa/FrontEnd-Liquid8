@@ -194,7 +194,7 @@ const ProductByCategory = () => {
                                 render: (item: NewProductItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <Link to={`/storage/product/${item.id}`}>
-                                            <button type="button" className="btn btn-outline-info">
+                                            <button type="button" className="btn btn-outline-info" disabled={item.new_status_product.toLowerCase() === 'not sale'}>
                                                 Detail
                                             </button>
                                         </Link>
