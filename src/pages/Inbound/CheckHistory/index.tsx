@@ -113,9 +113,9 @@ const CheckHistory = () => {
                         render: (item: GetRiwayatcheckItem, index: number) => <span>{(page - 1) * riwayatCheckData?.length + (index + 1)}</span>,
                     },
                     {
-                        accessor: 'date_document',
-                        title: 'Nama Data',
-                        render: (item: GetRiwayatcheckItem) => <span className="font-semibold">{item.code_document}</span>,
+                        accessor: 'base_document',
+                        title: 'Base Document',
+                        render: (item: any) => <span className="font-semibold">{item.base_document}</span>,
                     },
                     {
                         accessor: 'tanggal',
