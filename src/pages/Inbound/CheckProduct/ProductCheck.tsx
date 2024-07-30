@@ -127,7 +127,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             console.log(err);
         }
     };
-    
+
     const handleDamaged = async () => {
         try {
             const body = {
@@ -344,7 +344,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                                         </label>
                                     ))}
 
-                                <button disabled={false} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
+                                <button disabled={parseFloat(oldData.old_price_product) > 100000 && !selectedOption} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
                                     SEND
                                 </button>
                             </div>
