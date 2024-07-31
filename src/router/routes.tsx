@@ -36,6 +36,7 @@ import ListProductApprove from '../pages/Inbound/CheckProduct/ListProduct/ListPr
 import DetailApproveProductDocument from '../pages/Inbound/CheckProduct/ListProduct/DetailApproveProduct';
 import DetailApproveProductItem from '../pages/Inbound/CheckProduct/ListProduct/DetailApproveProductItem';
 import BulkingProduct from '../pages/Inbound/BulkingProduct/BulkingProduct';
+import BulkingColor from '../pages/Inbound/BulkingProduct/BulkingColor';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -106,8 +107,13 @@ const routes = [
     },
     // Inbound Bulkig Product
     {
-        path: '/inbound/bulking_product',
+        path: '/inbound/bulking_product/bulking_category',
         element: <BulkingProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/bulking_product/bulking_color',
+        element: <BulkingColor />,
         layout: 'default',
     },
     //List Data
