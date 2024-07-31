@@ -35,7 +35,14 @@ export const productOldsApi = createApi({
                 body,
             }),
         }),
+        addBulkingColor: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/bulking_tag_warna',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery, useAddBulkingProductMutation } = productOldsApi;
+export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery, useAddBulkingProductMutation, useAddBulkingColorMutation } = productOldsApi;

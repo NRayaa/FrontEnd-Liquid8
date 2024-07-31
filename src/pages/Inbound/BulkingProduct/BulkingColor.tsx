@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { useAddBulkingProductMutation } from '../../../store/services/productOldsApi';
 import toast from 'react-hot-toast';
+import { useAddBulkingColorMutation } from '../../../store/services/productOldsApi';
 
-const BulkingProduct = () => {
+const BulkingColor = () => {
     const dispatch = useDispatch();
     const [file, setFile] = useState<File | null>(null);
-    const [addBulkingProduct, { isLoading }] = useAddBulkingProductMutation();
+    const [addBulkingProduct, { isLoading }] = useAddBulkingColorMutation();
 
     useEffect(() => {
         dispatch(setPageTitle('Data Input'));
@@ -31,10 +31,14 @@ const BulkingProduct = () => {
         formData.append('file', file);
 
         try {
-            await addBulkingProduct(formData).unwrap();
-            toast.success('File uploaded successfully');
-        } catch (error) {
-            toast.error('File upload failed');
+            const response = await addBulkingProduct(formData).unwrap();
+            toast.success(response?.data?.message || 'File uploaded successfully');
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error.data.message);
+            } else {
+                toast.error('File upload failed');
+            }
         }
     };
 
@@ -53,7 +57,7 @@ const BulkingProduct = () => {
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Bulking Category</span>
+                    <span>Bulking Color</span>
                 </li>
             </ul>
             {/* end breadcrumbs */}
@@ -77,4 +81,4 @@ const BulkingProduct = () => {
     );
 };
 
-export default BulkingProduct;
+export default BulkingColor;

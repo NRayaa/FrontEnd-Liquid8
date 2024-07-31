@@ -145,7 +145,7 @@ const Sidebar = () => {
                                 </NavLink>
                             </li>
 
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                                 <NavLink to="/inbound/bulking_product" className="group">
                                     <div className="flex items-center">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -158,6 +158,35 @@ const Sidebar = () => {
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Bulking Product')}</span>
                                     </div>
                                 </NavLink>
+                            </li> */}
+
+                            <li className="nav-item">
+                                <button type="button" className={`${currentMenu === 'bulking_product' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('bulking_product')}>
+                                    <div className="flex items-center">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2 2H18V18H2V2Z" fill="#888EA8" />
+                                            <path d="M4 4H16V16H4V4Z" fill="white" />
+                                            <path d="M6 6H14V14H6V6Z" fill="#888EA8" />
+                                            <path d="M8 8H12V12H8V8Z" fill="white" />
+                                        </svg>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Bulking Product')}</span>
+                                    </div>
+                                    <div className={currentMenu === 'bulking_product' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </button>
+                                <AnimateHeight duration={300} height={currentMenu === 'bulking_product' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to="/inbound/bulking_product/bulking_category">{'Bulking Category'}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/inbound/bulking_product/bulking_color">{'Bulking Color'}</NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
                             </li>
 
                             <li className="nav-item">
