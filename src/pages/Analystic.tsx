@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { formatCurrency } from '../helper/functions';
 import { Tab } from '@headlessui/react';
 import { clsx } from '@mantine/core';
-import { useGetSummaryTransactionQuery } from '../store/services/analysticApi';
+import { useGetSummarySalesQuery, useGetSummaryTransactionQuery } from '../store/services/analysticApi';
 
 type DataPoint = {
     name: string;
@@ -481,9 +481,10 @@ const Analystic = () => {
     const [currentCustomers, setCurrentCustomers] = useState<number>(517);
     const [hoveredValue, setHoveredValue] = useState<number | null>(null);
     const [currentValue, setCurrentValue] = useState<number>(2388255689);
-    const { data } = useGetSummaryTransactionQuery(undefined);
+    const { data: dataSummaryTransaction } = useGetSummaryTransactionQuery(undefined);
+    const { data: dataSummarySales } = useGetSummarySalesQuery(undefined);
 
-    console.log(data);
+    console.log(dataSummaryTransaction, dataSummarySales);
 
     return (
         <div className="flex flex-col gap-4">
