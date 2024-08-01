@@ -26,14 +26,18 @@ const PalletDetail = () => {
     const [searchProductBundle, setSearchProductBundle] = useState('');
     const [pageProduct, setPageProduct] = useState<number>(1);
     const debounceValueProductBundle = useDebounce(searchProductBundle);
-    const { data: listProduct } = useDisplayPalletListsQuery({ page: pageProduct, q: debounceValueProductBundle });
+    const { data: listProduct, isSuccess: isSuccessProduct } = useDisplayPalletListsQuery({ page: pageProduct, q: debounceValueProductBundle });
     const [addDetailPalletProduct] = useAddDetailPalletProductMutation();
     const [updateDetailPallet] = useUpdateDetailPalletMutation();
     const [exportToExcel] = useExportToExcelDetailPalletMutation();
 
     const productNewData = useMemo(() => {
-        return listProduct?.data.resource.data;
-    }, [data]);
+        if (isSuccessProduct) {
+            return listProduct?.data.resource.data;
+        }
+    }, [listProduct]);
+
+    console.log(productNewData);
 
     const detailDataPallet = useMemo(() => {
         if (isSuccess) {
@@ -84,10 +88,10 @@ const PalletDetail = () => {
         try {
             const response = await exportToExcel({ id }).unwrap();
             const url = response.data.resource;
-            const fileName = url.substring(url.lastIndexOf('/') + 1); 
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
             const a = document.createElement('a');
             a.href = url;
-            a.download = fileName; 
+            a.download = fileName;
             document.body.appendChild(a);
             a.click();
             a.remove();
