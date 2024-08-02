@@ -37,9 +37,10 @@ const Kasir = () => {
     const { id } = useParams();
     const [putGabor, results] = usePutGaborMutation();
     const [updatePrice, resultsUpdate] = useUpdatePriceMutation();
-
     const [scanProduct, setScanProduct] = useState('');
     const validScan = useDebounce(scanProduct, 1000);
+    const [voucher, setVoucher] = useState<string>('');
+    const [totalAfterDiscount, setTotalAfterDiscount] = useState<number | null>(null);
 
     const listSale = useMemo(() => {
         return listSaleData?.data.resource.data;
@@ -59,11 +60,11 @@ const Kasir = () => {
         phone_buyer: '',
         address_buyer: '',
         product_price_sale: '',
+        voucher: 0,
     });
 
     const [currentId, setCurrentId] = useState<number | null>(null);
     const [inputs, setInputs] = useState<{ [key: number]: { [key: string]: string } }>({});
-
 
     useEffect(() => {
         if (listSale && Array.isArray(listSale)) {
@@ -77,7 +78,6 @@ const Kasir = () => {
             setInputs(initialInputs);
         }
     }, [listSale]);
-    
 
     const handleInputChanges = (id: number, name: string, value: string) => {
         setInputs((prevInputs) => ({
@@ -88,7 +88,6 @@ const Kasir = () => {
             },
         }));
     };
-    
 
     const clearInput = (id: number) => {
         setInputs((prevInputs) => ({
@@ -99,7 +98,7 @@ const Kasir = () => {
             },
         }));
     };
-    
+
     useEffect(() => {
         if (isSuccess && listSale && Array.isArray(listSale)) {
             const saleItem = listSale.find((item) => item.status_sale === 'proses');
@@ -190,6 +189,7 @@ const Kasir = () => {
             const body = {
                 sale_barcode: barcode_value,
                 buyer_id: inputBuyer.id,
+                voucher: input.voucher,
             };
             await addSale(body)
                 .unwrap()
@@ -226,7 +226,10 @@ const Kasir = () => {
 
     const handleFinishSale = async () => {
         try {
-            await saleFinish(null)
+            const body = {
+                voucher: voucher,
+            };
+            await saleFinish(body)
                 .unwrap()
                 .then((res) => {
                     toast.success(res.data.message);
@@ -290,6 +293,21 @@ const Kasir = () => {
     const handleAddBuyerButtonClick = () => {
         setListBuyerOpen(false);
         setAddBuyerOpen(true);
+    };
+
+    const handleApplyVoucher = () => {
+        const voucherAmount = Number(voucher);
+        const total = listSaleData?.data.resource.total_sale ?? 0;
+
+        if (voucherAmount > 0 && total > 0) {
+            const discountedTotal = total - voucherAmount;
+            const finalTotal = discountedTotal > 0 ? discountedTotal : 0;
+            setTotalAfterDiscount(finalTotal);
+            console.log('Discount Applied:', finalTotal); 
+        } else {
+            setTotalAfterDiscount(total);
+            console.log('Voucher Invalid:', total); 
+        }
     };
 
     const showAlert = async ({ type, id }: any) => {
@@ -709,15 +727,32 @@ const Kasir = () => {
                                 </div>
                             </div>
                             <div className="flex items-center justify-between mb-4">
+                                <label htmlFor="voucherAmount" className="text-[15px] font-semibold whitespace-nowrap">
+                                    Voucher Amount:
+                                </label>
+                                <input
+                                    id="voucher"
+                                    type="number"
+                                    name="voucher"
+                                    value={voucher}
+                                    onChange={(e) => setVoucher(e.target.value)}
+                                    className="form-input w-[250px]"
+                                    placeholder="Enter voucher amount"
+                                />
+                                <button type="button" className="btn btn-primary ml-4" onClick={handleApplyVoucher}>
+                                    Apply Voucher
+                                </button>
+                            </div>
+                            <div className="flex items-center justify-between mb-4">
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                     TOTAL :
                                 </label>
                                 <input
                                     id="categoryName"
                                     type="text"
-                                    value={formatRupiah(listSaleData?.data.resource.total_sale.toString() ?? '')}
+                                    value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
                                     placeholder="Rp"
-                                    className=" form-input w-[250px]"
+                                    className="form-input w-[250px]"
                                     required
                                 />
                             </div>

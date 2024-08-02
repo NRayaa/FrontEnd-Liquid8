@@ -8,6 +8,8 @@ import { useAddBulkingColorMutation } from '../../../store/services/productOldsA
 const BulkingColor = () => {
     const dispatch = useDispatch();
     const [file, setFile] = useState<File | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [errorResources, setErrorResources] = useState<string[]>([]);
     const [addBulkingProduct, { isLoading }] = useAddBulkingColorMutation();
 
     useEffect(() => {
@@ -33,11 +35,16 @@ const BulkingColor = () => {
         try {
             const response = await addBulkingProduct(formData).unwrap();
             toast.success(response?.data?.message || 'File uploaded successfully');
+            setErrorMessage(null);
+            setErrorResources([]);
         } catch (error: any) {
-            if (error?.data?.message) {
-                toast.error(error.data.message);
+            toast.error('File upload failed');
+            if (error.data && error.data.message && error.data.resource) {
+                setErrorMessage(error.data.message);
+                setErrorResources(error.data.resource);
             } else {
-                toast.error('File upload failed');
+                setErrorMessage('An unknown error occurred');
+                setErrorResources([]);
             }
         }
     };
@@ -77,6 +84,29 @@ const BulkingColor = () => {
                     {isLoading ? 'Saving...' : 'Save'}
                 </button>
             </div>
+
+            {/* error message and resource list */}
+            {errorMessage && (
+                <div className="mt-4">
+                    <h3 className="text-lg font-semibold mb-4 text-red-500">{errorMessage}</h3>
+                    <div className="table-responsive mb-5">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">List Barcode Duplicate</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {errorResources.map((resource, index) => (
+                                    <tr key={index}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{resource}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
