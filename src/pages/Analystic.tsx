@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, LabelList, Cell, LabelProps } from 'recharts';
 import { formatCurrency } from '../helper/functions';
 import { Tab } from '@headlessui/react';
@@ -476,27 +476,107 @@ const ContentLegend = (props: any) => {
 
 const Analystic = () => {
     const [hoveredTransactions, setHoveredTransactions] = useState<number | null>(null);
-    const [currentTransactions, setCurrentTransactions] = useState<number>(517);
+    const [currentHoverTransactions, setCurrentHoverTransactions] = useState<string | null>(null);
     const [hoveredCustomers, setHoveredCustomers] = useState<number | null>(null);
-    const [currentCustomers, setCurrentCustomers] = useState<number>(517);
+    const [currentHoverCustomers, setCurrentHoverCustomers] = useState<string | null>(null);
     const [hoveredValue, setHoveredValue] = useState<number | null>(null);
-    const [currentValue, setCurrentValue] = useState<number>(2388255689);
-    const { data: dataSummaryTransaction } = useGetSummaryTransactionQuery(undefined);
-    const { data: dataSummarySales } = useGetSummarySalesQuery(undefined);
+    const [currentHoverValue, setCurrentHoverValue] = useState<string | null>(null);
+    const [monthSummarySales, setMonthSummarySales] = useState((new Date().getMonth() + 1).toString().padStart(2, '0'));
+    const [yearSummarySales, setYearSummarySales] = useState(new Date().getFullYear().toString());
+    const [yearSummaryTransaction, setYearSummaryTransaction] = useState(new Date().getFullYear().toString());
+    const { data: dataSummaryTransaction, isSuccess: isSuccessSummaryTransaction, refetch: refetchSummaryTransaction } = useGetSummaryTransactionQuery(yearSummaryTransaction);
+    const { data: dataSummarySales, isSuccess: isSuccessSummarySales, refetch: refetchSummarySales } = useGetSummarySalesQuery({ m: monthSummarySales, y: yearSummarySales });
 
-    console.log(dataSummaryTransaction, dataSummarySales);
+    const summarySales: any = useMemo(() => {
+        if (isSuccessSummarySales) {
+            return dataSummarySales?.data.resource;
+        }
+    }, [dataSummarySales]);
+
+    const summaryTransaction: any = useMemo(() => {
+        if (isSuccessSummaryTransaction) {
+            return dataSummaryTransaction?.data.resource;
+        }
+    }, [dataSummaryTransaction]);
+
+    console.log(currentHoverTransactions);
+
+    useEffect(() => {
+        refetchSummarySales();
+    }, [monthSummarySales, yearSummarySales]);
+
+    useEffect(() => {
+        refetchSummaryTransaction();
+    }, [yearSummaryTransaction]);
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="w-full grid grid-cols-6">
-                <div className="w-full">hello</div>
+            <div className="w-full grid grid-cols-6 gap-4">
+                <div className="w-full h-full border border-gray-500 rounded-md flex flex-col">
+                    <div className="flex w-full">
+                        <button
+                            onClick={() => {
+                                setYearSummaryTransaction(summaryTransaction?.year.prev_year.year);
+                            }}
+                            className="w-full flex justify-center items-center h-9 border-b border-r"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-4 h-4"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="m15 18-6-6 6-6" />
+                            </svg>
+                            <p className="ml-2">Prev</p>
+                        </button>
+                        <button
+                            onClick={() => {
+                                setYearSummaryTransaction(summaryTransaction?.year.next_year.year);
+                            }}
+                            className="w-full flex justify-center items-center h-9 border-b"
+                        >
+                            <p className="mr-2">Next</p>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-4 h-4"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button
+                        onClick={() => {
+                            setYearSummaryTransaction(summaryTransaction?.year.current_year.year);
+                        }}
+                        className="outline-none w-full h-full flex justify-center items-center font-bold text-xl"
+                    >
+                        {summaryTransaction?.year.selected_year.year}
+                    </button>
+                </div>
                 <div className="grid w-full grid-cols-3 gap-4 col-span-5">
                     <div className="flex w-full border border-yellow-200 rounded-md bg-gradient-to-tl from-yellow-500/20 to-yellow-500/0 px-5 py-3">
                         <div className="flex flex-col w-full gap-6">
                             <h5 className="font-semibold">Total Transactions</h5>
                             <div className="flex flex-col">
-                                <p className="text-xl font-bold leading-none">{(hoveredTransactions !== null ? hoveredTransactions : currentTransactions).toLocaleString()}</p>
-                                <p className="text-sm">on Januay</p>
+                                <p className="text-xl font-bold leading-none">
+                                    {(hoveredTransactions !== null ? hoveredTransactions ?? 0 : summaryTransaction?.final_total.total_transaction ?? 0).toLocaleString()}
+                                </p>
+                                <p className="text-sm">
+                                    {currentHoverTransactions !== null
+                                        ? `on ${currentHoverTransactions + ' ' + summaryTransaction?.year.selected_year.year}`
+                                        : `on ${summaryTransaction?.year.selected_year.year}`}
+                                </p>
                             </div>
                         </div>
                         <div className="w-full flex justify-end">
@@ -505,11 +585,15 @@ const Analystic = () => {
                                     onMouseMove={(state) => {
                                         if (state.isTooltipActive && state.activePayload) {
                                             const { payload } = state.activePayload[0];
-                                            setHoveredTransactions(payload.transactions);
+                                            setHoveredTransactions(payload.total_transaction);
+                                            setCurrentHoverTransactions(payload.month);
                                         }
                                     }}
-                                    onMouseLeave={() => setHoveredTransactions(null)}
-                                    data={data}
+                                    onMouseLeave={() => {
+                                        setHoveredTransactions(null);
+                                        setCurrentHoverTransactions(null);
+                                    }}
+                                    data={summaryTransaction?.charts}
                                     margin={{
                                         top: 5,
                                         right: 10,
@@ -518,7 +602,7 @@ const Analystic = () => {
                                     }}
                                 >
                                     <Tooltip active={false} />
-                                    <Line type="monotone" dataKey="transactions" stroke="#a16207" dot={false} />
+                                    <Line type="monotone" dataKey="total_transaction" stroke="#a16207" dot={false} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
@@ -527,8 +611,14 @@ const Analystic = () => {
                         <div className="flex flex-col w-full gap-6">
                             <h5 className="font-semibold">Total Customers</h5>
                             <div className="flex flex-col">
-                                <p className="text-xl font-bold leading-none">{(hoveredCustomers !== null ? hoveredCustomers : currentCustomers).toLocaleString()}</p>
-                                <p className="text-sm">on Januay</p>
+                                <p className="text-xl font-bold leading-none">
+                                    {(hoveredCustomers !== null ? hoveredCustomers ?? 0 : summaryTransaction?.final_total.total_customer ?? 0).toLocaleString()}
+                                </p>
+                                <p className="text-sm">
+                                    {currentHoverCustomers !== null
+                                        ? `on ${currentHoverCustomers + ' ' + summaryTransaction?.year.selected_year.year}`
+                                        : `on ${summaryTransaction?.year.selected_year.year}`}
+                                </p>
                             </div>
                         </div>
                         <div className="w-full flex justify-end">
@@ -537,11 +627,15 @@ const Analystic = () => {
                                     onMouseMove={(state) => {
                                         if (state.isTooltipActive && state.activePayload) {
                                             const { payload } = state.activePayload[0];
-                                            setHoveredCustomers(payload.transactions);
+                                            setHoveredCustomers(payload.total_customer);
+                                            setCurrentHoverCustomers(payload.month);
                                         }
                                     }}
-                                    onMouseLeave={() => setHoveredCustomers(null)}
-                                    data={data}
+                                    onMouseLeave={() => {
+                                        setHoveredCustomers(null);
+                                        setCurrentHoverCustomers(null);
+                                    }}
+                                    data={summaryTransaction?.charts}
                                     margin={{
                                         top: 5,
                                         right: 10,
@@ -550,30 +644,38 @@ const Analystic = () => {
                                     }}
                                 >
                                     <Tooltip active={false} />
-                                    <Line type="monotone" dataKey="customers" stroke="#15803d" dot={false} />
+                                    <Line type="monotone" dataKey="total_customer" stroke="#15803d" dot={false} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
                     <div className="flex w-full border border-indigo-200 rounded-md bg-gradient-to-tl from-indigo-500/20 to-indigo-500/0 px-5 py-3">
-                        <div className="flex flex-col w-full gap-6">
+                        <div className="flex flex-col w-1/2 gap-6">
                             <h5 className="font-semibold">Value Transactions</h5>
                             <div className="flex flex-col">
-                                <p className="text-xl font-bold leading-none">{(hoveredValue !== null ? formatCurrency(hoveredValue) : formatCurrency(currentValue)).toLocaleString()}</p>
-                                <p className="text-sm">on Januay</p>
+                                <p className="text-xl font-bold leading-none">
+                                    {hoveredValue !== null ? formatCurrency(hoveredValue ?? 0) : formatCurrency(summaryTransaction?.final_total.value_transaction ?? 0)}
+                                </p>
+                                <p className="text-sm">
+                                    {currentHoverValue !== null ? `on ${currentHoverValue + ' ' + summaryTransaction?.year.selected_year.year}` : `on ${summaryTransaction?.year.selected_year.year}`}
+                                </p>
                             </div>
                         </div>
-                        <div className="w-full flex justify-end">
+                        <div className="w-1/2 flex justify-end">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
                                     onMouseMove={(state) => {
                                         if (state.isTooltipActive && state.activePayload) {
                                             const { payload } = state.activePayload[0];
-                                            setHoveredValue(payload.value);
+                                            setHoveredValue(payload.value_transaction);
+                                            setCurrentHoverValue(payload.month);
                                         }
                                     }}
-                                    onMouseLeave={() => setHoveredValue(null)}
-                                    data={data}
+                                    onMouseLeave={() => {
+                                        setHoveredValue(null);
+                                        setCurrentHoverValue(null);
+                                    }}
+                                    data={summaryTransaction?.charts}
                                     margin={{
                                         top: 5,
                                         right: 10,
@@ -582,7 +684,7 @@ const Analystic = () => {
                                     }}
                                 >
                                     <Tooltip active={false} />
-                                    <Line type="monotone" dataKey="customers" stroke="#4338ca" dot={false} />
+                                    <Line type="monotone" dataKey="value_transaction" stroke="#4338ca" dot={false} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
@@ -615,7 +717,13 @@ const Analystic = () => {
                             </Tab>
                         </Tab.List>
                         <div className="flex">
-                            <button className="flex items-center justify-center w-9 h-9 bg-white outline-none hover:bg-white/80 rounded-l-md border border-r-0">
+                            <button
+                                onClick={() => {
+                                    setMonthSummarySales(summarySales?.month.prev_month.month);
+                                    setYearSummarySales(summarySales?.month.prev_month.year);
+                                }}
+                                className="flex items-center justify-center w-9 h-9 bg-white outline-none hover:bg-white/80 rounded-l-md border border-r-0"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="w-4 h-4"
@@ -629,8 +737,22 @@ const Analystic = () => {
                                     <path d="m15 18-6-6 6-6" />
                                 </svg>
                             </button>
-                            <div className="flex items-center justify-center w-36 h-9 border bg-white cursor-default">November 2024</div>
-                            <button className="flex items-center justify-center w-9 h-9 bg-white outline-none hover:bg-white/80 rounded-r-md border border-l-0">
+                            <button
+                                onClick={() => {
+                                    setMonthSummarySales(summarySales?.month.current_month.month);
+                                    setYearSummarySales(summarySales?.month.current_month.year);
+                                }}
+                                className="outline-none flex items-center justify-center w-36 h-9 border bg-white"
+                            >
+                                {summarySales?.month.selected_month.month + ' ' + summarySales?.month.selected_month.year}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setMonthSummarySales(summarySales?.month.next_month.month);
+                                    setYearSummarySales(summarySales?.month.next_month.year);
+                                }}
+                                className="flex items-center justify-center w-9 h-9 bg-white outline-none hover:bg-white/80 rounded-r-md border border-l-0"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="w-4 h-4"
@@ -649,165 +771,174 @@ const Analystic = () => {
                     <Tab.Panels>
                         <Tab.Panel>
                             <div className="w-full flex h-[300px] xl:h-[400px] gap-4">
-                                <div className="w-full flex justify-end mt-8">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart
-                                            data={salesQty}
-                                            margin={{
-                                                top: 5,
-                                                right: 10,
-                                                left: 30,
-                                                bottom: 5,
-                                            }}
-                                        >
-                                            <XAxis
-                                                dataKey="label"
-                                                stroke="#000"
-                                                fontSize={12}
-                                                axisLine={false}
-                                                padding={{ left: 0, right: 0 }}
-                                                height={85}
-                                                textAnchor="start"
-                                                style={{ fontSize: '10px' }}
-                                                angle={25}
-                                            />
-                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} qty />} />
-                                            <Bar dataKey="qty" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
+                                {summarySales?.chart.length > 0 ? (
+                                    <div className="w-full flex justify-end mt-8">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                data={summarySales?.chart}
+                                                margin={{
+                                                    top: 5,
+                                                    right: 10,
+                                                    left: 30,
+                                                    bottom: 5,
+                                                }}
+                                            >
+                                                <XAxis
+                                                    dataKey="product_category_sale"
+                                                    stroke="#000"
+                                                    fontSize={12}
+                                                    axisLine={false}
+                                                    padding={{ left: 0, right: 0 }}
+                                                    height={85}
+                                                    textAnchor="start"
+                                                    style={{ fontSize: '10px' }}
+                                                    angle={25}
+                                                />
+                                                <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} qty />} />
+                                                <Bar dataKey="qty_sale" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top' }} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">No Chart Data Viewed</div>
+                                )}
                                 <div className="flex flex-col w-[216px] h-full gap-3 flex-none">
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total Quantity</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-                                        <p className="text-xl font-bold text-end">5000</p>
+                                        <p className="text-xl font-bold text-end">{summarySales?.anual_sales.qty_sale}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total Display Price</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.display_price_sale))}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total After Discount</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.after_discount_sale))}</p>
                                     </div>
                                 </div>
                             </div>
                         </Tab.Panel>
                         <Tab.Panel>
                             <div className="w-full flex h-[300px] xl:h-[400px] gap-4">
-                                <div className="w-full flex justify-end mt-8">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart
-                                            data={salesQty}
-                                            margin={{
-                                                top: 5,
-                                                right: 10,
-                                                left: 30,
-                                                bottom: 5,
-                                            }}
-                                        >
-                                            <XAxis
-                                                dataKey="label"
-                                                stroke="#000"
-                                                fontSize={12}
-                                                axisLine={false}
-                                                padding={{ left: 0, right: 0 }}
-                                                height={85}
-                                                textAnchor="start"
-                                                style={{ fontSize: '10px' }}
-                                                angle={25}
-                                            />
-                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} dPrice />} />
-                                            <Bar dataKey="dPrice" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
+                                {summarySales?.chart.length > 0 ? (
+                                    <div className="w-full flex justify-end mt-8">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                data={summarySales?.chart}
+                                                margin={{
+                                                    top: 5,
+                                                    right: 10,
+                                                    left: 30,
+                                                    bottom: 5,
+                                                }}
+                                            >
+                                                <XAxis
+                                                    dataKey="product_category_sale"
+                                                    stroke="#000"
+                                                    fontSize={12}
+                                                    axisLine={false}
+                                                    padding={{ left: 0, right: 0 }}
+                                                    height={85}
+                                                    textAnchor="start"
+                                                    style={{ fontSize: '10px' }}
+                                                    angle={25}
+                                                />
+                                                <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} dPrice />} />
+                                                <Bar dataKey="display_price_sale" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">No Chart Data Viewed</div>
+                                )}
                                 <div className="flex flex-col w-[216px] h-full gap-3 flex-none">
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total Quantity</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-                                        <p className="text-xl font-bold text-end">5000</p>
+                                        <p className="text-xl font-bold text-end">{summarySales?.anual_sales.qty_sale}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total Display Price</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.display_price_sale))}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total After Discount</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.after_discount_sale))}</p>
                                     </div>
                                 </div>
                             </div>
                         </Tab.Panel>
                         <Tab.Panel>
                             <div className="w-full flex h-[300px] xl:h-[400px] gap-4">
-                                <div className="w-full flex justify-end mt-8">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart
-                                            data={salesQty}
-                                            margin={{
-                                                top: 5,
-                                                right: 10,
-                                                left: 30,
-                                                bottom: 5,
-                                            }}
-                                        >
-                                            <XAxis
-                                                dataKey="label"
-                                                stroke="#000"
-                                                fontSize={12}
-                                                axisLine={false}
-                                                padding={{ left: 0, right: 0 }}
-                                                height={85}
-                                                textAnchor="start"
-                                                style={{ fontSize: '10px' }}
-                                                angle={25}
-                                            />
-                                            <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} aDiscount />} />
-                                            <Bar dataKey="aDiscount" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
+                                {summarySales?.chart.length > 0 ? (
+                                    <div className="w-full flex justify-end mt-8">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                data={summarySales?.chart}
+                                                margin={{
+                                                    top: 5,
+                                                    right: 10,
+                                                    left: 30,
+                                                    bottom: 5,
+                                                }}
+                                            >
+                                                <XAxis
+                                                    dataKey="product_category_sale"
+                                                    stroke="#000"
+                                                    fontSize={12}
+                                                    axisLine={false}
+                                                    padding={{ left: 0, right: 0 }}
+                                                    height={85}
+                                                    textAnchor="start"
+                                                    style={{ fontSize: '10px' }}
+                                                    angle={25}
+                                                />
+                                                <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} aDiscount />} />
+                                                <Bar dataKey="after_discount_sale" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">No Chart Data Viewed</div>
+                                )}
                                 <div className="flex flex-col w-[216px] h-full gap-3 flex-none">
-                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500  justify-between">
+                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total Quantity</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-                                        <p className="text-xl font-bold text-end">5000</p>
+                                        <p className="text-xl font-bold text-end">{summarySales?.anual_sales.qty_sale}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total Display Price</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.display_price_sale))}</p>
                                     </div>
-                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10 justify-between">
+                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10  justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total After Discount</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.after_discount_sale))}</p>
                                     </div>
                                 </div>
                             </div>
@@ -925,27 +1056,26 @@ const Analystic = () => {
                                     </ResponsiveContainer>
                                 </div>
                                 <div className="flex flex-col w-[216px] h-full gap-3 flex-none">
-                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
-                                        <div className="flex flex-col">
-                                            <h3 className="font-semibold">Total Quantity</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
-                                        </div>
-                                        <p className="text-xl font-bold text-end">5000</p>
-                                    </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 bg-gradient-to-br from-sky-500/30 to-sky-500/10 justify-between">
                                         <div className="flex flex-col">
-                                            <h3 className="font-semibold">Total Display Price</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <h3 className="font-semibold">Total Quantity</h3>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{summarySales?.anual_sales.qty_sale}</p>
+                                    </div>
+                                    <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold">Total Display Price</h3>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
+                                        </div>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.display_price_sale))}</p>
                                     </div>
                                     <div className="flex flex-col h-full px-5 py-3 border rounded-md border-sky-500 justify-between">
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold">Total After Discount</h3>
-                                            <p className="text-xs text-gray-500">January - November 2024</p>
+                                            <p className="text-xs text-gray-500">on {summarySales?.month.current_month.year}</p>
                                         </div>
-
-                                        <p className="text-xl font-bold text-end">{formatCurrency(53200000)}</p>
+                                        <p className="text-xl font-bold text-end">{formatCurrency(parseFloat(summarySales?.anual_sales.after_discount_sale))}</p>
                                     </div>
                                 </div>
                             </div>
