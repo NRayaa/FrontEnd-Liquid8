@@ -6,10 +6,10 @@ export const analyticApi = createApi({
     baseQuery: baseQuery,
     endpoints: (builder) => ({
         GetSummaryTransaction: builder.query<any, any>({
-            query: () => '/dashboard/summary-transaction',
+            query: (y) => `/dashboard/summary-transaction?y=${y}`,
         }),
-        GetSummarySales: builder.query<any, any>({
-            query: () => '/dashboard/summary-sales',
+        GetSummarySales: builder.query<any, { m: any; y: any }>({
+            query: ({ m, y }) => `/dashboard/summary-sales?m=${m}&y=${y}`,
         }),
     }),
 });
