@@ -1389,6 +1389,7 @@ interface GetShowSaleDocument {
             buyer_name_document_sale: string;
             total_product_document_sale: string;
             total_price_document_sale: string;
+            voucher: string;
             status_document_sale: string;
             created_at: string;
             updated_at: string;
