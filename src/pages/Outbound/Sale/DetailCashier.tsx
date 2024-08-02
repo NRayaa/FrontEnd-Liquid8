@@ -65,6 +65,10 @@ const DetailCashier = () => {
                             <ul className="space-y-3 list-inside list-disc font-semibold">{ShowSale?.total_product_document_sale}</ul>
                         </div>
                         <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                            <div className="text-white-dark mr-2">VOUCHER :</div>
+                            <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.voucher === 'string' ? formatRupiah(ShowSale.voucher) : ''}</div>
+                        </div>
+                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
                             <div className="text-white-dark mr-2">PRICE TOTAL :</div>
                             <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.total_price_document_sale === 'string' ? formatRupiah(ShowSale.total_price_document_sale) : ''}</div>
                         </div>

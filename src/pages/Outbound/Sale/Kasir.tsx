@@ -162,6 +162,19 @@ const Kasir = () => {
     };
 
     useEffect(() => {
+        const voucherAmount = Number(voucher);
+        const total = listSaleData?.data.resource.total_sale ?? 0;
+
+        if (voucherAmount > 0 && total > 0) {
+            const discountedTotal = total - voucherAmount;
+            const finalTotal = discountedTotal > 0 ? discountedTotal : 0;
+            setTotalAfterDiscount(finalTotal);
+        } else {
+            setTotalAfterDiscount(total);
+        }
+    }, [voucher, listSaleData?.data.resource.total_sale]);
+
+    useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
         } else if (results.isError) {
@@ -234,7 +247,7 @@ const Kasir = () => {
             await saleFinish(body)
                 .unwrap()
                 .then((res) => {
-                    console.log("res", res)
+                    console.log('res', res);
                     toast.success(res.data.message);
                     navigate('/outbound/sale/list_kasir');
                     setInput((prev) => ({ ...prev, sale_barcode: '' }));
@@ -729,7 +742,7 @@ const Kasir = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between mb-4">
+                            {/* <div className="flex items-center justify-between mb-4">
                                 <label htmlFor="voucherAmount" className="text-[15px] font-semibold whitespace-nowrap">
                                     Voucher Amount:
                                 </label>
@@ -745,6 +758,20 @@ const Kasir = () => {
                                 <button type="button" className="btn btn-primary ml-4" onClick={handleApplyVoucher}>
                                     Apply Voucher
                                 </button>
+                            </div> */}
+                            <div className="flex items-center justify-between mb-4">
+                                <label htmlFor="voucherAmount" className="text-[15px] font-semibold whitespace-nowrap">
+                                    Voucher Amount:
+                                </label>
+                                <input
+                                    id="voucher"
+                                    type="number"
+                                    name="voucher"
+                                    value={voucher}
+                                    onChange={(e) => setVoucher(e.target.value)}
+                                    className="form-input w-[250px]"
+                                    placeholder="Enter voucher amount"
+                                />
                             </div>
                             <div className="flex items-center justify-between mb-4">
                                 <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -754,6 +781,7 @@ const Kasir = () => {
                                     id="categoryName"
                                     type="text"
                                     value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
+                                    // value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
                                     placeholder="Rp"
                                     className="form-input w-[250px]"
                                     required
