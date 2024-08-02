@@ -17,9 +17,10 @@ export const saleApi = createApi({
             }),
         }),
         saleFinish: builder.mutation<any, any>({
-            query: () => ({
+            query: (body) => ({
                 url: '/sale-finish',
                 method: 'POST',
+                body,
             }),
         }),
         deleteSale: builder.mutation<any, any>({

@@ -60,7 +60,7 @@ const Kasir = () => {
         phone_buyer: '',
         address_buyer: '',
         product_price_sale: '',
-        voucher: 0,
+        voucher: '',
     });
 
     const [currentId, setCurrentId] = useState<number | null>(null);
@@ -228,10 +228,13 @@ const Kasir = () => {
         try {
             const body = {
                 voucher: voucher,
+                total_price_document_sale: totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '',
             };
+            console.log('body', body);
             await saleFinish(body)
                 .unwrap()
                 .then((res) => {
+                    console.log("res", res)
                     toast.success(res.data.message);
                     navigate('/outbound/sale/list_kasir');
                     setInput((prev) => ({ ...prev, sale_barcode: '' }));
@@ -303,10 +306,10 @@ const Kasir = () => {
             const discountedTotal = total - voucherAmount;
             const finalTotal = discountedTotal > 0 ? discountedTotal : 0;
             setTotalAfterDiscount(finalTotal);
-            console.log('Discount Applied:', finalTotal); 
+            console.log('Discount Applied:', finalTotal);
         } else {
             setTotalAfterDiscount(total);
-            console.log('Voucher Invalid:', total); 
+            console.log('Voucher Invalid:', total);
         }
     };
 
