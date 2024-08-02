@@ -147,6 +147,11 @@ const ReportTable = () => {
                                         <td>{formatCurrency(item.total_price)}</td>
                                     </tr>
                                 ))}
+                            <tr>
+                                <td>Voucher</td>
+                                <td> </td>
+                                <td>{formatCurrency(data?.buyer?.voucher || 0)}</td>
+                            </tr>
                         </tbody>
                     </table>
                     {/* <p style={{ marginTop: 12, fontSize: 12 }}>

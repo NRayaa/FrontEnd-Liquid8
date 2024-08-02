@@ -1625,6 +1625,7 @@ interface SaleReportResponse {
         status_document_sale: string;
         created_at: string;
         updated_at: string;
+        voucher: number;
         sales: {
             id: number;
             code_document_sale: string;
