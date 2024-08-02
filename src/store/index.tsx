@@ -22,6 +22,7 @@ import { dashboardApi } from './services/dashboardApi';
 import { buyerApi } from './services/buyerApi';
 import { notificationsApi } from './services/notificationsApi';
 import { repairMovingProductsApi } from './services/repairMovingApi';
+import { analyticApi } from './services/analysticApi';
 
 const rootReducer = combineReducers({
     themeConfig: themeConfigSlice,
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
     [saleApi.reducerPath]: saleApi.reducer,
     [migrateApi.reducerPath]: migrateApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    [analyticApi.reducerPath]: analyticApi.reducer,
     [buyerApi.reducerPath]: buyerApi.reducer,
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [repairMovingProductsApi.reducerPath]: repairMovingProductsApi.reducer,
@@ -72,6 +74,7 @@ export default configureStore({
             .concat(saleApi.middleware)
             .concat(migrateApi.middleware)
             .concat(dashboardApi.middleware)
+            .concat(analyticApi.middleware)
             .concat(buyerApi.middleware)
             .concat(notificationsApi.middleware)
             .concat(repairMovingProductsApi.middleware),
