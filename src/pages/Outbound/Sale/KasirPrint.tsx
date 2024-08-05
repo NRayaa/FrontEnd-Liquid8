@@ -86,8 +86,8 @@ const ReportTable = () => {
         return formatted;
     }
 
-    const totalHarga: number | undefined = data?.data?.category_report.total_harga ?? 0;
-    const totalHargaFormatted: string = totalHarga.toLocaleString('id-ID');
+    const totalHarga: number | undefined = data?.buyer?.total_price_document_sale ?? 0;
+    const totalHargaFormatted: string = Math.round(totalHarga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
     const totalHargaTerbilang: string = formatRupiah(totalHarga).toUpperCase();
 
     return (
@@ -110,7 +110,7 @@ const ReportTable = () => {
                     <div>
                         <table border={1}>
                             <tr>
-                                <td>BUYER ID</td>
+                                <td>CASHIER ID</td>
                             </tr>
                             <tr>
                                 <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46 }}>
@@ -173,8 +173,9 @@ const ReportTable = () => {
                             <tr>
                                 <th>Category</th>
                                 <th>Total Quantity</th>
-                                <th>Total Price</th>
                                 <th>Discount</th>
+                                <th>Total Price</th>
+                                {/* <th>Total Price</th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -183,8 +184,10 @@ const ReportTable = () => {
                                     <tr key={index}>
                                         <td>{item.category}</td>
                                         <td>{item.total_quantity}</td>
-                                        <td>{formatCurrency(item.total_price)}</td>
                                         <td>{item.total_discount}%</td>
+                                        <td>{formatCurrency(item.total_price)}</td>
+
+                                        {/* <td>{formatCurrency(item.total_price)}</td> */}
                                     </tr>
                                 ))}
                             <tr>
@@ -200,7 +203,7 @@ const ReportTable = () => {
                     </p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ width: 200, borderBottom: '2 solid black' }}>
-                            <h3 style={{ fontWeight: 'bold' }}>Rp. {totalHargaFormatted}</h3>
+                            <h3 style={{ fontWeight: 'bold' }}>{totalHargaFormatted}</h3>
                         </div>
                         <p style={{ fontWeight: 'bold', fontSize: 12 }}>({totalHargaTerbilang})</p>
                     </div>

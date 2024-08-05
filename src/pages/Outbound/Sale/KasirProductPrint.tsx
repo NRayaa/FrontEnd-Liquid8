@@ -89,7 +89,7 @@ const ReportTable = () => {
                     <div>
                         <table border={1}>
                             <tr>
-                                <td>BUYER ID</td>
+                                <td>CASHIER ID</td>
                             </tr>
                             <tr>
                                 <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46 }}>
@@ -135,6 +135,7 @@ const ReportTable = () => {
                             <tr>
                                 <th>Category</th>
                                 <th>Total Quantity</th>
+                                <th>Discount</th>
                                 <th>Total Price</th>
                             </tr>
                         </thead>
@@ -144,13 +145,21 @@ const ReportTable = () => {
                                     <tr key={index}>
                                         <td>{item.category}</td>
                                         <td>{item.total_quantity}</td>
+                                        <td>{item.total_discount}%</td>
                                         <td>{formatCurrency(item.total_price)}</td>
                                     </tr>
                                 ))}
                             <tr>
                                 <td>Voucher</td>
                                 <td> </td>
+                                <td> </td>
                                 <td>{formatCurrency(data?.buyer?.voucher || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Harga</td>
+                                <td> </td>
+                                <td> </td>
+                                <td>{formatCurrency(data?.buyer?.total_price_document_sale || 0)}</td>
                             </tr>
                         </tbody>
                     </table>
