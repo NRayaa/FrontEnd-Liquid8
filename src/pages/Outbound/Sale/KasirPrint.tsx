@@ -89,6 +89,7 @@ const ReportTable = () => {
     const totalHarga: number | undefined = data?.buyer?.total_price_document_sale ?? 0;
     const totalHargaFormatted: string = Math.round(totalHarga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
     const totalHargaTerbilang: string = formatRupiah(totalHarga).toUpperCase();
+    const currentYear = new Date().getFullYear();
 
     return (
         <>
@@ -102,7 +103,7 @@ const ReportTable = () => {
                             </tr>
                             <tr>
                                 <td>
-                                    {data?.buyer.code_document_sale}/LMS/{convertToRoman(new Date().getMonth())}/2024
+                                    {data?.buyer.code_document_sale}/LMS/{convertToRoman(new Date().getMonth() + 1)}/{currentYear}
                                 </td>
                             </tr>
                         </table>
@@ -261,6 +262,7 @@ const ReportTable = () => {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 16 }}>
                         <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
+                            <h5>Nama Buyer:</h5>
                             <h5>{data?.buyer.buyer_name_document_sale}</h5>
                         </div>
                         <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>

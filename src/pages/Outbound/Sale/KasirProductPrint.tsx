@@ -7,6 +7,33 @@ const ReportTable = () => {
     const { code_document_sale } = useParams();
     const { data } = useGetSaleReportQuery(code_document_sale);
 
+    function convertToRoman(num: number): string {
+        const romanNumerals: { value: number; symbol: string }[] = [
+            { value: 1000, symbol: 'M' },
+            { value: 900, symbol: 'CM' },
+            { value: 500, symbol: 'D' },
+            { value: 400, symbol: 'CD' },
+            { value: 100, symbol: 'C' },
+            { value: 90, symbol: 'XC' },
+            { value: 50, symbol: 'L' },
+            { value: 40, symbol: 'XL' },
+            { value: 10, symbol: 'X' },
+            { value: 9, symbol: 'IX' },
+            { value: 5, symbol: 'V' },
+            { value: 4, symbol: 'IV' },
+            { value: 1, symbol: 'I' },
+        ];
+
+        let result = '';
+        for (const { value, symbol } of romanNumerals) {
+            while (num >= value) {
+                result += symbol;
+                num -= value;
+            }
+        }
+        return result;
+    }
+
     const handlePrint = async () => {
         const containerElement: HTMLElement | null = document.querySelector('.print-container');
         if (containerElement) {
@@ -62,6 +89,7 @@ const ReportTable = () => {
     const totalHarga: number | undefined = data?.data?.category_report.total_harga ?? 0;
     const totalHargaFormatted: string = totalHarga.toLocaleString('id-ID');
     const totalHargaTerbilang: string = formatRupiah(totalHarga).toUpperCase();
+    const currentYear = new Date().getFullYear();
 
     return (
         <>
@@ -74,7 +102,9 @@ const ReportTable = () => {
                                 <td>FORM VALIDASI</td>
                             </tr>
                             <tr>
-                                <td>{data?.buyer.code_document_sale}/LMS/I/2024</td>
+                                <td>
+                                    {data?.buyer.code_document_sale}/LMS/{convertToRoman(new Date().getMonth() + 1)}/{currentYear}
+                                </td>
                             </tr>
                         </table>
                         <table border={1}>
@@ -93,7 +123,8 @@ const ReportTable = () => {
                             </tr>
                             <tr>
                                 <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46 }}>
-                                    <h1 style={{ fontSize: 36 }}>{data?.buyer.id}</h1>
+                                    {/* <h1 style={{ fontSize: 36 }}>{data?.buyer.id}</h1> */}
+                                    <h1 style={{ fontSize: 36 }}>{data?.data?.transactions_today}</h1>
                                 </td>
                             </tr>
                         </table>
@@ -233,11 +264,15 @@ const ReportTable = () => {
                     </div> */}
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 16 }}>
                         <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
-                            <h5>Buyer</h5>
+                            <h5>Nama Buyer:</h5>
+                            <h5>{data?.buyer.buyer_name_document_sale}</h5>
                         </div>
                         <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <h5>Dibuat:</h5>
-                            <h5>Admin Kasir:</h5>
+                            <div>
+                                <h5>Admin Kasir:</h5>
+                                <h5>{data?.data?.name_user}</h5>
+                            </div>
                         </div>
                     </div>
                 </div>
