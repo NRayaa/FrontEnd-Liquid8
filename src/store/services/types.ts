@@ -1610,6 +1610,7 @@ interface SaleReportResponse {
                 total_quantity: number;
                 total_price: number;
                 total_discount: number;
+                before_discount: number;
             }[];
             total_harga: number;
         };
