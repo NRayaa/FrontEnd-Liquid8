@@ -172,9 +172,10 @@ const ReportTable = () => {
                         <thead>
                             <tr>
                                 <th>Category</th>
-                                <th>Total Quantity</th>
+                                <th>Quantity</th>
+                                <th>Before Discount</th>
                                 <th>Discount</th>
-                                <th>Total Price</th>
+                                <th>After Discount</th>
                                 {/* <th>Total Price</th> */}
                             </tr>
                         </thead>
@@ -184,14 +185,14 @@ const ReportTable = () => {
                                     <tr key={index}>
                                         <td>{item.category}</td>
                                         <td>{item.total_quantity}</td>
+                                        <td>{formatCurrency(item.before_discount)}</td>
                                         <td>{item.total_discount}%</td>
                                         <td>{formatCurrency(item.total_price)}</td>
-
-                                        {/* <td>{formatCurrency(item.total_price)}</td> */}
                                     </tr>
                                 ))}
                             <tr>
                                 <td>Voucher</td>
+                                <td> </td>
                                 <td> </td>
                                 <td> </td>
                                 <td>{formatCurrency(data?.buyer.voucher || 0)}</td>
