@@ -37,6 +37,10 @@ import DetailApproveProductDocument from '../pages/Inbound/CheckProduct/ListProd
 import DetailApproveProductItem from '../pages/Inbound/CheckProduct/ListProduct/DetailApproveProductItem';
 import BulkingProduct from '../pages/Inbound/BulkingProduct/BulkingProduct';
 import BulkingColor from '../pages/Inbound/BulkingProduct/BulkingColor';
+import StorageReport from '../pages/Dashboard/StorageReport';
+import GeneralSale from '../pages/Dashboard/GeneralSale';
+import AnalyticSale from '../pages/Dashboard/AnalyticSale';
+import { Navigate } from 'react-router-dom';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -85,7 +89,7 @@ const routes = [
     // dashboard
     {
         path: '/',
-        element: <Dashboard />,
+        element: <Navigate to={'/dashboard/storage_report'} replace />,
         layout: 'default',
     },
     {
@@ -93,7 +97,23 @@ const routes = [
         element: <Analystic />,
         layout: 'default',
     },
-    // dashboard
+    // dashboard-new
+    {
+        path: '/dashboard/storage_report',
+        element: <StorageReport />,
+        layout: 'default',
+    },
+    {
+        path: '/dashboard/general_sale',
+        element: <GeneralSale />,
+        layout: 'default',
+    },
+    {
+        path: '/dashboard/analytic_sale',
+        element: <AnalyticSale />,
+        layout: 'default',
+    },
+    // notif
     {
         path: '/notification',
         element: <Notification />,
