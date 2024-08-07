@@ -1613,6 +1613,7 @@ interface SaleReportResponse {
                 before_discount: number;
             }[];
             total_harga: number;
+            total_price_before_discount:number;
         };
     };
     message: string;
@@ -1624,6 +1625,7 @@ interface SaleReportResponse {
         buyer_address_document_sale: string;
         total_product_document_sale: number;
         total_price_document_sale: number;
+        total_price_before_discount:number;
         status_document_sale: string;
         created_at: string;
         updated_at: string;
