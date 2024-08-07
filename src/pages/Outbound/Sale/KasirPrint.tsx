@@ -7,6 +7,10 @@ const ReportTable = () => {
     const { code_document_sale } = useParams();
     const { data } = useGetSaleReportQuery(code_document_sale);
 
+    const capitalizeFirstLetter = (string: any) => {
+        if (!string) return '';
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    };
     function convertToRoman(num: number): string {
         const romanNumerals: { value: number; symbol: string }[] = [
             { value: 1000, symbol: 'M' },
@@ -184,11 +188,11 @@ const ReportTable = () => {
                             {data?.data.category_report.category_list &&
                                 data?.data.category_report.category_list.map((item, index) => (
                                     <tr key={index}>
-                                        <td>{item.category}</td>
+                                        <td>{capitalizeFirstLetter(item.category)}</td>
                                         <td>{item.total_quantity}</td>
-                                        <td>{formatCurrency(item.before_discount)}</td>
+                                        <td style={{ textAlign: 'right' }}>{formatCurrency(item.before_discount)}</td>
                                         <td>{item.total_discount}%</td>
-                                        <td>{formatCurrency(item.total_price)}</td>
+                                        <td style={{ textAlign: 'right' }}>{formatCurrency(item.total_price)}</td>
                                     </tr>
                                 ))}
                             <tr>
@@ -196,7 +200,14 @@ const ReportTable = () => {
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
-                                <td>{formatCurrency(data?.buyer.voucher || 0)}</td>
+                                <td style={{ textAlign: 'right' }}>- {formatCurrency(data?.buyer.voucher || 0)}</td>
+                            </tr>
+                            <tr style={{ fontWeight: 'bold' }}>
+                                <td>Total</td>
+                                <td> </td>
+                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.data.category_report.total_price_before_discount || 0)}</td>
+                                <td> </td>
+                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.buyer.total_price_document_sale || 0)}</td>
                             </tr>
                         </tbody>
                     </table>
