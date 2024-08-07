@@ -69,7 +69,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     const [descriptionAbnormal, setDescriptionAbnormal] = useState<string>('');
     const [barcodeStatus, setBarcodeStatus] = useState<'LOLOS' | 'TIDAK LOLOS'>('LOLOS');
     const [dataSecond, setDataSecond] = useState<NewProduct | any>();
-
+    const [isSending, setIsSending] = useState<boolean>(false);
     // hideBarcode();
 
     const productCheckData = useMemo(() => {
@@ -103,6 +103,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
     }, [isQuantity]);
 
     const handleSendLolos = async () => {
+        setIsSending(true);
         try {
             const body = {
                 code_document: oldData.code_document,
@@ -123,12 +124,15 @@ const ProductCheck: React.FC<ProductCheck> = ({
             setBarcodeStatus('LOLOS');
             handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
+            setTimeout(() => setIsSending(false), 3000);
         } catch (err) {
             console.log(err);
+            setIsSending(false);
         }
     };
 
     const handleDamaged = async () => {
+        setIsSending(true);
         try {
             const body = {
                 code_document: oldData.code_document,
@@ -151,12 +155,15 @@ const ProductCheck: React.FC<ProductCheck> = ({
             await newProduct(body);
             // resetProductCheckShow();
             // hideBarcode();
+            setTimeout(() => setIsSending(false), 3000);
         } catch (err) {
             console.log(err);
+            setIsSending(false);
         }
     };
 
     const handleAbnormal = async () => {
+        setIsSending(true);
         try {
             const body = {
                 code_document: oldData.code_document,
@@ -181,8 +188,10 @@ const ProductCheck: React.FC<ProductCheck> = ({
             console.log('API Response:', response);
             // resetProductCheckShow();
             // hideBarcode();
+            setTimeout(() => setIsSending(false), 3000);
         } catch (err) {
             console.log(err);
+            setIsSending(false);
         }
     };
 
@@ -344,7 +353,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                                         </label>
                                     ))}
 
-                                <button disabled={parseFloat(oldData.old_price_product) > 100000 && !selectedOption} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
+                                <button disabled={parseFloat(oldData.old_price_product) > 100000 && !selectedOption && isSending} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
                                     SEND
                                 </button>
                             </div>
@@ -361,7 +370,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                                             className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
                                         ></textarea>
                                         <div className="flex justify-end">
-                                            <button disabled={descriptionDamaged.length === 0} type="submit" className="w-full btn btn-info mt-4" onClick={handleDamaged}>
+                                            <button disabled={descriptionDamaged.length === 0 && isSending} type="submit" className="w-full btn btn-info mt-4" onClick={handleDamaged}>
                                                 SEND
                                             </button>
                                         </div>
