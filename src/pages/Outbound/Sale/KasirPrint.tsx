@@ -213,7 +213,7 @@ const ReportTable = () => {
                         <p> ke rekening di bawah ini :</p>
                     </div>
                     <div style={{ width: '100%' }}>
-                        <div style={{ border: '1px solid #000', width: '100%', display: 'flex', flexDirection: 'column', padding: '8px' }}>
+                        <div style={{ border: '1px solid #000', width: '98%', display: 'flex', flexDirection: 'column', padding: '8px' }}>
                             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
                                 <p style={{ margin: '0px' }}>NOMOR REKENING :</p>
                                 <p style={{ margin: '0px' }}>178-499-8811</p>
@@ -230,46 +230,48 @@ const ReportTable = () => {
                     </div>
                 </div>
                 <div>
-                    <h3 style={{ fontSize: 12 }}>C. Informasi status pembelian</h3>
+                    <h3 style={{ fontSize: 12, marginBottom: 0 }}>C. Informasi status pembelian</h3>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                             <ul style={{ listStyle: 'none' }}>
                                 <li>(1) Pembayaran telah dilakukan oleh buyer bersangkutan</li>
-                                <li>(2) Pembayaran telah terkonfirmasi masuk ke rekening yang ditunjuk</li>
-                                <li>(3) Segala label, dan informasi pihak diluar penjual dan pembeli telah di tiadakan</li>
-                                <li>(4) Schedule pickup barang telah di tentukan</li>
-                                <li>(5) Buyer sudah di info barang keluar gudang tidak bisa di kembalikan/refund</li>
+                                <li style={{ marginTop: '8px' }}>(2) Pembayaran telah terkonfirmasi masuk ke rekening yang ditunjuk</li>
+                                <li style={{ marginTop: '8px' }}>(3) Segala label, dan informasi pihak diluar penjual dan pembeli telah di tiadakan</li>
+                                <li style={{ marginTop: '8px' }}>(4) Schedule pickup barang telah di tentukan</li>
+                                <li style={{ marginTop: '8px' }}>(5) Buyer sudah di info barang keluar gudang tidak bisa di kembalikan/refund</li>
                             </ul>
-                            <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                            <div style={{ display: 'flex', alignItems: 'flex-start', marginLeft: 10 }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: -40 }}>
                                     <h5>Sudah</h5>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2, marginTop: -4 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8, marginTop: -4 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15 }}></div>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: -40, marginLeft: 6 }}>
                                     <h5>Belum</h5>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2, marginTop: -4 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
-                                    <div style={{ border: 2, borderStyle: 'solid', borderColor: 'black', width: 30, height: 20, marginBottom: 2 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8, marginTop: -4 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15, marginBottom: 8 }}></div>
+                                    <div style={{ border: 1.5, borderStyle: 'solid', borderColor: 'black', width: 30, height: 15 }}></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 16 }}>
-                        <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
-                            <h5>Nama Buyer:</h5>
-                            <h5>{data?.buyer.buyer_name_document_sale}</h5>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 30 }}>
+                        <div style={{ height: 120, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <h5 style={{ marginBottom: 0, marginTop: '16px' }}>Nama Buyer:</h5>
+                            <h5 style={{ margin: 0 }}>{data?.buyer.buyer_name_document_sale}</h5>
                         </div>
-                        <div style={{ height: 150, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <h5>Dibuat:</h5>
-                            <div>
-                                <h5>Admin Kasir:</h5>
-                                <h5>{data?.data?.name_user}</h5>
+                        <div style={{ height: 120, width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
+                            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                <div>
+                                    <h5 style={{ margin: 0 }}>Dibuat:</h5>
+                                    <h5 style={{ margin: 0 }}>Admin Kasir:</h5>
+                                </div>
+                                <h5 style={{ margin: 0 }}>{data?.data?.name_user}</h5>
                             </div>
                         </div>
                     </div>

@@ -32,6 +32,7 @@
     "@x1mrdonut1x/nouislider-react": "^3.4.3",
     "apexcharts": "^3.45.0",
     "axios": "^1.7.2",
+    "caniuse-lite": "",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "easymde": "^2.18.0",
