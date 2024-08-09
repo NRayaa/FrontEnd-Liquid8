@@ -1,9 +1,10 @@
-import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { useDebounce } from '../../helper/functions';
 import { clsx } from '@mantine/core';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
+import { useGetAnalyticSalesQuery, useGetGeneralSalesQuery, useGetStorageReportQuery } from '../../store/services/analysticApi';
 
 const categoryTotal = [
     {
@@ -115,6 +116,14 @@ const StorageReport = () => {
     const [layout, setLayout] = useState(searchParams[0].get('l') ?? 'list');
     const router = useNavigate();
     const debouncedSearch = useDebounce(search);
+    const { data: dataStorageReport, isSuccess: isSuccessStorageReport, refetch: refetchStorageReport } = useGetStorageReportQuery(undefined);
+
+    console.log(dataStorageReport);
+    const storageReport: any = useMemo(() => {
+        if (isSuccessStorageReport) {
+            return dataStorageReport?.data.resource;
+        }
+    }, [dataStorageReport]);
 
     const clearSearch = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -175,7 +184,7 @@ const StorageReport = () => {
             <div className="w-full h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                        data={categoryTotal}
+                        data={storageReport?.chart}
                         margin={{
                             top: 5,
                             right: 10,
@@ -183,9 +192,19 @@ const StorageReport = () => {
                             bottom: 5,
                         }}
                     >
-                        <XAxis dataKey="label" stroke="#000" fontSize={12} axisLine={false} padding={{ left: 0, right: 0 }} height={150} textAnchor="end" style={{ fontSize: '10px' }} angle={-50} />
+                        <XAxis
+                            dataKey="category_product"
+                            stroke="#000"
+                            fontSize={12}
+                            axisLine={false}
+                            padding={{ left: 0, right: 0 }}
+                            height={100}
+                            textAnchor="end"
+                            style={{ fontSize: '10px' }}
+                            angle={-50}
+                        />
                         <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
-                        <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="total_category" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: 'black' }} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -274,17 +293,39 @@ const StorageReport = () => {
                 </div>
                 {layout === 'grid' ? (
                     <div className="grid grid-cols-4 gap-4 w-full px-5">
-                        {Array.from({ length: 6 }, (_, i) => (
-                            <div
-                                key={i}
-                                className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 justify-center h-24 gap-2 flex-col border border-transparent transition-all hover:border-sky-300 box-border"
-                            >
-                                <p className="text-sm font-light text-gray-500">Category Name</p>
-                                <div className="flex justify-between items-center">
-                                    <h3 className="text-gray-700 font-bold text-2xl">{(2600).toLocaleString()}</h3>
+                        {debouncedSearch ? (
+                            storageReport?.chart.filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                storageReport?.chart
+                                    .filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                    .map((item: any) => (
+                                        <div
+                                            key={item.category_product}
+                                            className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 justify-center h-24 gap-2 flex-col border border-transparent transition-all hover:border-sky-300 box-border"
+                                        >
+                                            <p className="text-sm font-light text-gray-500">{item.category_product}</p>
+                                            <div className="flex justify-between items-center">
+                                                <h3 className="text-gray-700 font-bold text-2xl">{item.total_category.toLocaleString()}</h3>
+                                            </div>
+                                        </div>
+                                    ))
+                            ) : (
+                                <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                    <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        ) : (
+                            storageReport?.chart.map((item: any) => (
+                                <div
+                                    key={item.category_product}
+                                    className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 justify-center h-24 gap-2 flex-col border border-transparent transition-all hover:border-sky-300 box-border"
+                                >
+                                    <p className="text-sm font-light text-gray-500">{item.category_product}</p>
+                                    <div className="flex justify-between items-center">
+                                        <h3 className="text-gray-700 font-bold text-2xl">{item.total_category.toLocaleString()}</h3>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2 w-full px-5">
@@ -292,12 +333,33 @@ const StorageReport = () => {
                             <div className="w-2/3 flex-none text-center font-bold">Category Name</div>
                             <div className="w-1/3 flex-none text-center font-bold">Total Product</div>
                         </div>
-                        {Array.from({ length: 50 }, (_, i) => (
-                            <div key={i} className="w-full flex items-center h-10 px-5 hover:border-sky-500 border-b border-sky-200">
-                                <div className="w-2/3 flex-none text-start font-semibold">Nama Kategory</div>
-                                <div className="w-1/3 flex-none text-center font-semibold">Total Product</div>
+                        {debouncedSearch ? (
+                            storageReport?.chart.filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                storageReport?.chart
+                                    .filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                    .map((item: any) => (
+                                        <div key={item.category_product} className="w-full flex items-center h-10 px-5 hover:border-sky-500 border-b border-sky-200">
+                                            <div className="w-2/3 flex-none text-start font-semibold">{item.category_product}</div>
+                                            <div className="w-1/3 flex-none text-center font-semibold">{item.total_category.toLocaleString()}</div>
+                                        </div>
+                                    ))
+                            ) : (
+                                <div className="w-full flex items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                    <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                </div>
+                            )
+                        ) : storageReport?.chart.length > 0 ? (
+                            storageReport?.chart.map((item: any) => (
+                                <div key={item.category_product} className="w-full flex items-center h-10 px-5 hover:border-sky-500 border-b border-sky-200">
+                                    <div className="w-2/3 flex-none text-start font-semibold">{item.category_product}</div>
+                                    <div className="w-1/3 flex-none text-center font-semibold">{item.total_category.toLocaleString()}</div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="w-full flex items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
             </div>
