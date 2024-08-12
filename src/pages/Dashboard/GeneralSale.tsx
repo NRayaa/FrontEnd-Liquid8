@@ -1,6 +1,6 @@
-import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { formatCurrency, useDebounce } from '../../helper/functions';
+import { formatCurrency, formatRupiah, useDebounce } from '../../helper/functions';
 import { clsx } from '@mantine/core';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
@@ -8,9 +8,14 @@ import { DateRange, DateRangePicker, Range, RangeKeyDict } from 'react-date-rang
 import { addDays, endOfMonth, format, subDays } from 'date-fns';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import { Dialog } from '@headlessui/react';
+import { Dialog, Transition } from '@headlessui/react';
 import { id } from 'date-fns/locale';
 import { useGetGeneralSalesQuery } from '../../store/services/analysticApi';
+import { useGetShowSaleQuery } from '../../store/services/saleApi';
+import { GetShowSaleDocumentItem } from '../../store/services/types';
+import { DataTable } from 'mantine-datatable';
+import IconArchive from '../../components/Icon/IconArchive';
+import { Alert } from '../../commons';
 
 const categoryTotal = [
     {
@@ -229,8 +234,24 @@ const GeneralSale = () => {
         }
     }, [dataGeneralSales]);
 
-    console.log(dataGeneralSales);
-    // console.log(state, (state[0]?.startDate && format(state[0].startDate, 'dd MMM Y', { locale: id })) + ' - ' + (state[0]?.endDate && format(state[0].endDate, 'dd MMM Y', { locale: id })));
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedSaleId, setSelectedSaleId] = useState<string | undefined>(undefined);
+
+    const openModal = (id: string) => {
+        setSelectedSaleId(id);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedSaleId(undefined);
+    };
+
+    const { data: ShowSaleData, isError, isLoading } = useGetShowSaleQuery(selectedSaleId);
+
+    const ShowSale = useMemo(() => {
+        return ShowSaleData?.data.resource;
+    }, [ShowSaleData]);
 
     const clearSearch = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -282,6 +303,7 @@ const GeneralSale = () => {
     useEffect(() => {
         handleCurrentId(layout);
     }, []);
+
     return (
         <div className="w-full flex flex-col relative">
             <div className="w-full flex justify-between mb-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
@@ -534,9 +556,12 @@ const GeneralSale = () => {
                                     <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_display_price)}</div>
                                     <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
                                     <div className="w-1/6 flex-none text-center">
-                                        <Link to={`/outbound/sale/list_kasir/detail_kasir/${item.id}`}>
+                                        <button onClick={() => openModal(item.id)} className="px-3 bg-sky-500 py-0.5 rounded-sm">
+                                            Detail
+                                        </button>
+                                        {/* <Link to={`/outbound/sale/list_kasir/detail_kasir/${item.id}`}>
                                             <button className="px-3 bg-sky-500 py-0.5 rounded-sm">Detail</button>
-                                        </Link>
+                                        </Link> */}
                                     </div>
                                 </div>
                             </div>
@@ -544,6 +569,119 @@ const GeneralSale = () => {
                     </div>
                 )}
             </div>
+            <Transition appear show={isModalOpen} as={Fragment}>
+                <Dialog as="div" open={isModalOpen} onClose={closeModal}>
+                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <div className="fixed inset-0 bg-black/60 z-[999] overflow-y-auto" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 z-[999] overflow-y-auto">
+                        <div className="flex items-start justify-center min-h-screen px-4">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark bg-white dark:bg-[#121c2c]">
+                                    {isLoading && <p>Loading...</p>}
+                                    {isError && !ShowSaleData?.data.status ? (
+                                        <Alert message={ShowSaleData?.data.message ?? 'Anda tidak berhak mengakses halaman ini'} />
+                                    ) : (
+                                        <>
+                                            <h1 className="text-lg font-semibold py-4">Detail Sale</h1>
+                                            <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
+                                                <div className="bg-primary absolute mt-2 text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
+                                                    <IconArchive fill className="w-12 h-12" />
+                                                </div>
+                                                <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
+                                                    <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                                        <div className="text-white-dark mr-2">DOC SALE :</div>
+                                                        <div className="whitespace-nowrap">{ShowSale?.code_document_sale}</div>
+                                                    </div>
+                                                    <div className="items-center text-lg w-full justify-between mb-2">
+                                                        <div className="text-white-dark">QTY :</div>
+                                                        <ul className="space-y-3 list-inside list-disc font-semibold">{ShowSale?.total_product_document_sale}</ul>
+                                                    </div>
+                                                    <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                                        <div className="text-white-dark mr-2">VOUCHER :</div>
+                                                        <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.voucher === 'string' ? formatRupiah(ShowSale.voucher) : ''}</div>
+                                                    </div>
+                                                    <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                                        <div className="text-white-dark mr-2">PRICE TOTAL :</div>
+                                                        <div className="whitespace-nowrap">
+                                                            {' '}
+                                                            {ShowSale && typeof ShowSale.total_price_document_sale === 'string' ? formatRupiah(ShowSale.total_price_document_sale) : ''}
+                                                        </div>
+                                                    </div>
+                                                    <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                                        <div className="text-white-dark mr-2">BUYER :</div>
+                                                        <div className="whitespace-nowrap">{ShowSale?.buyer_name_document_sale}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex justify-end mt-4">
+                                                <Link to={`/outbound/sale/kasir/print_product/${ShowSale?.code_document_sale}`} type="button" className="btn btn-lg lg:btn btn-primary uppercase">
+                                                    Export By Product
+                                                </Link>
+                                                <Link to={`/outbound/sale/kasir/print/${ShowSale?.code_document_sale}`} type="button" className="btn btn-lg lg:btn btn-primary uppercase ml-4">
+                                                    Export data
+                                                </Link>
+                                            </div>
+
+                                            <div className="datatables xl:col-span-3 mt-4">
+                                                <DataTable
+                                                    records={ShowSale?.sales}
+                                                    columns={[
+                                                        {
+                                                            accessor: 'No',
+                                                            title: 'No',
+                                                            render: (item: GetShowSaleDocumentItem, index: number) => <span>{index + 1}</span>,
+                                                        },
+                                                        {
+                                                            accessor: 'product_barcode_sale',
+                                                            title: 'Barcode',
+                                                            render: (item: GetShowSaleDocumentItem) => <span className="font-semibold">{item.product_barcode_sale}</span>,
+                                                        },
+                                                        {
+                                                            accessor: 'product_name_sale',
+                                                            title: 'Nama Produk',
+                                                            render: (item: GetShowSaleDocumentItem) => <span className="font-semibold">{item.product_name_sale}</span>,
+                                                        },
+                                                        {
+                                                            accessor: 'product_qty_sale',
+                                                            title: 'Qty',
+                                                            render: (item: GetShowSaleDocumentItem) => <span className="font-semibold">{item.product_qty_sale}</span>,
+                                                        },
+                                                        {
+                                                            accessor: 'product_price_sale',
+                                                            title: 'Harga',
+                                                            render: (item: GetShowSaleDocumentItem) => <span className="font-semibold">{formatRupiah(item.product_price_sale)}</span>,
+                                                        },
+                                                        {
+                                                            accessor: 'status_sale',
+                                                            title: 'Status',
+                                                            render: (item: GetShowSaleDocumentItem) => <span className="font-semibold">{item.status_sale}</span>,
+                                                        },
+                                                    ]}
+                                                />
+                                            </div>
+
+                                            <button onClick={closeModal} className="mt-4 btn btn-primary">
+                                                Close
+                                            </button>
+                                        </>
+                                    )}
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
         </div>
     );
 };
