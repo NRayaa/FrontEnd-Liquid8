@@ -2,7 +2,7 @@ import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from 're
 import { Bar, BarChart, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { formatCurrency, useDebounce } from '../../helper/functions';
 import { clsx } from '@mantine/core';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
 import { DateRange, DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
 import { addDays, endOfMonth, format, subDays } from 'date-fns';
@@ -173,7 +173,7 @@ const ContentLegend = (props: any) => {
                 <div key={item.id} className="flex gap-x-2 items-center capitalize">
                     <div className={clsx('h-2 w-3 rounded', item.value === 'total_display_price' && 'bg-red-500', item.value === 'total_price_sale' && 'bg-sky-500')} />
                     {item.value === 'total_display_price' && 'Display Price'}
-                    {item.value === 'total_price_sale' && 'Sale Price'}
+                    {item.value === 'total_price_sale' && 'Purchase'}
                 </div>
             ))}
         </ul>
@@ -187,7 +187,7 @@ const ContentTooltip = ({ active, payload, label }: { active: boolean | undefine
                 <p className="text-sm font-bold">{label} Agustus 2024</p>
                 <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
                 <p>Display Price: {formatCurrency(payload[0].value)}</p>
-                <p>Sale Price: {formatCurrency(payload[1].value)}</p>
+                <p>Purchase: {formatCurrency(payload[1].value)}</p>
             </div>
         );
     }
@@ -520,8 +520,8 @@ const GeneralSale = () => {
                             <div className="w-full flex items-center gap-2">
                                 <div className="w-1/6 flex-none text-center font-bold">Code Document</div>
                                 <div className="w-2/6 flex-none text-center font-bold">Buyer Name</div>
-                                <div className="w-1/6 flex-none text-center font-bold">Purchase</div>
                                 <div className="w-1/6 flex-none text-center font-bold">Display Price</div>
+                                <div className="w-1/6 flex-none text-center font-bold">Purchase</div>
                                 <div className="w-1/6 flex-none text-center font-bold">Option</div>
                             </div>
                         </div>
@@ -531,10 +531,12 @@ const GeneralSale = () => {
                                 <div className="w-full flex items-center gap-2">
                                     <div className="w-1/6 flex-none text-center">{item.code_document_sale}</div>
                                     <div className="w-2/6 flex-none text-start">{item.buyer_name_document_sale}</div>
-                                    <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
                                     <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_display_price)}</div>
+                                    <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
                                     <div className="w-1/6 flex-none text-center">
-                                        <button className="px-3 bg-sky-500 py-0.5 rounded-sm">Detail</button>
+                                        <Link to={`/outbound/sale/list_kasir/detail_kasir/${item.id}`}>
+                                            <button className="px-3 bg-sky-500 py-0.5 rounded-sm">Detail</button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
