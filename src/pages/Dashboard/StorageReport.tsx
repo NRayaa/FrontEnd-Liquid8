@@ -1,101 +1,10 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
-import { useDebounce } from '../../helper/functions';
+import { formatCurrency, useDebounce } from '../../helper/functions';
 import { clsx } from '@mantine/core';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
 import { useGetAnalyticSalesQuery, useGetGeneralSalesQuery, useGetStorageReportQuery } from '../../store/services/analysticApi';
-
-const categoryTotal = [
-    {
-        label: 'Electronics Hv (>1JT)',
-        value: 109,
-    },
-    {
-        label: 'Electronics Art (0-1JT)',
-        value: 239,
-    },
-    {
-        label: 'Mainan Hv',
-        value: 0,
-    },
-    {
-        label: 'Baby Products (Popok, Susu, Pampers)',
-        value: 316,
-    },
-    {
-        label: 'Other & Art',
-        value: 260,
-    },
-    {
-        label: 'FMCG',
-        value: 13,
-    },
-    {
-        label: 'Toys & Hobbies (200-699)',
-        value: 9,
-    },
-    {
-        label: 'Fashion',
-        value: 565,
-    },
-    {
-        label: 'Otomotif Mobil',
-        value: 6,
-    },
-    {
-        label: 'Otomotif Motor',
-        value: 129,
-    },
-    {
-        label: 'Toys & Hobbies (1-199)',
-        value: 38,
-    },
-    {
-        label: 'Otomotif',
-        value: 3,
-    },
-    {
-        label: 'Accessories LV (1-499rb)',
-        value: 21,
-    },
-    {
-        label: 'Accessories HV (>500rb)',
-        value: 2,
-    },
-    {
-        label: 'Electronics HV',
-        value: 5,
-    },
-    {
-        label: 'Electronics ART/ Mainan HV',
-        value: 37,
-    },
-    {
-        label: 'Baby Products/ Pampers',
-        value: 5,
-    },
-    {
-        label: 'Other,ART,Beauty,Toys(200-699)',
-        value: 65,
-    },
-    {
-        label: 'Fashion,Otomotif,Toys(1-199)',
-        value: 111,
-    },
-    {
-        label: 'Toys & Hobbies HV (700rb<)',
-        value: 2,
-    },
-    {
-        label: 'ART HV (Kompor)',
-        value: 6,
-    },
-    {
-        label: 'ATK',
-        value: 24,
-    },
-];
 
 const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
     if (active && payload && label) {
@@ -118,7 +27,6 @@ const StorageReport = () => {
     const debouncedSearch = useDebounce(search);
     const { data: dataStorageReport, isSuccess: isSuccessStorageReport, refetch: refetchStorageReport } = useGetStorageReportQuery(undefined);
 
-    console.log(dataStorageReport);
     const storageReport: any = useMemo(() => {
         if (isSuccessStorageReport) {
             return dataStorageReport?.data.resource;
@@ -170,7 +78,11 @@ const StorageReport = () => {
             <div className="w-full flex justify-between mb-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
                 <h3 className="text-2xl font-bold">Report Product Per-Category</h3>
                 <div className="flex gap-2">
-                    <p className="px-5 h-10 border rounded flex items-center font-semibold border-gray-500 cursor-default">Agustus 2024</p>
+                    {isSuccessStorageReport && (
+                        <p className="px-5 h-10 border rounded flex items-center font-semibold border-gray-500 cursor-default">
+                            {storageReport?.month.current_month.month + ' ' + storageReport?.month.current_month.year}
+                        </p>
+                    )}
                     <button className="w-10 h-10 flex items-center justify-center border border-l-none rounded border-gray-500 hover:bg-sky-100">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
@@ -181,7 +93,26 @@ const StorageReport = () => {
                     </button>
                 </div>
             </div>
-            <div className="w-full h-[500px]">
+            <div className="w-full h-[500px] relative">
+                {!isSuccessStorageReport && (
+                    <div className="w-full h-full bg-sky-500/50 absolute top-0 left-0 flex items-center justify-center rounded-md">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-7 h-7 animate-spin"
+                        >
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                            <path d="M21 3v5h-5" />
+                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                            <path d="M8 16H3v5" />
+                        </svg>
+                    </div>
+                )}
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={storageReport?.chart}
@@ -207,6 +138,16 @@ const StorageReport = () => {
                         <Bar dataKey="total_category" fill="#0ea5e9" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: 'black' }} />
                     </BarChart>
                 </ResponsiveContainer>
+            </div>
+            <div className=" flex w-full gap-4 mt-10">
+                <div className="w-full px-5 py-3 border border-gray-500 rounded-md flex flex-col gap-2">
+                    <p>Total Product</p>
+                    <p className="text-2xl font-bold">{storageReport?.total_all_category.toLocaleString()}</p>
+                </div>
+                <div className="w-full px-5 py-3 border border-gray-500 rounded-md flex flex-col gap-2">
+                    <p>Total Value</p>
+                    <p className="text-2xl font-bold">{formatCurrency(storageReport?.total_all_price_category)}</p>
+                </div>
             </div>
             <div className="w-full flex flex-col gap-4 mt-10 border rounded-md py-5">
                 <div className="w-full sticky top-[135px] flex flex-col gap-4 py-4 shadow-md px-5 bg-white/5 backdrop-blur-sm">
@@ -300,10 +241,11 @@ const StorageReport = () => {
                                     .map((item: any) => (
                                         <div
                                             key={item.category_product}
-                                            className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 justify-center h-24 gap-2 flex-col border border-transparent transition-all hover:border-sky-300 box-border"
+                                            className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border"
                                         >
-                                            <p className="text-sm font-light text-gray-500">{item.category_product}</p>
-                                            <div className="flex justify-between items-center">
+                                            <p className="text-sm font-light text-gray-500 pb-1">{item.category_product}</p>
+                                            <div className="flex flex-col">
+                                                <h3 className="text-gray-700 border-t text-sm font-bold pb-2 pt-1">{formatCurrency(item.total_price_category)}</h3>
                                                 <h3 className="text-gray-700 font-bold text-2xl">{item.total_category.toLocaleString()}</h3>
                                             </div>
                                         </div>
@@ -317,10 +259,11 @@ const StorageReport = () => {
                             storageReport?.chart.map((item: any) => (
                                 <div
                                     key={item.category_product}
-                                    className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 justify-center h-24 gap-2 flex-col border border-transparent transition-all hover:border-sky-300 box-border"
+                                    className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border"
                                 >
-                                    <p className="text-sm font-light text-gray-500">{item.category_product}</p>
-                                    <div className="flex justify-between items-center">
+                                    <p className="text-sm font-light text-gray-500 pb-1">{item.category_product}</p>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-gray-700 border-t text-sm font-bold pb-2 pt-1">{formatCurrency(item.total_price_category)}</h3>
                                         <h3 className="text-gray-700 font-bold text-2xl">{item.total_category.toLocaleString()}</h3>
                                     </div>
                                 </div>
@@ -331,7 +274,8 @@ const StorageReport = () => {
                     <div className="flex flex-col gap-2 w-full px-5">
                         <div className="w-full flex items-center h-10 px-5 bg-sky-300 rounded">
                             <div className="w-2/3 flex-none text-center font-bold">Category Name</div>
-                            <div className="w-1/3 flex-none text-center font-bold">Total Product</div>
+                            <div className="w-1/6 flex-none text-center font-bold">Total Product</div>
+                            <div className="w-1/6 flex-none text-center font-bold">Value Product</div>
                         </div>
                         {debouncedSearch ? (
                             storageReport?.chart.filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
@@ -340,7 +284,8 @@ const StorageReport = () => {
                                     .map((item: any) => (
                                         <div key={item.category_product} className="w-full flex items-center h-10 px-5 hover:border-sky-500 border-b border-sky-200">
                                             <div className="w-2/3 flex-none text-start font-semibold">{item.category_product}</div>
-                                            <div className="w-1/3 flex-none text-center font-semibold">{item.total_category.toLocaleString()}</div>
+                                            <div className="w-1/6 flex-none text-center font-semibold">{item.total_category.toLocaleString()}</div>
+                                            <div className="w-1/6 flex-none text-center font-semibold">{formatCurrency(item.total_price_category)}</div>
                                         </div>
                                     ))
                             ) : (
@@ -352,7 +297,8 @@ const StorageReport = () => {
                             storageReport?.chart.map((item: any) => (
                                 <div key={item.category_product} className="w-full flex items-center h-10 px-5 hover:border-sky-500 border-b border-sky-200">
                                     <div className="w-2/3 flex-none text-start font-semibold">{item.category_product}</div>
-                                    <div className="w-1/3 flex-none text-center font-semibold">{item.total_category.toLocaleString()}</div>
+                                    <div className="w-1/6 flex-none text-center font-semibold">{item.total_category.toLocaleString()}</div>
+                                    <div className="w-1/6 flex-none text-center font-semibold">{formatCurrency(item.total_price_category)}</div>
                                 </div>
                             ))
                         ) : (

@@ -7,161 +7,7 @@ import qs from 'query-string';
 import { Dialog } from '@headlessui/react';
 import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
 import { endOfMonth, format, subDays } from 'date-fns';
-import { id } from 'date-fns/locale';
 import { useGetAnalyticSalesQuery } from '../../store/services/analysticApi';
-
-const categoryTotal = [
-    {
-        label: '01',
-        display_price: 2000000,
-        sale_price: 1500000,
-    },
-    {
-        label: '02',
-        display_price: 3000000,
-        sale_price: 1000000,
-    },
-    {
-        label: '03',
-        display_price: 20000000,
-        sale_price: 15000000,
-    },
-    {
-        label: '04',
-        display_price: 33200000,
-        sale_price: 28000000,
-    },
-    {
-        label: '05',
-        display_price: 55000000,
-        sale_price: 25000000,
-    },
-    {
-        label: '06',
-        display_price: 35000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '07',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '08',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '09',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '10',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '11',
-        display_price: 55000000,
-        sale_price: 25000000,
-    },
-    {
-        label: '12',
-        display_price: 35000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '13',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '14',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '15',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '16',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '17',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '18',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '19',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '20',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '21',
-        display_price: 55000000,
-        sale_price: 25000000,
-    },
-    {
-        label: '22',
-        display_price: 35000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '23',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '24',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '25',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '26',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '27',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '28',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '29',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '30',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-];
 
 const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
     if (active && payload && label) {
@@ -250,6 +96,7 @@ const AnalyticSale = () => {
     };
     const searchParams = useSearchParams();
     const [search, setSearch] = useState('');
+    const [isYearly, setIsYearly] = useState(searchParams[0].get('y') ?? 'false');
     const [layout, setLayout] = useState(searchParams[0].get('l') ?? 'list');
     const router = useNavigate();
     const debouncedSearch = useDebounce(search);
@@ -288,8 +135,9 @@ const AnalyticSale = () => {
     };
 
     const handleCurrentId = useCallback(
-        (l: string) => {
+        (l: string, y: string) => {
             setLayout(l);
+            setIsYearly(y);
             let currentQuery = {};
 
             if (searchParams[0]) {
@@ -299,11 +147,16 @@ const AnalyticSale = () => {
             const updateQuery: any = {
                 ...currentQuery,
                 l: l,
+                y: y,
             };
 
             if (!l || l === '') {
                 delete updateQuery.l;
                 setLayout('');
+            }
+            if (!y || y === 'false') {
+                delete updateQuery.y;
+                setIsYearly('false');
             }
 
             const url = qs.stringifyUrl(
@@ -321,8 +174,26 @@ const AnalyticSale = () => {
 
     useEffect(() => {
         const uniqueKeys = Array.from(
-            analyticSales?.chart
-                ? analyticSales?.chart.reduce((keys: any, entry: any) => {
+            isYearly === 'true'
+                ? analyticSales?.chart_yearly
+                    ? analyticSales?.chart_yearly.reduce((keys: any, entry: any) => {
+                          Object.keys(entry).forEach((key) => {
+                              if (key !== 'month') {
+                                  keys.add(key);
+                              }
+                          });
+                          return keys;
+                      }, new Set<string>())
+                    : [].reduce((keys: any, entry: any) => {
+                          Object.keys(entry).forEach((key) => {
+                              if (key !== 'month') {
+                                  keys.add(key);
+                              }
+                          });
+                          return keys;
+                      }, new Set<string>())
+                : analyticSales?.chart_monthly
+                ? analyticSales?.chart_monthly.reduce((keys: any, entry: any) => {
                       Object.keys(entry).forEach((key) => {
                           if (key !== 'date') {
                               keys.add(key);
@@ -347,64 +218,89 @@ const AnalyticSale = () => {
         });
 
         setColorMap(newColorMap);
-    }, [isSuccessAnalyticSales, state[0].startDate, state[0].endDate, analyticSales]);
+    }, [isSuccessAnalyticSales, isYearly, state[0].startDate, state[0].endDate, analyticSales]);
 
     useEffect(() => {
-        handleCurrentId(layout);
+        handleCurrentId(layout, isYearly);
     }, []);
     return (
         <div className="w-full flex flex-col relative">
             <div className="w-full flex justify-between mb-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
-                <h3 className="text-2xl font-bold">Analytic Sale</h3>
+                <div className="flex gap-4 items-center">
+                    <h3 className="text-2xl font-bold">Analytic Sale</h3>
+                    <div className="flex border rounded-md overflow-hidden h-10 border-gray-500">
+                        <button
+                            onClick={() => handleCurrentId(layout, 'false')}
+                            className={clsx('w-24 h-full flex items-center justify-center', isYearly === 'false' ? 'bg-sky-300' : 'bg-white')}
+                            disabled={isYearly === 'false'}
+                        >
+                            Bulanan
+                        </button>
+                        <button
+                            disabled={isYearly === 'true'}
+                            onClick={() => handleCurrentId(layout, 'true')}
+                            className={clsx('w-24 h-full flex items-center justify-center', isYearly === 'true' ? 'bg-sky-300' : 'bg-white')}
+                        >
+                            Tahunan
+                        </button>
+                    </div>
+                </div>
                 <div className="flex gap-2">
-                    <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
-                        <p>{analyticSales?.month.current_month.month + ' ' + analyticSales?.month.current_month.year}</p>
-                        {analyticSales?.month.date_from.date && (
-                            <>
+                    {isSuccessAnalyticSales &&
+                        (isYearly === 'false' ? (
+                            <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
+                                <p>{analyticSales?.month.current_month.month + ' ' + analyticSales?.month.current_month.year}</p>
+                                {analyticSales?.month.date_from.date && (
+                                    <>
+                                        <p className="w-[1px] h-full bg-black" />
+                                        <p>
+                                            {analyticSales?.month.date_from.date +
+                                                ' ' +
+                                                analyticSales?.month.date_from.month +
+                                                ' ' +
+                                                analyticSales?.month.date_from.year +
+                                                ' - ' +
+                                                (analyticSales?.month.date_to.date + ' ' + analyticSales?.month.date_to.month + ' ' + analyticSales?.month.date_to.year)}
+                                        </p>
+                                        <button onClick={clearRange}>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="w-4 h-4 text-red-500"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <circle cx="12" cy="12" r="10" />
+                                                <path d="m15 9-6 6" />
+                                                <path d="m9 9 6 6" />
+                                            </svg>
+                                        </button>
+                                    </>
+                                )}
                                 <p className="w-[1px] h-full bg-black" />
-                                <p>
-                                    {analyticSales?.month.date_from.date +
-                                        ' ' +
-                                        analyticSales?.month.date_from.month +
-                                        ' ' +
-                                        analyticSales?.month.date_from.year +
-                                        ' - ' +
-                                        (analyticSales?.month.date_to.date + ' ' + analyticSales?.month.date_to.month + ' ' + analyticSales?.month.date_to.year)}
-                                </p>
-                                <button onClick={clearRange}>
+                                <button className="h-full w-4" onClick={() => setIsOpen(true)}>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="w-4 h-4 text-red-500"
                                         viewBox="0 0 24 24"
                                         fill="none"
                                         stroke="currentColor"
                                         strokeWidth="2"
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
+                                        className="w-4 h-4"
                                     >
-                                        <circle cx="12" cy="12" r="10" />
-                                        <path d="m15 9-6 6" />
-                                        <path d="m9 9 6 6" />
+                                        <path d="m6 9 6 6 6-6" />
                                     </svg>
                                 </button>
-                            </>
-                        )}
-                        <p className="w-[1px] h-full bg-black" />
-                        <button className="h-full w-4" onClick={() => setIsOpen(true)}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="w-4 h-4"
-                            >
-                                <path d="m6 9 6 6 6-6" />
-                            </svg>
-                        </button>
-                    </div>
+                            </div>
+                        ) : (
+                            <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
+                                <p>{analyticSales?.month.current_month.year}</p>
+                            </div>
+                        ))}
                     <button className="w-10 h-10 flex items-center justify-center border border-l-none rounded border-gray-500 hover:bg-sky-100" onClick={refetchAnalyticSales}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
@@ -432,10 +328,29 @@ const AnalyticSale = () => {
                     </Dialog>
                 </div>
             </div>
-            <div className="w-full h-[350px]">
+            <div className="w-full h-[350px] relative">
+                {!isSuccessAnalyticSales && (
+                    <div className="w-full h-full bg-sky-500/50 absolute top-0 left-0 flex items-center justify-center rounded-md">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-7 h-7 animate-spin"
+                        >
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                            <path d="M21 3v5h-5" />
+                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                            <path d="M8 16H3v5" />
+                        </svg>
+                    </div>
+                )}
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                        data={analyticSales?.chart}
+                        data={isYearly === 'true' ? analyticSales?.chart_yearly : analyticSales?.chart_monthly}
                         margin={{
                             top: 5,
                             right: 10,
@@ -443,7 +358,16 @@ const AnalyticSale = () => {
                             bottom: 5,
                         }}
                     >
-                        <XAxis dataKey="date" stroke="#000" fontSize={12} padding={{ left: 0, right: 0 }} textAnchor="end" style={{ fontSize: '10px' }} angle={-45} height={80} />
+                        <XAxis
+                            dataKey={isYearly === 'true' ? 'month' : 'date'}
+                            stroke="#000"
+                            fontSize={12}
+                            padding={{ left: 0, right: 0 }}
+                            textAnchor="end"
+                            style={{ fontSize: '10px' }}
+                            angle={-45}
+                            height={80}
+                        />
                         <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
                         <Legend content={<ContentLegend />} />
                         {Object.keys(colorMap).map((key) => (
@@ -488,7 +412,7 @@ const AnalyticSale = () => {
                     <div className="flex border border-gray-500 rounded flex-none h-9 overflow-hidden">
                         <button
                             className={clsx('w-9 h-full flex items-center justify-center outline-none', layout === 'list' ? 'bg-sky-300' : 'bg-transparent')}
-                            onClick={() => handleCurrentId('list')}
+                            onClick={() => handleCurrentId('list', isYearly)}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -510,7 +434,7 @@ const AnalyticSale = () => {
                         </button>
                         <button
                             className={clsx('w-9 h-full flex items-center justify-center outline-none', layout === 'grid' ? 'bg-sky-300' : 'bg-transparent')}
-                            onClick={() => handleCurrentId('grid')}
+                            onClick={() => handleCurrentId('grid', isYearly)}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -543,16 +467,21 @@ const AnalyticSale = () => {
                                         >
                                             <div className="flex w-full items-center gap-4">
                                                 <p className="text-sm font-bold text-black w-full">{item.product_category_sale}</p>
-                                                <p className="w-10 h-10 bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full">{item.total_category}</p>
+                                                <div className="flex flex-col justify-center flex-none relative w-10 h-10 items-center group">
+                                                    <p className="w-full h-full bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full z-20">{item.total_category}</p>
+                                                    <p className="text-xs font-bold absolute transition-all group-hover:-translate-x-8 px-0 group-hover:pr-3 group-hover:pl-2 h-5 bg-white rounded-l-full z-10 group-hover:h-7 flex items-center justify-center group-hover:border">
+                                                        QTY
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="w-full h-[1px] bg-gray-500 my-2" />
                                             <div className="flex flex-col">
-                                                <p className="text-xs font-light text-gray-500">Purchase</p>
-                                                <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
-                                            </div>
-                                            <div className="flex flex-col mt-2">
                                                 <p className="text-xs font-light text-gray-500">Display Price</p>
                                                 <p className="text-sm font-light text-gray-800">{formatCurrency(item.display_price_sale)}</p>
+                                            </div>
+                                            <div className="flex flex-col mt-2">
+                                                <p className="text-xs font-light text-gray-500">Sale Price</p>
+                                                <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
                                             </div>
                                             <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
                                         </div>
@@ -570,16 +499,21 @@ const AnalyticSale = () => {
                                 >
                                     <div className="flex w-full items-center gap-4">
                                         <p className="text-sm font-bold text-black w-full">{item.product_category_sale}</p>
-                                        <p className="w-10 h-10 bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full">{item.total_category}</p>
+                                        <div className="flex flex-col justify-center flex-none relative w-10 h-10 items-center group">
+                                            <p className="w-full h-full bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full z-20">{item.total_category}</p>
+                                            <p className="text-xs font-bold absolute transition-all group-hover:-translate-x-8 px-0 group-hover:pr-3 group-hover:pl-2 h-5 bg-white rounded-l-full z-10 group-hover:h-7 flex items-center justify-center group-hover:border">
+                                                QTY
+                                            </p>
+                                        </div>
                                     </div>
                                     <div className="w-full h-[1px] bg-gray-500 my-2" />
                                     <div className="flex flex-col">
-                                        <p className="text-xs font-light text-gray-500">Purchase</p>
-                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
-                                    </div>
-                                    <div className="flex flex-col mt-2">
                                         <p className="text-xs font-light text-gray-500">Display Price</p>
                                         <p className="text-sm font-light text-gray-800">{formatCurrency(item.display_price_sale)}</p>
+                                    </div>
+                                    <div className="flex flex-col  mt-2">
+                                        <p className="text-xs font-light text-gray-500">Sale Price</p>
+                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
                                     </div>
                                     <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
                                 </div>
@@ -597,8 +531,8 @@ const AnalyticSale = () => {
                             <div className="w-full flex items-center gap-2">
                                 <div className="w-1/4 flex-none text-center font-bold">Category Name</div>
                                 <div className="w-1/4 flex-none text-center font-bold">Quantity</div>
-                                <div className="w-1/4 flex-none text-center font-bold">Purchase</div>
                                 <div className="w-1/4 flex-none text-center font-bold">Display Price</div>
+                                <div className="w-1/4 flex-none text-center font-bold">Sale Price</div>
                             </div>
                         </div>
                         {debouncedSearch ? (
@@ -611,8 +545,8 @@ const AnalyticSale = () => {
                                             <div className="w-full flex items-center gap-2">
                                                 <div className="w-1/4 flex-none text-start">{item.product_category_sale}</div>
                                                 <div className="w-1/4 flex-none text-center">{item.total_category}</div>
-                                                <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
                                                 <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.display_price_sale))}</div>
+                                                <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
                                             </div>
                                         </div>
                                     ))
@@ -628,8 +562,8 @@ const AnalyticSale = () => {
                                     <div className="w-full flex items-center gap-2">
                                         <div className="w-1/4 flex-none text-start">{item.product_category_sale}</div>
                                         <div className="w-1/4 flex-none text-center">{item.total_category}</div>
-                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
                                         <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.display_price_sale))}</div>
+                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
                                     </div>
                                 </div>
                             ))
