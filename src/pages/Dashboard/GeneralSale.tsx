@@ -309,54 +309,56 @@ const GeneralSale = () => {
             <div className="w-full flex justify-between mb-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
                 <h3 className="text-2xl font-bold">General Sale</h3>
                 <div className="flex gap-2">
-                    <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
-                        <p>{generalSales?.month.current_month.month + ' ' + generalSales?.month.current_month.year}</p>
-                        {generalSales?.month.date_from.date !== null && (
-                            <>
-                                <p className="w-[1px] h-full bg-black" />
-                                <p>
-                                    {generalSales?.month.date_from.date +
-                                        ' ' +
-                                        generalSales?.month.date_from.month +
-                                        ' ' +
-                                        generalSales?.month.date_from.year +
-                                        ' - ' +
-                                        (generalSales?.month.date_to.date + ' ' + generalSales?.month.date_to.month + ' ' + generalSales?.month.date_to.year)}
-                                </p>
-                                <button onClick={clearRange}>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="w-4 h-4 text-red-500"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <circle cx="12" cy="12" r="10" />
-                                        <path d="m15 9-6 6" />
-                                        <path d="m9 9 6 6" />
-                                    </svg>
-                                </button>
-                            </>
-                        )}
-                        <p className="w-[1px] h-full bg-black" />
-                        <button onClick={() => setIsOpen(true)}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="w-4 h-4"
-                            >
-                                <path d="m6 9 6 6 6-6" />
-                            </svg>
-                        </button>
-                    </div>
+                    {isSuccessGeneralSales && (
+                        <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
+                            <p>{generalSales?.month.current_month.month + ' ' + generalSales?.month.current_month.year}</p>
+                            {generalSales?.month.date_from.date !== null && (
+                                <>
+                                    <p className="w-[1px] h-full bg-black" />
+                                    <p>
+                                        {generalSales?.month.date_from.date +
+                                            ' ' +
+                                            generalSales?.month.date_from.month +
+                                            ' ' +
+                                            generalSales?.month.date_from.year +
+                                            ' - ' +
+                                            (generalSales?.month.date_to.date + ' ' + generalSales?.month.date_to.month + ' ' + generalSales?.month.date_to.year)}
+                                    </p>
+                                    <button onClick={clearRange}>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-4 h-4 text-red-500"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="m15 9-6 6" />
+                                            <path d="m9 9 6 6" />
+                                        </svg>
+                                    </button>
+                                </>
+                            )}
+                            <p className="w-[1px] h-full bg-black" />
+                            <button onClick={() => setIsOpen(true)}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="w-4 h-4"
+                                >
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </button>
+                        </div>
+                    )}
                     <button className="w-10 h-10 flex items-center justify-center border border-l-none rounded border-gray-500 hover:bg-sky-100" onClick={refetchGeneralSales}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
@@ -384,7 +386,26 @@ const GeneralSale = () => {
                     </Dialog>
                 </div>
             </div>
-            <div className="w-full h-[350px]">
+            <div className="w-full h-[350px] relative">
+                {!isSuccessGeneralSales && (
+                    <div className="w-full h-full bg-sky-500/50 absolute top-0 left-0 flex items-center justify-center rounded-md">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-7 h-7 animate-spin"
+                        >
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                            <path d="M21 3v5h-5" />
+                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                            <path d="M8 16H3v5" />
+                        </svg>
+                    </div>
+                )}
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                         data={generalSales?.chart}
@@ -496,44 +517,100 @@ const GeneralSale = () => {
                 </div>
                 {layout === 'grid' ? (
                     <div className="grid grid-cols-4 gap-4 w-full">
-                        {generalSales?.list_document_sale.map((item: any, i: any) => (
-                            <div
-                                key={item.code_document_sale}
-                                className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
-                            >
-                                <div className="flex w-full items-center">
-                                    <div className="w-full flex flex-col">
-                                        <p className="text-sm font-light text-gray-500">{item.code_document_sale}</p>
-                                        <h3 className="text-gray-700 font-bold text-base">{item.buyer_name_document_sale}</h3>
-                                    </div>
-                                    <button className="w-10 h-10 hover:bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="w-4 h-4"
+                        {debouncedSearch ? (
+                            generalSales?.list_document_sale.filter((item: any) => item.code_document_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                generalSales?.list_document_sale
+                                    .filter((item: any) => item.code_document_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                    .map((item: any, i: any) => (
+                                        <div
+                                            key={item.code_document_sale}
+                                            className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
                                         >
-                                            <path d="M7 7h10v10" />
-                                            <path d="M7 17 17 7" />
-                                        </svg>
-                                    </button>
+                                            <div className="flex w-full items-center">
+                                                <div className="w-full flex flex-col">
+                                                    <p className="text-sm font-light text-gray-500">{item.code_document_sale}</p>
+                                                    <h3 className="text-gray-700 font-bold text-base">{item.buyer_name_document_sale}</h3>
+                                                </div>
+                                                <button
+                                                    onClick={() => openModal(item.id)}
+                                                    className="w-10 h-10 hover:bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        className="w-4 h-4"
+                                                    >
+                                                        <path d="M7 7h10v10" />
+                                                        <path d="M7 17 17 7" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div className="w-full h-[1px] bg-gray-500 my-2" />
+                                            <div className="flex flex-col">
+                                                <p className="text-xs font-light text-gray-500">Sale Price</p>
+                                                <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_purchase)}</p>
+                                            </div>
+                                            <div className="flex flex-col mt-2">
+                                                <p className="text-xs font-light text-gray-500">Display Price</p>
+                                                <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_display_price)}</p>
+                                            </div>
+                                            <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
+                                        </div>
+                                    ))
+                            ) : (
+                                <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                    <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
                                 </div>
-                                <div className="w-full h-[1px] bg-gray-500 my-2" />
-                                <div className="flex flex-col">
-                                    <p className="text-xs font-light text-gray-500">Purchase</p>
-                                    <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_purchase)}</p>
+                            )
+                        ) : generalSales?.list_document_sale.length > 0 ? (
+                            generalSales?.list_document_sale.map((item: any, i: any) => (
+                                <div
+                                    key={item.code_document_sale}
+                                    className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
+                                >
+                                    <div className="flex w-full items-center">
+                                        <div className="w-full flex flex-col">
+                                            <p className="text-sm font-light text-gray-500">{item.code_document_sale}</p>
+                                            <h3 className="text-gray-700 font-bold text-base">{item.buyer_name_document_sale}</h3>
+                                        </div>
+                                        <button onClick={() => openModal(item.id)} className="w-10 h-10 hover:bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="w-4 h-4"
+                                            >
+                                                <path d="M7 7h10v10" />
+                                                <path d="M7 17 17 7" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div className="w-full h-[1px] bg-gray-500 my-2" />
+                                    <div className="flex flex-col">
+                                        <p className="text-xs font-light text-gray-500">Sale Price</p>
+                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_purchase)}</p>
+                                    </div>
+                                    <div className="flex flex-col mt-2">
+                                        <p className="text-xs font-light text-gray-500">Display Price</p>
+                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_display_price)}</p>
+                                    </div>
+                                    <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
                                 </div>
-                                <div className="flex flex-col mt-2">
-                                    <p className="text-xs font-light text-gray-500">Display Price</p>
-                                    <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_display_price)}</p>
-                                </div>
-                                <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
+                            ))
+                        ) : (
+                            <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
                             </div>
-                        ))}
+                        )}
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2 w-full">
@@ -543,29 +620,57 @@ const GeneralSale = () => {
                                 <div className="w-1/6 flex-none text-center font-bold">Code Document</div>
                                 <div className="w-2/6 flex-none text-center font-bold">Buyer Name</div>
                                 <div className="w-1/6 flex-none text-center font-bold">Display Price</div>
-                                <div className="w-1/6 flex-none text-center font-bold">Purchase</div>
+                                <div className="w-1/6 flex-none text-center font-bold">Sale Price</div>
                                 <div className="w-1/6 flex-none text-center font-bold">Option</div>
                             </div>
                         </div>
-                        {generalSales?.list_document_sale.map((item: any, i: number) => (
-                            <div key={item.code_document_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
-                                <div className="w-10 flex-none text-center">{i + 1}</div>
-                                <div className="w-full flex items-center gap-2">
-                                    <div className="w-1/6 flex-none text-center">{item.code_document_sale}</div>
-                                    <div className="w-2/6 flex-none text-start">{item.buyer_name_document_sale}</div>
-                                    <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_display_price)}</div>
-                                    <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
-                                    <div className="w-1/6 flex-none text-center">
-                                        <button onClick={() => openModal(item.id)} className="px-3 bg-sky-500 py-0.5 rounded-sm">
-                                            Detail
-                                        </button>
-                                        {/* <Link to={`/outbound/sale/list_kasir/detail_kasir/${item.id}`}>
-                                            <button className="px-3 bg-sky-500 py-0.5 rounded-sm">Detail</button>
-                                        </Link> */}
+                        {debouncedSearch ? (
+                            generalSales?.list_document_sale.filter((item: any) => item.code_document_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                generalSales?.list_document_sale
+                                    .filter((item: any) => item.code_document_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                    .map((item: any, i: any) => (
+                                        <div key={item.code_document_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
+                                            <div className="w-10 flex-none text-center">{i + 1}</div>
+                                            <div className="w-full flex items-center gap-2">
+                                                <div className="w-1/6 flex-none text-center">{item.code_document_sale}</div>
+                                                <div className="w-2/6 flex-none text-start">{item.buyer_name_document_sale}</div>
+                                                <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_display_price)}</div>
+                                                <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
+                                                <div className="w-1/6 flex-none text-center">
+                                                    <button onClick={() => openModal(item.id)} className="px-3 bg-sky-500 py-0.5 rounded-sm">
+                                                        Detail
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                            ) : (
+                                <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                    <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                </div>
+                            )
+                        ) : generalSales?.list_document_sale.length > 0 ? (
+                            generalSales?.list_document_sale.map((item: any, i: any) => (
+                                <div key={item.code_document_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
+                                    <div className="w-10 flex-none text-center">{i + 1}</div>
+                                    <div className="w-full flex items-center gap-2">
+                                        <div className="w-1/6 flex-none text-center">{item.code_document_sale}</div>
+                                        <div className="w-2/6 flex-none text-start">{item.buyer_name_document_sale}</div>
+                                        <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_display_price)}</div>
+                                        <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
+                                        <div className="w-1/6 flex-none text-center">
+                                            <button onClick={() => openModal(item.id)} className="px-3 bg-sky-500 py-0.5 rounded-sm">
+                                                Detail
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                            ))
+                        ) : (
+                            <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
             </div>
