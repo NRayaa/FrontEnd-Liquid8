@@ -7,7 +7,7 @@ import qs from 'query-string';
 import { Dialog } from '@headlessui/react';
 import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
 import { endOfMonth, format, subDays } from 'date-fns';
-import { useGetAnalyticSalesQuery } from '../../store/services/analysticApi';
+import { useGetAnalyticSalesMonthlyQuery, useGetAnalyticSalesYearlyQuery } from '../../store/services/analysticApi';
 
 const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
     if (active && payload && label) {
@@ -100,19 +100,27 @@ const AnalyticSale = () => {
     const [layout, setLayout] = useState(searchParams[0].get('l') ?? 'list');
     const router = useNavigate();
     const debouncedSearch = useDebounce(search);
+    const [yearCurrent, setYearCurrent] = useState(new Date().getFullYear().toString());
     const {
-        data: dataAnalyticSales,
-        isSuccess: isSuccessAnalyticSales,
-        refetch: refetchAnalyticSales,
-    } = useGetAnalyticSalesQuery({ from: state[0].startDate ? format(state[0].startDate, 'dd-MM-yyyy') : '', to: state[0].endDate ? format(state[0].endDate, 'dd-MM-yyyy') : '' });
+        data: dataAnalyticSalesMonthly,
+        isSuccess: isSuccessAnalyticSalesMonthly,
+        refetch: refetchAnalyticSalesMonthly,
+    } = useGetAnalyticSalesMonthlyQuery({ from: state[0].startDate ? format(state[0].startDate, 'dd-MM-yyyy') : '', to: state[0].endDate ? format(state[0].endDate, 'dd-MM-yyyy') : '' });
+    const { data: dataAnalyticSalesYearly, isSuccess: isSuccessAnalyticSalesYearly, refetch: refetchAnalyticSalesYearly } = useGetAnalyticSalesYearlyQuery(yearCurrent);
 
     const [colorMap, setColorMap] = useState<{ [key: string]: string }>({});
 
     const analyticSales: any = useMemo(() => {
-        if (isSuccessAnalyticSales) {
-            return dataAnalyticSales?.data.resource;
+        if (isSuccessAnalyticSalesMonthly) {
+            return dataAnalyticSalesMonthly?.data.resource;
         }
-    }, [dataAnalyticSales]);
+    }, [dataAnalyticSalesMonthly]);
+
+    const analyticSalesYearly: any = useMemo(() => {
+        if (isSuccessAnalyticSalesYearly) {
+            return dataAnalyticSalesYearly?.data.resource;
+        }
+    }, [dataAnalyticSalesYearly]);
 
     const currentDate = new Date();
     const minDate = subDays(currentDate, 49);
@@ -175,8 +183,8 @@ const AnalyticSale = () => {
     useEffect(() => {
         const uniqueKeys = Array.from(
             isYearly === 'true'
-                ? analyticSales?.chart_yearly
-                    ? analyticSales?.chart_yearly.reduce((keys: any, entry: any) => {
+                ? analyticSalesYearly?.chart
+                    ? analyticSalesYearly?.chart.reduce((keys: any, entry: any) => {
                           Object.keys(entry).forEach((key) => {
                               if (key !== 'month') {
                                   keys.add(key);
@@ -192,8 +200,8 @@ const AnalyticSale = () => {
                           });
                           return keys;
                       }, new Set<string>())
-                : analyticSales?.chart_monthly
-                ? analyticSales?.chart_monthly.reduce((keys: any, entry: any) => {
+                : analyticSales?.chart
+                ? analyticSales?.chart.reduce((keys: any, entry: any) => {
                       Object.keys(entry).forEach((key) => {
                           if (key !== 'date') {
                               keys.add(key);
@@ -218,7 +226,7 @@ const AnalyticSale = () => {
         });
 
         setColorMap(newColorMap);
-    }, [isSuccessAnalyticSales, isYearly, state[0].startDate, state[0].endDate, analyticSales]);
+    }, [isSuccessAnalyticSalesMonthly, isYearly, state[0].startDate, state[0].endDate, analyticSales]);
 
     useEffect(() => {
         handleCurrentId(layout, isYearly);
@@ -246,7 +254,7 @@ const AnalyticSale = () => {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    {isSuccessAnalyticSales &&
+                    {isSuccessAnalyticSalesMonthly &&
                         (isYearly === 'false' ? (
                             <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
                                 <p>{analyticSales?.month.current_month.month + ' ' + analyticSales?.month.current_month.year}</p>
@@ -301,7 +309,7 @@ const AnalyticSale = () => {
                                 <p>{analyticSales?.month.current_month.year}</p>
                             </div>
                         ))}
-                    <button className="w-10 h-10 flex items-center justify-center border border-l-none rounded border-gray-500 hover:bg-sky-100" onClick={refetchAnalyticSales}>
+                    <button className="w-10 h-10 flex items-center justify-center border border-l-none rounded border-gray-500 hover:bg-sky-100" onClick={refetchAnalyticSalesMonthly}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
                             <path d="M21 3v5h-5" />
@@ -329,7 +337,7 @@ const AnalyticSale = () => {
                 </div>
             </div>
             <div className="w-full h-[350px] relative">
-                {!isSuccessAnalyticSales && (
+                {!isSuccessAnalyticSalesMonthly && (
                     <div className="w-full h-full bg-sky-500/50 absolute top-0 left-0 flex items-center justify-center rounded-md">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -350,7 +358,7 @@ const AnalyticSale = () => {
                 )}
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                        data={isYearly === 'true' ? analyticSales?.chart_yearly : analyticSales?.chart_monthly}
+                        data={isYearly === 'true' ? analyticSalesYearly?.chart : analyticSales?.chart}
                         margin={{
                             top: 5,
                             right: 10,
@@ -454,13 +462,49 @@ const AnalyticSale = () => {
                         </button>
                     </div>
                 </div>
-                {layout === 'grid' ? (
-                    <div className="grid grid-cols-4 gap-4 w-full">
-                        {debouncedSearch ? (
-                            analyticSales?.list_analytic_sale.filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
-                                analyticSales?.list_analytic_sale
-                                    .filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
-                                    .map((item: any, i: any) => (
+                {isYearly === 'true' ? (
+                    <div>
+                        {layout === 'grid' ? (
+                            <div className="grid grid-cols-4 gap-4 w-full">
+                                {debouncedSearch ? (
+                                    analyticSalesYearly?.list_analytic_sale.filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                        analyticSalesYearly?.list_analytic_sale
+                                            .filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                            .map((item: any, i: any) => (
+                                                <div
+                                                    key={item.code_document_sale}
+                                                    className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
+                                                >
+                                                    <div className="flex w-full items-center gap-4">
+                                                        <p className="text-sm font-bold text-black w-full">{item.product_category_sale}</p>
+                                                        <div className="flex flex-col justify-center flex-none relative w-10 h-10 items-center group">
+                                                            <p className="w-full h-full bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full z-20">
+                                                                {item.total_category}
+                                                            </p>
+                                                            <p className="text-xs font-bold absolute transition-all group-hover:-translate-x-8 px-0 group-hover:pr-3 group-hover:pl-2 h-5 bg-white rounded-l-full z-10 group-hover:h-7 flex items-center justify-center group-hover:border">
+                                                                QTY
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-full h-[1px] bg-gray-500 my-2" />
+                                                    <div className="flex flex-col">
+                                                        <p className="text-xs font-light text-gray-500">Display Price</p>
+                                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.display_price_sale)}</p>
+                                                    </div>
+                                                    <div className="flex flex-col mt-2">
+                                                        <p className="text-xs font-light text-gray-500">Sale Price</p>
+                                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
+                                                    </div>
+                                                    <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
+                                                </div>
+                                            ))
+                                    ) : (
+                                        <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                            <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                        </div>
+                                    )
+                                ) : analyticSalesYearly?.list_analytic_sale.length > 0 ? (
+                                    analyticSalesYearly?.list_analytic_sale.map((item: any, i: any) => (
                                         <div
                                             key={item.code_document_sale}
                                             className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
@@ -479,67 +523,52 @@ const AnalyticSale = () => {
                                                 <p className="text-xs font-light text-gray-500">Display Price</p>
                                                 <p className="text-sm font-light text-gray-800">{formatCurrency(item.display_price_sale)}</p>
                                             </div>
-                                            <div className="flex flex-col mt-2">
+                                            <div className="flex flex-col  mt-2">
                                                 <p className="text-xs font-light text-gray-500">Sale Price</p>
                                                 <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
                                             </div>
                                             <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
                                         </div>
                                     ))
-                            ) : (
-                                <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
-                                    <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
-                                </div>
-                            )
-                        ) : analyticSales?.list_analytic_sale.length > 0 ? (
-                            analyticSales?.list_analytic_sale.map((item: any, i: any) => (
-                                <div
-                                    key={item.code_document_sale}
-                                    className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
-                                >
-                                    <div className="flex w-full items-center gap-4">
-                                        <p className="text-sm font-bold text-black w-full">{item.product_category_sale}</p>
-                                        <div className="flex flex-col justify-center flex-none relative w-10 h-10 items-center group">
-                                            <p className="w-full h-full bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full z-20">{item.total_category}</p>
-                                            <p className="text-xs font-bold absolute transition-all group-hover:-translate-x-8 px-0 group-hover:pr-3 group-hover:pl-2 h-5 bg-white rounded-l-full z-10 group-hover:h-7 flex items-center justify-center group-hover:border">
-                                                QTY
-                                            </p>
-                                        </div>
+                                ) : (
+                                    <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                        <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
                                     </div>
-                                    <div className="w-full h-[1px] bg-gray-500 my-2" />
-                                    <div className="flex flex-col">
-                                        <p className="text-xs font-light text-gray-500">Display Price</p>
-                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.display_price_sale)}</p>
-                                    </div>
-                                    <div className="flex flex-col  mt-2">
-                                        <p className="text-xs font-light text-gray-500">Sale Price</p>
-                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
-                                    </div>
-                                    <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
-                                </div>
-                            ))
+                                )}
+                            </div>
                         ) : (
-                            <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
-                                <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <div className="flex flex-col gap-2 w-full">
-                        <div className="w-full flex items-center h-10 px-5 gap-2 bg-sky-300 rounded">
-                            <div className="w-10 font-bold flex-none text-center">No</div>
-                            <div className="w-full flex items-center gap-2">
-                                <div className="w-1/4 flex-none text-center font-bold">Category Name</div>
-                                <div className="w-1/4 flex-none text-center font-bold">Quantity</div>
-                                <div className="w-1/4 flex-none text-center font-bold">Display Price</div>
-                                <div className="w-1/4 flex-none text-center font-bold">Sale Price</div>
-                            </div>
-                        </div>
-                        {debouncedSearch ? (
-                            analyticSales?.list_analytic_sale.filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
-                                analyticSales?.list_analytic_sale
-                                    .filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
-                                    .map((item: any, i: any) => (
+                            <div className="flex flex-col gap-2 w-full">
+                                <div className="w-full flex items-center h-10 px-5 gap-2 bg-sky-300 rounded">
+                                    <div className="w-10 font-bold flex-none text-center">No</div>
+                                    <div className="w-full flex items-center gap-2">
+                                        <div className="w-1/4 flex-none text-center font-bold">Category Name</div>
+                                        <div className="w-1/4 flex-none text-center font-bold">Quantity</div>
+                                        <div className="w-1/4 flex-none text-center font-bold">Display Price</div>
+                                        <div className="w-1/4 flex-none text-center font-bold">Sale Price</div>
+                                    </div>
+                                </div>
+                                {debouncedSearch ? (
+                                    analyticSalesYearly?.list_analytic_sale.filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                        analyticSalesYearly?.list_analytic_sale
+                                            .filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                            .map((item: any, i: any) => (
+                                                <div key={item.product_category_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
+                                                    <div className="w-10 flex-none text-center">{i + 1}</div>
+                                                    <div className="w-full flex items-center gap-2">
+                                                        <div className="w-1/4 flex-none text-start">{item.product_category_sale}</div>
+                                                        <div className="w-1/4 flex-none text-center">{item.total_category}</div>
+                                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.display_price_sale))}</div>
+                                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                    ) : (
+                                        <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                            <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                        </div>
+                                    )
+                                ) : analyticSalesYearly?.list_analytic_sale.length > 0 ? (
+                                    analyticSalesYearly?.list_analytic_sale.map((item: any, i: any) => (
                                         <div key={item.product_category_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
                                             <div className="w-10 flex-none text-center">{i + 1}</div>
                                             <div className="w-full flex items-center gap-2">
@@ -550,26 +579,136 @@ const AnalyticSale = () => {
                                             </div>
                                         </div>
                                     ))
-                            ) : (
-                                <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
-                                    <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
-                                </div>
-                            )
-                        ) : analyticSales?.list_analytic_sale.length > 0 ? (
-                            analyticSales?.list_analytic_sale.map((item: any, i: any) => (
-                                <div key={item.product_category_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
-                                    <div className="w-10 flex-none text-center">{i + 1}</div>
+                                ) : (
+                                    <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                        <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div>
+                        {layout === 'grid' ? (
+                            <div className="grid grid-cols-4 gap-4 w-full">
+                                {debouncedSearch ? (
+                                    analyticSales?.list_analytic_sale.filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                        analyticSales?.list_analytic_sale
+                                            .filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                            .map((item: any, i: any) => (
+                                                <div
+                                                    key={item.code_document_sale}
+                                                    className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
+                                                >
+                                                    <div className="flex w-full items-center gap-4">
+                                                        <p className="text-sm font-bold text-black w-full">{item.product_category_sale}</p>
+                                                        <div className="flex flex-col justify-center flex-none relative w-10 h-10 items-center group">
+                                                            <p className="w-full h-full bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full z-20">
+                                                                {item.total_category}
+                                                            </p>
+                                                            <p className="text-xs font-bold absolute transition-all group-hover:-translate-x-8 px-0 group-hover:pr-3 group-hover:pl-2 h-5 bg-white rounded-l-full z-10 group-hover:h-7 flex items-center justify-center group-hover:border">
+                                                                QTY
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-full h-[1px] bg-gray-500 my-2" />
+                                                    <div className="flex flex-col">
+                                                        <p className="text-xs font-light text-gray-500">Display Price</p>
+                                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.display_price_sale)}</p>
+                                                    </div>
+                                                    <div className="flex flex-col mt-2">
+                                                        <p className="text-xs font-light text-gray-500">Sale Price</p>
+                                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
+                                                    </div>
+                                                    <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
+                                                </div>
+                                            ))
+                                    ) : (
+                                        <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                            <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                        </div>
+                                    )
+                                ) : analyticSales?.list_analytic_sale.length > 0 ? (
+                                    analyticSales?.list_analytic_sale.map((item: any, i: any) => (
+                                        <div
+                                            key={item.code_document_sale}
+                                            className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border relative"
+                                        >
+                                            <div className="flex w-full items-center gap-4">
+                                                <p className="text-sm font-bold text-black w-full">{item.product_category_sale}</p>
+                                                <div className="flex flex-col justify-center flex-none relative w-10 h-10 items-center group">
+                                                    <p className="w-full h-full bg-gray-100 transition-all flex flex-none items-center justify-center rounded-full z-20">{item.total_category}</p>
+                                                    <p className="text-xs font-bold absolute transition-all group-hover:-translate-x-8 px-0 group-hover:pr-3 group-hover:pl-2 h-5 bg-white rounded-l-full z-10 group-hover:h-7 flex items-center justify-center group-hover:border">
+                                                        QTY
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="w-full h-[1px] bg-gray-500 my-2" />
+                                            <div className="flex flex-col">
+                                                <p className="text-xs font-light text-gray-500">Display Price</p>
+                                                <p className="text-sm font-light text-gray-800">{formatCurrency(item.display_price_sale)}</p>
+                                            </div>
+                                            <div className="flex flex-col  mt-2">
+                                                <p className="text-xs font-light text-gray-500">Sale Price</p>
+                                                <p className="text-sm font-light text-gray-800">{formatCurrency(item.purchase)}</p>
+                                            </div>
+                                            <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                        <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-2 w-full">
+                                <div className="w-full flex items-center h-10 px-5 gap-2 bg-sky-300 rounded">
+                                    <div className="w-10 font-bold flex-none text-center">No</div>
                                     <div className="w-full flex items-center gap-2">
-                                        <div className="w-1/4 flex-none text-start">{item.product_category_sale}</div>
-                                        <div className="w-1/4 flex-none text-center">{item.total_category}</div>
-                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.display_price_sale))}</div>
-                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
+                                        <div className="w-1/4 flex-none text-center font-bold">Category Name</div>
+                                        <div className="w-1/4 flex-none text-center font-bold">Quantity</div>
+                                        <div className="w-1/4 flex-none text-center font-bold">Display Price</div>
+                                        <div className="w-1/4 flex-none text-center font-bold">Sale Price</div>
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
-                                <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                {debouncedSearch ? (
+                                    analyticSales?.list_analytic_sale.filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                        analyticSales?.list_analytic_sale
+                                            .filter((item: any) => item.product_category_sale.toLowerCase().includes(debouncedSearch.toLowerCase()))
+                                            .map((item: any, i: any) => (
+                                                <div key={item.product_category_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
+                                                    <div className="w-10 flex-none text-center">{i + 1}</div>
+                                                    <div className="w-full flex items-center gap-2">
+                                                        <div className="w-1/4 flex-none text-start">{item.product_category_sale}</div>
+                                                        <div className="w-1/4 flex-none text-center">{item.total_category}</div>
+                                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.display_price_sale))}</div>
+                                                        <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                    ) : (
+                                        <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                            <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                        </div>
+                                    )
+                                ) : analyticSales?.list_analytic_sale.length > 0 ? (
+                                    analyticSales?.list_analytic_sale.map((item: any, i: any) => (
+                                        <div key={item.product_category_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
+                                            <div className="w-10 flex-none text-center">{i + 1}</div>
+                                            <div className="w-full flex items-center gap-2">
+                                                <div className="w-1/4 flex-none text-start">{item.product_category_sale}</div>
+                                                <div className="w-1/4 flex-none text-center">{item.total_category}</div>
+                                                <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.display_price_sale))}</div>
+                                                <div className="w-1/4 flex-none text-center">{formatCurrency(parseFloat(item.purchase))}</div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="w-full flex justify-center col-span-4 items-center px-5 py-10 hover:border-sky-500 border-b border-sky-200">
+                                        <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
