@@ -15,8 +15,11 @@ export const analyticApi = createApi({
         getStorageReport: builder.query<any, any>({
             query: () => `/dashboard/storage-report`,
         }),
-        getAnalyticSales: builder.query<any, { from: any; to: any }>({
-            query: ({ from, to }) => `/dashboard/analytic-sales?from=${from}&to=${to}`,
+        getAnalyticSalesMonthly: builder.query<any, { from: any; to: any }>({
+            query: ({ from, to }) => `/dashboard/monthly-analytic-sales?from=${from}&to=${to}`,
+        }),
+        getAnalyticSalesYearly: builder.query<any, any>({
+            query: (y) => `/dashboard/yearly-analytic-sales?y=${y}`,
         }),
         getGeneralSales: builder.query<any, { from: any; to: any }>({
             query: ({ from, to }) => `/dashboard/general-sales?from=${from}&to=${to}`,
@@ -24,4 +27,5 @@ export const analyticApi = createApi({
     }),
 });
 
-export const { useGetSummaryTransactionQuery, useGetSummarySalesQuery, useGetAnalyticSalesQuery, useGetGeneralSalesQuery, useGetStorageReportQuery } = analyticApi;
+export const { useGetSummaryTransactionQuery, useGetSummarySalesQuery, useGetAnalyticSalesMonthlyQuery, useGetAnalyticSalesYearlyQuery, useGetGeneralSalesQuery, useGetStorageReportQuery } =
+    analyticApi;
