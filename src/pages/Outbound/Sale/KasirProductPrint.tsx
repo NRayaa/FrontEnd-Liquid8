@@ -167,36 +167,35 @@ const ReportTable = () => {
                     <table style={{ marginBottom: 24 }} border={1}>
                         <thead>
                             <tr>
-                                <th>Category</th>
-                                <th>Quantity</th>
-                                <th>Before Discount</th>
-                                <th>Discount</th>
-                                <th>After Discount</th>
+                                <th>No</th>
+                                <th>Barcode</th>
+                                <th>Nama Barang</th>
+                                <th>QTY</th>
+                                <th>Sale Price</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.data.category_report.category_list &&
-                                data?.data.category_report.category_list.map((item, index) => (
+                            {data?.buyer?.sales &&
+                                data?.buyer?.sales.map((item, index) => (
                                     <tr key={index}>
-                                        <td>{capitalizeFirstLetter(item.category)}</td>
-                                        <td>{item.total_quantity}</td>
-                                        <td style={{ textAlign: 'right' }}>{formatCurrency(item.before_discount)}</td>
-                                        <td>{item.total_discount}%</td>
-                                        <td style={{ textAlign: 'right' }}>{formatCurrency(item.total_price)}</td>
+                                        <td>{index + 1}</td>
+                                        <td>{item.code_document_sale}</td>
+                                        <td>{item.product_name_sale}</td>
+                                        <td>{item.product_qty_sale}</td>
+                                        <td style={{ textAlign: 'right' }}>{formatCurrency(item.product_price_sale) || 0}</td>
                                     </tr>
                                 ))}
-                            <tr>
-                                <td>Voucher</td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
+                            <tr style={{ fontWeight: 'bold' }}>
+                                <td colSpan={4} style={{ textAlign: 'center' }}>
+                                    Voucher
+                                </td>
                                 <td style={{ textAlign: 'right' }}>-{formatCurrency(data?.buyer?.voucher || 0)}</td>
                             </tr>
                             <tr style={{ fontWeight: 'bold' }}>
-                                <td>Total Harga</td>
-                                <td> </td>
-                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.data.category_report.total_price_before_discount || 0)}</td>
-                                <td> </td>
+                                <td colSpan={3} style={{ textAlign: 'center' }}>
+                                    Total
+                                </td>
+                                <td>{data?.buyer?.total_product_document_sale} </td>
                                 <td style={{ textAlign: 'right' }}>{formatCurrency(data?.buyer?.total_price_document_sale || 0)}</td>
                             </tr>
                         </tbody>
