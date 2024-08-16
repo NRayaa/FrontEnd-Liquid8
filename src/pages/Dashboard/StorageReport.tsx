@@ -13,7 +13,20 @@ const ContentTooltip = ({ active, payload, label }: { active: boolean | undefine
             <div className="bg-white rounded px-3 py-1.5 border text-xs dark:bg-gray-900 shadow-sm">
                 <p className="text-sm font-bold">{label}</p>
                 <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
-                {<p>qty: {payload[0].value}</p>}
+                <div className="flex flex-col gap-1">
+                    {
+                        <div className="flex w-full gap-4 justify-between">
+                            <p>Qty:</p>
+                            <p>{payload[0].value.toLocaleString()}</p>
+                        </div>
+                    }
+                    {
+                        <div className="flex w-full gap-4 justify-between">
+                            <p>Value:</p>
+                            <p>{formatCurrency(payload[0].payload.total_price_category)}</p>
+                        </div>
+                    }
+                </div>
             </div>
         );
     }
