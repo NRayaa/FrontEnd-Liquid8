@@ -17,159 +17,6 @@ import { DataTable } from 'mantine-datatable';
 import IconArchive from '../../components/Icon/IconArchive';
 import { Alert } from '../../commons';
 
-const categoryTotal = [
-    {
-        label: '01',
-        display_price: 2000000,
-        sale_price: 1500000,
-    },
-    {
-        label: '02',
-        display_price: 3000000,
-        sale_price: 1000000,
-    },
-    {
-        label: '03',
-        display_price: 20000000,
-        sale_price: 15000000,
-    },
-    {
-        label: '04',
-        display_price: 33200000,
-        sale_price: 28000000,
-    },
-    {
-        label: '05',
-        display_price: 55000000,
-        sale_price: 25000000,
-    },
-    {
-        label: '06',
-        display_price: 35000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '07',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '08',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '09',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '10',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '11',
-        display_price: 55000000,
-        sale_price: 25000000,
-    },
-    {
-        label: '12',
-        display_price: 35000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '13',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '14',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '15',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '16',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '17',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '18',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '19',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '20',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '21',
-        display_price: 55000000,
-        sale_price: 25000000,
-    },
-    {
-        label: '22',
-        display_price: 35000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '23',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '24',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '25',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '26',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-    {
-        label: '27',
-        display_price: 46000000,
-        sale_price: 45000000,
-    },
-    {
-        label: '28',
-        display_price: 32000000,
-        sale_price: 28900000,
-    },
-    {
-        label: '29',
-        display_price: 65000000,
-        sale_price: 62000000,
-    },
-    {
-        label: '30',
-        display_price: 55000000,
-        sale_price: 30000000,
-    },
-];
-
 const ContentLegend = (props: any) => {
     const { payload } = props;
     return (
@@ -178,7 +25,7 @@ const ContentLegend = (props: any) => {
                 <div key={item.id} className="flex gap-x-2 items-center capitalize">
                     <div className={clsx('h-2 w-3 rounded', item.value === 'total_display_price' && 'bg-red-500', item.value === 'total_price_sale' && 'bg-sky-500')} />
                     {item.value === 'total_display_price' && 'Display Price'}
-                    {item.value === 'total_price_sale' && 'Purchase'}
+                    {item.value === 'total_price_sale' && 'Sale Price'}
                 </div>
             ))}
         </ul>
@@ -189,10 +36,10 @@ const ContentTooltip = ({ active, payload, label }: { active: boolean | undefine
     if (active && payload && label) {
         return (
             <div className="bg-white rounded px-3 py-1.5 border text-xs dark:bg-gray-900 shadow-sm">
-                <p className="text-sm font-bold">{label} Agustus 2024</p>
+                <p className="text-sm font-bold">{label}</p>
                 <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
                 <p>Display Price: {formatCurrency(payload[0].value)}</p>
-                <p>Purchase: {formatCurrency(payload[1].value)}</p>
+                <p>Sale Price: {formatCurrency(payload[1].value)}</p>
             </div>
         );
     }
@@ -555,10 +402,6 @@ const GeneralSale = () => {
                                                 <p className="text-xs font-light text-gray-500">Sale Price</p>
                                                 <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_purchase)}</p>
                                             </div>
-                                            <div className="flex flex-col mt-2">
-                                                <p className="text-xs font-light text-gray-500">Display Price</p>
-                                                <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_display_price)}</p>
-                                            </div>
                                             <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
                                         </div>
                                     ))
@@ -599,10 +442,6 @@ const GeneralSale = () => {
                                         <p className="text-xs font-light text-gray-500">Sale Price</p>
                                         <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_purchase)}</p>
                                     </div>
-                                    <div className="flex flex-col mt-2">
-                                        <p className="text-xs font-light text-gray-500">Display Price</p>
-                                        <p className="text-sm font-light text-gray-800">{formatCurrency(item.total_display_price)}</p>
-                                    </div>
                                     <p className="absolute text-end text-[100px] font-bold bottom-8 right-2 text-gray-300/20 z-0">{i + 1}</p>
                                 </div>
                             ))
@@ -617,9 +456,8 @@ const GeneralSale = () => {
                         <div className="w-full flex items-center h-10 px-5 gap-2 bg-sky-300 rounded">
                             <div className="w-10 font-bold flex-none text-center">No</div>
                             <div className="w-full flex items-center gap-2">
-                                <div className="w-1/6 flex-none text-center font-bold">Code Document</div>
+                                <div className="w-2/6 flex-none text-center font-bold">Code Document</div>
                                 <div className="w-2/6 flex-none text-center font-bold">Buyer Name</div>
-                                <div className="w-1/6 flex-none text-center font-bold">Display Price</div>
                                 <div className="w-1/6 flex-none text-center font-bold">Sale Price</div>
                                 <div className="w-1/6 flex-none text-center font-bold">Option</div>
                             </div>
@@ -632,9 +470,8 @@ const GeneralSale = () => {
                                         <div key={item.code_document_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
                                             <div className="w-10 flex-none text-center">{i + 1}</div>
                                             <div className="w-full flex items-center gap-2">
-                                                <div className="w-1/6 flex-none text-center">{item.code_document_sale}</div>
+                                                <div className="w-2/6 flex-none text-center">{item.code_document_sale}</div>
                                                 <div className="w-2/6 flex-none text-start">{item.buyer_name_document_sale}</div>
-                                                <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_display_price)}</div>
                                                 <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
                                                 <div className="w-1/6 flex-none text-center">
                                                     <button onClick={() => openModal(item.id)} className="px-3 bg-sky-500 py-0.5 rounded-sm">
@@ -654,9 +491,8 @@ const GeneralSale = () => {
                                 <div key={item.code_document_sale} className="w-full flex items-center h-10 px-5 gap-2 hover:border-sky-500 border-b border-sky-200">
                                     <div className="w-10 flex-none text-center">{i + 1}</div>
                                     <div className="w-full flex items-center gap-2">
-                                        <div className="w-1/6 flex-none text-center">{item.code_document_sale}</div>
+                                        <div className="w-2/6 flex-none text-center">{item.code_document_sale}</div>
                                         <div className="w-2/6 flex-none text-start">{item.buyer_name_document_sale}</div>
-                                        <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_display_price)}</div>
                                         <div className="w-1/6 flex-none text-center">{formatCurrency(item.total_purchase)}</div>
                                         <div className="w-1/6 flex-none text-center">
                                             <button onClick={() => openModal(item.id)} className="px-3 bg-sky-500 py-0.5 rounded-sm">
