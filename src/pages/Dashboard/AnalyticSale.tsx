@@ -9,28 +9,6 @@ import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
 import { endOfMonth, format, subDays } from 'date-fns';
 import { useGetAnalyticSalesMonthlyQuery, useGetAnalyticSalesYearlyQuery } from '../../store/services/analysticApi';
 
-const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
-    if (active && payload && label) {
-        return (
-            <div className="bg-white rounded px-3 py-1.5 border text-xs dark:bg-gray-900 shadow-sm">
-                <p className="text-sm font-bold">{label}</p>
-                <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
-                <p className="font-bold mb-2">Quantity:</p>
-                {payload.map((item: any) => (
-                    <div key={item.dataKey} className="flex items-center">
-                        <p className="w-3 h-2 rounded-full mr-2" style={{ backgroundColor: item.color }} />
-                        <div className="flex items-center w-full gap-2">
-                            <p className="text-black w-full">{item.name}</p>
-                            <p className="flex flex-none whitespace-nowrap">: {item.value}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
-    }
-    return null;
-};
-
 const ContentLegend = (props: any) => {
     const { payload } = props;
     return (
@@ -186,7 +164,7 @@ const AnalyticSale = () => {
                 ? analyticSalesYearly?.chart
                     ? analyticSalesYearly?.chart.reduce((keys: any, entry: any) => {
                           Object.keys(entry).forEach((key) => {
-                              if (key !== 'month') {
+                              if (key !== 'month' && key !== 'total_all_category' && key !== 'display_price_sale' && key !== 'purchase') {
                                   keys.add(key);
                               }
                           });
@@ -194,7 +172,7 @@ const AnalyticSale = () => {
                       }, new Set<string>())
                     : [].reduce((keys: any, entry: any) => {
                           Object.keys(entry).forEach((key) => {
-                              if (key !== 'month') {
+                              if (key !== 'month' && key !== 'total_all_category' && key !== 'display_price_sale' && key !== 'purchase') {
                                   keys.add(key);
                               }
                           });
@@ -227,6 +205,43 @@ const AnalyticSale = () => {
 
         setColorMap(newColorMap);
     }, [isSuccessAnalyticSalesMonthly, isYearly, state[0].startDate, state[0].endDate, analyticSales, analyticSalesYearly, yearCurrent, isSuccessAnalyticSalesYearly]);
+
+    const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
+        if (active && payload && label) {
+            const currentData = analyticSalesYearly?.chart.find((d: any) => d.month === label);
+            return (
+                <div className="bg-white rounded px-3 py-1.5 border text-xs dark:bg-gray-900 shadow-sm">
+                    <p className="text-sm font-bold my-2">{label}</p>
+                    <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-4 justify-between mb-1">
+                            <p className="font-bold">Total All Category:</p>
+                            <p>{currentData?.total_all_category.toLocaleString()}</p>
+                        </div>
+                        <div className="flex items-center gap-4 justify-between mb-1">
+                            <p className="font-bold">Total Display Price:</p>
+                            <p>{formatCurrency(currentData?.display_price_saley ?? '0')}</p>
+                        </div>
+                        <div className="flex items-center gap-4 justify-between mb-1">
+                            <p className="font-bold">Total Price Sale:</p>
+                            <p>{formatCurrency(currentData?.purchase ?? '0')}</p>
+                        </div>
+                        <p className="font-bold mb-2">Quantity:</p>
+                        {payload.map((item: any) => (
+                            <div key={item.dataKey} className="flex items-center">
+                                <p className="w-3 h-2 rounded-full mr-2" style={{ backgroundColor: item.color }} />
+                                <div className="flex items-center w-full gap-2">
+                                    <p className="text-black w-full">{item.name}</p>
+                                    <p className="flex flex-none whitespace-nowrap">: {item.value}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
 
     useEffect(() => {
         handleCurrentId(layout, isYearly);
