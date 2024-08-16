@@ -4,7 +4,8 @@ import { formatCurrency, useDebounce } from '../../helper/functions';
 import { clsx } from '@mantine/core';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
-import { useGetStorageReportQuery } from '../../store/services/analysticApi';
+import { useGetStorageReportQuery, useLazyExportGenerateExcelStorageReportQuery } from '../../store/services/analysticApi';
+import toast from 'react-hot-toast';
 
 const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
     if (active && payload && label) {
@@ -26,6 +27,7 @@ const StorageReport = () => {
     const router = useNavigate();
     const debouncedSearch = useDebounce(search);
     const { data: dataStorageReport, isSuccess: isSuccessStorageReport, refetch: refetchStorageReport } = useGetStorageReportQuery(undefined);
+    const [exportToExcel] = useLazyExportGenerateExcelStorageReportQuery();
 
     const storageReport: any = useMemo(() => {
         if (isSuccessStorageReport) {
@@ -70,9 +72,28 @@ const StorageReport = () => {
         [searchParams[0], router]
     );
 
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel({}).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success('Data Storage berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data Storage.');
+            console.error('Error exporting Storage to Excel:', err);
+        }
+    };
+
     useEffect(() => {
         handleCurrentId(layout);
     }, []);
+
     return (
         <div className="w-full flex flex-col relative">
             <div className="w-full flex justify-between mb-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
@@ -150,85 +171,94 @@ const StorageReport = () => {
                 </div>
             </div>
             <div className="w-full flex flex-col gap-4 mt-10 border rounded-md py-5">
-                <div className="w-full sticky top-[135px] flex flex-col gap-4 py-4 shadow-md px-5 bg-white/5 backdrop-blur-sm">
-                    <div className="w-full flex justify-start">
-                        <h3 className="text-lg font-semibold">List Product Per-Category</h3>
-                    </div>
-                    <div className="flex w-1/2 items-center gap-5">
-                        <label htmlFor="search" className="relative w-full flex items-center mb-0">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-4 h-4 absolute left-3"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <circle cx="11" cy="11" r="8" />
-                                <path d="m21 21-4.3-4.3" />
-                            </svg>
-                            <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-9 rounded outline-none px-10 text-xs border border-gray-500" />
-                            <button onClick={clearSearch} className={clsx('h-5 w-5 absolute right-2 items-center justify-center outline-none', search.length > 0 ? 'flex' : 'hidden')}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-4 h-4"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M18 6 6 18" />
-                                    <path d="m6 6 12 12" />
-                                </svg>
-                            </button>
-                        </label>
-                        <div className="flex border border-gray-500 rounded flex-none h-9 overflow-hidden">
-                            <button
-                                className={clsx('w-9 h-full flex items-center justify-center outline-none', layout === 'list' ? 'bg-sky-300' : 'bg-transparent')}
-                                onClick={() => handleCurrentId('list')}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-4 h-4"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <rect width="7" height="7" x="3" y="3" rx="1" />
-                                    <rect width="7" height="7" x="3" y="14" rx="1" />
-                                    <path d="M14 4h7" />
-                                    <path d="M14 9h7" />
-                                    <path d="M14 15h7" />
-                                    <path d="M14 20h7" />
-                                </svg>
-                            </button>
-                            <button
-                                className={clsx('w-9 h-full flex items-center justify-center outline-none', layout === 'grid' ? 'bg-sky-300' : 'bg-transparent')}
-                                onClick={() => handleCurrentId('grid')}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-4 h-4"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <rect width="7" height="7" x="3" y="3" rx="1" />
-                                    <rect width="7" height="7" x="14" y="3" rx="1" />
-                                    <rect width="7" height="7" x="14" y="14" rx="1" />
-                                    <rect width="7" height="7" x="3" y="14" rx="1" />
-                                </svg>
-                            </button>
+                <div className="w-full flex flex-col gap-4 mt-10 border rounded-md py-5">
+                    <div className="w-full sticky top-[135px] flex flex-col gap-4 py-4 shadow-md px-5 bg-white/5 backdrop-blur-sm">
+                        <div className="w-full flex justify-start">
+                            <h3 className="text-lg font-semibold">List Product Per-Category</h3>
+                        </div>
+                        <div className="w-full flex justify-between items-center">
+                            <div className="flex items-center gap-5" style={{ width: '60%' }}>
+                                <label htmlFor="search" className="relative w-full flex items-center mb-0">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-4 h-4 absolute left-3"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <circle cx="11" cy="11" r="8" />
+                                        <path d="m21 21-4.3-4.3" />
+                                    </svg>
+                                    <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-9 rounded outline-none px-10 text-xs border border-gray-500" />
+                                    <button onClick={clearSearch} className={clsx('h-5 w-5 absolute right-2 items-center justify-center outline-none', search.length > 0 ? 'flex' : 'hidden')}>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M18 6 6 18" />
+                                            <path d="m6 6 12 12" />
+                                        </svg>
+                                    </button>
+                                </label>
+                                <div className="flex border border-gray-500 rounded flex-none h-9 overflow-hidden">
+                                    <button
+                                        className={clsx('w-9 h-full flex items-center justify-center outline-none', layout === 'list' ? 'bg-sky-300' : 'bg-transparent')}
+                                        onClick={() => handleCurrentId('list')}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <rect width="7" height="7" x="3" y="3" rx="1" />
+                                            <rect width="7" height="7" x="3" y="14" rx="1" />
+                                            <path d="M14 4h7" />
+                                            <path d="M14 9h7" />
+                                            <path d="M14 15h7" />
+                                            <path d="M14 20h7" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        className={clsx('w-9 h-full flex items-center justify-center outline-none', layout === 'grid' ? 'bg-sky-300' : 'bg-transparent')}
+                                        onClick={() => handleCurrentId('grid')}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <rect width="7" height="7" x="3" y="3" rx="1" />
+                                            <rect width="7" height="7" x="14" y="3" rx="1" />
+                                            <rect width="7" height="7" x="14" y="14" rx="1" />
+                                            <rect width="7" height="7" x="3" y="14" rx="1" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex justify-end" style={{ width: '40%' }}>
+                                <button onClick={handleExportData} className="px-3 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    Export Data
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
