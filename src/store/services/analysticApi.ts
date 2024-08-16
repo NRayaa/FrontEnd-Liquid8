@@ -24,8 +24,11 @@ export const analyticApi = createApi({
         getGeneralSales: builder.query<any, { from: any; to: any }>({
             query: ({ from, to }) => `/dashboard/general-sales?from=${from}&to=${to}`,
         }),
+        exportGenerateExcelStorageReport: builder.query<any, any>({
+            query: () => `/generateExcel_StorageReport`,
+        }),
     }),
 });
 
-export const { useGetSummaryTransactionQuery, useGetSummarySalesQuery, useGetAnalyticSalesMonthlyQuery, useGetAnalyticSalesYearlyQuery, useGetGeneralSalesQuery, useGetStorageReportQuery } =
+export const { useGetSummaryTransactionQuery, useGetSummarySalesQuery, useGetAnalyticSalesMonthlyQuery, useGetAnalyticSalesYearlyQuery, useGetGeneralSalesQuery, useGetStorageReportQuery, useLazyExportGenerateExcelStorageReportQuery } =
     analyticApi;
