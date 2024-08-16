@@ -226,7 +226,7 @@ const AnalyticSale = () => {
         });
 
         setColorMap(newColorMap);
-    }, [isSuccessAnalyticSalesMonthly, isYearly, state[0].startDate, state[0].endDate, analyticSales]);
+    }, [isSuccessAnalyticSalesMonthly, isYearly, state[0].startDate, state[0].endDate, analyticSales, analyticSalesYearly, yearCurrent, isSuccessAnalyticSalesYearly]);
 
     useEffect(() => {
         handleCurrentId(layout, isYearly);
@@ -254,7 +254,7 @@ const AnalyticSale = () => {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    {isSuccessAnalyticSalesMonthly &&
+                    {(isSuccessAnalyticSalesMonthly || isSuccessAnalyticSalesYearly) &&
                         (isYearly === 'false' ? (
                             <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
                                 <p>{analyticSales?.month.current_month.month + ' ' + analyticSales?.month.current_month.year}</p>
@@ -305,11 +305,56 @@ const AnalyticSale = () => {
                                 </button>
                             </div>
                         ) : (
-                            <div className="px-3 h-10 py-1 border rounded flex gap-3 items-center font-semibold border-gray-500">
-                                <p>{analyticSales?.month.current_month.year}</p>
+                            <div className="flex">
+                                <button
+                                    onClick={() => setYearCurrent(analyticSalesYearly?.year.prev_year.year)}
+                                    className="px-3 h-10 py-1 border rounded-l flex gap-3 items-center font-semibold border-gray-500"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-4 h-4"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="m15 18-6-6 6-6" />
+                                    </svg>
+                                </button>
+                                <button
+                                    onClick={() => setYearCurrent(analyticSalesYearly?.year.current_month.year)}
+                                    className="px-3 h-10 py-1 border-y flex gap-3 items-center font-semibold border-gray-500"
+                                >
+                                    <p>{analyticSalesYearly?.year.selected_year.year}</p>
+                                </button>
+                                <button
+                                    onClick={() => setYearCurrent(analyticSalesYearly?.year.next_year.year)}
+                                    className="px-3 h-10 py-1 border rounded-r flex gap-3 items-center font-semibold border-gray-500"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-4 h-4"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="m9 18 6-6-6-6" />
+                                    </svg>
+                                </button>
                             </div>
                         ))}
-                    <button className="w-10 h-10 flex items-center justify-center border border-l-none rounded border-gray-500 hover:bg-sky-100" onClick={refetchAnalyticSalesMonthly}>
+                    <button
+                        className="w-10 h-10 flex items-center justify-center border border-l-none rounded border-gray-500 hover:bg-sky-100"
+                        onClick={() => {
+                            refetchAnalyticSalesMonthly();
+                            refetchAnalyticSalesYearly();
+                        }}
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
                             <path d="M21 3v5h-5" />
@@ -337,7 +382,7 @@ const AnalyticSale = () => {
                 </div>
             </div>
             <div className="w-full h-[350px] relative">
-                {!isSuccessAnalyticSalesMonthly && (
+                {(!isSuccessAnalyticSalesMonthly || !isSuccessAnalyticSalesYearly) && (
                     <div className="w-full h-full bg-sky-500/50 absolute top-0 left-0 flex items-center justify-center rounded-md">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
