@@ -23,39 +23,7 @@ const ContentLegend = (props: any) => {
     );
 };
 
-const colorPalette = [
-    '#bae6fd',
-    '#7dd3fc',
-    '#38bdf8',
-    '#0ea5e9',
-    '#0284c7',
-    '#fecdd3',
-    '#fda4af',
-    '#fb7185',
-    '#f43f5e',
-    '#e11d48',
-    '#ddd6fe',
-    '#c4b5fd',
-    '#a78bfa',
-    '#8b5cf6',
-    '#7c3aed',
-    '#bbf7d0',
-    '#86efac',
-    '#4ade80',
-    '#22c55e',
-    '#16a34a',
-    '#fef08a',
-    '#fde047',
-    '#facc15',
-    '#eab308',
-    '#ca8a04',
-    '#e2e8f0',
-    '#cbd5e1',
-    '#94a3b8',
-    '#64748b',
-    '#475569',
-    '#334155',
-];
+const colorPalette = ['#a3e635', '#475569', '#dc2626', '#2dd4bf', '#f97316', '#facc15', '#9ca3af', '#22c55e', '#0ea5e9', '#6d28d9', '#c084fc', '#fb7185', '#be123c', '#020617', '#854d0e', '#f87171'];
 
 const AnalyticSale = () => {
     const [state, setState] = useState<Range[]>([

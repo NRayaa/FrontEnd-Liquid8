@@ -24,7 +24,6 @@ const ContentLegend = (props: any) => {
             {payload.map((item: any) => (
                 <div key={item.id} className="flex gap-x-2 items-center capitalize">
                     <div className={clsx('h-2 w-3 rounded', item.value === 'total_display_price' && 'bg-red-500', item.value === 'total_price_sale' && 'bg-sky-500')} />
-                    {item.value === 'total_display_price' && 'Display Price'}
                     {item.value === 'total_price_sale' && 'Sale Price'}
                 </div>
             ))}
@@ -38,8 +37,7 @@ const ContentTooltip = ({ active, payload, label }: { active: boolean | undefine
             <div className="bg-white rounded px-3 py-1.5 border text-xs dark:bg-gray-900 shadow-sm">
                 <p className="text-sm font-bold">{label}</p>
                 <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-[1px]" />
-                <p>Display Price: {formatCurrency(payload[0].value)}</p>
-                <p>Sale Price: {formatCurrency(payload[1].value)}</p>
+                <p>Sale Price: {formatCurrency(payload[0].value)}</p>
             </div>
         );
     }
@@ -279,7 +277,6 @@ const GeneralSale = () => {
                         <XAxis dataKey="date" stroke="#000" fontSize={12} padding={{ left: 0, right: 0 }} textAnchor="end" style={{ fontSize: '11px' }} angle={-45} height={80} />
                         <Tooltip cursor={false} content={({ active, payload, label }) => <ContentTooltip active={active} payload={payload} label={label} />} />
                         <Legend content={<ContentLegend />} />
-                        <Line type={'bump'} dataKey="total_display_price" stroke="#ef4444" dot={false} />
                         <Line type={'bump'} dataKey="total_price_sale" stroke="#0ea5e9" dot={false} />
                     </LineChart>
                 </ResponsiveContainer>
