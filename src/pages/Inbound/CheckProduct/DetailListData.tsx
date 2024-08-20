@@ -6,18 +6,37 @@ import { Link, useLocation } from 'react-router-dom';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconArrowForward from '../../../components/Icon/IconArrowForward';
-import { useDeleteProductOldMutation, useDetailProductOldQuery } from '../../../store/services/productOldsApi';
+import { useChangeBarcodeDocumentMutation, useDeleteProductOldMutation, useDetailProductOldQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 
 const DetailListData = () => {
     const { state } = useLocation();
-
     const [page, setPage] = useState<number>(1);
     const { data, refetch } = useDetailProductOldQuery({ codeDocument: state.codeDocument, page });
     const [deleteProductOld, results] = useDeleteProductOldMutation();
+    const [changeBarcodeDocument, { isLoading }] = useChangeBarcodeDocumentMutation();
+    const [initBarcode, setInitBarcode] = useState<string>('');
 
+    const handleChangeBarcode = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const result = await changeBarcodeDocument({
+                code_document: state.codeDocument,
+                init_barcode: initBarcode,
+            }).unwrap();
+
+            if (result.data.status === true) {
+                toast.success(result.data.message);
+                // refetch data or perform other actions
+            } else {
+                toast.error(result);
+            }
+        } catch (error) {
+            toast.error('Terjadi kesalahan');
+        }
+    };
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
@@ -62,7 +81,6 @@ const DetailListData = () => {
             }
         }
     }, [data]);
-    console.log("DATA", data)
 
     useEffect(() => {
         refetch();
@@ -112,6 +130,26 @@ const DetailListData = () => {
                                 </ul>
                             </div>
                         </div>
+                    </div>
+                    {/* Form Input Baru */}
+                    <div className="border border-gray-500/20 panel xl:w-2/5 lg:w-2/5 sm:w-full rounded-md shadow p-6 pt-12 mt-8 ml-5 relative">
+                        <form onSubmit={handleChangeBarcode}>
+                            <div className="mb-4">
+                                <label htmlFor="codeDocument" className="block text-sm font-medium text-gray-700">
+                                    Code Document
+                                </label>
+                                <input type="text" id="codeDocument" value={state?.codeDocument} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm" />
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="initBarcode" className="block text-sm font-medium text-gray-700">
+                                    Init Barcode
+                                </label>
+                                <input type="text" id="initBarcode" value={initBarcode} onChange={(e) => setInitBarcode(e.target.value)} className="form-input" />
+                            </div>
+                            <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary-dark">
+                                Ubah Barcode
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 mx-6 gap-5">

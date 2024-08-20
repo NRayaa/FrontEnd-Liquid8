@@ -42,7 +42,14 @@ export const productOldsApi = createApi({
                 body,
             }),
         }),
+        changeBarcodeDocument: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/changeBarcodeDocument',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery, useAddBulkingProductMutation, useAddBulkingColorMutation } = productOldsApi;
+export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery, useAddBulkingProductMutation, useAddBulkingColorMutation, useChangeBarcodeDocumentMutation } = productOldsApi;
