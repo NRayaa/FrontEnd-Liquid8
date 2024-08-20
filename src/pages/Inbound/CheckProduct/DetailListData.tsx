@@ -142,12 +142,12 @@ const DetailListData = () => {
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="initBarcode" className="block text-sm font-medium text-gray-700">
-                                    Init Barcode
+                                    Format Barcode
                                 </label>
                                 <input type="text" id="initBarcode" value={initBarcode} onChange={(e) => setInitBarcode(e.target.value)} className="form-input" />
                             </div>
                             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary-dark">
-                                Ubah Barcode
+                                Edit Barcode
                             </button>
                         </form>
                     </div>
