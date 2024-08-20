@@ -412,7 +412,25 @@ const AnalyticSale = () => {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
-            <div className="w-full flex flex-col gap-4 mt-10 border rounded-md p-5">
+            <div className="w-full flex gap-4 mt-10">
+                <div className="w-1/5 p-5 border-gray-500 border rounded">
+                    <p className="text-sm font-light">Total Category</p>
+                    <p className="text-xl font-bold">
+                        {(isYearly === 'true' ? analyticSalesYearly?.annual_summary.total_all_category ?? '0' : analyticSales?.monthly_summary.total_category ?? '0').toLocaleString()}
+                    </p>
+                </div>
+                <div className="w-2/5 p-5 border-gray-500 border rounded">
+                    <p className="text-sm font-light">Display Price</p>
+                    <p className="text-xl font-bold">
+                        {formatCurrency(isYearly === 'true' ? analyticSalesYearly?.annual_summary.total_display_price_sale : analyticSales?.monthly_summary.display_price_sale)}
+                    </p>
+                </div>
+                <div className="w-2/5 p-5 border-gray-500 border rounded">
+                    <p className="text-sm font-light">Sale Price</p>
+                    <p className="text-xl font-bold">{formatCurrency(isYearly === 'true' ? analyticSalesYearly?.annual_summary.total_product_price_sale : analyticSales?.monthly_summary.purchase)}</p>
+                </div>
+            </div>
+            <div className="w-full flex flex-col gap-4 mt-4 border rounded-md p-5">
                 <div className="flex w-1/2 items-center gap-5">
                     <label htmlFor="search" className="relative w-full flex items-center mb-0">
                         <svg
