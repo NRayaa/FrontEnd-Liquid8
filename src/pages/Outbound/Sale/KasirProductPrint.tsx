@@ -179,7 +179,7 @@ const ReportTable = () => {
                                 data?.buyer?.sales.map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{item.code_document_sale}</td>
+                                        <td>{item.product_barcode_sale}</td>
                                         <td>{item.product_name_sale}</td>
                                         <td>{item.product_qty_sale}</td>
                                         <td style={{ textAlign: 'right' }}>{formatCurrency(item.product_price_sale) || 0}</td>
