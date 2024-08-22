@@ -104,6 +104,9 @@ const MultiCheck = () => {
             showCancelButton: false,
             confirmButtonText: 'Yakin',
             denyButtonText: `Tidak`,
+            customClass: {
+                denyButton: 'bg-red-500 text-white hover:bg-red-700',
+            },
         });
         if (resAlert.isConfirmed) {
             const body = {
