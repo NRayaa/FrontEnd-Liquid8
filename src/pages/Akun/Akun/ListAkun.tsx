@@ -7,6 +7,7 @@ import { GetListAkunItem, GetListRoleItem } from '../../../store/services/types'
 import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
+import Swal from 'sweetalert2';
 
 const ListAkun = () => {
     const navigate = useNavigate();
@@ -31,11 +32,61 @@ const ListAkun = () => {
         return role?.role_name || 'Unknown Role';
     };
 
-    const handleDeleteAccount = async (id: number) => {
-        try {
-            await deleteAccount(id);
-        } catch (err) {
-            console.log(err);
+    const showAlert = async ({ type, id }: any) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menghapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    if (result.value) {
+                        await deleteAccount(id);
+                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
+        if (type === 15) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Berhasil Dikirim',
+                padding: '10px 20px',
+            });
+        }
+        if (type == 20) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                title: 'Data Berhasil Ditambah',
+                padding: '10px 20px',
+            });
         }
     };
 
@@ -122,7 +173,7 @@ const ListAkun = () => {
                                                 Edit
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteAccount(item.id)}>
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
                                         </button>
                                     </div>
