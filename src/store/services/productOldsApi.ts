@@ -49,7 +49,14 @@ export const productOldsApi = createApi({
                 body,
             }),
         }),
+        deleteBarcodeDocument: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `/deleteCustomBarcode`,
+                method: 'DELETE',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery, useAddBulkingProductMutation, useAddBulkingColorMutation, useChangeBarcodeDocumentMutation } = productOldsApi;
+export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery, useAddBulkingProductMutation, useAddBulkingColorMutation, useChangeBarcodeDocumentMutation, useDeleteBarcodeDocumentMutation } = productOldsApi;

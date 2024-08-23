@@ -6,7 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconArrowForward from '../../../components/Icon/IconArrowForward';
-import { useChangeBarcodeDocumentMutation, useDeleteProductOldMutation, useDetailProductOldQuery } from '../../../store/services/productOldsApi';
+import { useChangeBarcodeDocumentMutation, useDeleteBarcodeDocumentMutation, useDeleteProductOldMutation, useDetailProductOldQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
@@ -18,6 +18,7 @@ const DetailListData = () => {
     const [deleteProductOld, results] = useDeleteProductOldMutation();
     const [changeBarcodeDocument, { isLoading }] = useChangeBarcodeDocumentMutation();
     const [initBarcode, setInitBarcode] = useState<string>('');
+    const [deleteBarcodeDocument] = useDeleteBarcodeDocumentMutation();
 
     const handleChangeBarcode = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,6 +38,63 @@ const DetailListData = () => {
             toast.error('Terjadi kesalahan');
         }
     };
+
+    const handleDeleteBarcode = async () => {
+        try {
+            const result = await deleteBarcodeDocument({ code_document: state.codeDocument }).unwrap();
+            if (result.data.status === true) {
+                toast.success(result.data.message);
+                setInitBarcode('');
+                refetch(); 
+            } else {
+                toast.error(result.data.message);
+            }
+        } catch (error) {
+            toast.error('Terjadi kesalahan saat menghapus barcode');
+        }
+    };
+
+    const handleDeleteConfirmation = async () => {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-secondary',
+                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                popup: 'sweet-alerts',
+            },
+            buttonsStyling: false,
+        });
+
+        swalWithBootstrapButtons
+            .fire({
+                title: 'Yakin ingin menghapus barcode ini?',
+                text: 'Data tidak bisa dikembalikan setelah dihapus',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yakin',
+                cancelButtonText: 'Batalkan',
+                reverseButtons: true,
+                padding: '2em',
+            })
+            .then(async (result) => {
+                if (result.value) {
+                    try {
+                        const response = await deleteBarcodeDocument({ code_document: state.codeDocument }).unwrap();
+                        if (response.data.status === true) {
+                            swalWithBootstrapButtons.fire('Deleted!', 'Barcode berhasil dihapus.', 'success');
+                            setInitBarcode(''); // Kosongkan nilai initBarcode
+                            refetch(); // Jika perlu, refetch data
+                        } else {
+                            swalWithBootstrapButtons.fire('Error', response.data.message, 'error');
+                        }
+                    } catch (error) {
+                        swalWithBootstrapButtons.fire('Error', 'Terjadi kesalahan saat menghapus barcode', 'error');
+                    }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire('Cancelled', 'Barcode tidak jadi dihapus', 'error');
+                }
+            });
+    };
+
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
@@ -78,6 +136,15 @@ const DetailListData = () => {
         if (data?.data.resource !== null) {
             if (data?.data?.resource?.data.length !== 0) {
                 return data?.data.resource.data;
+            }
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (data?.data?.resource?.data?.length) {
+            const barcodeData = data.data.resource.data.find((item) => item.custom_barcode);
+            if (barcodeData) {
+                setInitBarcode(barcodeData.custom_barcode);
             }
         }
     }, [data]);
@@ -144,7 +211,12 @@ const DetailListData = () => {
                                 <label htmlFor="initBarcode" className="block text-sm font-medium text-gray-700">
                                     Format Barcode
                                 </label>
-                                <input type="text" id="initBarcode" value={initBarcode} onChange={(e) => setInitBarcode(e.target.value)} className="form-input" />
+                                <div className="flex items-center">
+                                    <input type="text" id="initBarcode" value={initBarcode} onChange={(e) => setInitBarcode(e.target.value)} className="form-input flex-1 mr-2" />
+                                    <button type="button" onClick={handleDeleteConfirmation} className="px-4 py-2 bg-red-500 text-white rounded-md shadow-sm hover:bg-red-600">
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary-dark">
                                 Edit Barcode

@@ -349,6 +349,7 @@ interface ItemDetailOldsProduct {
     old_name_product: string;
     old_quantity_product: string;
     old_price_product: string;
+    custom_barcode: string;
     created_at: string;
     updated_at: string;
 }
