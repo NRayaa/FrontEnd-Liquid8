@@ -87,14 +87,14 @@ const DetailApproveDocument = () => {
 
     useEffect(() => {
         if (isSuccess && data.data.status) {
-            setListsData(data.data.resource);
+            setListsData(data?.data?.resource);
         }
         refetch();
     }, [data, isSuccess, refetch]);
 
     useEffect(() => {
         if (results.isSuccess) {
-            toast.success(results.data.data.message);
+            toast.success(results?.data?.data?.message);
             refetch();
         } else if (results.isError) {
             const statusRes = 'status' in results.error ? results.error.status : 0;
@@ -107,7 +107,7 @@ const DetailApproveDocument = () => {
     }, [results, refetch]);
 
     if (isError && !data?.data?.status) {
-        return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+        return <Alert message={data?.data?.message ?? 'anda tidak berhak mengakses halaman ini'} />;
     }
 
     return (
@@ -130,7 +130,7 @@ const DetailApproveDocument = () => {
                 <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     {/* add button back */}
-                    <Link to="/inbound/check_product/approvment_document">
+                    <Link to="/inbound/check_product/approvment_product">
                         <button type="button" className=" px-2 btn btn-outline-danger">
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
                         </button>

@@ -36,7 +36,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 redirect: 'follow' as RequestRedirect,
             };
 
-            fetch('https://server.wms-liquid8.online/api/generate', requestOptions)
+            fetch('https://wms-server.digitalindustryagency.com/api/generate', requestOptions)
                 .then((response) => response.json())
                 .then((result) => {
                     handleMessage(result.data.message);
