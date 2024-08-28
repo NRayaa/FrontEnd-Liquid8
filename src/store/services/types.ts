@@ -255,6 +255,7 @@ interface DocumentApprovmentItem {
         code_document: string;
         base_document: string;
         total_data: number;
+        status_approve: string;
         total_data_in: number;
         total_data_lolos: number;
         total_data_damaged: number;
