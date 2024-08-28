@@ -243,7 +243,7 @@ const CreateDump = () => {
                         </Link>
                         <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {dataFilterSelected?.total} </span>
                     </div>
-                    <div className="grid grid-cols-5 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="datatables xl:col-span-3">
                             <DataTable
                                 highlightOnHover

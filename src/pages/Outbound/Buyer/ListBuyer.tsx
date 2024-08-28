@@ -47,7 +47,6 @@ const ListBuyer = () => {
                 .then(async (result) => {
                     if (result.value) {
                         await deleteBuyer(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -104,7 +103,12 @@ const ListBuyer = () => {
             refetch();
             toast.success(results.data.data.message);
         } else if (results.isError) {
-            toast.error(results.data?.data?.message);
+            const statusRes = 'status' in results.error ? results.error.status : 0;
+            if (statusRes === 403) {
+                toast.error('Your role is forbidden to access');
+            } else {
+                toast.error('Something went wrong');
+            }
         }
         refetch();
     }, [results]);
@@ -179,7 +183,13 @@ const ListBuyer = () => {
                                     <div className="flex items-center w-max mx-auto gap-2">
                                         <Link
                                             to={`/buyer/buyer/list_buyer/detail_buyer/${item.id}`}
-                                            state={{ name_buyer: item.name_buyer, phone_buyer: item.phone_buyer, address_buyer: item.address_buyer, amount_transaction_buyer: item.amount_transaction_buyer, amount_purchase_buyer: item.amount_purchase_buyer }}
+                                            state={{
+                                                name_buyer: item.name_buyer,
+                                                phone_buyer: item.phone_buyer,
+                                                address_buyer: item.address_buyer,
+                                                amount_transaction_buyer: item.amount_transaction_buyer,
+                                                amount_purchase_buyer: item.amount_purchase_buyer,
+                                            }}
                                         >
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
