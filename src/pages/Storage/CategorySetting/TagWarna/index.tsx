@@ -41,7 +41,6 @@ const TagWarna = () => {
                 .then(async (result) => {
                     if (result.value) {
                         await deleteColorTag(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -88,7 +87,12 @@ const TagWarna = () => {
             toast.success(deleteResults.data.data.message);
             refetch();
         } else if (deleteResults.isError) {
-            toast.error(deleteResults.data.data.message);
+            const statusRes = 'status' in deleteResults.error ? deleteResults.error.status : 0;
+            if (statusRes === 403) {
+                toast.error('Your role is forbidden to access');
+            } else {
+                toast.error('Something went wrong');
+            }
         }
     }, [deleteResults]);
 

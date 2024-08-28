@@ -43,7 +43,6 @@ const ListDestination = () => {
                 .then(async (result) => {
                     if (result.value) {
                         await deleteAccount(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -82,7 +81,12 @@ const ListDestination = () => {
             toast.success(results.data.data.message);
             refetch();
         } else if (results.isError) {
-            toast.error(results.data?.data?.message);
+            const statusRes = 'status' in results.error ? results.error.status : 0;
+            if (statusRes === 403) {
+                toast.error('Your role is forbidden to access');
+            } else {
+                toast.error('Something went wrong');
+            }
         }
         refetch();
     }, [results]);
@@ -108,7 +112,7 @@ const ListDestination = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListDestinationItem, index: number) =><span>{(page - 1) * listAkun?.length + (index + 1)}</span>,
+                                render: (item: GetListDestinationItem, index: number) => <span>{(page - 1) * listAkun?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name',
