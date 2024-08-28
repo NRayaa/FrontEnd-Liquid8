@@ -1,7 +1,7 @@
 import { DataTable } from 'mantine-datatable';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGetDocumentStagginngApproveProgressQuery } from '../../../../store/services/categoriesApi';
+import { useGetDocumentStaggingApprovesQuery, useGetDocumentStagginngApproveProgressQuery } from '../../../../store/services/categoriesApi';
 import { useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import { useDeleteAllByCodeDocumentMutation } from '../../../../store/services/checkProduct';
@@ -16,7 +16,7 @@ const ListStaggingProduct = () => {
     const [page, setPage] = useState<number>(1);
     const [deleteApprove, results] = useDeleteAllByCodeDocumentMutation();
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError, isSuccess } = useGetDocumentStagginngApproveProgressQuery({ p: page, q: searchDebounce });
+    const { data, refetch, isError, isSuccess } = useGetDocumentStaggingApprovesQuery({ p: page, q: searchDebounce });
     const [spvApproval, resultsApprove] = useLazySpvApprovalQuery();
 
     const handleApprove = async (id: number) => {
