@@ -8,7 +8,7 @@ import { useDeleteAllByCodeDocumentMutation } from '../../../../store/services/c
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 import { useLazySpvApprovalQuery } from '../../../../store/services/notificationsApi';
-import { DocumentApprovmentProgressItem } from '../../../../store/services/types';
+import { DocumentApprovmentItem } from '../../../../store/services/types';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
 const ListStaggingProduct = () => {
@@ -32,8 +32,8 @@ const ListStaggingProduct = () => {
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
-            console.log('RESPONSE', data?.data?.resource);
-            return data?.data?.resource?.data;
+            console.log('RESPONSE', data?.data?.resource)
+            return data?.data?.resource;
         }
     }, [data]);
 
@@ -80,34 +80,34 @@ const ListStaggingProduct = () => {
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: DocumentApprovmentProgressItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
+                                render: (item: DocumentApprovmentItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'Kode Dokumen',
                                 title: 'Kode Dokumen',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.code_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.code_document}</span>,
                             },
                             {
                                 accessor: 'Base Dokumen',
                                 title: 'Base Dokumen',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.base_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.base_document}</span>,
                             },
                             {
                                 accessor: 'Total Data In Document',
                                 title: 'Total Data In Document',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.total_column_in_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.total_data_in}</span>,
                             },
                             {
                                 accessor: 'Status',
                                 title: 'Status',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="badge whitespace-nowrap bg-primary ">{item?.status_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="badge whitespace-nowrap bg-primary ">{item?.riwayat_check?.status_approve}</span>,
                             },
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item: DocumentApprovmentProgressItem) => (
+                                render: (item: DocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/product_stagging_document/detail/${item.id}`} state={{ code_document: item?.code_document }}>
+                                        <Link to={`/inbound/check_product/product_stagging_document/detail/${item.id}`} state={{ code_document: item?.riwayat_check?.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Details
                                             </button>
