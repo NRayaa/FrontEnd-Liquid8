@@ -5,28 +5,27 @@ import { Link, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
-import { useDeleteApproveDocumentItemMutation, useDeleteApproveMutation, useDeleteDocumentMutation } from '../../../../store/services/checkProduct';
+import { useDeleteApproveMutation } from '../../../../store/services/checkProduct';
 import { CheckDocumentApprovmentItem } from '../../../../store/services/types';
 import { Alert } from '../../../../commons';
-import { useGetDetailProductApprovesByDocQuery } from '../../../../store/services/categoriesApi';
+import { useGetDetailProductApprovesStaggingByDocQuery } from '../../../../store/services/categoriesApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import { useDebounce } from '../../../../helper/functions';
 
-const DetailApproveProductDocument = () => {
+const DetailApproveDocumentStagging = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const { code_document } = location.state;
 
     useEffect(() => {
-        dispatch(setPageTitle('List Detail Produk'));
+        dispatch(setPageTitle('List Detail Dokumen'));
     }, [dispatch]);
 
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const searchDebounce = useDebounce(search);
-    const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery({ code_document, p: page, q: searchDebounce });
-    // const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery(code_document);
-    const [deleteApproveProduct, results] = useDeleteApproveDocumentItemMutation();
+    const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesStaggingByDocQuery({ code_document, p: page, q: searchDebounce });
+    const [deleteApproveProduct, results] = useDeleteApproveMutation();
     const [listsData, setListsData] = useState<CheckDocumentApprovmentItem[] | []>([]);
 
     const showAlert = async ({ type, id }: any) => {
@@ -119,15 +118,15 @@ const DetailApproveProductDocument = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Approvment Product</span>
+                    <span>Approvment Document Stagging</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA PRODUCT</h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA DOCUMENT STAGGING</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     {/* add button back */}
-                    <Link to="/inbound/check_product/product_approve_document">
+                    <Link to="/inbound/check_product/approvment_product_stagging">
                         <button type="button" className=" px-2 btn btn-outline-danger">
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
                         </button>
@@ -191,14 +190,14 @@ const DetailApproveProductDocument = () => {
                                 title: 'Aksi',
                                 render: (item: CheckDocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/product_approve_document_Item/detail/${item.id}`} state={{ code_document: item.code_document }}>
+                                        <Link to={`/inbound/check_product/approvment_product_stagging/detail/${item.id}`} state={{ code_document: item.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
-                                        </button>
+                                        </button> */}
                                     </div>
                                 ),
                                 textAlignment: 'center',
@@ -215,4 +214,4 @@ const DetailApproveProductDocument = () => {
     );
 };
 
-export default DetailApproveProductDocument;
+export default DetailApproveDocumentStagging;

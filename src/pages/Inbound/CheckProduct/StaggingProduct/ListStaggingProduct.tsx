@@ -1,7 +1,7 @@
 import { DataTable } from 'mantine-datatable';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGetDocumentApproveProgressQuery } from '../../../../store/services/categoriesApi';
+import { useGetDocumentStagginngApproveProgressQuery } from '../../../../store/services/categoriesApi';
 import { useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
 import { useDeleteAllByCodeDocumentMutation } from '../../../../store/services/checkProduct';
@@ -9,13 +9,14 @@ import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 import { useLazySpvApprovalQuery } from '../../../../store/services/notificationsApi';
 import { DocumentApprovmentProgressItem } from '../../../../store/services/types';
+import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 
-const ListProductApprove = () => {
-    const [page, setPage] = useState<number>(1);
+const ListStaggingProduct = () => {
     const [search, setSearch] = useState<string>('');
+    const [page, setPage] = useState<number>(1);
     const [deleteApprove, results] = useDeleteAllByCodeDocumentMutation();
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError, isSuccess } = useGetDocumentApproveProgressQuery({ p: page, q: searchDebounce });
+    const { data, refetch, isError, isSuccess } = useGetDocumentStagginngApproveProgressQuery({ p: page, q: searchDebounce });
     const [spvApproval, resultsApprove] = useLazySpvApprovalQuery();
 
     const handleApprove = async (id: number) => {
@@ -31,7 +32,7 @@ const ListProductApprove = () => {
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
-            console.log("RESPONSE", data?.data?.resource )
+            console.log('RESPONSE', data?.data?.resource);
             return data?.data?.resource?.data;
         }
     }, [data]);
@@ -44,64 +45,6 @@ const ListProductApprove = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
-
-    const showAlert = async ({ type, id }: any) => {
-        if (type === 11) {
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-secondary',
-                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                    popup: 'sweet-alerts',
-                },
-                buttonsStyling: false,
-            });
-            swalWithBootstrapButtons
-                .fire({
-                    title: 'Yakin ingin menhapus item ini?',
-                    text: 'Data tidak bisa di kembalikan setelah di hapus',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yakin',
-                    cancelButtonText: 'Batalkan',
-                    reverseButtons: true,
-                    padding: '2em',
-                })
-                .then(async (result) => {
-                    if (result.value) {
-                        await deleteApprove(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                    }
-                });
-        }
-        if (type === 15) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Berhasil Dikirim',
-                padding: '10px 20px',
-            });
-        }
-        if (type == 20) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Data Berhasil Ditambah',
-                padding: '10px 20px',
-            });
-        }
-    };
 
     if (isError && !data?.data?.status) {
         return <Alert message={data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -119,12 +62,12 @@ const ListProductApprove = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Approvment Product</span>
+                    <span>Product Stagging</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST APPROVE PRODUCT</h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST PRODUCT STAGGING</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -164,14 +107,11 @@ const ListProductApprove = () => {
                                 title: 'Aksi',
                                 render: (item: DocumentApprovmentProgressItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/product_approve_document/detail/${item.id}`} state={{ code_document: item?.code_document }}>
+                                        <Link to={`/inbound/check_product/product_stagging_document/detail/${item.id}`} state={{ code_document: item?.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Details
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.code_document })}>
-                                            Delete
-                                        </button>
                                     </div>
                                 ),
                                 textAlignment: 'center',
@@ -188,4 +128,4 @@ const ListProductApprove = () => {
     );
 };
 
-export default ListProductApprove;
+export default ListStaggingProduct;
