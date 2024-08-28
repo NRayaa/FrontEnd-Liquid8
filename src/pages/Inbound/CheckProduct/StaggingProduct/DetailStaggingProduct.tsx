@@ -8,11 +8,11 @@ import { setPageTitle } from '../../../../store/themeConfigSlice';
 import { useDeleteApproveDocumentItemMutation, useDeleteApproveMutation, useDeleteDocumentMutation } from '../../../../store/services/checkProduct';
 import { CheckDocumentApprovmentItem } from '../../../../store/services/types';
 import { Alert } from '../../../../commons';
-import { useGetDetailProductApprovesByDocQuery } from '../../../../store/services/categoriesApi';
+import { useDoneCheckAllDetailProductStaggingMutation, useGetDetailProductApprovesByDocQuery, useGetDetailProductStaggingApprovesByDocQuery } from '../../../../store/services/categoriesApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import { useDebounce } from '../../../../helper/functions';
 
-const DetailApproveProductDocument = () => {
+const DetailStaggingProductDocument = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const { code_document } = location.state;
@@ -24,11 +24,9 @@ const DetailApproveProductDocument = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const searchDebounce = useDebounce(search);
-    const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery({ code_document, p: page, q: searchDebounce });
-    // const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery(code_document);
-    const [deleteApproveProduct, results] = useDeleteApproveDocumentItemMutation();
+    const { data, isSuccess, refetch, isError } = useGetDetailProductStaggingApprovesByDocQuery({ code_document, p: page, q: searchDebounce });
+    const [doneCheckAllProductStagging, results] = useDoneCheckAllDetailProductStaggingMutation();
     const [listsData, setListsData] = useState<CheckDocumentApprovmentItem[] | []>([]);
-
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
@@ -41,51 +39,87 @@ const DetailApproveProductDocument = () => {
             });
             swalWithBootstrapButtons
                 .fire({
-                    title: 'Yakin ingin menghapus item ini?',
-                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    title: 'Yakin ingin menyelesaikan semua pengecekan?',
+                    text: 'Proses ini tidak bisa dibatalkan',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Yakin',
+                    confirmButtonText: 'Ya, Selesaikan',
                     cancelButtonText: 'Batalkan',
                     reverseButtons: true,
                     padding: '2em',
                 })
                 .then(async (result) => {
-                    if (result.value) {
-                        await deleteApproveProduct(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                    if (result.isConfirmed) {
+                        try {
+                            await doneCheckAllProductStagging({ code_document: id }).unwrap();
+                            swalWithBootstrapButtons.fire('Selesai!', 'Semua pengecekan sudah diselesaikan.', 'success');
+                        } catch (error) {
+                            swalWithBootstrapButtons.fire('Gagal', 'Ada masalah saat menyelesaikan pengecekan.', 'error');
+                        }
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                        swalWithBootstrapButtons.fire('Dibatalkan', 'Proses dibatalkan.', 'error');
                     }
                 });
         }
-        if (type === 15) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Berhasil Dikirim',
-                padding: '10px 20px',
-            });
-        }
-        if (type == 20) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Data Berhasil Ditambah',
-                padding: '10px 20px',
-            });
-        }
     };
+
+    // const showAlert = async ({ type, id }: any) => {
+    //     if (type === 11) {
+    //         const swalWithBootstrapButtons = Swal.mixin({
+    //             customClass: {
+    //                 confirmButton: 'btn btn-secondary',
+    //                 cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+    //                 popup: 'sweet-alerts',
+    //             },
+    //             buttonsStyling: false,
+    //         });
+    //         swalWithBootstrapButtons
+    //             .fire({
+    //                 title: 'Yakin ingin menghapus item ini?',
+    //                 text: 'Data tidak bisa di kembalikan setelah di hapus',
+    //                 icon: 'warning',
+    //                 showCancelButton: true,
+    //                 confirmButtonText: 'Yakin',
+    //                 cancelButtonText: 'Batalkan',
+    //                 reverseButtons: true,
+    //                 padding: '2em',
+    //             })
+    //             .then(async (result) => {
+    //                 if (result.value) {
+    //                     await doneCheckAllProductStagging(id);
+    //                     swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+    //                 } else if (result.dismiss === Swal.DismissReason.cancel) {
+    //                     swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+    //                 }
+    //             });
+    //     }
+    //     if (type === 15) {
+    //         const toast = Swal.mixin({
+    //             toast: true,
+    //             position: 'top-end',
+    //             showConfirmButton: false,
+    //             timer: 3000,
+    //         });
+    //         toast.fire({
+    //             icon: 'success',
+    //             title: 'Berhasil Dikirim',
+    //             padding: '10px 20px',
+    //         });
+    //     }
+    //     if (type == 20) {
+    //         const toast = Swal.mixin({
+    //             toast: true,
+    //             position: 'top',
+    //             showConfirmButton: false,
+    //             timer: 3000,
+    //         });
+    //         toast.fire({
+    //             icon: 'success',
+    //             title: 'Data Berhasil Ditambah',
+    //             padding: '10px 20px',
+    //         });
+    //     }
+    // };
 
     useEffect(() => {
         if (isSuccess && data.data.status) {
@@ -119,19 +153,24 @@ const DetailApproveProductDocument = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Approvment Product</span>
+                    <span>Product Stagging</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST DATA PRODUCT</h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST DETAIL PRODUCT STAGGING</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     {/* add button back */}
-                    <Link to="/inbound/check_product/product_approve_document">
-                        <button type="button" className=" px-2 btn btn-outline-danger">
-                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                    <div className="flex md:items-center md:flex-row flex-col gap-2">
+                        <Link to="/inbound/check_product/product_stagging">
+                            <button type="button" className=" px-2 btn btn-outline-danger">
+                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                            </button>
+                        </Link>
+                        <button className="btn btn-warning" onClick={() => showAlert({ type: 11, id: code_document })}>
+                            DONE CHECK ALL
                         </button>
-                    </Link>
+                    </div>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
@@ -191,14 +230,14 @@ const DetailApproveProductDocument = () => {
                                 title: 'Aksi',
                                 render: (item: CheckDocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/product_approve_document_Item/detail/${item.id}`} state={{ code_document: item.code_document }}>
+                                        <Link to={`/inbound/check_product/product_stagging_document_Item/detail/${item.id}`} state={{ code_document: item.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             Delete
-                                        </button>
+                                        </button> */}
                                     </div>
                                 ),
                                 textAlignment: 'center',
@@ -215,4 +254,4 @@ const DetailApproveProductDocument = () => {
     );
 };
 
-export default DetailApproveProductDocument;
+export default DetailStaggingProductDocument;

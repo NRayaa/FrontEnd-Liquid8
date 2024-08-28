@@ -41,6 +41,12 @@ import StorageReport from '../pages/Dashboard/StorageReport';
 import GeneralSale from '../pages/Dashboard/GeneralSale';
 import AnalyticSale from '../pages/Dashboard/AnalyticSale';
 import { Navigate } from 'react-router-dom';
+import ListStaggingProduct from '../pages/Inbound/CheckProduct/StaggingProduct/ListStaggingProduct';
+import DetailStaggingProductDocument from '../pages/Inbound/CheckProduct/StaggingProduct/DetailStaggingProduct';
+import DetailStaggingProductItem from '../pages/Inbound/CheckProduct/StaggingProduct/DetailStaggingProductItem';
+import ApprovementProductStagging from '../pages/Inbound/CheckProduct/ApprovementProductStagging';
+import DetailApproveDocumentStagging from '../pages/Inbound/CheckProduct/ApprovementProductStagging/DetailApproveDocumentStagging';
+import DetailProductStaggingApprovement from '../pages/Inbound/CheckProduct/ApprovementProductStagging/DetailProductApprovement';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -480,6 +486,41 @@ const routes = [
     {
         path: '/inbound/check_product/product_approve_document_Item/detail/:id',
         element: <DetailApproveProductItem />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/product_stagging',
+        element: <ListStaggingProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/product_stagging_document/detail/:id',
+        element: <DetailStaggingProductDocument />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/product_stagging_document_Item/detail/:id',
+        element: <DetailStaggingProductItem />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product_stagging',
+        element: <ApprovementProductStagging />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product_stagging/detail',
+        element: <DetailApproveProduct />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_document_stagging/detail/:id',
+        element: <DetailApproveDocumentStagging />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/approvment_product_stagging/detail/:id',
+        element: <DetailProductStaggingApprovement />,
         layout: 'default',
     },
 ];

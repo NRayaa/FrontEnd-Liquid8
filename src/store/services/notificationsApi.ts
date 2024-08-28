@@ -15,7 +15,10 @@ export const notificationsApi = createApi({
         wifiIndikator: builder.query<any, any>({
             query: () => `/cek-ping-with-image`,
         }),
+        spvApprovalStagging: builder.query<SpvAprroval, number>({
+            query: (id) => `/stagingTransaction/${id}`,
+        }),
     }),
 });
 
-export const { useGetNotifByRoleQuery, useLazyGetNotifByRoleQuery, useLazySpvApprovalQuery, useWifiIndikatorQuery } = notificationsApi;
+export const { useGetNotifByRoleQuery, useLazyGetNotifByRoleQuery, useLazySpvApprovalQuery, useWifiIndikatorQuery, useLazySpvApprovalStaggingQuery } = notificationsApi;

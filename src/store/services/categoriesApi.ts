@@ -22,12 +22,12 @@ export const categoriesApi = createApi({
         getDocumentApproves: builder.query<DocumentApprovment, { p: number; q: string }>({
             query: ({ p, q }) => `/documents-approve?page=${p}&q=${q}`,
         }),
-        getDetailProductApprovesByDoc: builder.query<any, number | undefined>({
-            query: (code_document) => `/product-approveByDoc/${code_document}`,
-        }),
+        getDetailProductApprovesByDoc: builder.query<any, { code_document: number | undefined; p: number; q: string }>({
+            query: ({ code_document, p, q }) => `/product-approveByDoc/${code_document}?page=${p}&q=${q}`,
+        }),        
         // getDetailProductApprovesByDoc: builder.query<any, string | undefined>({
         //     query: (code_document) => `productApprovesByDoc?search=${code_document}`,
-        // }),
+        // }),       
         getDetailProductApproves: builder.query<any, number | undefined>({
             query: (idProduct) => `/product-approves/${idProduct}`,
         }),
@@ -68,6 +68,28 @@ export const categoriesApi = createApi({
         getDocumentApproveProgress: builder.query<DocumentApprovmentProgress, { p: number; q: string }>({
             query: ({p, q }) => `/documentInProgress?page=${p}&q=${q}`,
         }),
+        getDocumentStagginngApproveProgress: builder.query<DocumentApprovmentProgress, { p: number; q: string }>({
+            query: ({p, q }) => `/documentDone?page=${p}&q=${q}`,
+        }),
+        getDetailProductStaggingApprovesByDoc: builder.query<any, { code_document: number | undefined; p: number; q: string }>({
+            query: ({ code_document, p, q }) => `/productStagingByDoc/${code_document}?page=${p}&q=${q}`,
+        }),
+        doneCheckAllDetailProductStagging: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/addStagingToSpv',
+                method: 'POST',
+                body,
+            }),
+        }),
+        getDetailProductStagging: builder.query<any, number | undefined>({
+            query: (idProduct) => `/staging_products/${idProduct}`,
+        }),
+        getDocumentStaggingApproves: builder.query<DocumentApprovment, { p: number; q: string }>({
+            query: ({ p, q }) => `/documentsApproveStaging?page=${p}&q=${q}`,
+        }),
+        getDetailProductApprovesStaggingByDoc: builder.query<any, { code_document: number | undefined; p: number; q: string }>({
+            query: ({ code_document, p, q }) => `/productStagingByDoc/${code_document}?page=${p}&q=${q}`,
+        }), 
     }),
 });
 
@@ -84,4 +106,10 @@ export const {
     useEditProductApprovesMutation,
     useExportToExcelSubCategoryMutation,
     useGetDocumentApproveProgressQuery,
+    useGetDocumentStagginngApproveProgressQuery,
+    useGetDetailProductStaggingApprovesByDocQuery,
+    useDoneCheckAllDetailProductStaggingMutation,
+    useGetDetailProductStaggingQuery,
+    useGetDocumentStaggingApprovesQuery,
+    useGetDetailProductApprovesStaggingByDocQuery,
 } = categoriesApi;

@@ -1,22 +1,22 @@
 import { DataTable } from 'mantine-datatable';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGetDocumentApproveProgressQuery } from '../../../../store/services/categoriesApi';
+import { useGetDocumentApprovesQuery, useGetDocumentStaggingApprovesQuery } from '../../../../store/services/categoriesApi';
+import { DocumentApprovmentItem } from '../../../../store/services/types';
 import { useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
-import { useDeleteAllByCodeDocumentMutation } from '../../../../store/services/checkProduct';
+import { useDeleteApproveMutation } from '../../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
-import { useLazySpvApprovalQuery } from '../../../../store/services/notificationsApi';
-import { DocumentApprovmentProgressItem } from '../../../../store/services/types';
+import { useLazySpvApprovalQuery, useLazySpvApprovalStaggingQuery } from '../../../../store/services/notificationsApi';
 
-const ListProductApprove = () => {
-    const [page, setPage] = useState<number>(1);
+const ApprovementProductStagging = () => {
     const [search, setSearch] = useState<string>('');
-    const [deleteApprove, results] = useDeleteAllByCodeDocumentMutation();
+    const [page, setPage] = useState<number>(1);
+    const [deleteApprove, results] = useDeleteApproveMutation();
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError, isSuccess } = useGetDocumentApproveProgressQuery({ p: page, q: searchDebounce });
-    const [spvApproval, resultsApprove] = useLazySpvApprovalQuery();
+    const { data, refetch, isError, isSuccess } = useGetDocumentStaggingApprovesQuery({ p: page, q: searchDebounce });
+    const [spvApproval, resultsApprove] = useLazySpvApprovalStaggingQuery();
 
     const handleApprove = async (id: number) => {
         await spvApproval(id);
@@ -31,8 +31,7 @@ const ListProductApprove = () => {
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
-            console.log("RESPONSE", data?.data?.resource )
-            return data?.data?.resource?.data;
+            return data?.data?.resource;
         }
     }, [data]);
 
@@ -119,12 +118,12 @@ const ListProductApprove = () => {
                     <span>Data Process</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Approvment Product</span>
+                    <span>Approvment Document Stagging</span>
                 </li>
             </ul>
 
             <div className="panel mt-6 dark:text-white-light mb-5">
-                <h1 className="text-lg font-bold flex justify-start py-4">LIST APPROVE PRODUCT</h1>
+                <h1 className="text-lg font-bold flex justify-start py-4">LIST APPROVE DOCUMENT STAGGING</h1>
                 <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -137,41 +136,45 @@ const ListProductApprove = () => {
                             {
                                 accessor: 'id',
                                 title: 'No',
-                                render: (item: DocumentApprovmentProgressItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
+                                render: (item: DocumentApprovmentItem, index: number) => <span>{(page - 1) * listApproveProduct?.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'Kode Dokumen',
                                 title: 'Kode Dokumen',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.code_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.code_document}</span>,
                             },
                             {
                                 accessor: 'Base Dokumen',
                                 title: 'Base Dokumen',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.base_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.base_document}</span>,
                             },
                             {
-                                accessor: 'Total Data In Document',
-                                title: 'Total Data In Document',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="font-semibold">{item?.total_column_in_document}</span>,
+                                accessor: 'Total Data In',
+                                title: 'Total Data In',
+                                render: (item: DocumentApprovmentItem) => <span className="font-semibold">{item?.riwayat_check?.total_data_in}</span>,
                             },
                             {
                                 accessor: 'Status',
                                 title: 'Status',
-                                render: (item: DocumentApprovmentProgressItem) => <span className="badge whitespace-nowrap bg-primary ">{item?.status_document}</span>,
+                                render: (item: DocumentApprovmentItem) => <span className="badge whitespace-nowrap bg-primary ">{item?.status}</span>,
                             },
                             {
                                 accessor: 'Aksi',
                                 title: 'Aksi',
-                                render: (item: DocumentApprovmentProgressItem) => (
+                                render: (item: DocumentApprovmentItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to={`/inbound/check_product/product_approve_document/detail/${item.id}`} state={{ code_document: item?.code_document }}>
+                                        <button onClick={() => handleApprove(item.id)} type="button" className="btn btn-outline-success" disabled={item.status === 'done'}>
+                                            Approve
+                                        </button>
+                                        <Link to={`/inbound/check_product/approvment_document_stagging/detail/${item.id}`} state={{ code_document: item?.riwayat_check?.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Details
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.code_document })}>
-                                            Delete
-                                        </button>
+
+                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                            Reject
+                                        </button> */}
                                     </div>
                                 ),
                                 textAlignment: 'center',
@@ -188,4 +191,4 @@ const ListProductApprove = () => {
     );
 };
 
-export default ListProductApprove;
+export default ApprovementProductStagging;

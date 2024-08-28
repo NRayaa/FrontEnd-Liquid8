@@ -10,6 +10,7 @@ import { CheckDocumentApprovmentItem } from '../../../../store/services/types';
 import { Alert } from '../../../../commons';
 import { useGetDetailProductApprovesByDocQuery } from '../../../../store/services/categoriesApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useDebounce } from '../../../../helper/functions';
 
 const DetailApproveDocument = () => {
     const dispatch = useDispatch();
@@ -21,9 +22,10 @@ const DetailApproveDocument = () => {
     }, [dispatch]);
 
     const [page, setPage] = useState<number>(1);
-    const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery(code_document);
-    const [deleteApproveProduct, results] = useDeleteApproveMutation();
     const [search, setSearch] = useState<string>('');
+    const searchDebounce = useDebounce(search);
+    const { data, isSuccess, refetch, isError } = useGetDetailProductApprovesByDocQuery({ code_document, p: page, q: searchDebounce });
+    const [deleteApproveProduct, results] = useDeleteApproveMutation();
     const [listsData, setListsData] = useState<CheckDocumentApprovmentItem[] | []>([]);
 
     const showAlert = async ({ type, id }: any) => {

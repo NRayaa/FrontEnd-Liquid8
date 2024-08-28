@@ -335,70 +335,74 @@ const ProductCheck: React.FC<ProductCheck> = ({
                             </Tab>
                         </Tab.List>
                     </div>
-                    <Tab.Panels>
-                        <Tab.Panel>
-                            <div className="grid grid-cols-3 gap-4">
-                                {productCheckData?.length !== 0 &&
-                                    productCheckData?.map((option: any) => (
-                                        <label key={option.id} className="flex items-center mt-1 cursor-pointer">
-                                            <input
-                                                disabled={tagColor && true}
-                                                type="radio"
-                                                className="form-radio text-success peer w-6 h-6"
-                                                name="radioOption"
-                                                value={option.name_category}
-                                                onChange={(e) => handleSelectedLolosOption({ value: e.target.value, percentage: option.discount_category })}
-                                            />
-                                            <span className="text-white-dark">{option.name_category}</span>
-                                        </label>
-                                    ))}
+                    <Tab.Panel>
+                        <div className="grid grid-cols-3 gap-4">
+                            {productCheckData?.length !== 0 &&
+                                productCheckData?.map((option: any) => (
+                                    <label key={option.id} className="flex items-center mt-1 cursor-pointer">
+                                        <input
+                                            disabled={tagColor && true}
+                                            type="radio"
+                                            className="form-radio text-success peer w-6 h-6"
+                                            name="radioOption"
+                                            value={option.name_category}
+                                            onChange={(e) => handleSelectedLolosOption({ value: e.target.value, percentage: option.discount_category })}
+                                        />
+                                        <span className="text-white-dark">{option.name_category}</span>
+                                    </label>
+                                ))}
 
+                            {!isSending && (
                                 <button disabled={parseFloat(oldData.old_price_product) > 100000 && !selectedOption && isSending} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
                                     SEND
                                 </button>
-                            </div>
-                        </Tab.Panel>
-                        <Tab.Panel>
-                            <div>
-                                <div className="flex items-start pt-5">
-                                    <div className="flex-auto">
-                                        <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
-                                        <textarea
-                                            value={descriptionDamaged}
-                                            onChange={(e) => setDescriptionDamaged(e.target.value)}
-                                            rows={4}
-                                            className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
-                                        ></textarea>
-                                        <div className="flex justify-end">
+                            )}
+                        </div>
+                    </Tab.Panel>
+                    <Tab.Panel>
+                        <div>
+                            <div className="flex items-start pt-5">
+                                <div className="flex-auto">
+                                    <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
+                                    <textarea
+                                        value={descriptionDamaged}
+                                        onChange={(e) => setDescriptionDamaged(e.target.value)}
+                                        rows={4}
+                                        className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                    ></textarea>
+                                    <div className="flex justify-end">
+                                        {!isSending && (
                                             <button disabled={descriptionDamaged.length === 0 && isSending} type="submit" className="w-full btn btn-info mt-4" onClick={handleDamaged}>
                                                 SEND
                                             </button>
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                        </Tab.Panel>
-                        <Tab.Panel>
-                            <div>
-                                <div className="flex items-start pt-5">
-                                    <div className="flex-auto">
-                                        <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
-                                        <textarea
-                                            rows={4}
-                                            value={descriptionAbnormal}
-                                            onChange={(e) => setDescriptionAbnormal(e.target.value)}
-                                            className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
-                                        ></textarea>
-                                        <div className="flex justify-end">
-                                            <button disabled={descriptionAbnormal.length === 0} type="submit" className="w-full btn btn-info mt-4" onClick={handleAbnormal}>
+                        </div>
+                    </Tab.Panel>
+                    <Tab.Panel>
+                        <div>
+                            <div className="flex items-start pt-5">
+                                <div className="flex-auto">
+                                    <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
+                                    <textarea
+                                        rows={4}
+                                        value={descriptionAbnormal}
+                                        onChange={(e) => setDescriptionAbnormal(e.target.value)}
+                                        className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                    ></textarea>
+                                    <div className="flex justify-end">
+                                        {!isSending && (
+                                            <button disabled={descriptionAbnormal.length === 0 && isSending} type="submit" className="w-full btn btn-info mt-4" onClick={handleAbnormal}>
                                                 SEND
                                             </button>
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                        </Tab.Panel>
-                    </Tab.Panels>
+                        </div>
+                    </Tab.Panel>
                 </Tab.Group>
             </div>
         </div>
