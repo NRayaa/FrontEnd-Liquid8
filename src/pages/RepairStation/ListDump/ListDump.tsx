@@ -58,10 +58,13 @@ const ListDump = () => {
                                 toast.success(res.data.message);
                                 refetch();
                             })
-                            .catch((err) => {
-                                toast.error(err.data.message);
+                            .catch((err: any) => {
+                                if (err.status === 403) {
+                                    toast.error('Your role is forbidden to access');
+                                } else {
+                                    toast.error('Something went wrong');
+                                }
                             });
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -123,10 +126,13 @@ const ListDump = () => {
                                 toast.success(res.data.message);
                                 refetch();
                             })
-                            .catch((err) => {
-                                toast.error(err.data.message);
+                            .catch((err: any) => {
+                                if (err.status === 403) {
+                                    toast.error('Your role is forbidden to access');
+                                } else {
+                                    toast.error('Something went wrong');
+                                }
                             });
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }

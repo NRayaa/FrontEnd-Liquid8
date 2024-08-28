@@ -44,7 +44,6 @@ const MovingBundleProduct = () => {
                 .then(async (result) => {
                     if (result.value) {
                         await deleteBundleProduct(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -83,7 +82,12 @@ const MovingBundleProduct = () => {
             toast.success(results.data.data.message);
             refetch();
         } else if (results.isError) {
-            toast.error(results?.data?.data?.message ?? 'Error');
+            const statusRes = 'status' in results.error ? results.error.status : 0;
+            if (statusRes === 403) {
+                toast.error('Your role is forbidden to access');
+            } else {
+                toast.error('Something went wrong');
+            }
         }
     }, [results]);
 

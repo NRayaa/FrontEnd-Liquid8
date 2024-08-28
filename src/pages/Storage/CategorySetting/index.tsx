@@ -34,7 +34,7 @@ const CategorySetting = () => {
             console.error('Error exporting sub kategori to Excel:', err);
         }
     };
-    
+
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
@@ -59,7 +59,6 @@ const CategorySetting = () => {
                 .then(async (result) => {
                     if (result.value) {
                         await deleteCategory(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -102,7 +101,12 @@ const CategorySetting = () => {
             toast.success(results.data.data.message);
             refetch();
         } else if (results.isError) {
-            toast.error(results.data.data.message);
+            const statusRes = 'status' in results.error ? results.error.status : 0;
+            if (statusRes === 403) {
+                toast.error('Your role is forbidden to access');
+            } else {
+                toast.error('Something went wrong');
+            }
         }
         refetch();
     }, [results]);
@@ -139,12 +143,12 @@ const CategorySetting = () => {
                         </button>
                     </div>
                     <div className="flex items-center justify-between">
-                    <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/categorysetting/add_category')}>
-                        Add Data
-                    </button>
-                    <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
-                        Export Data
-                    </button>
+                        <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/categorysetting/add_category')}>
+                            Add Data
+                        </button>
+                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                            Export Data
+                        </button>
                     </div>
                 </div>
                 <div className="datatables">
