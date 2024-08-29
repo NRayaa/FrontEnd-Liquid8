@@ -25,8 +25,8 @@ const Kasir = () => {
     const [saleFinish] = useSaleFinishMutation();
     const [searchBuyer, setSearchBuyer] = useState('');
     const [searchSales, setSearchSales] = useState('');
-    const debounceValueBuyer = useDebounce(searchBuyer);
     const debounceValueSales = useDebounce(searchSales);
+    const debounceValueBuyer = useDebounce(searchBuyer);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listBuyerOpen, setListBuyerOpen] = useState(false);
     const [addBuyerOpen, setAddBuyerOpen] = useState(false);
