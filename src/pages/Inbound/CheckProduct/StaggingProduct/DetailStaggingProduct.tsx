@@ -123,7 +123,7 @@ const DetailStaggingProductDocument = () => {
 
     useEffect(() => {
         if (isSuccess && data.data.status) {
-            setListsData(data.data.resource);
+            setListsData(data.data.resource.data);
         }
         refetch();
     }, [data, isSuccess, refetch]);
