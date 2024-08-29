@@ -30,14 +30,14 @@ export const saleApi = createApi({
             }),
         }),
         putGabor: builder.mutation<any, any>({
-            query: ({id, body}) => ({
+            query: ({ id, body }) => ({
                 url: `/sales/${id}`,
                 method: 'PUT',
                 body,
             }),
         }),
         updatePrice: builder.mutation<any, any>({
-            query: ({id, body}) => ({
+            query: ({ id, body }) => ({
                 url: `/update_price_sales/${id}`,
                 method: 'PUT',
                 body,
@@ -52,7 +52,32 @@ export const saleApi = createApi({
         getSaleReport: builder.query<SaleReportResponse, string | undefined>({
             query: (code_document_sale) => `/sale-report?code_document_sale=${code_document_sale}`,
         }),
+        deleteProductSale: builder.mutation<any, { saleId: any; productId: any }>({
+            query: ({ saleId, productId }) => ({
+                url: `/sale-document/${saleId}/${productId}/delete-product`,
+                method: 'DELETE',
+            }),
+        }),
+        addProductSale: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/sale-document/add-product',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useGetListSaleQuery, useAddSaleMutation, useSaleFinishMutation, useDeleteSaleMutation, useGetListSaleDocumentQuery, useGetShowSaleQuery, useGetSaleReportQuery, usePutGaborMutation, useUpdatePriceMutation } = saleApi;
+export const {
+    useGetListSaleQuery,
+    useAddSaleMutation,
+    useSaleFinishMutation,
+    useDeleteSaleMutation,
+    useGetListSaleDocumentQuery,
+    useGetShowSaleQuery,
+    useGetSaleReportQuery,
+    usePutGaborMutation,
+    useUpdatePriceMutation,
+    useDeleteProductSaleMutation,
+    useAddProductSaleMutation,
+} = saleApi;
