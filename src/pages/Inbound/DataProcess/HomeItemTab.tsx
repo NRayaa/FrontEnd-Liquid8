@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { GeneratesData } from '../../../helper/types';
+import { baseQuery, baseUrl } from '../../../store/services/prepareHeader';
 
 interface HomeItemTab {
     showAlert: (type: number) => void;
@@ -36,7 +37,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 redirect: 'follow' as RequestRedirect,
             };
 
-            fetch('https://server.wms-liquid8.online/api/generate', requestOptions)
+            fetch(`${baseUrl}/generate`, requestOptions)
                 .then((response) => response.json())
                 .then((result) => {
                     handleMessage(result.data.message);
