@@ -227,12 +227,6 @@ const Sidebar = () => {
                                                     <NavLink to="/inbound/check_product/approvment_product">{'Approvement Document'}</NavLink>
                                                 </li>
                                                 <li>
-                                                    <NavLink to="/inbound/check_product/product_stagging">{'Product Stagging'}</NavLink>
-                                                </li>
-                                                <li>
-                                                    <NavLink to="/inbound/check_product/approvment_product_stagging">{'Approvement Stagging'}</NavLink>
-                                                </li>
-                                                <li>
                                                     <NavLink to="/inbound/check_product/manual_inbound">{'Manual Inbound'}</NavLink>
                                                 </li>
                                             </ul>
@@ -254,6 +248,44 @@ const Sidebar = () => {
                                     </li>
                                 </ul>
                             </li>
+
+                            <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                                <svg className="w-4 h-5 flex-none hidden" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>{t('STAGGING')}</span>
+                            </h2>
+
+                            <ul>
+                                <li className="menu nav-item">
+                                    <NavLink to="/stagging/list_product_stagging" className="group">
+                                        <div className="flex items-center">
+                                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M9.625 16.5107V10.0547L2.75 6.61719V16.0703L8.59375 19.0029L8.26074 20.3672L1.375 16.9297V5.07031L10.3125 0.612305L19.25 5.07031V7.9707C18.7487 8.04948 18.2904 8.21061 17.875 8.4541V6.61719L11 10.0547V15.1357L9.625 16.5107ZM8.09961 3.24414L14.373 6.83203L17.0264 5.5L10.3125 2.1377L8.09961 3.24414ZM10.3125 8.8623L12.8906 7.57324L6.61719 3.98535L3.59863 5.5L10.3125 8.8623ZM19.8516 9.625C20.1523 9.625 20.4316 9.67871 20.6895 9.78613C20.9473 9.89355 21.1764 10.0404 21.377 10.2266C21.5775 10.4128 21.7279 10.6383 21.8281 10.9033C21.9284 11.1683 21.9857 11.4512 22 11.752C22 12.0312 21.9463 12.3034 21.8389 12.5684C21.7314 12.8333 21.5775 13.0661 21.377 13.2666L13.6748 20.9688L9.625 21.9785L10.6348 17.9287L18.3369 10.2373C18.5446 10.0296 18.7773 9.87565 19.0352 9.77539C19.293 9.67513 19.5651 9.625 19.8516 9.625ZM20.3994 12.2998C20.5498 12.1494 20.625 11.9668 20.625 11.752C20.625 11.5299 20.5534 11.3509 20.4102 11.2148C20.2669 11.0788 20.0807 11.0072 19.8516 11C19.7513 11 19.6546 11.0143 19.5615 11.043C19.4684 11.0716 19.3861 11.1253 19.3145 11.2041L11.8809 18.6377L11.5156 20.0879L12.9658 19.7227L20.3994 12.2998Z"
+                                                    fill="#888EA8"
+                                                />
+                                            </svg>
+
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Product Stagging')}</span>
+                                        </div>
+                                    </NavLink>
+                                </li>
+                                <li className="menu nav-item">
+                                    <NavLink to="/stagging/list_approvement_stagging" className="group">
+                                        <div className="flex items-center">
+                                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M9.625 16.5107V10.0547L2.75 6.61719V16.0703L8.59375 19.0029L8.26074 20.3672L1.375 16.9297V5.07031L10.3125 0.612305L19.25 5.07031V7.9707C18.7487 8.04948 18.2904 8.21061 17.875 8.4541V6.61719L11 10.0547V15.1357L9.625 16.5107ZM8.09961 3.24414L14.373 6.83203L17.0264 5.5L10.3125 2.1377L8.09961 3.24414ZM10.3125 8.8623L12.8906 7.57324L6.61719 3.98535L3.59863 5.5L10.3125 8.8623ZM19.8516 9.625C20.1523 9.625 20.4316 9.67871 20.6895 9.78613C20.9473 9.89355 21.1764 10.0404 21.377 10.2266C21.5775 10.4128 21.7279 10.6383 21.8281 10.9033C21.9284 11.1683 21.9857 11.4512 22 11.752C22 12.0312 21.9463 12.3034 21.8389 12.5684C21.7314 12.8333 21.5775 13.0661 21.377 13.2666L13.6748 20.9688L9.625 21.9785L10.6348 17.9287L18.3369 10.2373C18.5446 10.0296 18.7773 9.87565 19.0352 9.77539C19.293 9.67513 19.5651 9.625 19.8516 9.625ZM20.3994 12.2998C20.5498 12.1494 20.625 11.9668 20.625 11.752C20.625 11.5299 20.5534 11.3509 20.4102 11.2148C20.2669 11.0788 20.0807 11.0072 19.8516 11C19.7513 11 19.6546 11.0143 19.5615 11.043C19.4684 11.0716 19.3861 11.1253 19.3145 11.2041L11.8809 18.6377L11.5156 20.0879L12.9658 19.7227L20.3994 12.2998Z"
+                                                    fill="#888EA8"
+                                                />
+                                            </svg>
+
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Approvement Stagging')}</span>
+                                        </div>
+                                    </NavLink>
+                                </li>
+                            </ul>
 
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <svg className="w-4 h-5 flex-none hidden" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">

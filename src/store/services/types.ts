@@ -1753,6 +1753,143 @@ interface GetCountColor {
     };
 }
 
+interface ProductStaggingItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: null | string;
+    new_name_product: null | string;
+    new_quantity_product: string;
+    new_price_product: string;
+    old_price_product?: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: null | string;
+    new_tag_product: any;
+    fixed_price: string;
+    created_at: string;
+    updated_at: string;
+}
+interface ProductStagging {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: ProductStaggingItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetFilterProductStagging {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            total_new_price: number;
+            category: any;
+            name_bundle: any;
+            data: {
+                current_page: number;
+                data: ProductStaggingItem[];
+                first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: null | string;
+                path: string;
+                per_page: number;
+                prev_page_url: null | string;
+                to: number;
+                total: number;
+            };
+        };
+    };
+}
+
+interface FilterProductStagging {
+    data: {
+        status: boolean;
+        message: string;
+        resource: ProductStaggingItem;
+    };
+}
+
+interface StaggingSubItem {
+    id: number;
+    bundle_id: string;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    old_price_product: string;
+    new_quality: string;
+    new_discount: string;
+    display_price: string;
+    deskripsi: string;
+    new_category_product: null | string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
+interface StaggingItem {
+    id: number;
+    name_bundle: string;
+    total_price_bundle: string;
+    total_price_custom_bundle: string;
+    total_product_bundle: string;
+    barcode_bundle: string;
+    created_at: string;
+    updated_at: string;
+    product_bundles: StaggingSubItem[];
+}
+interface StaggingResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: StaggingItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface DetailStagging {
+    data: {
+        status: boolean;
+        message: string;
+        resource: StaggingSubItem;
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -1857,4 +1994,12 @@ export type {
     GetDisplayMigrate,
     DocumentApprovmentProgress,
     DocumentApprovmentProgressItem,
+    ProductStaggingItem,
+    ProductStagging,
+    GetFilterProductStagging,
+    FilterProductStagging,
+    StaggingResponse,
+    StaggingItem,
+    StaggingSubItem,
+    DetailStagging,
 };

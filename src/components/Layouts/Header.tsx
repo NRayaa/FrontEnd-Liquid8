@@ -56,7 +56,7 @@ const Header = () => {
     const handleGetSpeed = async () => {
         const startTime = performance.now();
         try {
-            await axios.get('https://server.wms-liquid8.online/storage/image-for-check-connection/423kb_image.png', { responseType: 'blob' });
+            await axios.get('https://wms-server.digitalindustryagency.com/api/storage/image-for-check-connection/423kb_image.png', { responseType: 'blob' });
             const endTime = performance.now();
             const duration = endTime - startTime;
             setPing(Math.round(duration));
