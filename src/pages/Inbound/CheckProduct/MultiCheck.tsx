@@ -162,8 +162,9 @@ const MultiCheck = () => {
             } else {
                 toast.error(results?.data?.data?.message ?? 'something went wrong');
             }
-        } else {
-            toast.error(results?.data?.data?.message ?? 'something went wrong');
+        } else if (results.isError) {
+            const messageRes = 'message' in results?.error ? results?.error.message : '';
+            toast.error(messageRes ?? 'something went wrong');
         }
     }, [results]);
 
