@@ -33,6 +33,18 @@ const ListProductStagging = () => {
         }
     }, [data]);
 
+    const totalProductStaggings = useMemo(() => {
+        if (isSuccess) {
+            return data?.data.resource;
+        }
+    }, [data]);
+
+    const totalFilterStaggingProducts: any = useMemo(() => {
+        if (filterStagging.isSuccess) {
+            return filterStagging.data.data.resource;
+        }
+    }, [filterStagging.data, data]);
+
     const filterStaggingProducts: any = useMemo(() => {
         if (filterStagging.isSuccess) {
             return filterStagging.data.data.resource.data.data;
@@ -40,30 +52,30 @@ const ListProductStagging = () => {
     }, [filterStagging.data, data]);
 
     const handleAddFilterStagging = async (id: number) => {
-        if (loadingAdd === id || processedItems.includes(id)) return; 
+        if (loadingAdd === id || processedItems.includes(id)) return;
 
-        setLoadingAdd(id); 
+        setLoadingAdd(id);
         try {
-            await filterProductStagging(id); 
-            setProcessedItems((prevItems) => [...prevItems, id]); 
+            await filterProductStagging(id);
+            setProcessedItems((prevItems) => [...prevItems, id]);
         } catch (err) {
             console.log(err);
         } finally {
-            setLoadingAdd(null); 
+            setLoadingAdd(null);
         }
     };
 
     const handleDeleteProductStagging = async (id: number) => {
-        if (loadingDelete === id || processedItems.includes(id)) return; 
+        if (loadingDelete === id || processedItems.includes(id)) return;
 
         setLoadingDelete(id);
         try {
-            await deletefilterProductStaggings(id); 
-            setProcessedItems((prevItems) => [...prevItems, id]); 
+            await deletefilterProductStaggings(id);
+            setProcessedItems((prevItems) => [...prevItems, id]);
         } catch (err) {
             console.log(err);
         } finally {
-            setLoadingDelete(null); 
+            setLoadingDelete(null);
         }
     };
 
@@ -241,11 +253,14 @@ const ListProductStagging = () => {
                 </div> */}
                 <div>
                     <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                        {/* add button back */}
+                        {/* Add button and total form */}
                         <div className="flex md:items-center md:flex-row flex-col gap-2">
                             <button className="btn btn-warning" onClick={() => showAlert({ type: 11 })}>
                                 DONE CHECK ALL
                             </button>
+                            <label htmlFor="total" className="px-4 py-2 mt-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary-dark">
+                                Total : {totalProductStaggings?.total}
+                            </label>
                         </div>
                         <div className="ltr:ml-auto rtl:mr-auto mx-6">
                             <input type="text" className="form-input w-auto" placeholder="Search..." value={searchLeftTable} onChange={(e) => setSearchLeftTable(e.target.value)} />
@@ -313,12 +328,11 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                {!processedItems.includes(item.id) &&
-                                                    loadingAdd !== item.id && (
-                                                        <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
-                                                            Add
-                                                        </button>
-                                                    )}
+                                                {!processedItems.includes(item.id) && loadingAdd !== item.id && (
+                                                    <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
+                                                        Add
+                                                    </button>
+                                                )}
                                             </div>
                                         ),
                                     },
@@ -361,12 +375,11 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center space-x-2">
-                                                {!processedItems.includes(item.id) &&
-                                                    loadingDelete !== item.id && ( 
-                                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductStagging(item.id)}>
-                                                            Delete
-                                                        </button>
-                                                    )}
+                                                {!processedItems.includes(item.id) && loadingDelete !== item.id && (
+                                                    <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductStagging(item.id)}>
+                                                        Delete
+                                                    </button>
+                                                )}
                                             </div>
                                         ),
                                     },
