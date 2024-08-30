@@ -29,7 +29,7 @@ export const bundleProductApi = createApi({
         }),
         deleteFilterProductBundles: builder.mutation<FilterProduct, number>({
             query: (id) => ({
-                url: `bundle/filter_product/destroy/${id}`,
+                url: `/bundle/filter_product/destroy/${id}`,
                 method: 'DELETE',
             }),
         }),
