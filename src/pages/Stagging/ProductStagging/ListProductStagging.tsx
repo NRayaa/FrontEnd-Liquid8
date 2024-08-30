@@ -23,6 +23,9 @@ const ListProductStagging = () => {
     const [filterProductStagging, results] = useFilterProductStaggingMutation();
     const [deletefilterProductStaggings, resultsDeleteBundle] = useDeleteFilterProductStaggingsMutation();
     const [doneCheckAllProductStagging, resultsDone] = useDoneCheckAllProductStaggingMutation();
+    const [loadingAdd, setLoadingAdd] = useState<number | null>(null);
+    const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
+    const [processedItems, setProcessedItems] = useState<number[]>([]); // Menyimpan ID item yang telah berhasil diproses
 
     const productStaggings = useMemo(() => {
         if (isSuccess) {
@@ -37,18 +40,30 @@ const ListProductStagging = () => {
     }, [filterStagging.data, data]);
 
     const handleAddFilterStagging = async (id: number) => {
+        if (loadingAdd === id || processedItems.includes(id)) return; 
+
+        setLoadingAdd(id); 
         try {
-            await filterProductStagging(id);
+            await filterProductStagging(id); 
+            setProcessedItems((prevItems) => [...prevItems, id]); 
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoadingAdd(null); 
         }
     };
 
     const handleDeleteProductStagging = async (id: number) => {
+        if (loadingDelete === id || processedItems.includes(id)) return; 
+
+        setLoadingDelete(id);
         try {
-            await deletefilterProductStaggings(id);
+            await deletefilterProductStaggings(id); 
+            setProcessedItems((prevItems) => [...prevItems, id]); 
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoadingDelete(null); 
         }
     };
 
@@ -298,9 +313,12 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                <button type="button" className="btn btn-outline-info" onClick={() => handleAddLeftTable(item)}>
-                                                    Add
-                                                </button>
+                                                {!processedItems.includes(item.id) &&
+                                                    loadingAdd !== item.id && (
+                                                        <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
+                                                            Add
+                                                        </button>
+                                                    )}
                                             </div>
                                         ),
                                     },
@@ -343,9 +361,12 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center space-x-2">
-                                                <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductStagging(item.id)}>
-                                                    Delete
-                                                </button>
+                                                {!processedItems.includes(item.id) &&
+                                                    loadingDelete !== item.id && ( 
+                                                        <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductStagging(item.id)}>
+                                                            Delete
+                                                        </button>
+                                                    )}
                                             </div>
                                         ),
                                     },

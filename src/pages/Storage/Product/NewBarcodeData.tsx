@@ -29,7 +29,7 @@ const NewBarcodeData: React.FC<NewBarcodeData> = ({ header, barcode, nama, harga
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input id="gridNama3" type="number" placeholder="Enter Harga" className="form-input appearance-none" name="new_price_product" value={newPrice} onChange={handleChangeInput} />
+                <input id="gridNama3" type="number" placeholder="Enter Harga" className="form-input appearance-none" name="new_price_product" value={newPrice} onChange={handleChangeInput} disabled={disabled}/>
             </div>
         </div>
     );

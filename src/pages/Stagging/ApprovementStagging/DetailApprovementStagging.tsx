@@ -234,7 +234,7 @@ const DetailStaggingApprovement = () => {
                         <div className="flex flex-col gap-4 w-full panel">
                             <div>
                                 <label htmlFor="gridDiskon">Diskon</label>
-                                <input id="gridDiskon" name="diskon" type="number" placeholder="Enter Diskon" className="form-input" value={input.diskon} onChange={handleChangeInput} />
+                                <input id="gridDiskon" name="diskon" type="number" placeholder="Enter Diskon" className="form-input" value={input.diskon} onChange={handleChangeInput} disabled />
                             </div>
                             <div>
                                 <label htmlFor="gridHargaDisplay">Harga Display</label>
@@ -246,6 +246,7 @@ const DetailStaggingApprovement = () => {
                                     className="form-input"
                                     value={input.hargaDisplay}
                                     onChange={handleChangeInput}
+                                    disabled
                                 />
                             </div>
                         </div>
