@@ -148,27 +148,25 @@ const MultiCheck = () => {
     }, [inputBarcode]);
 
     useEffect(() => {
-        if (results.isSuccess && results.data.data.status) {
-            toast.success(results?.data?.data?.message ?? '');
-            setIsProductCheck(true);
-            hideBarcode();
-            if (Math.ceil(Number(results.data.data.resource.product.old_price_product)) >= 100000) {
-                setKeterangan('>100K');
+        if (results.isSuccess) {
+            if (results.data.data.status) {
+                toast.success(results?.data?.data?.message ?? 'success');
+                setIsProductCheck(true);
+                hideBarcode();
+                if (Math.ceil(Number(results.data.data.resource.product.old_price_product)) >= 100000) {
+                    setKeterangan('>100K');
+                } else {
+                    setKeterangan('<=100K');
+                }
+                setInputBarcode('');
             } else {
-                setKeterangan('<=100K');
+                toast.error(results?.data?.data?.message ?? 'something went wrong');
             }
-            setInputBarcode('');
         } else if (results.isError) {
-            toast.error(results?.data?.data?.message ?? '');
+            const messageRes = 'message' in results?.error ? results?.error.message : '';
+            toast.error(messageRes ?? 'something went wrong');
         }
     }, [results]);
-
-    useEffect(() => {
-        if (results.isSuccess && results.data?.data.status === false) {
-            setInputBarcode('');
-            toast.error(results?.data?.data.message ?? '');
-        }
-    }, [results?.data?.data.message]);
 
     useEffect(() => {
         setOldPriceBarcode(formatRupiah(oldData?.old_price_product ?? ''));

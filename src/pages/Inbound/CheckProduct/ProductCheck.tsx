@@ -270,14 +270,18 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 toast.error(results.data?.data.message);
                 setDataSecond(results.data.data.resource);
             } else {
-                toast.success(results.data.data.message);
-                resetValueMultiCheck();
-                if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
-                    showBarcode();
-                    resetProductCheckShow();
+                if (results.data.data.status) {
+                    toast.success(results.data.data.message);
+                    resetValueMultiCheck();
+                    if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
+                        showBarcode();
+                        resetProductCheckShow();
+                    } else {
+                        hideBarcode();
+                        resetProductCheckShow();
+                    }
                 } else {
-                    hideBarcode();
-                    resetProductCheckShow();
+                    toast.error(results.data.data.message);
                 }
             }
         } else if (results.isError) {
