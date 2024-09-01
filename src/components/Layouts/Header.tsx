@@ -10,6 +10,7 @@ import NotificationHeader from './NotificationHeader';
 import { useWifiIndikatorQuery } from '../../store/services/notificationsApi';
 import axios from 'axios';
 import { clsx } from '@mantine/core';
+import { baseUrl } from '../../store/services/prepareHeader';
 
 const Header = () => {
     const { data } = useWifiIndikatorQuery(undefined);
@@ -56,7 +57,7 @@ const Header = () => {
     const handleGetSpeed = async () => {
         const startTime = performance.now();
         try {
-            await axios.get('https://wms-server.digitalindustryagency.com/storage/image-for-check-connection/423kb_image.png', { responseType: 'blob' });
+            await axios.get(`${baseUrl}/storage/image-for-check-connection/423kb_image.png`, { responseType: 'blob' });
             const endTime = performance.now();
             const duration = endTime - startTime;
             setPing(Math.round(duration));
