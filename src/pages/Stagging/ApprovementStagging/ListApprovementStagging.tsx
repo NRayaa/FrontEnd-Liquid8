@@ -103,9 +103,12 @@ const ListApprovementStagging = () => {
         }
     };
 
-
     const productNewData = useMemo(() => {
         return data?.data.resource.data;
+    }, [data]);
+
+    const TotalProductNewData = useMemo(() => {
+        return data?.data.resource;
     }, [data]);
 
     useEffect(() => {
@@ -150,7 +153,14 @@ const ListApprovementStagging = () => {
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Approvement Stagging</h5>
                 <div className="flex items-center justify-between mb-4">
-                    <button className="btn btn-warning" onClick={() => showAlert({ type: 11 })}>DONE CHECK ALL</button>
+                    <div className="flex md:items-center md:flex-row flex-col gap-2">
+                        <button className="btn btn-warning" onClick={() => showAlert({ type: 11 })}>
+                            DONE CHECK ALL
+                        </button>
+                        <label htmlFor="total" className="px-4 py-2 mt-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary-dark">
+                            Total : {TotalProductNewData?.total}
+                        </label>
+                    </div>
                     <div className="relative w-[220px] ms-auto mb-4">
                         <input
                             type="text"
