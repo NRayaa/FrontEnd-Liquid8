@@ -1,13 +1,13 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // development
-// export const baseUrl = 'https://wms-server.digitalindustryagency.com/api';
+export const baseUrl = 'https://wms-server.digitalindustryagency.com';
 
 // production
-export const baseUrl = 'https://server.wms-liquid8.online/api'
+// export const baseUrl = 'https://server.wms-liquid8.online/api'
 
 export const baseQuery = fetchBaseQuery({
-    baseUrl: baseUrl,
+    baseUrl: `${baseUrl}/api`,
     prepareHeaders: (headers) => {
         const token = localStorage.getItem('token');
 

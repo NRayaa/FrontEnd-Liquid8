@@ -1,4 +1,4 @@
-import React, { Dispatch, Fragment, SetStateAction, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, FormEvent, Fragment, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import Barcode from 'react-barcode';
 
@@ -102,7 +102,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
     }, [isQuantity]);
 
-    const handleSendLolos = async () => {
+    const handleSendLolos = async (e: FormEvent) => {
+        e.preventDefault();
+
         setIsSending(true);
         try {
             const body = {
@@ -131,7 +133,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
     };
 
-    const handleDamaged = async () => {
+    const handleDamaged = async (e: FormEvent) => {
+        e.preventDefault();
+
         setIsSending(true);
         try {
             const body = {
@@ -162,7 +166,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
     };
 
-    const handleAbnormal = async () => {
+    const handleAbnormal = async (e: FormEvent) => {
+        e.preventDefault();
+
         setIsSending(true);
         try {
             const body = {
@@ -340,7 +346,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                         </Tab.List>
                     </div>
                     <Tab.Panel>
-                        <div className="grid grid-cols-3 gap-4">
+                        <form onSubmit={handleSendLolos} className="grid grid-cols-3 gap-4">
                             {productCheckData?.length !== 0 &&
                                 productCheckData?.map((option: any) => (
                                     <label key={option.id} className="flex items-center mt-1 cursor-pointer">
@@ -357,53 +363,55 @@ const ProductCheck: React.FC<ProductCheck> = ({
                                 ))}
 
                             {!isSending && (
-                                <button disabled={parseFloat(oldData.old_price_product) > 100000 && !selectedOption && isSending} className="btn btn-info mt-4 col-span-3" onClick={handleSendLolos}>
+                                <button disabled={(parseFloat(oldData.old_price_product) > 100000 && !selectedOption) || isSending} className="btn btn-info mt-4 col-span-3">
                                     SEND
                                 </button>
                             )}
-                        </div>
+                        </form>
                     </Tab.Panel>
                     <Tab.Panel>
                         <div>
                             <div className="flex items-start pt-5">
-                                <div className="flex-auto">
+                                <form onSubmit={handleDamaged} className="flex-auto">
                                     <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
                                     <textarea
                                         value={descriptionDamaged}
                                         onChange={(e) => setDescriptionDamaged(e.target.value)}
                                         rows={4}
                                         className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                        required
                                     ></textarea>
                                     <div className="flex justify-end">
                                         {!isSending && (
-                                            <button disabled={descriptionDamaged.length === 0 && isSending} type="submit" className="w-full btn btn-info mt-4" onClick={handleDamaged}>
+                                            <button disabled={descriptionDamaged.length === 0 || isSending} type="submit" className="w-full btn btn-info mt-4">
                                                 SEND
                                             </button>
                                         )}
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </Tab.Panel>
                     <Tab.Panel>
                         <div>
                             <div className="flex items-start pt-5">
-                                <div className="flex-auto">
+                                <form onSubmit={handleAbnormal} className="flex-auto">
                                     <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
                                     <textarea
                                         rows={4}
                                         value={descriptionAbnormal}
                                         onChange={(e) => setDescriptionAbnormal(e.target.value)}
                                         className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                        required
                                     ></textarea>
                                     <div className="flex justify-end">
                                         {!isSending && (
-                                            <button disabled={descriptionAbnormal.length === 0 && isSending} type="submit" className="w-full btn btn-info mt-4" onClick={handleAbnormal}>
+                                            <button disabled={descriptionAbnormal.length === 0 || isSending} type="submit" className="w-full btn btn-info mt-4">
                                                 SEND
                                             </button>
                                         )}
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </Tab.Panel>
