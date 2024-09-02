@@ -503,6 +503,7 @@ interface GetRiwayatcheckItem {
     status_approve: string;
     total_price_discrepancy: number;
     total_price: number;
+    stagingProducts: number;
     total_product_category: number;
     total_product_color: number;
     created_at: string;
