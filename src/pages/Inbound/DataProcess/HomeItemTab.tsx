@@ -37,7 +37,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                 redirect: 'follow' as RequestRedirect,
             };
 
-            fetch(`${baseUrl}/generate`, requestOptions)
+            fetch(`${baseUrl}/api/generate`, requestOptions)
                 .then((response) => response.json())
                 .then((result) => {
                     handleMessage(result.data.message);
