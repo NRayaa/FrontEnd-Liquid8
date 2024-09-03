@@ -241,9 +241,11 @@ const ProductCheck: React.FC<ProductCheck> = ({
                     if (result.isConfirmed) {
                         try {
                             await newProduct(bodySecond)
+                                .unwrap()
                                 .then((res: any) => {
                                     swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
                                     toast.success(res.data.data.message);
+                                    setDataSecond('');
                                     resetValueMultiCheck();
                                     if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
                                         showBarcode();
@@ -302,7 +304,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
         if (dataSecond.data.resource.old_barcode_product) {
             showAlert(11);
-            return setDataSecond('');
         }
     }, [dataSecond]);
 
