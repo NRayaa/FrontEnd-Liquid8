@@ -299,11 +299,13 @@ const ProductCheck: React.FC<ProductCheck> = ({
     }, [results.isSuccess]);
 
     useEffect(() => {
-        if (dataSecond.data.resource.old_barcode_product && dataSecond.old_price_product < 100000 && dataSecond.old_barcode_product === dataSecond.new_barcode_product) {
+        if (dataSecond && dataSecond.old_price_product < 100000 && dataSecond.old_barcode_product === dataSecond.new_barcode_product) {
             setDataSecond((prev: any) => ({ ...prev, new_barcode_product: generateRandomBarcode(10) }));
         }
-        if (dataSecond.data.resource.old_barcode_product) {
-            showAlert(11);
+        if (dataSecond) {
+            if (dataSecond.data.resource.old_barcode_product) {
+                showAlert(11);
+            }
         }
     }, [dataSecond]);
 
