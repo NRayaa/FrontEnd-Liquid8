@@ -274,10 +274,10 @@ const ProductCheck: React.FC<ProductCheck> = ({
             if (results.data?.data.resource.new_barcode_product) {
                 setCodeBarcode(results.data?.data.resource.new_barcode_product ? results.data?.data.resource.new_barcode_product : '');
             }
-            if (results.data?.data.needConfirmation === false) {
+            if (!results.data?.data.needConfirmation) {
                 toast.error(results.data?.data.message);
                 setDataSecond(results.data.data.resource);
-            } else {
+            } else if (results.data?.data.needConfirmation) {
                 if (results.data.data.status) {
                     toast.success(results.data.data.message);
                     resetValueMultiCheck();
@@ -303,9 +303,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             setDataSecond((prev: any) => ({ ...prev, new_barcode_product: generateRandomBarcode(10) }));
         }
         if (dataSecond) {
-            if (!!dataSecond.data.resource.old_barcode_product) {
-                showAlert(11);
-            }
+            showAlert(11);
         }
     }, [dataSecond]);
 
