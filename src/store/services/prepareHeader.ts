@@ -1,10 +1,10 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // development
-// export const baseUrl = 'https://wms-server.digitalindustryagency.com';
+export const baseUrl = 'https://wms-server.digitalindustryagency.com';
 
 // production
-export const baseUrl = 'https://server.wms-liquid8.online'
+// export const baseUrl = 'https://server.wms-liquid8.online'
 
 export const baseQuery = fetchBaseQuery({
     baseUrl: `${baseUrl}/api`,

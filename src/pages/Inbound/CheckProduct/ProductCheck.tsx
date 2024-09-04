@@ -303,7 +303,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             setDataSecond((prev: any) => ({ ...prev, new_barcode_product: generateRandomBarcode(10) }));
         }
         if (dataSecond) {
-            if (!!dataSecond.data.resource.old_barcode_product) {
+            if (dataSecond?.data?.resource?.old_barcode_product) {
                 showAlert(11);
             }
         }
