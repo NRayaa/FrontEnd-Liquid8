@@ -90,6 +90,13 @@ export const categoriesApi = createApi({
         getDetailProductApprovesStaggingByDoc: builder.query<any, { code_document: number | undefined; p: number; q: string }>({
             query: ({ code_document, p, q }) => `/productStagingByDoc/${code_document}?page=${p}&q=${q}`,
         }), 
+        scanResultProduct: builder.mutation<NewProduct, any>({
+            query: (body) => ({
+                url: '/move_to_staging',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -112,4 +119,5 @@ export const {
     useGetDetailProductStaggingQuery,
     useGetDocumentStaggingApprovesQuery,
     useGetDetailProductApprovesStaggingByDocQuery,
+    useScanResultProductMutation,
 } = categoriesApi;
