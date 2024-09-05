@@ -68,7 +68,7 @@ const LoginBoxed = () => {
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={handleLogin}>
                                 <div>
-                                    <label htmlFor="Email">Email or Username</label>
+                                    <label htmlFor="Email">Email or Username </label>
                                     <div className="relative text-white-dark">
                                         <input
                                             id="Email"
