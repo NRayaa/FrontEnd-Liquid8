@@ -44,6 +44,8 @@ import { Navigate } from 'react-router-dom';
 import ListProductStagging from '../pages/Stagging/ProductStagging/ListProductStagging';
 import ListApprovementStagging from '../pages/Stagging/ApprovementStagging/ListApprovementStagging';
 import DetailStaggingApprovement from '../pages/Stagging/ApprovementStagging/DetailApprovementStagging';
+import ListScanResult from '../pages/Inbound/CheckProduct/ScanResult/ListScanResult';
+import CheckScanResult from '../pages/Inbound/CheckProduct/ScanResult/CheckScanResult';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -503,6 +505,16 @@ const routes = [
     {
         path: '/stagging/approvement_stagging/detail/:id',
         element: <DetailStaggingApprovement />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/scan_result',
+        element: <ListScanResult />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/check_scan_result',
+        element: <CheckScanResult />,
         layout: 'default',
     },
 ];

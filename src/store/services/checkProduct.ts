@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CheckProductDocument, GetBarcodeBody, GetBarcodeResponse } from './types';
+import { CheckProductDocument, GetBarcodeBody, GetBarcodeResponse, GetNameBody, GetNameResponse, ScanResult, ScanResultItem } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const checkProduct = createApi({
@@ -46,7 +46,19 @@ export const checkProduct = createApi({
                 method: 'DELETE',
             }),
         }),
+        ListScanResult: builder.query<ScanResult, { page: number; search: string }>({
+            query: ({ page, search }) => `/product_scans?page=${page}&q=${search}`,
+        }),
+        deleteScanResult: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product_scans/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        getName: builder.query<GetNameResponse | undefined, GetNameBody>({
+            query: ({ product_name }) => `/product_scan_search?product_name=${product_name}`,
+        }),
     }),
 });
 
-export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery, useCheckPriceMutation, useDeleteAllByCodeDocumentMutation, useDeleteApproveDocumentItemMutation } = checkProduct;
+export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery, useCheckPriceMutation, useDeleteAllByCodeDocumentMutation, useDeleteApproveDocumentItemMutation, useListScanResultQuery, useDeleteScanResultMutation, useLazyGetNameQuery } = checkProduct;

@@ -123,6 +123,7 @@ interface CheckProductDocumentItem {
     created_at: string;
     updated_at: string;
 }
+
 interface CheckProductDocument {
     data: {
         status: boolean;
@@ -1891,6 +1892,66 @@ interface DetailStagging {
     };
 }
 
+interface ScanResult {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: ScanResultItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: ScanResultLinks[];
+            next_page_url: null;
+            path: string;
+            per_page: number;
+            prev_page_url: null;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface ScanResultItem {
+    id: number;
+    user_id: number;
+    product_name: string;
+    product_price: number;
+    created_at: string;
+    updated_at: string;
+    user: {
+        id: number,
+        name: string,
+        username: string,
+        email: string,
+        email_verified_at: null,
+        api_key: null,
+        role_id: number,
+        created_at: string;
+        updated_at: string;
+    }
+}
+
+interface ScanResultLinks {
+    url: null;
+    label: string;
+    active: boolean;
+}
+
+interface GetNameResponse {
+    data: {
+        status: boolean;
+        message: string | undefined;
+        resource: any;
+    };
+}
+
+interface GetNameBody {
+    product_name: string;
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -2003,4 +2064,9 @@ export type {
     StaggingItem,
     StaggingSubItem,
     DetailStagging,
+    ScanResultItem,
+    ScanResultLinks,
+    ScanResult,
+    GetNameResponse,
+    GetNameBody,
 };
