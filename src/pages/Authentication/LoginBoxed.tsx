@@ -72,8 +72,8 @@ const LoginBoxed = () => {
                                     <div className="relative text-white-dark">
                                         <input
                                             id="Email"
-                                            type="email"
-                                            placeholder="Enter Email"
+                                            type="text"
+                                            placeholder="Enter Email or Username"
                                             className="form-input ps-10 placeholder:text-white-dark"
                                             required
                                             name="email"
