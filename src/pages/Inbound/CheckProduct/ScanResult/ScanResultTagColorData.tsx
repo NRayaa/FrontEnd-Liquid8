@@ -38,8 +38,8 @@ const ScanResultTagColorData: React.FC<ScanResultTagColorData> = ({ tag, nama, h
                 <label htmlFor="gridNama4">Harga</label>
                 <input id="gridNama4" disabled type="text" placeholder="Enter Nama" className="form-input" value={formatRupiah(harga ?? '0')} />
             </div>
-            <div className="w-1/3">
-                <label>Qty</label>
+            <div>
+                <label htmlFor="gridNama4">Qty</label>
                 <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={inputQuantity} onChange={handleInputQuantity} />
             </div>
         </div>
