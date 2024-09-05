@@ -15,7 +15,7 @@ const LoginBoxed = () => {
     const navigate = useNavigate();
     const [login, results] = useLoginMutation();
     const [input, setInput] = useState({
-        email: '',
+        email_or_username: '',
         password: '',
     });
 
@@ -30,7 +30,7 @@ const LoginBoxed = () => {
         e.preventDefault();
         try {
             const body = {
-                email: input.email,
+                email_or_username: input.email_or_username,
                 password: input.password,
             };
             await login(body);
@@ -64,7 +64,7 @@ const LoginBoxed = () => {
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="mb-10">
                                 <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
+                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email or username and password to login</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={handleLogin}>
                                 <div>
@@ -76,9 +76,9 @@ const LoginBoxed = () => {
                                             placeholder="Enter Email or Username"
                                             className="form-input ps-10 placeholder:text-white-dark"
                                             required
-                                            name="email"
+                                            name="email_or_username"
                                             onChange={handleInputChange}
-                                            value={input.email}
+                                            value={input.email_or_username}
                                         />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconMail fill={true} />
