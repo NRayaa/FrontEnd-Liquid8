@@ -68,14 +68,14 @@ const DetailBundleProduct = () => {
         try {
             const response = await exportToExcel({ id }).unwrap();
             const url = response.data.resource;
-            const fileName = url.substring(url.lastIndexOf('/') + 1); 
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
             const a = document.createElement('a');
             a.href = url;
-            a.download = fileName; 
+            a.download = fileName;
             document.body.appendChild(a);
             a.click();
             a.remove();
-    
+
             toast.success('Data Pallet berhasil diekspor ke Excel.');
         } catch (err) {
             toast.error('Gagal mengekspor data Pallet.');
@@ -151,8 +151,11 @@ const DetailBundleProduct = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteBundle(id);
-                        swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                        await deleteBundle(id)
+                            .unwrap()
+                            .then((res) => console.log(res))
+                            .catch((err) => console.log('error', err));
+                        // swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
                         refetch();
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
@@ -350,13 +353,31 @@ const DetailBundleProduct = () => {
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Total Awal :
                             </label>
-                            <input id="categoryName" type="text" onChange={handleInputChange} name="total_price_bundle" value={editFormData.total_price_bundle} placeholder="Rp" className=" form-input w-[250px]" required />
+                            <input
+                                id="categoryName"
+                                type="text"
+                                onChange={handleInputChange}
+                                name="total_price_bundle"
+                                value={editFormData.total_price_bundle}
+                                placeholder="Rp"
+                                className=" form-input w-[250px]"
+                                required
+                            />
                         </div>
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Custom Display :
                             </label>
-                            <input id="categoryName" type="text" onChange={handleInputChange} name="total_price_custom_bundle" value={editFormData.total_price_custom_bundle} placeholder="Rp" className=" form-input w-[250px]" required />
+                            <input
+                                id="categoryName"
+                                type="text"
+                                onChange={handleInputChange}
+                                name="total_price_custom_bundle"
+                                value={editFormData.total_price_custom_bundle}
+                                placeholder="Rp"
+                                className=" form-input w-[250px]"
+                                required
+                            />
                         </div>
                         <div className="flex items-center mt-4">
                             <button type="submit" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto">
