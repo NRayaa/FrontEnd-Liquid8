@@ -9,6 +9,7 @@ interface ScanResultBarcodeDataProps {
     handleSetNama: (nama: string) => void;
     handleSetHarga: (harga: string) => void;
     handleSetQty: (qty: string) => void;
+    disabled: boolean;
 }
 
 const ScanResultBarcodeData: React.FC<ScanResultBarcodeDataProps> = ({
@@ -19,6 +20,7 @@ const ScanResultBarcodeData: React.FC<ScanResultBarcodeDataProps> = ({
     handleSetNama,
     handleSetHarga,
     handleSetQty,
+    disabled,
 }) => {
     return (
         <div className="flex flex-col gap-4 panel">
@@ -54,6 +56,7 @@ const ScanResultBarcodeData: React.FC<ScanResultBarcodeDataProps> = ({
                     className="form-input"
                     value={qty}
                     onChange={(e) => handleSetQty(e.target.value)}
+                    disabled={disabled}
                 />
             </div>
         </div>

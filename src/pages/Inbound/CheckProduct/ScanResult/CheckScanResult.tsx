@@ -18,7 +18,7 @@ import ScanResultBarcodeData from './ScanResultBarcodeData';
 
 const CheckScanResult = () => {
     const { state } = useLocation();
-    const [inputBarcode, setInputBarcode] = useState<string>('');
+    const [inputBarcode, setInputBarcode] = useState<string>(state?.product_name || ''); // Ambil dari state jika ada
     const [isProductCheckScanResult, setIsProductCheck] = useState<boolean>(false);
     const [isResetValue, setIsResetValue] = useState<boolean>(true);
     const [newPricePercentage, setNewPricePercentage] = useState<string>('0');
@@ -83,15 +83,14 @@ const CheckScanResult = () => {
     }, [results]);
 
     const oldData = useMemo(() => {
-        if (results.isSuccess && results.data.data.status) {
-            console.log("results", results.data?.data.resource.product);
-            return results.data?.data.resource.product;
+        if (results.isSuccess && results?.data?.data?.status) {
+            return results.data?.data?.resource?.product;
         }
     }, [results]);
 
     const newPrice = useMemo(() => {
         if (results.isSuccess && results.data.data.status) {
-            return results.data?.data.resource.product.product_price;
+            return results.data?.data?.resource?.product?.product_price;
         }
     }, [results]);
 
@@ -113,6 +112,7 @@ const CheckScanResult = () => {
     }, [percentageState]);
 
     useEffect(() => {
+        // Ketika komponen pertama kali render, langsung search menggunakan product_name dari state
         if (inputBarcode.length > 0) {
             handleInputBarcode();
         }
@@ -123,8 +123,7 @@ const CheckScanResult = () => {
             if (results.data.data.status) {
                 toast.success(results?.data?.data?.message ?? 'success');
                 setIsProductCheck(true);
-                hideBarcode();
-                if (Math.ceil(Number(results.data.data.resource.product.product_price)) >= 100000) {
+                if (Math.ceil(Number(results?.data?.data?.resource?.product?.product_price)) >= 100000) {
                     setKeterangan('>100K');
                 } else {
                     setKeterangan('<=100K');
@@ -134,18 +133,23 @@ const CheckScanResult = () => {
                 toast.error(results?.data?.data?.message ?? 'something went wrong');
             }
         } else if (results.isError) {
-            const messageRes = 'message' in results?.error ? results?.error.message : '';
-            toast.error(messageRes ?? 'something went wrong');
+            if (results.error && 'data' in results.error && results.error.data) {
+                const messageRes = (results.error.data as any)?.data?.message;
+                toast.error(messageRes ?? '');
+            } else {
+                const messageRes = 'message' in results?.error ? (results?.error as any)?.message : 'something went wrong';
+                toast.error(messageRes);
+            }
         }
     }, [results]);
 
     useEffect(() => {
         setOldPriceBarcode(formatRupiah(oldData?.product_price ?? ''));
-    }, [oldData?.product_price, oldData?.old_barcode_product]);
+    }, [oldData?.old_barcode_product]);
 
-    if (results.isError && !results.data?.data.status) {
-        return <Alert message={results.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
-    }
+    // if (results.isError && !results.data?.data.status) {
+    //     return <Alert message={results.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
+    // }
 
     return (
         <div>
@@ -165,7 +169,7 @@ const CheckScanResult = () => {
             <div className="flex gap-4">
                 <div className=" xl:w-1/2 ss:w-full gap-4">
                     <div className="flex justify-between items-center">
-                        <h1 className="text-lg font-bold my-4">CHECK : {state?.codeDocument}</h1>
+                        <h1 className="text-lg font-bold my-4">CHECK </h1>
                         <Link to="/inbound/check_product/scan_result" state={{ codeDocument: state?.codeDocument }}>
                             <button type="button" className=" px-2 btn btn-outline-danger">
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
@@ -173,7 +177,7 @@ const CheckScanResult = () => {
                         </Link>
                     </div>
                     <form className="w-full panel mb-5 col-span-2 gap-4 flex items-center">
-                        <div className="relative w-full">
+                        <div className="relative w-full" hidden>
                             <input
                                 type="text"
                                 placeholder="Search Attendees..."
@@ -200,10 +204,11 @@ const CheckScanResult = () => {
                                 header="OLD DATA"
                                 nama={!isResetValue ? oldData?.product_name : ''}
                                 harga={!isResetValue ? oldData?.product_price : ''}
-                                qty={!isResetValue ? oldData?.old_quantity_product : ''}
+                                qty={customQuantity}
                                 handleSetNama={(nama: string) => setOldPriceBarcode(nama)}
                                 handleSetHarga={(harga: string) => setNewPriceBarcode(harga)}
                                 handleSetQty={(qty: string) => setCustomQuantity(qty)}
+                                disabled={true}
                             />
                             {!tagColor || tagColor === undefined ? (
                                 <ScanResultNewBarcodeDataMulti
