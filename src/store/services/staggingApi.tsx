@@ -9,8 +9,8 @@ export const staggingApi = createApi({
         getListProductStagging: builder.query<ProductStagging, { page: number; q: string }>({
             query: ({ page, q }) => `/staging_products?page=${page}&q=${q}`,
         }),
-        getFilterProductStagging: builder.query<GetFilterProductStagging, number>({
-            query: (page) => `/staging/filter_product?page=${page}`,
+        getFilterProductStagging: builder.query<GetFilterProductStagging, { page: number; q: string }>({
+            query: ({ page, q }) => `/staging/filter_product?page=${page}&q=${q}`,
         }),
         filterProductStagging: builder.mutation<FilterProductStagging, number>({
             query: (id) => ({

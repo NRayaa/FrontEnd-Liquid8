@@ -19,7 +19,7 @@ const ListProductStagging = () => {
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
     const debounceValue = useDebounce(searchLeftTable);
     const { data, isSuccess, refetch } = useGetListProductStaggingQuery({ page: leftTablePage, q: debounceValue });
-    const filterStagging = useGetFilterProductStaggingQuery(rightTablePage);
+    const filterStagging = useGetFilterProductStaggingQuery({ page: rightTablePage, q: debounceValue });
     const [filterProductStagging, results] = useFilterProductStaggingMutation();
     const [deletefilterProductStaggings, resultsDeleteBundle] = useDeleteFilterProductStaggingsMutation();
     const [doneCheckAllProductStagging, resultsDone] = useDoneCheckAllProductStaggingMutation();
@@ -384,10 +384,15 @@ const ListProductStagging = () => {
                                         ),
                                     },
                                 ]}
-                                totalRecords={data?.data.resource.total ?? 0}
-                                recordsPerPage={data?.data.resource.per_page ?? 10}
-                                page={rightTablePage}
-                                onPageChange={(prevPage) => setRightTablePage(prevPage)}
+                                totalRecords={filterStagging.data?.data?.resource?.data?.total ?? 0} // jumlah total data
+                                recordsPerPage={filterStagging.data?.data?.resource?.data?.per_page ?? 10} // jumlah data per page
+                                page={rightTablePage} // halaman saat ini
+                                onPageChange={(prevPage) => setRightTablePage(prevPage)} // handler untuk perubahan halaman
+
+                                // totalRecords={data?.data.resource.total ?? 0}
+                                // recordsPerPage={data?.data.resource.per_page ?? 10}
+                                // page={rightTablePage}
+                                // onPageChange={(prevPage) => setRightTablePage(prevPage)}
                             />
                         </div>
                     </div>

@@ -165,12 +165,12 @@ const ListScanResult = () => {
                                 title: 'Aksi',
                                 render: (item: ScanResultItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        {/* <Link to="/inbound/check_product/multi_check" state={{ codeDocument: item.code_document }}>
+                                        <Link to="/inbound/check_product/check_scan_result" state={{ product_name: item.product_name }}>
                                             <button type="button" className="btn btn-outline-success">
                                                 Check
                                             </button>
                                         </Link>
-                                        <Link to="/inbound/check_product/detail_data" state={{ codeDocument: item.code_document, baseDocument: item.base_document }}>
+                                        {/* <Link to="/inbound/check_product/detail_data" state={{ codeDocument: item.code_document, baseDocument: item.base_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Detail
                                             </button>

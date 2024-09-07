@@ -1801,8 +1801,6 @@ interface GetFilterProductStagging {
         message: string;
         resource: {
             total_new_price: number;
-            category: any;
-            name_bundle: any;
             data: {
                 current_page: number;
                 data: ProductStaggingItem[];
