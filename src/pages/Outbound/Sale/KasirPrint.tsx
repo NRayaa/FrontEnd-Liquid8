@@ -90,8 +90,9 @@ const ReportTable = () => {
         return formatted;
     }
 
-    const totalHarga: number | undefined = data?.buyer?.total_price_document_sale ?? 0;
-    const totalHargaFormatted: string = Math.round(totalHarga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+    const totalHarga: number | undefined = Math.ceil(data?.buyer?.total_price_document_sale ?? 0);
+    // const totalHarga: number | undefined = data?.buyer?.total_price_document_sale ?? 0;
+    const totalHargaFormatted: string = Math.ceil(totalHarga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
     const totalHargaTerbilang: string = formatRupiah(totalHarga).toUpperCase();
     const currentYear = new Date().getFullYear();
 
@@ -207,7 +208,7 @@ const ReportTable = () => {
                                 <td> </td>
                                 <td style={{ textAlign: 'right' }}>{formatCurrency(data?.data.category_report.total_price_before_discount || 0)}</td>
                                 <td> </td>
-                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.buyer.total_price_document_sale || 0)}</td>
+                                <td style={{ textAlign: 'right' }}>{formatCurrency(Math.ceil(data?.buyer.total_price_document_sale || 0))}</td>
                             </tr>
                         </tbody>
                     </table>
