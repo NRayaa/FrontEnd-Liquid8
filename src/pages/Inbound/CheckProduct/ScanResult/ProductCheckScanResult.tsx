@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { useGetCategoriesQuery, useNewProductMutation, useScanResultProductMutation } from '../../../../store/services/categoriesApi';
 import { NewProduct } from '../../../../store/services/types';
 import { formatRupiah, formatYearToDay, generateRandomBarcode } from '../../../../helper/functions';
+import { SerializedError } from '@reduxjs/toolkit';
 
 interface ProductCheckScanResult {
     oldData: {
@@ -99,106 +100,154 @@ const ProductCheckScanResult: React.FC<ProductCheckScanResult> = ({
         }
     }, [isQuantity]);
 
-    const handleSendLolos = async (e: FormEvent) => {
+    const handleSendLolos = (e: FormEvent) => {
         e.preventDefault();
 
         setIsSending(true);
-        try {
-            const body = {
-                code_document: null,
-                old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: codeBarcode,
-                new_name_product: oldData.product_name,
-                old_name_product: oldData.product_name,
-                new_quantity_product: productQuantity,
-                new_price_product: newPrice,
-                old_price_product: oldData.product_price,
-                new_date_in_product: newDateProduct,
-                new_status_product: 'display',
-                condition: 'lolos',
-                new_category_product: selectedOption,
-                new_tag_product: tagColor?.name_color ?? '',
-                deskripsi: '',
-            };
-            setBarcodeStatus('LOLOS');
-            handleSetNewPriceProduct(formatRupiah(newPrice));
-            await newProduct(body);
-            setTimeout(() => setIsSending(false), 3000);
-        } catch (err) {
-            console.log(err);
-            setIsSending(false);
-        }
+        const body = {
+            code_document: null,
+            old_barcode_product: oldData.old_barcode_product,
+            new_barcode_product: codeBarcode,
+            new_name_product: oldData.product_name,
+            old_name_product: oldData.product_name,
+            new_quantity_product: productQuantity,
+            new_price_product: newPrice,
+            old_price_product: oldData.product_price,
+            new_date_in_product: newDateProduct,
+            new_status_product: 'display',
+            condition: 'lolos',
+            new_category_product: selectedOption,
+            new_tag_product: tagColor?.name_color ?? '',
+            deskripsi: '',
+        };
+
+        setBarcodeStatus('LOLOS');
+        handleSetNewPriceProduct(formatRupiah(newPrice));
+
+        newProduct(body)
+            .then((response) => {
+                if ('error' in response) {
+                    const error = response.error;
+                    if ((error as FetchBaseQueryError)?.status === 422) {
+                        const errorData = (error as FetchBaseQueryError).data as Record<string, unknown>;
+                        const errorMessage = Object.entries(errorData)
+                            .map(([key, value]) => `${key}: ${(value as string[]).join(', ')}`)
+                            .join(', ');
+
+                        toast.error(`Error: ${errorMessage}`);
+                    } else if ((error as SerializedError)?.message) {
+                        toast.error(`Error: ${(error as SerializedError).message}`);
+                    }
+                } else if ('data' in response) {
+                    toast.success('Product checked successfully!');
+                }
+
+                setTimeout(() => setIsSending(false), 3000);
+            })
+            .catch((err) => {
+                console.log('Error Response: ', err);
+                setIsSending(false);
+                toast.error('Something went wrong');
+            });
     };
 
-    const handleDamaged = async (e: FormEvent) => {
+    const handleDamaged = (e: FormEvent) => {
         e.preventDefault();
 
         setIsSending(true);
-        try {
-            const body = {
-                code_document: null,
-                old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: codeBarcode,
-                new_name_product: oldData.product_name,
-                old_name_product: oldData.product_name,
-                new_quantity_product: productQuantity,
-                new_price_product: newPrice,
-                old_price_product: oldData.product_price,
-                new_date_in_product: newDateProduct,
-                new_status_product: 'display',
-                condition: 'damaged',
-                new_category_product: '',
-                new_tag_product: tagColor?.name_color ?? '',
-                deskripsi: descriptionDamaged,
-            };
-            setBarcodeStatus('TIDAK LOLOS');
-            handleSetNewPriceProduct(formatRupiah(newPrice));
-            await newProduct(body);
-            // resetProductCheckScanResultShow();
-            // hideBarcode();
-            setTimeout(() => setIsSending(false), 3000);
-        } catch (err) {
-            console.log(err);
-            setIsSending(false);
-        }
+        const body = {
+            code_document: null,
+            old_barcode_product: oldData.old_barcode_product,
+            new_barcode_product: codeBarcode,
+            new_name_product: oldData.product_name,
+            old_name_product: oldData.product_name,
+            new_quantity_product: productQuantity,
+            new_price_product: newPrice,
+            old_price_product: oldData.product_price,
+            new_date_in_product: newDateProduct,
+            new_status_product: 'display',
+            condition: 'damaged',
+            new_category_product: '',
+            new_tag_product: tagColor?.name_color ?? '',
+            deskripsi: descriptionDamaged,
+        };
+
+        newProduct(body)
+            .then((response) => {
+                if ('error' in response) {
+                    const error = response.error;
+
+                    if ((error as FetchBaseQueryError)?.status === 422) {
+                        const errorData = (error as FetchBaseQueryError).data as Record<string, unknown>;
+                        const errorMessage = Object.entries(errorData)
+                            .map(([key, value]) => `${key}: ${(value as string[]).join(', ')}`)
+                            .join(', ');
+
+                        toast.error(`Error: ${errorMessage}`);
+                    } else if ((error as SerializedError)?.message) {
+                        toast.error(`Error: ${(error as SerializedError).message}`);
+                    }
+                } else if ('data' in response) {
+                    toast.success('Product checked successfully!');
+                }
+
+                setTimeout(() => setIsSending(false), 3000);
+            })
+            .catch((err) => {
+                console.log('Error Response: ', err);
+                setIsSending(false);
+                toast.error('Something went wrong');
+            });
     };
 
-    const handleAbnormal = async (e: FormEvent) => {
+    const handleAbnormal = (e: FormEvent) => {
         e.preventDefault();
 
         setIsSending(true);
-        try {
-            const body = {
-                code_document: null,
-                old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: codeBarcode,
-                new_name_product: oldData.product_name,
-                old_name_product: oldData.product_name,
-                new_quantity_product: productQuantity,
-                new_price_product: newPrice,
-                old_price_product: oldData.product_price,
-                new_date_in_product: newDateProduct,
-                new_status_product: 'display',
-                condition: 'abnormal',
-                new_category_product: '',
-                new_tag_product: tagColor?.name_color ?? '',
-                deskripsi: descriptionAbnormal,
-            };
-            setBarcodeStatus('TIDAK LOLOS');
-            handleSetNewPriceProduct(formatRupiah(newPrice));
-            await newProduct(body);
-            const response = await newProduct(body);
-            console.log('API Response:', response);
-            // resetProductCheckScanResultShow();
-            // hideBarcode();
-            setTimeout(() => setIsSending(false), 3000);
-        } catch (err) {
-            console.log(err);
-            setIsSending(false);
-        }
-    };
+        const body = {
+            code_document: null,
+            old_barcode_product: oldData.old_barcode_product,
+            new_barcode_product: codeBarcode,
+            new_name_product: oldData.product_name,
+            old_name_product: oldData.product_name,
+            new_quantity_product: productQuantity,
+            new_price_product: newPrice,
+            old_price_product: oldData.product_price,
+            new_date_in_product: newDateProduct,
+            new_status_product: 'display',
+            condition: 'abnormal',
+            new_category_product: '',
+            new_tag_product: tagColor?.name_color ?? '',
+            deskripsi: descriptionAbnormal,
+        };
 
-    console.log('data', dataSecond);
+        newProduct(body)
+            .then((response) => {
+                if ('error' in response) {
+                    const error = response.error;
+
+                    if ((error as FetchBaseQueryError)?.status === 422) {
+                        const errorData = (error as FetchBaseQueryError).data as Record<string, unknown>;
+                        const errorMessage = Object.entries(errorData)
+                            .map(([key, value]) => `${key}: ${(value as string[]).join(', ')}`)
+                            .join(', ');
+
+                        toast.error(`Error: ${errorMessage}`);
+                    } else if ((error as SerializedError)?.message) {
+                        toast.error(`Error: ${(error as SerializedError).message}`);
+                    }
+                } else if ('data' in response) {
+                    toast.success('Product checked successfully!');
+                }
+
+                setTimeout(() => setIsSending(false), 3000);
+            })
+            .catch((err) => {
+                console.log('Error Response: ', err);
+                setIsSending(false);
+                toast.error('Something went wrong');
+            });
+    };
 
     const handleSelectedLolosOption = ({ value, percentage }: { value: string; percentage: string }) => {
         setSelectedOption(value);
