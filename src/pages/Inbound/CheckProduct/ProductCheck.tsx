@@ -243,16 +243,21 @@ const ProductCheck: React.FC<ProductCheck> = ({
                             await newProduct(bodySecond)
                                 .unwrap()
                                 .then((res: any) => {
-                                    swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
-                                    toast.success(res.data.data.message);
-                                    setDataSecond('');
-                                    resetValueMultiCheck();
-                                    if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
-                                        showBarcode();
-                                        resetProductCheckShow();
+                                    if (res.data.data.status) {
+                                        swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
+                                        toast.success(res.data.data.message);
+                                        setDataSecond('');
+                                        resetValueMultiCheck();
+                                        if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
+                                            showBarcode();
+                                            resetProductCheckShow();
+                                        } else {
+                                            hideBarcode();
+                                            resetProductCheckShow();
+                                        }
                                     } else {
-                                        hideBarcode();
-                                        resetProductCheckShow();
+                                        toast.error(res.data.data.message);
+                                        swalWithBootstrapButtons.fire('Something went wrong', 'Data tidak jadi direkam', 'error');
                                     }
                                 })
                                 .catch((err: any) => {
@@ -303,9 +308,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             setDataSecond((prev: any) => ({ ...prev, new_barcode_product: generateRandomBarcode(10) }));
         }
         if (dataSecond) {
-            if (dataSecond?.data?.resource?.old_barcode_product) {
-                showAlert(11);
-            }
+            showAlert(11);
         }
     }, [dataSecond]);
 
