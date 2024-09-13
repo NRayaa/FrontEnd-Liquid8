@@ -24,10 +24,10 @@ export const categoriesApi = createApi({
         }),
         getDetailProductApprovesByDoc: builder.query<any, { code_document: number | undefined; p: number; q: string }>({
             query: ({ code_document, p, q }) => `/product-approveByDoc/${code_document}?page=${p}&q=${q}`,
-        }),        
+        }),
         // getDetailProductApprovesByDoc: builder.query<any, string | undefined>({
         //     query: (code_document) => `productApprovesByDoc?search=${code_document}`,
-        // }),       
+        // }),
         getDetailProductApproves: builder.query<any, number | undefined>({
             query: (idProduct) => `/product-approves/${idProduct}`,
         }),
@@ -66,10 +66,10 @@ export const categoriesApi = createApi({
             }),
         }),
         getDocumentApproveProgress: builder.query<DocumentApprovmentProgress, { p: number; q: string }>({
-            query: ({p, q }) => `/documentInProgress?page=${p}&q=${q}`,
+            query: ({ p, q }) => `/documentInProgress?page=${p}&q=${q}`,
         }),
         getDocumentStagginngApproveProgress: builder.query<DocumentApprovmentProgress, { p: number; q: string }>({
-            query: ({p, q }) => `/documentDone?page=${p}&q=${q}`,
+            query: ({ p, q }) => `/documentDone?page=${p}&q=${q}`,
         }),
         getDetailProductStaggingApprovesByDoc: builder.query<any, { code_document: number | undefined; p: number; q: string }>({
             query: ({ code_document, p, q }) => `/productStagingByDoc/${code_document}?page=${p}&q=${q}`,
@@ -89,10 +89,17 @@ export const categoriesApi = createApi({
         }),
         getDetailProductApprovesStaggingByDoc: builder.query<any, { code_document: number | undefined; p: number; q: string }>({
             query: ({ code_document, p, q }) => `/productStagingByDoc/${code_document}?page=${p}&q=${q}`,
-        }), 
+        }),
         scanResultProduct: builder.mutation<NewProduct, any>({
             query: (body) => ({
                 url: '/move_to_staging',
+                method: 'POST',
+                body,
+            }),
+        }),
+        doubleBarcode: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/addProductOld',
                 method: 'POST',
                 body,
             }),
@@ -120,4 +127,5 @@ export const {
     useGetDocumentStaggingApprovesQuery,
     useGetDetailProductApprovesStaggingByDocQuery,
     useScanResultProductMutation,
+    useDoubleBarcodeMutation,
 } = categoriesApi;
