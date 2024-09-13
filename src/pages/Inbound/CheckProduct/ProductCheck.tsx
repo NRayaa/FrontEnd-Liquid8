@@ -284,14 +284,11 @@ const ProductCheck: React.FC<ProductCheck> = ({
 
     useEffect(() => {
         if (results.isSuccess) {
-            if (results.data?.data.resource.new_barcode_product) {
-                setCodeBarcode(results.data?.data.resource.new_barcode_product ? results.data?.data.resource.new_barcode_product : '');
-            }
-            if (results.data?.data.needConfirmation === false) {
-                toast.error(results.data?.data.message);
-                showAlert(11);
-            } else {
-                if (results.data.data.status) {
+            if (results.data.data.status) {
+                if (results.data?.data.needConfirmation) {
+                    if (results.data?.data.resource.new_barcode_product) {
+                        setCodeBarcode(results.data?.data.resource.new_barcode_product ? results.data?.data.resource.new_barcode_product : '');
+                    }
                     toast.success(results.data.data.message);
                     resetValueMultiCheck();
                     setDescriptionAbnormal('');
@@ -303,9 +300,13 @@ const ProductCheck: React.FC<ProductCheck> = ({
                         hideBarcode();
                         resetProductCheckShow();
                     }
-                } else {
-                    toast.error(results.data.data.message);
                 }
+            } else {
+                if (!results.data?.data.needConfirmation) {
+                    toast.error(results.data?.data.message);
+                    return showAlert(11);
+                }
+                toast.error(results.data?.data.message);
             }
         } else if (results.isError) {
             const fetchError = results.error as FetchBaseQueryError;
