@@ -484,6 +484,7 @@ interface HistorySubProductItem {
     new_quantity_product: number;
     old_price_product: string;
 }
+
 interface GetRiwayatcheckItem {
     id: number;
     code_document: string;
@@ -1950,6 +1951,51 @@ interface GetNameBody {
     product_name: string;
 }
 
+interface GetCheckProduk {
+    data: {
+        status: true;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetCheckProdukItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetCheckProdukItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: string;
+    new_discount: string;
+    display_price: string;
+    days_since_created: string;
+    old_name_product:string;
+    old_quantity_product:string;
+    created_at: string;
+    updated_at: string;
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -2067,4 +2113,6 @@ export type {
     ScanResult,
     GetNameResponse,
     GetNameBody,
+    GetCheckProdukItem,
+    GetCheckProduk,
 };

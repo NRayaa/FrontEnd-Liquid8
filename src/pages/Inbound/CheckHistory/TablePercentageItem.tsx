@@ -99,8 +99,8 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Old Price Damaged
                     </th>
-                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.damaged.total_old_price))}</td>
-                    <td className="px-6 py-4">{detailCheckData?.damaged.price_percentage ?? '1'}%</td>
+                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.damaged?.total_old_price))}</td>
+                    <td className="px-6 py-4">{detailCheckData?.damaged?.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -108,8 +108,8 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Old Price Lolos
                     </th>
-                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.lolos.total_old_price))}</td>
-                    <td className="px-6 py-4">{detailCheckData?.lolos.price_percentage ?? '1'}%</td>
+                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.lolos?.total_old_price))}</td>
+                    <td className="px-6 py-4">{detailCheckData?.lolos?.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -117,8 +117,8 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Old Price Abnormal
                     </th>
-                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.abnormal.total_old_price))}</td>
-                    <td className="px-6 py-4">{detailCheckData?.abnormal.price_percentage ?? '1'}%</td>
+                    <td className="px-6 py-4">{formatRupiah(JSON.stringify(detailCheckData?.abnormal?.total_old_price))}</td>
+                    <td className="px-6 py-4">{detailCheckData?.abnormal?.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">

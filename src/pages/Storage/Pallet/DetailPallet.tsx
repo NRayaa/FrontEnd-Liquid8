@@ -125,6 +125,59 @@ const PalletDetail = () => {
         }
     };
 
+    // State untuk menyimpan foto yang diupload dan URL preview
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+    // Fungsi untuk meng-handle upload gambar
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        const newImages = [];
+        const newPreviews = [];
+
+        if (files.length + selectedImages.length > 8) {
+            alert('Maksimal hanya bisa meng-upload 8 gambar.');
+            return;
+        }
+
+        for (const file of files) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert(`${file.name} melebihi batas ukuran 2MB.`);
+            } else {
+                newImages.push(file);
+                newPreviews.push(URL.createObjectURL(file));
+            }
+        }
+
+        setSelectedImages([...selectedImages, ...newImages]);
+        setPreviewUrls([...previewUrls, ...newPreviews]);
+    };
+
+    // Fungsi untuk menghapus gambar dari preview
+    const handleRemoveImage = (index: number) => {
+        const newImages = [...selectedImages];
+        const newPreviews = [...previewUrls];
+
+        newImages.splice(index, 1);
+        newPreviews.splice(index, 1);
+
+        setSelectedImages(newImages);
+        setPreviewUrls(newPreviews);
+    };
+
+    // Fungsi untuk meng-upload gambar ke server
+    const handleUpload = async () => {
+        if (selectedImages.length > 0) {
+            const formData = new FormData();
+            selectedImages.forEach((image) => {
+                formData.append('images', image);
+            });
+
+            // Kirim formData ke server
+            // await axios.post('/api/upload', formData);
+        }
+    };
+
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
@@ -317,11 +370,8 @@ const PalletDetail = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Pallet</h1>
             </div>
             <div>
-                <div className="flex gap-4 items-center mb-4 divide-x divide-gray-500">
+                {/* <div className="flex gap-4 items-center mb-4 divide-x divide-gray-500">
                     <form className="w-[400px]" onSubmit={handleSaveEdit}>
-                        {/* <button type="submit" className="btn btn-primary mb-4 px-16">
-                        Create Bundle
-                    </button> */}
                         <div className="flex items-center justify-between ">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Barcode Pallet :
@@ -377,7 +427,93 @@ const PalletDetail = () => {
                             namePalet={detailDataPallet?.name_palet ?? ''}
                         />
                     </div>
+                </div> */}
+                <div className="flex gap-4 items-start mb-4">
+                    {/* Kolom informasi dan form barcode */}
+                    <form className="w-[50%]" onSubmit={handleSaveEdit}>
+                        {/* Informasi Pallet */}
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Barcode Pallet :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={detailDataPallet?.palet_barcode} className="form-input w-[250px]" required />
+                        </div>
+                        <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
+                        <div className="flex items-center justify-between mb-2 mt-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Nama Pallet :
+                            </label>
+                            <input id="categoryName" type="text" className="form-input w-[250px]" onChange={handleInputChange} name="nama_palet" value={editFormData.nama_palet} required />
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Kategori Pallet :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={detailDataPallet?.category_palet} className="form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Harga Lama :
+                            </label>
+                            <input id="categoryName" disabled type="text" value={formatRupiah(detailDataPallet?.total_harga_lama ?? '0')} className="form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Harga Baru:
+                            </label>
+                            <input
+                                id="categoryName"
+                                type="text"
+                                name="total_price_palet"
+                                onChange={handleInputChange}
+                                value={editFormData.total_price_palet}
+                                className="form-input w-[250px]"
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary mt-4 px-16">
+                            Update
+                        </button>
+                    </form>
+
+                    {/* Bagian kanan: Barcode dan Upload Foto di sebelah kanan barcode */}
+                    <div className="flex gap-4 items-start">
+                        {/* Barcode */}
+                        <div className="flex flex-col">
+                            <BarcodePalet
+                                barcode={detailDataPallet?.palet_barcode ?? ''}
+                                category={detailDataPallet?.category_palet ?? ''}
+                                newPrice={formatRupiah(detailDataPallet?.total_price_palet ?? '0')}
+                                oldPrice={formatRupiah(detailDataPallet?.total_harga_lama ?? '0')}
+                                namePalet={detailDataPallet?.name_palet ?? ''}
+                            />
+                        </div>
+
+                        {/* Form Upload Foto di sebelah barcode */}
+                        <div className="flex flex-col ml-4">
+                            <label htmlFor="upload" className="btn btn-primary mb-2">
+                                Upload Foto
+                            </label>
+                            <input type="file" id="upload" accept="image/*" className="hidden" onChange={handleImageChange} multiple />
+                            <div className="grid grid-cols-4 gap-4">
+                                {previewUrls.map((url, index) => (
+                                    <div key={index} className="relative">
+                                        <img src={url} alt={`Preview ${index + 1}`} className="w-32 h-32 object-cover rounded" />
+                                        <button className="btn btn-outline-danger absolute top-0 right-0" onClick={() => handleRemoveImage(index)}>
+                                            Remove
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                            {selectedImages.length > 0 && (
+                                <button className="btn btn-outline-primary mt-4" onClick={handleUpload}>
+                                    Simpan Foto
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
+
                 {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />

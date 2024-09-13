@@ -34,6 +34,61 @@ const PalletGenerate = () => {
     const navigate = useNavigate();
     const palletLists = usePalletListsQuery({ page: 1, q: '' });
 
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+    // Fungsi untuk meng-handle upload gambar
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        const newImages = [];
+        const newPreviews = [];
+
+        if (files.length + selectedImages.length > 8) {
+            alert('Maksimal hanya bisa meng-upload 8 gambar.');
+            return;
+        }
+
+        for (const file of files) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert(`${file.name} melebihi batas ukuran 2MB.`);
+            } else {
+                newImages.push(file);
+                newPreviews.push(URL.createObjectURL(file));
+            }
+        }
+
+        setSelectedImages([...selectedImages, ...newImages]);
+        setPreviewUrls([...previewUrls, ...newPreviews]);
+    };
+
+    const handleRemoveImage = (index: number) => {
+        const newImages = [...selectedImages];
+        const newPreviews = [...previewUrls];
+
+        newImages.splice(index, 1);
+        newPreviews.splice(index, 1);
+
+        setSelectedImages(newImages);
+        setPreviewUrls(newPreviews);
+    };
+
+    // Handle submit untuk foto upload
+    const handleUploadSubmit = async () => {
+        try {
+            const formData = new FormData();
+            selectedImages.forEach((image) => {
+                formData.append('images', image);
+            });
+
+            // Simpan gambar (logika untuk mengirim formData ke API)
+            // await axios.post('/api/upload', formData);
+
+            toast.success('Gambar berhasil di-upload.');
+        } catch (err) {
+            console.error('Error uploading images:', err);
+            toast.error('Gagal upload gambar.');
+        }
+    };
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInput((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
     };
@@ -122,8 +177,92 @@ const PalletGenerate = () => {
     return (
         <>
             <BreadCrumbs base="Home" basePath="/" sub="Pallet" subPath="/storage/pallet" current="Add Pallet" />
+            {/* Flex container untuk form pallet dan form upload */}
+            <div className="flex justify-between gap-8 mt-10">
+                {/* Form Pallet Generate */}
+                <div className="panel w-[50%] min-h-[400px]">
+                    <h5 className="font-semibold text-lg dark:text-white-light mb-5">Pallet Generate</h5>
+                    <form className="w-[400px]" onSubmit={handleSubmitPalet}>
+                        <div className="flex items-center  justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Nama Pallet :
+                            </label>
+                            <input onChange={handleInputChange} name="name" value={input.name} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Kategori :
+                            </label>
+                            <input onChange={handleInputChange} name="category" value={input.category} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center  justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Harga:
+                            </label>
+                            <input
+                                disabled
+                                name="totalPrice"
+                                value={formatRupiah(filterData?.total_new_price.toString() ?? '0')}
+                                id="categoryName"
+                                type="text"
+                                className="form-input w-[250px]"
+                                required
+                            />
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Total Produk:
+                            </label>
+                            <input
+                                disabled
+                                onChange={handleInputChange}
+                                name="totalProduct"
+                                value={filterData?.data.data.length}
+                                id="categoryName"
+                                type="text"
+                                className="form-input w-[250px]"
+                                required
+                            />
+                        </div>
+                        <div className="flex items-center  justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Barcode Pallet :
+                            </label>
+                            <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        </div>
 
-            <div className="panel mt-10 w-full min-h-[400px]">
+                        <button type="submit" className="btn btn-primary mt-4 px-16 uppercase">
+                            Create Palet
+                        </button>
+                    </form>
+                </div>
+
+                {/* Form Upload Foto */}
+                <div className="panel w-[50%] bg-white shadow-lg rounded-lg p-4">
+                    <div className="flex flex-col ml-4">
+                        <label htmlFor="upload" className="btn btn-primary mb-2">
+                            Upload Foto
+                        </label>
+                        <input type="file" id="upload" accept="image/*" className="hidden" onChange={handleImageChange} multiple />
+                        <div className="grid grid-cols-4 gap-4">
+                            {previewUrls.map((url, index) => (
+                                <div key={index} className="relative">
+                                    <img src={url} alt={`Preview ${index + 1}`} className="w-32 h-32 object-cover rounded" />
+                                    <button className="btn btn-outline-danger absolute top-0 right-0" onClick={() => handleRemoveImage(index)}>
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        {selectedImages.length > 0 && (
+                            <button className="btn btn-outline-primary mt-4" onClick={handleUploadSubmit}>
+                                Simpan Foto
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+            {/* <div className="panel mt-10 w-full min-h-[400px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Pallet Generate</h5>
                 <form className="w-[400px]" onSubmit={handleSubmitPalet}>
                     <div className="flex items-center  justify-between mb-2">
@@ -161,7 +300,7 @@ const PalletGenerate = () => {
                         Create Palet
                     </button>
                 </form>
-            </div>
+            </div> */}
             <div className="datatables mt-8">
                 <div className="panel">
                     <div className="flex items-center justify-between mb-4">
