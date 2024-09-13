@@ -2,7 +2,7 @@ import React, { Dispatch, FormEvent, Fragment, SetStateAction, useEffect, useMem
 import { Tab } from '@headlessui/react';
 import Barcode from 'react-barcode';
 
-import { useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
+import { useDoubleBarcodeMutation, useGetCategoriesQuery, useNewProductMutation } from '../../../store/services/categoriesApi';
 import { formatRupiah, formatYearToDay, generateRandomBarcode, generateRandomString } from '../../../helper/functions';
 import BarcodePrinted from './BarcodePrinted';
 import toast from 'react-hot-toast';
@@ -63,11 +63,12 @@ const ProductCheck: React.FC<ProductCheck> = ({
 }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery('');
     const [newProduct, results] = useNewProductMutation();
+    const [approveDouble] = useDoubleBarcodeMutation();
 
     const [selectedOption, setSelectedOption] = useState<string>('');
     const [descriptionDamaged, setDescriptionDamaged] = useState<string>('');
     const [descriptionAbnormal, setDescriptionAbnormal] = useState<string>('');
-    const [barcodeStatus, setBarcodeStatus] = useState<'LOLOS' | 'TIDAK LOLOS'>('LOLOS');
+    const [barcodeStatus, setBarcodeStatus] = useState<'lolos' | 'abnormal' | 'damaged'>('lolos');
     const [dataSecond, setDataSecond] = useState<NewProduct | any>();
     const [isSending, setIsSending] = useState<boolean>(false);
     // hideBarcode();
@@ -123,7 +124,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: '',
             };
-            setBarcodeStatus('LOLOS');
+            setBarcodeStatus('lolos');
             handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
             setTimeout(() => setIsSending(false), 3000);
@@ -154,7 +155,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: descriptionDamaged,
             };
-            setBarcodeStatus('TIDAK LOLOS');
+            setBarcodeStatus('damaged');
             handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
             // resetProductCheckShow();
@@ -187,7 +188,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 new_tag_product: tagColor?.name_color ?? '',
                 deskripsi: descriptionAbnormal,
             };
-            setBarcodeStatus('TIDAK LOLOS');
+            setBarcodeStatus('abnormal');
             handleSetNewPriceProduct(formatRupiah(newPrice));
             await newProduct(body);
             const response = await newProduct(body);
@@ -201,19 +202,10 @@ const ProductCheck: React.FC<ProductCheck> = ({
         }
     };
 
-    console.log('data', dataSecond);
-
     const handleSelectedLolosOption = ({ value, percentage }: { value: string; percentage: string }) => {
         setSelectedOption(value);
         countPercentage(percentage);
         getSelectedCategory(value);
-    };
-
-    const bodySecond = {
-        data: {
-            needConfirmation: true,
-            resource: dataSecond,
-        },
     };
 
     const showAlert = async (type: any) => {
@@ -239,14 +231,32 @@ const ProductCheck: React.FC<ProductCheck> = ({
                 })
                 .then(async (result) => {
                     if (result.isConfirmed) {
+                        const body = {
+                            code_document: oldData.code_document,
+                            old_barcode_product: oldData.old_barcode_product,
+                            new_barcode_product: codeBarcode,
+                            new_name_product: oldData.old_name_product,
+                            old_name_product: oldData.old_name_product,
+                            new_quantity_product: productQuantity,
+                            new_price_product: newPrice,
+                            old_price_product: oldData.old_price_product,
+                            new_date_in_product: newDateProduct,
+                            new_status_product: 'display',
+                            condition: barcodeStatus === 'abnormal' ? 'abnormal' : barcodeStatus === 'damaged' ? 'damaged' : 'lolos',
+                            new_category_product: barcodeStatus === 'lolos' ? selectedOption : '',
+                            new_tag_product: tagColor?.name_color ?? '',
+                            deskripsi: barcodeStatus === 'abnormal' ? descriptionAbnormal : barcodeStatus === 'damaged' ? descriptionDamaged : '',
+                        };
                         try {
-                            await newProduct(bodySecond)
+                            await approveDouble(body)
                                 .unwrap()
                                 .then((res: any) => {
-                                    if (res.data.data.status) {
+                                    if (res.data.status) {
                                         swalWithBootstrapButtons.fire('Konfirmasi Berhasil!', 'Barcode telah direkam lagi.', 'success');
-                                        toast.success(res.data.data.message);
-                                        setDataSecond('');
+                                        toast.success(res.data.message);
+                                        setDescriptionAbnormal('');
+                                        setDescriptionDamaged('');
+                                        setCodeBarcode(res.data.resource.new_barcode_product ? res.data.resource.new_barcode_product : '');
                                         resetValueMultiCheck();
                                         if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
                                             showBarcode();
@@ -256,7 +266,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                                             resetProductCheckShow();
                                         }
                                     } else {
-                                        toast.error(res.data.data.message);
+                                        toast.error(res.data.message);
                                         swalWithBootstrapButtons.fire('Something went wrong', 'Data tidak jadi direkam', 'error');
                                     }
                                 })
@@ -281,11 +291,13 @@ const ProductCheck: React.FC<ProductCheck> = ({
             }
             if (results.data?.data.needConfirmation === false) {
                 toast.error(results.data?.data.message);
-                setDataSecond(results.data.data.resource);
+                showAlert(11);
             } else {
                 if (results.data.data.status) {
                     toast.success(results.data.data.message);
                     resetValueMultiCheck();
+                    setDescriptionAbnormal('');
+                    setDescriptionDamaged('');
                     if (Math.ceil(Number(oldData?.old_price_product)) >= 100000) {
                         showBarcode();
                         resetProductCheckShow();
@@ -302,15 +314,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
             toast.error((fetchError.data as any)?.old_barcode_product ?? 'error');
         }
     }, [results.isSuccess]);
-
-    useEffect(() => {
-        if (dataSecond && dataSecond.old_price_product < 100000 && dataSecond.old_barcode_product === dataSecond.new_barcode_product) {
-            setDataSecond((prev: any) => ({ ...prev, new_barcode_product: generateRandomBarcode(10) }));
-        }
-        if (dataSecond) {
-            showAlert(11);
-        }
-    }, [dataSecond]);
 
     useEffect(() => {
         refetch();
