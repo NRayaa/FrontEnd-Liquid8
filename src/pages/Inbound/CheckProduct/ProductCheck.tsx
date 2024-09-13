@@ -304,7 +304,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             } else {
                 if (!results.data?.data.needConfirmation) {
                     toast.error(results.data?.data.message);
-                    return showAlert(11);
+                    showAlert(11);
                 }
                 toast.error(results.data?.data.message);
             }
