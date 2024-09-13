@@ -2,13 +2,18 @@ import TableHistoryCheckItem from './TableHistoryCheckItem';
 import PieChartItem from './PieChartItem';
 import TablePercentageItem from './TablePercentageItem';
 import { Link, useParams } from 'react-router-dom';
-import { useGetDetailRiwayatCheckQuery, useExportToExcelMutation } from '../../../store/services/riwayatApi';
+import {
+    useGetDetailRiwayatCheckQuery,
+    useExportToExcelMutation,
+    useGetProductLolosQuery,
+    useGetProductDamagedQuery,
+    useGetProductAbnormalQuery,
+    useDiscrepancyQuery,
+} from '../../../store/services/riwayatApi';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import TableSubProduct from './TableSubProduct';
-import { useDetailProductOldQuery } from '../../../store/services/productOldsApi';
-import { HistorySubProductItem, ItemDetailOldsProduct } from '../../../store/services/types';
 
 const DetailCheckHistory = () => {
     const { id } = useParams();
@@ -25,14 +30,6 @@ const DetailCheckHistory = () => {
         }
     }, [data]);
 
-    console.log(detailCheckData);
-    const { data: detailProductData } = useDetailProductOldQuery({ codeDocument: detailCheckData?.code_document, page: 1 });
-    const detailChecDiscrepancy = useMemo(() => {
-        if (isSuccess && detailProductData?.data.status) {
-            return detailProductData?.data.resource;
-        }
-    }, [detailProductData]);
-    
     const handleExportData = async () => {
         try {
             const body = {
@@ -44,17 +41,48 @@ const DetailCheckHistory = () => {
         }
     };
 
-    const productTypeActive: any = useMemo(() => {
+    const { data: lolosData } = useGetProductLolosQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'LOLOS' });
+    const { data: damagedData } = useGetProductDamagedQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'DAMAGED' });
+    const { data: abnormalData } = useGetProductAbnormalQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'ABNORMAL' });
+    const { data: discrepancyData } = useDiscrepancyQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'DISCREPANCY' });
+
+    const productTypeActive = useMemo(() => {
         if (productSelected === 'LOLOS') {
-            return detailCheckData?.lolos.products;
+            return lolosData?.data?.resource?.data;
         } else if (productSelected === 'DAMAGED') {
-            return detailCheckData?.damaged.products;
+            return damagedData?.data?.resource?.data;
+        } else if (productSelected === 'ABNORMAL') {
+            return abnormalData?.data?.resource?.data;
         } else if (productSelected === 'DISCREPANCY') {
-            return detailChecDiscrepancy?.data;
-        } else {
-            return detailCheckData?.abnormal.products;
+            return discrepancyData?.data?.resource?.data;
         }
-    }, [productSelected]);
+    }, [productSelected, lolosData, damagedData, abnormalData, discrepancyData]);
+
+    const productTypeActiveArray = Array.isArray(productTypeActive) ? productTypeActive : [];
+
+    const totalRecord = useMemo(() => {
+        if (productSelected === 'LOLOS') {
+            return lolosData?.data?.resource?.total ?? 0;
+        } else if (productSelected === 'DAMAGED') {
+            return damagedData?.data?.resource?.total ?? 0;
+        } else if (productSelected === 'ABNORMAL') {
+            return abnormalData?.data?.resource?.total ?? 0;
+        } else if (productSelected === 'DISCREPANCY') {
+            return discrepancyData?.data?.resource?.total ?? 0;
+        }
+    }, [productSelected, lolosData, damagedData, abnormalData, discrepancyData]);
+
+    const perPage = useMemo(() => {
+        if (productSelected === 'LOLOS') {
+            return lolosData?.data?.resource?.per_page ?? 10;
+        } else if (productSelected === 'DAMAGED') {
+            return damagedData?.data?.resource?.per_page ?? 10;
+        } else if (productSelected === 'ABNORMAL') {
+            return abnormalData?.data?.resource?.per_page ?? 10;
+        } else if (productSelected === 'DISCREPANCY') {
+            return discrepancyData?.data?.resource?.per_page ?? 10;
+        }
+    }, [productSelected, lolosData, damagedData, abnormalData, discrepancyData]);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -96,9 +124,9 @@ const DetailCheckHistory = () => {
                     </select>
                 </div>
                 <TableSubProduct
-                    productTypeActive={productTypeActive}
-                    totalRecord={detailChecDiscrepancy?.total ?? 0}
-                    perPage={detailChecDiscrepancy?.per_page ?? 10}
+                    productTypeActive={productTypeActiveArray}
+                    totalRecord={totalRecord ?? 0}
+                    perPage={perPage ?? 0}
                     page={page}
                     changePage={(prevPage: number) => setPage(prevPage)}
                 />

@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CheckAllProducts, DetailGetRiwayatcheck, GetRiwayatcheck, ExportToExcel } from './types';
+import { CheckAllProducts, DetailGetRiwayatcheck, GetRiwayatcheck, ExportToExcel, GetCheckProduk } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const riwayatApi = createApi({
@@ -32,7 +32,19 @@ export const riwayatApi = createApi({
                 body,
             }),
         }),
+        getProductLolos: builder.query<GetCheckProduk, { code_document: string, page: number; search: string }>({
+            query: ({ code_document, page, search }) => `/getProductLolos/${code_document}?page=${page}&q=${search}`,
+        }),
+        getProductDamaged: builder.query<GetCheckProduk, { code_document: string, page: number; search: string }>({
+            query: ({ code_document, page, search }) => `/getProductDamaged/${code_document}?page=${page}&q=${search}`,
+        }),
+        getProductAbnormal: builder.query<GetCheckProduk, { code_document: string, page: number; search: string }>({
+            query: ({ code_document, page, search }) => `/getProductAbnormal/${code_document}?page=${page}&q=${search}`,
+        }),
+        discrepancy: builder.query<GetCheckProduk, { code_document: string, page: number; search: string }>({
+            query: ({ code_document, page, search }) => `/discrepancy/${code_document}?page=${page}&q=${search}`,
+        }),
     }),
 });
 
-export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery, useDeleteRiwayatCheckMutation, useExportToExcelMutation } = riwayatApi;
+export const { useCheckAllDocumentMutation, useGetRiwayatChecksQuery, useGetDetailRiwayatCheckQuery, useDeleteRiwayatCheckMutation, useExportToExcelMutation, useGetProductLolosQuery, useGetProductDamagedQuery, useGetProductAbnormalQuery, useDiscrepancyQuery } = riwayatApi;
