@@ -269,7 +269,6 @@ const MultiCheck = () => {
                         hideBarcode={hideBarcode}
                         handleSetNewPriceProduct={handleSetNewPriceProduct}
                         customQuantity={customQuantity}
-                        codeBarcode={codeBarcode}
                         setCodeBarcode={setCodeBarcode}
                         isQuantity={isQuantity}
                         getSelectedCategory={getSelectedCategory}

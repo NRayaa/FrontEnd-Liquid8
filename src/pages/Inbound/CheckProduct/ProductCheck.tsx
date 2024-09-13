@@ -39,7 +39,6 @@ interface ProductCheck {
     hideBarcode: () => void;
     handleSetNewPriceProduct: (newPrice: string) => void;
     customQuantity: string;
-    codeBarcode: string;
     isQuantity: boolean;
     getSelectedCategory: (selected: string) => void;
     setCodeBarcode: Dispatch<SetStateAction<string>>;
@@ -56,7 +55,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
     hideBarcode,
     handleSetNewPriceProduct,
     customQuantity,
-    codeBarcode,
     isQuantity,
     getSelectedCategory,
     setCodeBarcode,
@@ -111,7 +109,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             const body = {
                 code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: codeBarcode,
+                new_barcode_product: '',
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
                 new_quantity_product: productQuantity,
@@ -142,7 +140,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             const body = {
                 code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: codeBarcode,
+                new_barcode_product: '',
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
                 new_quantity_product: productQuantity,
@@ -175,7 +173,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
             const body = {
                 code_document: oldData.code_document,
                 old_barcode_product: oldData.old_barcode_product,
-                new_barcode_product: codeBarcode,
+                new_barcode_product: '',
                 new_name_product: oldData.old_name_product,
                 old_name_product: oldData.old_name_product,
                 new_quantity_product: productQuantity,
@@ -234,7 +232,7 @@ const ProductCheck: React.FC<ProductCheck> = ({
                         const body = {
                             code_document: oldData.code_document,
                             old_barcode_product: oldData.old_barcode_product,
-                            new_barcode_product: codeBarcode,
+                            new_barcode_product: '',
                             new_name_product: oldData.old_name_product,
                             old_name_product: oldData.old_name_product,
                             new_quantity_product: productQuantity,
