@@ -10,7 +10,6 @@ interface ScanResultNewBarcodeDataMultiProps {
     handleSetNewPercentagePriceInput: (price: string) => void;
     handleSetCustomQuantityInput: (qty: string) => void;
     handleIsQuantity: () => void;
-    handleSetNama: (nama: string) => void;
     handleSetHarga: (harga: string) => void;
     handleSetQty: (qty: string) => void;
 }
@@ -24,7 +23,6 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
     handleSetNewPercentagePriceInput,
     handleSetCustomQuantityInput,
     handleIsQuantity,
-    handleSetNama,
     handleSetHarga,
     handleSetQty
 }) => {
@@ -50,10 +48,6 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
         handleSetHarga(e.target.value); // Menambahkan pemanggilan handler untuk Harga
     };
 
-    const handleInputNama = (e: ChangeEvent<HTMLInputElement>) => {
-        handleSetNama(e.target.value); // Menambahkan pemanggilan handler untuk Nama
-    };
-
     return (
         <div className="flex flex-col gap-4">
             <h1 className="flex justify-center text-lg font-bold">{header}</h1>
@@ -69,7 +63,7 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
                     placeholder="Enter Nama"
                     className="form-input"
                     value={nama}
-                    onChange={handleInputNama} // Menambahkan handler untuk Nama
+                    disabled
                 />
             </div>
             <div>

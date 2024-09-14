@@ -43,7 +43,7 @@ const TableSubProduct: React.FC<TableSubProduct> = ({ productTypeActive, totalRe
                         title: 'Name',
                         render: (item: GetCheckProdukItem) => (
                             <div>
-                                <span className="font-semibold">{item.new_name_product ?? item.new_name_product}</span>
+                                <span className="font-semibold">{item.new_name_product ?? item.old_name_product}</span>
                             </div>
                         ),
                     },

@@ -145,7 +145,7 @@ const CheckScanResult = () => {
 
     useEffect(() => {
         setOldPriceBarcode(formatRupiah(oldData?.product_price ?? ''));
-    }, [oldData?.old_barcode_product]);
+    }, [oldData?.product_price, oldData?.product_name]);
 
     // if (results.isError && !results.data?.data.status) {
     //     return <Alert message={results.data?.data.message ?? 'anda tidak berhak mengakses halaman ini'} />;
@@ -205,7 +205,6 @@ const CheckScanResult = () => {
                                 nama={!isResetValue ? oldData?.product_name : ''}
                                 harga={!isResetValue ? oldData?.product_price : ''}
                                 qty={customQuantity}
-                                handleSetNama={(nama: string) => setOldPriceBarcode(nama)}
                                 handleSetHarga={(harga: string) => setNewPriceBarcode(harga)}
                                 handleSetQty={(qty: string) => setCustomQuantity(qty)}
                                 disabled={true}
@@ -220,7 +219,6 @@ const CheckScanResult = () => {
                                     handleSetNewPercentagePriceInput={handleSetNewPercentagePriceInput}
                                     handleSetCustomQuantityInput={handleSetCustomQuantityInput}
                                     handleIsQuantity={handleIsQuantity}
-                                    handleSetNama={(nama: string) => setOldPriceBarcode(nama)}
                                     handleSetHarga={(harga: string) => setNewPriceBarcode(harga)}
                                     handleSetQty={(qty: string) => setCustomQuantity(qty)}
                                 />

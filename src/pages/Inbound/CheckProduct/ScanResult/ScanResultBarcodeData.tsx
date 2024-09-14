@@ -6,7 +6,7 @@ interface ScanResultBarcodeDataProps {
     nama: string;
     harga: string;
     qty: string;
-    handleSetNama: (nama: string) => void;
+    // handleSetNama: (nama: string) => void;
     handleSetHarga: (harga: string) => void;
     handleSetQty: (qty: string) => void;
     disabled: boolean;
@@ -17,7 +17,7 @@ const ScanResultBarcodeData: React.FC<ScanResultBarcodeDataProps> = ({
     nama,
     harga,
     qty,
-    handleSetNama,
+    // handleSetNama,
     handleSetHarga,
     handleSetQty,
     disabled,
@@ -33,7 +33,8 @@ const ScanResultBarcodeData: React.FC<ScanResultBarcodeDataProps> = ({
                     placeholder="Enter Nama"
                     className="form-input"
                     value={nama}
-                    onChange={(e) => handleSetNama(e.target.value)}
+                    disabled={disabled}
+                    // onChange={(e) => handleSetNama(e.target.value)}
                 />
             </div>
             <div>
@@ -44,7 +45,8 @@ const ScanResultBarcodeData: React.FC<ScanResultBarcodeDataProps> = ({
                     placeholder="Enter Harga"
                     className="form-input"
                     value={harga}
-                    onChange={(e) => handleSetHarga(e.target.value)}
+                    disabled={disabled}
+                    // onChange={(e) => handleSetHarga(e.target.value)}
                 />
             </div>
             <div>
