@@ -31,7 +31,7 @@ const ApprovementProduct = () => {
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
-            return data?.data?.resource;
+            return data?.data?.resource?.data;
         }
     }, [data]);
 
@@ -171,10 +171,6 @@ const ApprovementProduct = () => {
                                                 Details
                                             </button>
                                         </Link>
-
-                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                            Reject
-                                        </button> */}
                                     </div>
                                 ),
                                 textAlignment: 'center',
