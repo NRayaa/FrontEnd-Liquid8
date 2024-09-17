@@ -1,6 +1,6 @@
 import { DataTable } from 'mantine-datatable';
 import { Link, useParams } from 'react-router-dom';
-import { ChangeEvent, Fragment, MouseEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FormEvent, Fragment, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import {
     useAddDetailPalletProductMutation,
     useDeleteDetailPalletProductMutation,
@@ -8,6 +8,7 @@ import {
     useExportToExcelDetailPalletMutation,
     useShowPalletQuery,
     useUpdateDetailPalletMutation,
+    useUploadPalleteMutation,
 } from '../../../store/services/palletApi';
 import { formatRupiah, useDebounce } from '../../../helper/functions';
 import BarcodePalet from './BarcodePalet';
@@ -17,12 +18,19 @@ import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
+import { useDropzone } from 'react-dropzone';
+
+const MAX_FILES = 8;
+const MAX_FILE_SIZE_MB = 2;
+const TOAST_DELAY_MS = 500; // Delay antar toast dalam milidetik
 
 const PalletDetail = () => {
     const { id }: any = useParams();
     const { data, isSuccess, refetch } = useShowPalletQuery(id);
     const [deletePallete] = useDeleteDetailPalletProductMutation();
+    const [uploadFile] = useUploadPalleteMutation();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUploadOpen, setIsUploadOpen] = useState(false);
     const [searchProductBundle, setSearchProductBundle] = useState('');
     const [pageProduct, setPageProduct] = useState<number>(1);
     const debounceValueProductBundle = useDebounce(searchProductBundle);
@@ -49,6 +57,112 @@ const PalletDetail = () => {
         nama_palet: '',
         total_price_palet: '',
     });
+
+    const [second, setSecond] = useState<File[]>([]);
+
+    // Fungsi validasi dan handle file drop
+    const onDrop = useCallback(
+        (acceptedFiles: File[]) => {
+            toast.dismiss(); // Menutup semua toast yang aktif
+
+            // Total file yang akan ada setelah menambahkan file baru
+            const totalFiles = second.length + acceptedFiles.length;
+            const remainingFileSlots = MAX_FILES - second.length;
+
+            // Menyimpan error baru
+            const newErrors: string[] = [];
+
+            // Cek batas jumlah file
+            if (second.length >= MAX_FILES) {
+                newErrors.push(`You can only upload up to ${MAX_FILES} files.`);
+            } else if (totalFiles > MAX_FILES) {
+                newErrors.push(`You can only upload ${remainingFileSlots} more file(s).`);
+            }
+
+            // Cek batas ukuran file dan hanya tambahkan file yang valid
+            const validFiles: File[] = [];
+            acceptedFiles.slice(0, remainingFileSlots).forEach((file) => {
+                const fileSizeMB = file.size / (1024 * 1024); // Mengonversi byte ke MB
+                if (fileSizeMB > MAX_FILE_SIZE_MB) {
+                    newErrors.push(`File ${file.name} is larger than ${MAX_FILE_SIZE_MB} MB.`);
+                } else {
+                    validFiles.push(file);
+                }
+            });
+
+            // Menampilkan toast dengan delay untuk setiap error
+            newErrors.forEach((error, index) => {
+                setTimeout(() => {
+                    toast.error(error); // Menampilkan toast error
+                }, index * TOAST_DELAY_MS); // Delay berdasarkan urutan error
+            });
+
+            // Jika tidak ada error, tambahkan file yang valid
+            if (validFiles.length > 0) {
+                setSecond((prevFiles) => [...prevFiles, ...validFiles]); // Tambahkan file yang valid
+            }
+        },
+        [second]
+    );
+
+    // Menangani file yang ditolak
+    const onDropRejected = useCallback((rejectedFiles: any[]) => {
+        toast.dismiss(); // Menutup semua toast yang aktif
+
+        rejectedFiles.forEach((rejectedFile, index) => {
+            const { file, errors } = rejectedFile;
+            errors.forEach((error: any, errorIndex: number) => {
+                setTimeout(() => {
+                    if (error.code === 'file-too-large') {
+                        toast.error(`File ${file.name} is larger than ${MAX_FILE_SIZE_MB} MB.`);
+                    }
+                }, (index + errorIndex) * TOAST_DELAY_MS); // Delay berdasarkan urutan error
+            });
+        });
+        if (rejectedFiles[0].errors[0].code === 'too-many-files') {
+            toast.error(`You can only upload up to ${MAX_FILES} files.`);
+        }
+    }, []);
+
+    // Menghapus file berdasarkan index
+    const handleRemoveFile = (index: number) => {
+        setSecond((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    };
+
+    // Menggunakan react-dropzone untuk menangani drag-and-drop
+    const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+        onDrop,
+        onDropRejected,
+        accept: { 'image/*': [] }, // Hanya mengizinkan gambar
+        noClick: true, // Tidak memicu file picker saat halaman diklik, kecuali tombol kecil
+        noKeyboard: true, // Mencegah file picker terbuka dengan keyboard
+        maxFiles: MAX_FILES,
+        maxSize: MAX_FILE_SIZE_MB * 1024 * 1024, // Konversi dari MB ke byte
+    });
+
+    const handleUpload = async (e: FormEvent) => {
+        e.preventDefault();
+        const images = new FormData();
+        if (second.length > 0) {
+            for (let i = 0; i < second.length; i++) {
+                images.append('images[]', second[i]);
+            }
+        }
+        images.append('palet_id', (detailDataPallet?.id ?? 0).toString());
+        try {
+            await uploadFile(images)
+                .unwrap()
+                .then((res: any) => {
+                    console.log('success:', res);
+                    setSecond([]);
+                    setIsUploadOpen(false);
+                })
+                .catch((err: any) => console.log('success:', err));
+        } catch (error: any) {
+            console.log('error upload:', error);
+            toast.error('something went wrong.');
+        }
+    };
 
     useEffect(() => {
         if (isSuccess && data) {
@@ -110,6 +224,9 @@ const PalletDetail = () => {
         setIsModalOpen(false);
         setSearchProductBundle('');
     };
+    const handleCloseUpload = () => {
+        setIsUploadOpen(false);
+    };
 
     const handleAddDetailProduct = async (e: MouseEvent<HTMLButtonElement>, selectedProductId: string) => {
         e.preventDefault();
@@ -122,59 +239,6 @@ const PalletDetail = () => {
         } catch (error) {
             toast.error('Gagal menambahkan produk ke bundle.');
             console.error('Error adding product to bundle:', error);
-        }
-    };
-
-    // State untuk menyimpan foto yang diupload dan URL preview
-    const [selectedImages, setSelectedImages] = useState<File[]>([]);
-    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-
-    // Fungsi untuk meng-handle upload gambar
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files || []);
-        const newImages = [];
-        const newPreviews = [];
-
-        if (files.length + selectedImages.length > 8) {
-            alert('Maksimal hanya bisa meng-upload 8 gambar.');
-            return;
-        }
-
-        for (const file of files) {
-            if (file.size > 2 * 1024 * 1024) {
-                alert(`${file.name} melebihi batas ukuran 2MB.`);
-            } else {
-                newImages.push(file);
-                newPreviews.push(URL.createObjectURL(file));
-            }
-        }
-
-        setSelectedImages([...selectedImages, ...newImages]);
-        setPreviewUrls([...previewUrls, ...newPreviews]);
-    };
-
-    // Fungsi untuk menghapus gambar dari preview
-    const handleRemoveImage = (index: number) => {
-        const newImages = [...selectedImages];
-        const newPreviews = [...previewUrls];
-
-        newImages.splice(index, 1);
-        newPreviews.splice(index, 1);
-
-        setSelectedImages(newImages);
-        setPreviewUrls(newPreviews);
-    };
-
-    // Fungsi untuk meng-upload gambar ke server
-    const handleUpload = async () => {
-        if (selectedImages.length > 0) {
-            const formData = new FormData();
-            selectedImages.forEach((image) => {
-                formData.append('images', image);
-            });
-
-            // Kirim formData ke server
-            // await axios.post('/api/upload', formData);
         }
     };
 
@@ -239,6 +303,114 @@ const PalletDetail = () => {
 
     return (
         <div>
+            <div>
+                <Transition appear show={isUploadOpen} as={Fragment}>
+                    <Dialog
+                        as="div"
+                        open={isUploadOpen}
+                        onClose={() => {
+                            setIsUploadOpen(false);
+                            setSearchProductBundle('');
+                        }}
+                    >
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <div className="fixed inset-0" />
+                        </Transition.Child>
+                        <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                            <form onSubmit={handleUpload} className="flex items-center justify-center min-h-screen px-4">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel as="div" className="panel relative border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark">
+                                        <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
+                                            <div className="text-lg font-bold">Upload Image</div>
+                                            {second.length > 0 && <button className="btn btn-outline-danger">Clear All</button>}
+                                        </div>
+                                        {second.length === 0 && (
+                                            <div
+                                                {...getRootProps()}
+                                                className={`w-full h-[70vh] flex items-center justify-center p-6 bg-white/5 backdrop-blur-sm ${isDragActive ? 'opacity-100' : 'opacity-100'}`}
+                                            >
+                                                <div className="w-full h-full flex items-center justify-center border-[3px] border-sky-500 rounded-lg border-dashed flex-col">
+                                                    <input {...getInputProps()} />
+                                                    {isDragActive ? (
+                                                        <p className="text-2xl text-sky-700 font-bold">Drop image here!</p>
+                                                    ) : (
+                                                        <>
+                                                            <button type="button" onClick={open} className="px-5 py-2 z-10 mt-5 mb-2 bg-sky-600 rounded-full font-bold text-white cursor-pointer">
+                                                                Upload Image
+                                                            </button>
+                                                            <p>or drop a file here!</p>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {(detailDataPallet?.palet_images.length ?? 0) + second.length < 8 && (detailDataPallet?.palet_images.length ?? 0) + second.length !== 0 && (
+                                            <div className="w-full h-full flex items-center my-4 p-6 justify-center border-[3px] border-sky-500 rounded-lg border-dashed flex-col">
+                                                <button type="button" onClick={open} className="px-5 py-2 mt-5 z-20 mb-2 bg-sky-600 rounded-full font-bold text-white cursor-pointer">
+                                                    Upload Image
+                                                </button>
+                                                <p>or drop a file here!</p>
+                                            </div>
+                                        )}
+                                        {(detailDataPallet?.palet_images.length ?? 0) + second.length < 8 && (detailDataPallet?.palet_images.length ?? 0) + second.length !== 0 && (
+                                            <div
+                                                {...getRootProps()}
+                                                className={`absolute top-0 left-0 w-full h-full flex items-center justify-center p-6 bg-white/5 backdrop-blur-sm ${
+                                                    isDragActive ? 'opacity-100 z-30' : 'opacity-0 z-10'
+                                                }`}
+                                            >
+                                                <div className="w-full h-full flex items-center justify-center border-[3px] border-sky-500 rounded-lg border-dashed flex-col">
+                                                    <input {...getInputProps()} />
+                                                    <p className="text-2xl text-sky-700 font-bold">Drop image here!</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {second.length > 0 && (
+                                            <div className="grid grid-cols-4 gap-4 my-4">
+                                                {second.map((file, index) => (
+                                                    <div key={index} className="relative">
+                                                        <img src={URL.createObjectURL(file)} alt={`uploaded-${index}`} className="w-full shadow z-0 aspect-square object-cover rounded" />
+                                                        <button
+                                                            onClick={() => handleRemoveFile(index)}
+                                                            className="absolute top-1 right-1 z-20 text-white bg-red-600 shadow-sm rounded-full w-6 h-6 flex items-center justify-center"
+                                                        >
+                                                            &times;
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <div className="flex justify-end items-center">
+                                            <button type="submit" className="btn btn-outline-info z-20" disabled={second.length === 0}>
+                                                Upload
+                                            </button>
+                                            <button type="button" className="btn btn-outline-danger z-20" onClick={handleCloseUpload}>
+                                                Kembali
+                                            </button>
+                                        </div>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </form>
+                        </div>
+                    </Dialog>
+                </Transition>
+            </div>
             <div>
                 <Transition appear show={isModalOpen} as={Fragment}>
                     <Dialog
@@ -370,67 +542,9 @@ const PalletDetail = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Pallet</h1>
             </div>
             <div>
-                {/* <div className="flex gap-4 items-center mb-4 divide-x divide-gray-500">
-                    <form className="w-[400px]" onSubmit={handleSaveEdit}>
-                        <div className="flex items-center justify-between ">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Barcode Pallet :
-                            </label>
-                            <input id="categoryName" disabled type="text" value={detailDataPallet?.palet_barcode} className=" form-input w-[250px]" required />
-                        </div>
-                        <span className="text-[8px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
-                        <div className="flex items-center justify-between mb-2 mt-2">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Nama Pallet :
-                            </label>
-                            <input id="categoryName" type="text" className=" form-input w-[250px]" onChange={handleInputChange} name="nama_palet" value={editFormData.nama_palet} required />
-                        </div>
-                        <div className="flex items-center justify-between  mb-2">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Kategori Pallet :
-                            </label>
-                            <input id="categoryName" disabled type="text" value={detailDataPallet?.category_palet} placeholder="Rp" className=" form-input w-[250px]" required />
-                        </div>
-                        <div className="flex items-center justify-between mb-2">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Total Harga Lama :
-                            </label>
-                            <input id="categoryName" disabled type="text" value={formatRupiah(detailDataPallet?.total_harga_lama ?? '0')} placeholder="Rp" className=" form-input w-[250px]" required />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Total Harga Baru:
-                            </label>
-                            <input
-                                id="categoryName"
-                                // disabled
-                                type="text"
-                                name="total_price_palet"
-                                onChange={handleInputChange}
-                                value={editFormData.total_price_palet}
-                                // value={formatRupiah(detailDataPallet?.total_price_palet ?? '0')}
-                                placeholder="Rp"
-                                className=" form-input w-[250px]"
-                                required
-                            />
-                        </div>
-                        <button type="submit" className="btn btn-primary mt-4 px-16">
-                            Update
-                        </button>
-                    </form>
-                    <div className="px-4">
-                        <BarcodePalet
-                            barcode={detailDataPallet?.palet_barcode ?? ''}
-                            category={detailDataPallet?.category_palet ?? ''}
-                            newPrice={formatRupiah(detailDataPallet?.total_price_palet ?? '0')}
-                            oldPrice={formatRupiah(detailDataPallet?.total_harga_lama ?? '0')}
-                            namePalet={detailDataPallet?.name_palet ?? ''}
-                        />
-                    </div>
-                </div> */}
                 <div className="flex gap-4 items-start mb-4">
                     {/* Kolom informasi dan form barcode */}
-                    <form className="w-[50%]" onSubmit={handleSaveEdit}>
+                    <form className="w-1/3" onSubmit={handleSaveEdit}>
                         {/* Informasi Pallet */}
                         <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
@@ -471,13 +585,39 @@ const PalletDetail = () => {
                                 required
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary mt-4 px-16">
-                            Update
-                        </button>
+                        <div className="flex gap-3">
+                            <button type="submit" className="btn btn-primary mt-4 px-16">
+                                Update
+                            </button>
+                            <button type="button" disabled={detailDataPallet?.palet_images.length === 8} onClick={() => setIsUploadOpen(true)} className="btn btn-primary mt-4">
+                                Add Image
+                            </button>
+                        </div>
                     </form>
 
+                    <div className="w-1/3 grid grid-cols-4 gap-3">
+                        {(!detailDataPallet?.palet_images || detailDataPallet.palet_images.length <= 0) && (
+                            <div className="col-span-4 h-20 flex items-center justify-center border-2 border-gray-500 border-dashed rounded-md font-semibold">Image not yet.</div>
+                        )}
+                        {detailDataPallet?.palet_images && detailDataPallet.palet_images.length > 0 && (
+                            <div className="grid grid-cols-4 gap-4 my-4">
+                                {detailDataPallet?.palet_images.map((file, index) => (
+                                    <div key={index} className="relative">
+                                        <img src={file} alt={`uploaded-${index}`} className="w-full shadow z-0 aspect-square object-cover rounded" />
+                                        <button
+                                            onClick={() => handleRemoveFile(index)}
+                                            className="absolute top-1 right-1 z-20 text-white bg-red-600 shadow-sm rounded-full w-6 h-6 flex items-center justify-center"
+                                        >
+                                            &times;
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                     {/* Bagian kanan: Barcode dan Upload Foto di sebelah kanan barcode */}
-                    <div className="flex gap-4 items-start">
+                    <div className="flex gap-4 w-1/3 items-start">
                         {/* Barcode */}
                         <div className="flex flex-col">
                             <BarcodePalet
@@ -488,37 +628,8 @@ const PalletDetail = () => {
                                 namePalet={detailDataPallet?.name_palet ?? ''}
                             />
                         </div>
-
-                        {/* Form Upload Foto di sebelah barcode */}
-                        <div className="flex flex-col ml-4">
-                            <label htmlFor="upload" className="btn btn-primary mb-2">
-                                Upload Foto
-                            </label>
-                            <input type="file" id="upload" accept="image/*" className="hidden" onChange={handleImageChange} multiple />
-                            <div className="grid grid-cols-4 gap-4">
-                                {previewUrls.map((url, index) => (
-                                    <div key={index} className="relative">
-                                        <img src={url} alt={`Preview ${index + 1}`} className="w-32 h-32 object-cover rounded" />
-                                        <button className="btn btn-outline-danger absolute top-0 right-0" onClick={() => handleRemoveImage(index)}>
-                                            Remove
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                            {selectedImages.length > 0 && (
-                                <button className="btn btn-outline-primary mt-4" onClick={handleUpload}>
-                                    Simpan Foto
-                                </button>
-                            )}
-                        </div>
                     </div>
                 </div>
-
-                {/* <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
-                </div> */}
                 <div className="panel">
                     <div className="flex items-center justify-between mb-4">
                         <Link to="/storage/pallet">

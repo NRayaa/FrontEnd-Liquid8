@@ -1,5 +1,16 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CreatePaletBody, CreatePaletResponse, DeleteDetailPalleteResponse, DeletePaletList, DetailPalletProps, DisplayPallet, ExportToExcel, FilterDisplayPallet, PaletLists, filterPalletLists } from './types';
+import {
+    CreatePaletBody,
+    CreatePaletResponse,
+    DeleteDetailPalleteResponse,
+    DeletePaletList,
+    DetailPalletProps,
+    DisplayPallet,
+    ExportToExcel,
+    FilterDisplayPallet,
+    PaletLists,
+    filterPalletLists,
+} from './types';
 import { baseQuery } from './prepareHeader';
 
 export const palletApi = createApi({
@@ -40,6 +51,13 @@ export const palletApi = createApi({
                 body,
             }),
         }),
+        uploadPallete: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/palet-images',
+                method: 'POST',
+                body,
+            }),
+        }),
         showPallet: builder.query<DetailPalletProps, number>({
             query: (id) => `/palet/${id}`,
         }),
@@ -49,7 +67,7 @@ export const palletApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        addDetailPalletProduct: builder.mutation<any, { productId: string, palletId: string }>({
+        addDetailPalletProduct: builder.mutation<any, { productId: string; palletId: string }>({
             query: ({ productId, palletId }) => ({
                 url: `/product-palet/${palletId}/${productId}/add`,
                 method: 'GET',
@@ -85,4 +103,5 @@ export const {
     useAddDetailPalletProductMutation,
     useUpdateDetailPalletMutation,
     useExportToExcelDetailPalletMutation,
+    useUploadPalleteMutation,
 } = palletApi;
