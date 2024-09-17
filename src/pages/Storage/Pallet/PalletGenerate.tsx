@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import { DataTable } from 'mantine-datatable';
 import {
@@ -8,6 +8,7 @@ import {
     useFilterPalletMutation,
     useFilterProductListsQuery,
     usePalletListsQuery,
+    useUploadPalleteMutation,
 } from '../../../store/services/palletApi';
 import { ProdcutItem } from '../../../store/services/types';
 import { formatRupiah, generateRandomString } from '../../../helper/functions';
@@ -15,6 +16,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import { useDropzone } from 'react-dropzone';
+
+const MAX_FILES = 8;
+const MAX_FILE_SIZE_MB = 2;
+const TOAST_DELAY_MS = 500; // Delay antar toast dalam milidetik
 
 const PalletGenerate = () => {
     const [pageLeftTable, setPageLeftTable] = useState<number>(1);
@@ -25,6 +31,7 @@ const PalletGenerate = () => {
     const [filterPallet, results] = useFilterPalletMutation();
     const [deleteFilterProduct, deleteResults] = useDeleteFilterProductMutation();
     const [createPallete, createResults] = useCreatePalleteMutation();
+    const [uploadImage] = useUploadPalleteMutation();
     const [input, setInput] = useState({
         name: '',
         category: '',
@@ -35,59 +42,88 @@ const PalletGenerate = () => {
     const palletLists = usePalletListsQuery({ page: 1, q: '' });
 
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
-    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-    // Fungsi untuk meng-handle upload gambar
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files || []);
-        const newImages = [];
-        const newPreviews = [];
 
-        if (files.length + selectedImages.length > 8) {
-            alert('Maksimal hanya bisa meng-upload 8 gambar.');
-            return;
-        }
+    const [second, setSecond] = useState<File[]>([]);
 
-        for (const file of files) {
-            if (file.size > 2 * 1024 * 1024) {
-                alert(`${file.name} melebihi batas ukuran 2MB.`);
-            } else {
-                newImages.push(file);
-                newPreviews.push(URL.createObjectURL(file));
+    // Fungsi validasi dan handle file drop
+    const onDrop = useCallback(
+        (acceptedFiles: File[]) => {
+            toast.dismiss(); // Menutup semua toast yang aktif
+
+            // Total file yang akan ada setelah menambahkan file baru
+            const totalFiles = second.length + acceptedFiles.length;
+            const remainingFileSlots = MAX_FILES - second.length;
+
+            // Menyimpan error baru
+            const newErrors: string[] = [];
+
+            // Cek batas jumlah file
+            if (second.length >= MAX_FILES) {
+                newErrors.push(`You can only upload up to ${MAX_FILES} files.`);
+            } else if (totalFiles > MAX_FILES) {
+                newErrors.push(`You can only upload ${remainingFileSlots} more file(s).`);
             }
-        }
 
-        setSelectedImages([...selectedImages, ...newImages]);
-        setPreviewUrls([...previewUrls, ...newPreviews]);
-    };
-
-    const handleRemoveImage = (index: number) => {
-        const newImages = [...selectedImages];
-        const newPreviews = [...previewUrls];
-
-        newImages.splice(index, 1);
-        newPreviews.splice(index, 1);
-
-        setSelectedImages(newImages);
-        setPreviewUrls(newPreviews);
-    };
-
-    // Handle submit untuk foto upload
-    const handleUploadSubmit = async () => {
-        try {
-            const formData = new FormData();
-            selectedImages.forEach((image) => {
-                formData.append('images', image);
+            // Cek batas ukuran file dan hanya tambahkan file yang valid
+            const validFiles: File[] = [];
+            acceptedFiles.slice(0, remainingFileSlots).forEach((file) => {
+                const fileSizeMB = file.size / (1024 * 1024); // Mengonversi byte ke MB
+                if (fileSizeMB > MAX_FILE_SIZE_MB) {
+                    newErrors.push(`File ${file.name} is larger than ${MAX_FILE_SIZE_MB} MB.`);
+                } else {
+                    validFiles.push(file);
+                }
             });
 
-            // Simpan gambar (logika untuk mengirim formData ke API)
-            // await axios.post('/api/upload', formData);
+            // Menampilkan toast dengan delay untuk setiap error
+            newErrors.forEach((error, index) => {
+                setTimeout(() => {
+                    toast.error(error); // Menampilkan toast error
+                }, index * TOAST_DELAY_MS); // Delay berdasarkan urutan error
+            });
 
-            toast.success('Gambar berhasil di-upload.');
-        } catch (err) {
-            console.error('Error uploading images:', err);
-            toast.error('Gagal upload gambar.');
+            // Jika tidak ada error, tambahkan file yang valid
+            if (validFiles.length > 0) {
+                setSecond((prevFiles) => [...prevFiles, ...validFiles]); // Tambahkan file yang valid
+            }
+        },
+        [second]
+    );
+
+    // Menangani file yang ditolak
+    const onDropRejected = useCallback((rejectedFiles: any[]) => {
+        toast.dismiss(); // Menutup semua toast yang aktif
+
+        rejectedFiles.forEach((rejectedFile, index) => {
+            const { file, errors } = rejectedFile;
+            errors.forEach((error: any, errorIndex: number) => {
+                setTimeout(() => {
+                    if (error.code === 'file-too-large') {
+                        toast.error(`File ${file.name} is larger than ${MAX_FILE_SIZE_MB} MB.`);
+                    }
+                }, (index + errorIndex) * TOAST_DELAY_MS); // Delay berdasarkan urutan error
+            });
+        });
+        if (rejectedFiles[0].errors[0].code === 'too-many-files') {
+            toast.error(`You can only upload up to ${MAX_FILES} files.`);
         }
+    }, []);
+
+    // Menghapus file berdasarkan index
+    const handleRemoveFile = (index: number) => {
+        setSecond((prevFiles) => prevFiles.filter((_, i) => i !== index));
     };
+
+    // Menggunakan react-dropzone untuk menangani drag-and-drop
+    const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+        onDrop,
+        onDropRejected,
+        accept: { 'image/*': [] }, // Hanya mengizinkan gambar
+        noClick: true, // Tidak memicu file picker saat halaman diklik, kecuali tombol kecil
+        noKeyboard: true, // Mencegah file picker terbuka dengan keyboard
+        maxFiles: MAX_FILES,
+        maxSize: MAX_FILE_SIZE_MB * 1024 * 1024, // Konversi dari MB ke byte
+    });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInput((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
@@ -133,7 +169,14 @@ const PalletGenerate = () => {
                 total_product_palet: filterData?.data?.total,
                 palet_barcode: input.barcode,
             };
+            const images = new FormData();
+            if (second.length > 0) {
+                for (let i = 0; i < second.length; i++) {
+                    images.append('images[]', second[i]);
+                }
+            }
             await createPallete(body);
+            await uploadImage(images);
         } catch (err) {
             console.log(err);
         }
@@ -175,7 +218,20 @@ const PalletGenerate = () => {
     }
 
     return (
-        <>
+        <div className="relative">
+            {second.length < 8 && (
+                <div
+                    {...getRootProps()}
+                    className={`absolute top-0 left-0 w-[calc(100%+48px)] -m-6 h-[calc(100vh-56px)] flex items-center justify-center p-6 bg-white/5 backdrop-blur-sm ${
+                        isDragActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                    }`}
+                >
+                    <div className="w-full h-full flex items-center justify-center border-[8px] border-sky-500 rounded-lg border-dashed">
+                        <input {...getInputProps()} />
+                        <p className="text-5xl text-sky-500 font-bold uppercase">Drop image anywhere</p>
+                    </div>
+                </div>
+            )}
             <BreadCrumbs base="Home" basePath="/" sub="Pallet" subPath="/storage/pallet" current="Add Pallet" />
             {/* Flex container untuk form pallet dan form upload */}
             <div className="flex justify-between gap-8 mt-10">
@@ -238,69 +294,30 @@ const PalletGenerate = () => {
                 </div>
 
                 {/* Form Upload Foto */}
-                <div className="panel w-[50%] bg-white shadow-lg rounded-lg p-4">
-                    <div className="flex flex-col ml-4">
-                        <label htmlFor="upload" className="btn btn-primary mb-2">
-                            Upload Foto
-                        </label>
-                        <input type="file" id="upload" accept="image/*" className="hidden" onChange={handleImageChange} multiple />
-                        <div className="grid grid-cols-4 gap-4">
-                            {previewUrls.map((url, index) => (
-                                <div key={index} className="relative">
-                                    <img src={url} alt={`Preview ${index + 1}`} className="w-32 h-32 object-cover rounded" />
-                                    <button className="btn btn-outline-danger absolute top-0 right-0" onClick={() => handleRemoveImage(index)}>
-                                        Remove
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                        {selectedImages.length > 0 && (
-                            <button className="btn btn-outline-primary mt-4" onClick={handleUploadSubmit}>
-                                Simpan Foto
+                <div className=" w-[50%]">
+                    <div className="w-full panel p-4 bg-white shadow-lg rounded-lg">
+                        <div className="w-full flex items-center py-5 flex-col">
+                            <button type="button" onClick={open} className="px-5 py-2 mt-3 bg-sky-600 rounded-full font-bold text-white cursor-pointer">
+                                Upload Image
                             </button>
+                            <p>or drop a file</p>
+                        </div>
+                        {/* Render pratinjau gambar */}
+                        {second.length > 0 && (
+                            <div className="grid grid-cols-4 gap-4 pt-4 border-t border-gray-500">
+                                {second.map((file, index) => (
+                                    <div key={index} className="relative">
+                                        <img src={URL.createObjectURL(file)} alt={`uploaded-${index}`} className="w-full h-32 object-cover rounded" />
+                                        <button onClick={() => handleRemoveFile(index)} className="absolute top-1 right-1 text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center">
+                                            &times;
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
-            {/* <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Pallet Generate</h5>
-                <form className="w-[400px]" onSubmit={handleSubmitPalet}>
-                    <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama Pallet :
-                        </label>
-                        <input onChange={handleInputChange} name="name" value={input.name} id="categoryName" type="text" className="form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Kategori :
-                        </label>
-                        <input onChange={handleInputChange} name="category" value={input.category} id="categoryName" type="text" className="form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Total Harga:
-                        </label>
-                        <input disabled name="totalPrice" value={formatRupiah(filterData?.total_new_price.toString() ?? '0')} id="categoryName" type="text" className="form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Total Produk:
-                        </label>
-                        <input disabled onChange={handleInputChange} name="totalProduct" value={filterData?.data.data.length} id="categoryName" type="text" className="form-input w-[250px]" required />
-                    </div>
-                    <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                            Barcode Pallet :
-                        </label>
-                        <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary mt-4 px-16 uppercase">
-                        Create Palet
-                    </button>
-                </form>
-            </div> */}
             <div className="datatables mt-8">
                 <div className="panel">
                     <div className="flex items-center justify-between mb-4">
@@ -397,7 +414,7 @@ const PalletGenerate = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -250,7 +250,7 @@ interface DocumentApprovmentItem {
     role: string;
     riwayat_check_id: number;
     reat_at: number;
-    riwayat_check?: { 
+    riwayat_check?: {
         id: number;
         user_id: number;
         code_document: string;
@@ -260,7 +260,7 @@ interface DocumentApprovmentItem {
         total_data_in: number;
         total_data_lolos: number;
         total_data_damaged: number;
-        total_data_abnormal: number
+        total_data_abnormal: number;
         total_discrepancy: number;
         created_at: string;
         updated_at: string;
@@ -278,10 +278,10 @@ interface CheckDocumentApprovmentItem {
     new_quantity_product: number;
     new_price_product: string;
     old_price_product: string;
-    new_date_in_product: string
+    new_date_in_product: string;
     new_status_product: string;
     new_quality: string;
-    new_category_product : string;
+    new_category_product: string;
     new_tag_product: string;
     created_at: string;
     updated_at: string;
@@ -577,7 +577,7 @@ interface NewProductItem {
     new_category_product: string;
     new_tag_product: null | string;
     new_discount: string;
-    display_price: string
+    display_price: string;
     condition?: string;
     deskripsi?: string;
     created_at: string;
@@ -1618,7 +1618,7 @@ interface SaleReportResponse {
                 before_discount: number;
             }[];
             total_harga: number;
-            total_price_before_discount:number;
+            total_price_before_discount: number;
         };
     };
     message: string;
@@ -1630,7 +1630,7 @@ interface SaleReportResponse {
         buyer_address_document_sale: string;
         total_product_document_sale: number;
         total_price_document_sale: number;
-        total_price_before_discount:number;
+        total_price_before_discount: number;
         status_document_sale: string;
         created_at: string;
         updated_at: string;
@@ -1662,6 +1662,7 @@ interface DetailPalletProps {
             total_harga_lama: string;
             created_at: string;
             updated_at: string;
+            palet_images: string[];
             palet_products: SubPaletItem[];
         };
     };
@@ -1921,16 +1922,16 @@ interface ScanResultItem {
     created_at: string;
     updated_at: string;
     user: {
-        id: number,
-        name: string,
-        username: string,
-        email: string,
-        email_verified_at: null,
-        api_key: null,
-        role_id: number,
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        email_verified_at: null;
+        api_key: null;
+        role_id: number;
         created_at: string;
         updated_at: string;
-    }
+    };
 }
 
 interface ScanResultLinks {
@@ -1990,8 +1991,8 @@ interface GetCheckProdukItem {
     new_discount: string;
     display_price: string;
     days_since_created: string;
-    old_name_product:string;
-    old_quantity_product:string;
+    old_name_product: string;
+    old_quantity_product: string;
     created_at: string;
     updated_at: string;
 }
