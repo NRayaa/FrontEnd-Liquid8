@@ -41,10 +41,25 @@ const DetailCheckHistory = () => {
         }
     };
 
-    const { data: lolosData } = useGetProductLolosQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'LOLOS' });
-    const { data: damagedData } = useGetProductDamagedQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'DAMAGED' });
-    const { data: abnormalData } = useGetProductAbnormalQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'ABNORMAL' });
-    const { data: discrepancyData } = useDiscrepancyQuery({ code_document: detailCheckData?.code_document ?? '', page, search: '' }, { skip: productSelected !== 'DISCREPANCY' });
+    const { data: lolosData } = useGetProductLolosQuery(
+        { code_document: detailCheckData?.code_document ?? '', page, search: '' },
+        { skip: productSelected !== 'LOLOS' || !detailCheckData?.code_document }
+    );
+
+    const { data: damagedData } = useGetProductDamagedQuery(
+        { code_document: detailCheckData?.code_document ?? '', page, search: '' },
+        { skip: productSelected !== 'DAMAGED' || !detailCheckData?.code_document }
+    );
+
+    const { data: abnormalData } = useGetProductAbnormalQuery(
+        { code_document: detailCheckData?.code_document ?? '', page, search: '' },
+        { skip: productSelected !== 'ABNORMAL' || !detailCheckData?.code_document }
+    );
+
+    const { data: discrepancyData } = useDiscrepancyQuery(
+        { code_document: detailCheckData?.code_document ?? '', page, search: '' },
+        { skip: productSelected !== 'DISCREPANCY' || !detailCheckData?.code_document }
+    );
 
     const productTypeActive = useMemo(() => {
         if (productSelected === 'LOLOS') {
@@ -123,13 +138,7 @@ const DetailCheckHistory = () => {
                         })}
                     </select>
                 </div>
-                <TableSubProduct
-                    productTypeActive={productTypeActiveArray}
-                    totalRecord={totalRecord ?? 0}
-                    perPage={perPage ?? 0}
-                    page={page}
-                    changePage={(prevPage: number) => setPage(prevPage)}
-                />
+                <TableSubProduct productTypeActive={productTypeActiveArray} totalRecord={totalRecord ?? 0} perPage={perPage ?? 0} page={page} changePage={(prevPage: number) => setPage(prevPage)} />
             </div>
         </div>
     );
