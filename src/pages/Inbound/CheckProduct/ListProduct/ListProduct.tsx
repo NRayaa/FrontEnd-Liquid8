@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useGetDocumentApproveProgressQuery } from '../../../../store/services/categoriesApi';
 import { useDebounce } from '../../../../helper/functions';
 import Swal from 'sweetalert2';
-import { useDeleteAllByCodeDocumentMutation } from '../../../../store/services/checkProduct';
+import { useDeleteAllByCodeDocumentMutation, usePartialStagingMutation } from '../../../../store/services/checkProduct';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 import { useLazySpvApprovalQuery } from '../../../../store/services/notificationsApi';
@@ -17,6 +17,8 @@ const ListProductApprove = () => {
     const searchDebounce = useDebounce(search);
     const { data, refetch, isError, isSuccess } = useGetDocumentApproveProgressQuery({ p: page, q: searchDebounce });
     const [spvApproval, resultsApprove] = useLazySpvApprovalQuery();
+    const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+    const [partialStaging] = usePartialStagingMutation();
 
     const handleApprove = async (id: number) => {
         await spvApproval(id);
@@ -31,7 +33,6 @@ const ListProductApprove = () => {
 
     const listApproveProduct: any = useMemo(() => {
         if (isSuccess) {
-            console.log('RESPONSE', data?.data?.resource);
             return data?.data?.resource?.data;
         }
     }, [data]);
@@ -49,6 +50,19 @@ const ListProductApprove = () => {
             }
         }
     }, [results]);
+
+    const handleToPartialStaging = async (codeDocument: string) => {
+        setLoadingStates((prev) => ({ ...prev, [codeDocument]: true }));
+        try {
+            const response = await partialStaging(codeDocument).unwrap();
+            toast.success(response?.data?.message || 'Successfully moved to partial staging');
+            refetch();
+        } catch (error) {
+            toast.error('Failed to move to partial staging');
+        } finally {
+            setLoadingStates((prev) => ({ ...prev, [codeDocument]: false }));
+        }
+    };
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -168,6 +182,29 @@ const ListProductApprove = () => {
                                 title: 'Aksi',
                                 render: (item: DocumentApprovmentProgressItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
+                                        <button
+                                            type="button"
+                                            className={`btn btn-outline-success ${loadingStates[item.code_document] ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            onClick={() => handleToPartialStaging(item.code_document)}
+                                            disabled={loadingStates[item.code_document]}
+                                        >
+                                            {loadingStates[item.code_document] ? (
+                                                <>
+                                                    <svg className="animate-spin h-5 w-5 mr-3 inline-block" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path
+                                                            className="opacity-75"
+                                                            fill="currentColor"
+                                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                        ></path>
+                                                    </svg>
+                                                    Processing...
+                                                </>
+                                            ) : (
+                                                'To Partial Staging'
+                                            )}
+                                        </button>
+
                                         <Link to={`/inbound/check_product/product_approve_document/detail/${item.id}`} state={{ code_document: item?.code_document }}>
                                             <button type="button" className="btn btn-outline-info">
                                                 Details
