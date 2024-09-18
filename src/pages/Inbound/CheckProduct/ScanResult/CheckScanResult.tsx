@@ -107,7 +107,7 @@ const CheckScanResult = () => {
         const percentageInt = 100 - parseInt(percentageState);
         const newPriceInt = Math.floor(parseInt(newPrice ?? '0'));
 
-        const result = (newPriceInt * percentageInt) / 100;
+        const result = Math.floor((newPriceInt * percentageInt) / 100);
 
         setNewPricePercentage(JSON.stringify(result));
     }, [percentageState]);

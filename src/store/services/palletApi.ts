@@ -46,7 +46,7 @@ export const palletApi = createApi({
         }),
         createPallete: builder.mutation<any, any>({
             query: (body) => ({
-                url: '/palet',
+                url: '/addPalet',
                 method: 'POST',
                 body,
             }),
@@ -59,7 +59,7 @@ export const palletApi = createApi({
             }),
         }),
         showPallet: builder.query<DetailPalletProps, number>({
-            query: (id) => `/palet/${id}`,
+            query: (id) => `/palets-detail/${id}`,
         }),
         deleteDetailPalletProduct: builder.mutation<DeleteDetailPalleteResponse, number | undefined>({
             query: (id) => ({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatRupiah } from '../../../../helper/functions';
+import { formatCurrency, formatRupiah } from '../../../../helper/functions';
 
 interface ScanResultBarcodeDataProps {
     header: string;
@@ -44,22 +44,14 @@ const ScanResultBarcodeData: React.FC<ScanResultBarcodeDataProps> = ({
                     type="text"
                     placeholder="Enter Harga"
                     className="form-input"
-                    value={harga}
+                    value={formatCurrency(parseFloat(harga))}
                     disabled={disabled}
                     // onChange={(e) => handleSetHarga(e.target.value)}
                 />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
-                <input
-                    id="gridQTY1"
-                    type="text"
-                    placeholder="Enter QTY"
-                    className="form-input"
-                    value={qty}
-                    onChange={(e) => handleSetQty(e.target.value)}
-                    disabled={disabled}
-                />
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={qty} onChange={(e) => handleSetQty(e.target.value)} disabled={disabled} />
             </div>
         </div>
     );

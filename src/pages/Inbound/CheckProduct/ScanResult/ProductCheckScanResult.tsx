@@ -409,7 +409,7 @@ const ProductCheckScanResult: React.FC<ProductCheckScanResult> = ({
                                 ))}
 
                             {!isSending && (
-                                <button disabled={(parseFloat(oldData.product_price) > 100000 && !selectedOption) || isSending} className="btn btn-info mt-4 col-span-3">
+                                <button disabled={(parseFloat(oldData?.product_price) > 100000 && !selectedOption) || isSending} className="btn btn-info mt-4 col-span-3">
                                     SEND
                                 </button>
                             )}
