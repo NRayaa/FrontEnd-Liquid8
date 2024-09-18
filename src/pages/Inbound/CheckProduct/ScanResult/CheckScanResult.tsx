@@ -18,7 +18,7 @@ import ScanResultBarcodeData from './ScanResultBarcodeData';
 
 const CheckScanResult = () => {
     const { state } = useLocation();
-    const [inputBarcode, setInputBarcode] = useState<string>(state?.product_name || ''); // Ambil dari state jika ada
+    const [inputBarcode, setInputBarcode] = useState<string>(state?.id || ''); // Ambil dari state jika ada
     const [isProductCheckScanResult, setIsProductCheck] = useState<boolean>(false);
     const [isResetValue, setIsResetValue] = useState<boolean>(true);
     const [newPricePercentage, setNewPricePercentage] = useState<string>('0');
@@ -31,6 +31,7 @@ const CheckScanResult = () => {
     const [isQuantity, setIsQuantity] = useState<boolean>(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
 
+    console.log(state.id, inputBarcode, inputBarcode.length === 0 || inputBarcode === '', inputBarcode.length > 0);
     const [getName, results] = useLazyGetNameQuery();
 
     const [keterangan, setKeterangan] = useState<string>('');
@@ -53,7 +54,7 @@ const CheckScanResult = () => {
             return;
         }
         try {
-            await getName({ product_name: inputBarcode });
+            await getName({ id: inputBarcode });
             setIsResetValue(false);
         } catch (err) {
             console.log(err);
@@ -113,9 +114,7 @@ const CheckScanResult = () => {
 
     useEffect(() => {
         // Ketika komponen pertama kali render, langsung search menggunakan product_name dari state
-        if (inputBarcode.length > 0) {
-            handleInputBarcode();
-        }
+        handleInputBarcode();
     }, [inputBarcode]);
 
     useEffect(() => {

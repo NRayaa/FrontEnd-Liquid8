@@ -56,7 +56,7 @@ export const checkProduct = createApi({
             }),
         }),
         getName: builder.query<GetNameResponse | undefined, GetNameBody>({
-            query: ({ product_name }) => `/product_scan_search?product_name=${product_name}`,
+            query: ({ id }) => `/product_scan_search?id=${id}`,
         }),
         partialStaging: builder.mutation<any, any>({
             query: (code_document) => ({
@@ -67,4 +67,17 @@ export const checkProduct = createApi({
     }),
 });
 
-export const { useDocumentsCheckProductsQuery, useLazyGetBarcodeQuery, useDeleteDocumentMutation, useDeleteApproveMutation, useLazyGetProductRepairQuery, useCheckPriceMutation, useDeleteAllByCodeDocumentMutation, useDeleteApproveDocumentItemMutation, useListScanResultQuery, useDeleteScanResultMutation, useLazyGetNameQuery, usePartialStagingMutation } = checkProduct;
+export const {
+    useDocumentsCheckProductsQuery,
+    useLazyGetBarcodeQuery,
+    useDeleteDocumentMutation,
+    useDeleteApproveMutation,
+    useLazyGetProductRepairQuery,
+    useCheckPriceMutation,
+    useDeleteAllByCodeDocumentMutation,
+    useDeleteApproveDocumentItemMutation,
+    useListScanResultQuery,
+    useDeleteScanResultMutation,
+    useLazyGetNameQuery,
+    usePartialStagingMutation,
+} = checkProduct;

@@ -165,7 +165,7 @@ const ListScanResult = () => {
                                 title: 'Aksi',
                                 render: (item: ScanResultItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
-                                        <Link to="/inbound/check_product/check_scan_result" state={{ product_name: item.product_name }}>
+                                        <Link to="/inbound/check_product/check_scan_result" state={{ id: item.id }}>
                                             <button type="button" className="btn btn-outline-success">
                                                 Check
                                             </button>
