@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { formatCurrencyRp } from '../../../../helper/functions';
+import { formatCurrency } from '../../../../helper/functions';
 
 interface ScanResultNewBarcodeDataMultiProps {
     barcode: string;
@@ -24,13 +24,13 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
     handleSetCustomQuantityInput,
     handleIsQuantity,
     handleSetHarga,
-    handleSetQty
+    handleSetQty,
 }) => {
     const [inputQuantity, setInputQuantity] = useState<string>('');
     const [inputPrice, setInputPrice] = useState<string>('');
 
     useEffect(() => {
-        setInputPrice(formatCurrencyRp(newPrice));
+        setInputPrice(formatCurrency(parseFloat(newPrice)));
         setInputQuantity(qty);
     }, [qty, newPrice]);
 
@@ -42,7 +42,7 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
     };
 
     const handleInputPrice = (e: ChangeEvent<HTMLInputElement>) => {
-        const formattedPrice = formatCurrencyRp(e.target.value);
+        const formattedPrice = formatCurrency(parseFloat(e.target.value));
         setInputPrice(formattedPrice);
         handleSetNewPercentagePriceInput(e.target.value.replace(/[^0-9]/g, ''));
         handleSetHarga(e.target.value); // Menambahkan pemanggilan handler untuk Harga
@@ -57,36 +57,15 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
             </div>
             <div>
                 <label htmlFor="gridNama1">Nama</label>
-                <input
-                    id="gridNama1"
-                    type="text"
-                    placeholder="Enter Nama"
-                    className="form-input"
-                    value={nama}
-                    disabled
-                />
+                <input id="gridNama1" type="text" placeholder="Enter Nama" className="form-input" value={nama} disabled />
             </div>
             <div>
                 <label htmlFor="gridNama3">Harga</label>
-                <input
-                    id="gridNama3"
-                    type="text"
-                    placeholder="Enter Harga"
-                    className="form-input"
-                    value={inputPrice}
-                    onChange={handleInputPrice}
-                />
+                <input id="gridNama3" type="text" placeholder="Enter Harga" className="form-input" value={inputPrice} onChange={handleInputPrice} />
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
-                <input
-                    id="gridQTY1"
-                    type="text"
-                    placeholder="Enter QTY"
-                    className="form-input"
-                    value={inputQuantity}
-                    onChange={handleInputQuantity}
-                />
+                <input id="gridQTY1" type="text" placeholder="Enter QTY" className="form-input" value={inputQuantity} onChange={handleInputQuantity} />
             </div>
         </div>
     );
