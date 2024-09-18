@@ -162,21 +162,18 @@ const PalletGenerate = () => {
     const handleSubmitPalet = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
-            const body = {
-                name_palet: input.name,
-                category_palet: input.category,
-                total_price_palet: filterData?.total_new_price.toString() ?? '0',
-                total_product_palet: filterData?.data?.total,
-                palet_barcode: input.barcode,
-            };
-            const images = new FormData();
+            const body = new FormData();
             if (second.length > 0) {
-                for (let i = 0; i < second.length; i++) {
-                    images.append('images[]', second[i]);
+                for (const element of second) {
+                    body.append('images[]', element);
                 }
             }
+            body.append('name_palet', input.name);
+            body.append('category_palet', input.name);
+            body.append('total_price_palet', filterData?.total_new_price.toString() ?? '0');
+            body.append('total_product_palet', filterData?.data?.total.toString() ?? '0');
+            body.append('palet_barcode', input.barcode);
             await createPallete(body);
-            await uploadImage(images);
         } catch (err) {
             console.log(err);
         }

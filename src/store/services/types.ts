@@ -1662,7 +1662,7 @@ interface DetailPalletProps {
             total_harga_lama: string;
             created_at: string;
             updated_at: string;
-            palet_images: string[];
+            palet_images: any[];
             palet_products: SubPaletItem[];
         };
     };
