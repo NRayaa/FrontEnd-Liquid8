@@ -19,6 +19,7 @@ import toast from 'react-hot-toast';
 import { Dialog, Transition } from '@headlessui/react';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import { useDropzone } from 'react-dropzone';
+import { baseUrl } from '../../../store/services/prepareHeader';
 
 const MAX_FILES = 8;
 const MAX_FILE_SIZE_MB = 2;
@@ -595,15 +596,15 @@ const PalletDetail = () => {
                         </div>
                     </form>
 
-                    <div className="w-1/3 grid grid-cols-4 gap-3">
+                    <div className="w-1/3">
                         {(!detailDataPallet?.palet_images || detailDataPallet.palet_images.length <= 0) && (
-                            <div className="col-span-4 h-20 flex items-center justify-center border-2 border-gray-500 border-dashed rounded-md font-semibold">Image not yet.</div>
+                            <div className="w-full h-20 flex items-center justify-center border-2 border-gray-500 border-dashed rounded-md font-semibold">Image not yet.</div>
                         )}
                         {detailDataPallet?.palet_images && detailDataPallet.palet_images.length > 0 && (
-                            <div className="grid grid-cols-4 gap-4 my-4">
+                            <div className="grid grid-cols-4 gap-4 my-4 w-full">
                                 {detailDataPallet?.palet_images.map((file, index) => (
-                                    <div key={index} className="relative">
-                                        <img src={file} alt={`uploaded-${index}`} className="w-full shadow z-0 aspect-square object-cover rounded" />
+                                    <div key={index} className="relative w-full col-span-1 aspect-square">
+                                        <img src={`${baseUrl}/${file.file_path}`} alt={`uploaded-${index}`} className="w-full shadow z-0 h-full object-cover rounded" />
                                         <button
                                             onClick={() => handleRemoveFile(index)}
                                             className="absolute top-1 right-1 z-20 text-white bg-red-600 shadow-sm rounded-full w-6 h-6 flex items-center justify-center"

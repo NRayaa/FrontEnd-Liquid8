@@ -44,7 +44,7 @@ export const palletApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        createPallete: builder.mutation<CreatePaletResponse, CreatePaletBody>({
+        createPallete: builder.mutation<any, any>({
             query: (body) => ({
                 url: '/palet',
                 method: 'POST',
