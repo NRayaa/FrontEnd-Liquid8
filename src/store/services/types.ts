@@ -1949,7 +1949,7 @@ interface GetNameResponse {
 }
 
 interface GetNameBody {
-    product_name: string;
+    id: string;
 }
 
 interface GetCheckProduk {
