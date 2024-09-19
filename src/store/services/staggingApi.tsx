@@ -54,11 +54,10 @@ export const staggingApi = createApi({
                 method: 'GET',
             }),
         }),
-        exportToExcelListProductStaging: builder.mutation<Blob, void>({
+        exportToExcelListProductStaging: builder.mutation<any, any>({
             query: () => ({
                 url: `/export-staging`,
                 method: 'GET',
-                responseHandler: (response) => response.blob(),
             }),
         }),
     }),
