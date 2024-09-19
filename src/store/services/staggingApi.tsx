@@ -54,6 +54,13 @@ export const staggingApi = createApi({
                 method: 'GET',
             }),
         }),
+        exportToExcelListProductStaging: builder.mutation<Blob, void>({
+            query: () => ({
+                url: `/export-staging`,
+                method: 'GET',
+                responseHandler: (response) => response.blob(),
+            }),
+        }),
     }),
 });
 
@@ -68,4 +75,5 @@ export const {
     useDoneCheckAllApprovementStaggingMutation,
     useDeleteApprovementStaggingMutation,
     useGetDetailApprovementStaggingQuery,
+    useExportToExcelListProductStagingMutation,
 } = staggingApi;
