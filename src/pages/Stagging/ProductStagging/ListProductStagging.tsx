@@ -7,6 +7,7 @@ import { ProductExpiredItem, ProductStaggingItem } from '../../../store/services
 import {
     useDeleteFilterProductStaggingsMutation,
     useDoneCheckAllProductStaggingMutation,
+    useExportToExcelListProductStagingMutation,
     useFilterProductStaggingMutation,
     useGetFilterProductStaggingQuery,
     useGetListProductStaggingQuery,
@@ -25,7 +26,28 @@ const ListProductStagging = () => {
     const [doneCheckAllProductStagging, resultsDone] = useDoneCheckAllProductStaggingMutation();
     const [loadingAdd, setLoadingAdd] = useState<number | null>(null);
     const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
-    const [processedItems, setProcessedItems] = useState<number[]>([]); // Menyimpan ID item yang telah berhasil diproses
+    const [processedItems, setProcessedItems] = useState<number[]>([]);
+    const [exportToExcel, { isLoading: isExporting }] = useExportToExcelListProductStagingMutation();
+
+    const handleExportData = async () => {
+        try {
+            const response = await exportToExcel().unwrap();
+            const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'product_stagging_export.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+            toast.success('Export berhasil!');
+        } catch (error) {
+            console.error('Error exporting data:', error);
+            toast.error('Terjadi kesalahan saat mengekspor data.');
+        }
+    };
 
     const productStaggings = useMemo(() => {
         if (isSuccess) {
@@ -253,14 +275,14 @@ const ListProductStagging = () => {
                 </div> */}
                 <div>
                     <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                        {/* Add button and total form */}
                         <div className="flex md:items-center md:flex-row flex-col gap-2">
                             <button className="btn btn-warning" onClick={() => showAlert({ type: 11 })}>
                                 DONE CHECK ALL
                             </button>
-                            <label htmlFor="total" className="px-4 py-2 mt-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary-dark">
-                                Total : {totalProductStaggings?.total}
-                            </label>
+                            <button className="btn btn-success">Total : {totalProductStaggings?.total}</button>
+                            <button className="btn btn-primary" onClick={handleExportData} disabled={isExporting}>
+                                {isExporting ? 'Exporting...' : 'Export Data'}
+                            </button>
                         </div>
                         <div className="ltr:ml-auto rtl:mr-auto mx-6">
                             <input type="text" className="form-input w-auto" placeholder="Search..." value={searchLeftTable} onChange={(e) => setSearchLeftTable(e.target.value)} />
