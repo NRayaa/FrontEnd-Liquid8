@@ -31,18 +31,20 @@ const ListProductStagging = () => {
 
     const handleExportData = async () => {
         try {
-            const response = await exportToExcel().unwrap();
-            const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'product_stagging_export.xlsx');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-
-            toast.success('Export berhasil!');
+            const response = await exportToExcel({}).unwrap();
+            if (response.data && response.data.status) {
+                const fileUrl = response.data.resource;
+                const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.setAttribute('download', fileName); 
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                toast.success(response.data.message || 'Export berhasil!');
+            } else {
+                toast.error(response.data.message || 'Terjadi kesalahan saat mengekspor data.');
+            }
         } catch (error) {
             console.error('Error exporting data:', error);
             toast.error('Terjadi kesalahan saat mengekspor data.');
