@@ -279,7 +279,19 @@ const PalletGenerate = () => {
                         </div>
                         <div className="flex items-center  justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Barcode Pallet :
+                                Warehouse :
+                            </label>
+                            <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center  justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Condition :
+                            </label>
+                            <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        </div>
+                        <div className="flex items-center  justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Status :
                             </label>
                             <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
                         </div>
