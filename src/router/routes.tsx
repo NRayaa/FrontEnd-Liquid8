@@ -46,6 +46,8 @@ import ListApprovementStagging from '../pages/Stagging/ApprovementStagging/ListA
 import DetailStaggingApprovement from '../pages/Stagging/ApprovementStagging/DetailApprovementStagging';
 import ListScanResult from '../pages/Inbound/CheckProduct/ScanResult/ListScanResult';
 import CheckScanResult from '../pages/Inbound/CheckProduct/ScanResult/CheckScanResult';
+import ListScanResultApprovement from '../pages/Inbound/CheckProduct/ScanResultApprovement/ListScanResultApprovement';
+import DetailScanResultApprovement from '../pages/Inbound/CheckProduct/ScanResultApprovement/DetailScanResultApprovement';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -515,6 +517,16 @@ const routes = [
     {
         path: '/inbound/check_product/check_scan_result',
         element: <CheckScanResult />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/scan_result_approve',
+        element: <ListScanResultApprovement />,
+        layout: 'default',
+    },
+    {
+        path: '/inbound/check_product/scan_result_approve/detail/:id',
+        element: <DetailScanResultApprovement />,
         layout: 'default',
     },
 ];

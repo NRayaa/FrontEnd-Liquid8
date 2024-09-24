@@ -112,6 +112,17 @@ const CreateManualInbound = () => {
         }
     }, [dataLatestPrices]);
 
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
+
+    useEffect(() => {
+        if (input.condition === 'lolos' && parseFloat(input.old_price_product) > 100000 && input.new_category_product === '') {
+            setIsSubmitDisabled(true);
+        } else {
+            setIsSubmitDisabled(false);
+        }
+    }, [input.old_price_product, input.new_category_product, input.condition]);
+    
+
     if (results?.isError) {
         return <Alert message="Anda tidak berhak mengakses halaman ini" />;
     }
@@ -320,7 +331,7 @@ const CreateManualInbound = () => {
                                         </Tab.Panels>
                                     </Tab.Group>
                                     <div className="flex justify-end">
-                                        <button type="submit" className="w-full btn btn-info mt-4">
+                                        <button type="submit" className="w-full btn btn-info mt-4" disabled={isSubmitDisabled}>
                                             SEND
                                         </button>
                                     </div>
