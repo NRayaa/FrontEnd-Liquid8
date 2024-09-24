@@ -30,12 +30,10 @@ const CheckScanResult = () => {
     const [codeBarcode, setCodeBarcode] = useState<string>('');
     const [isQuantity, setIsQuantity] = useState<boolean>(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
-
-    console.log(state.id, inputBarcode, inputBarcode.length === 0 || inputBarcode === '', inputBarcode.length > 0);
     const [getName, results] = useLazyGetNameQuery();
-
+    const [newBarcode, setNewBarcode] = useState<string>(''); // State untuk menyimpan new_barcode_product dari response
     const [keterangan, setKeterangan] = useState<string>('');
-
+    const [initialBarcode, setInitialBarcode] = useState<string>(''); // State untuk barcode dari API
     const getSelectedCategory = (selected: string) => {
         setSelectedCategory(selected);
     };
@@ -48,6 +46,15 @@ const CheckScanResult = () => {
     const handleIsQuantity = () => {
         setIsQuantity(true);
     };
+
+    useEffect(() => {
+        if (results.isSuccess && results.data.data.status) {
+            const newBarcodeFromResponse = results.data.data.resource.product.new_barcode_product;
+            setNewBarcode(newBarcodeFromResponse); // Set state untuk barcode baru
+            setInitialBarcode(newBarcodeFromResponse); // Simpan barcode awal
+            setCodeBarcode(newBarcodeFromResponse); // Set barcode yang bisa di-edit oleh user
+        }
+    }, [results]);
 
     const handleInputBarcode = async () => {
         if (inputBarcode.length === 0 || inputBarcode === '') {
@@ -211,15 +218,16 @@ const CheckScanResult = () => {
                             {!tagColor || tagColor === undefined ? (
                                 <ScanResultNewBarcodeDataMulti
                                     header="NEW DATA"
-                                    barcode={''}
-                                    nama={!isResetValue ? oldData?.product_name : ''}
-                                    newPrice={!isResetValue ? newPricePercentage : ''}
-                                    qty={!isResetValue ? oldData?.old_quantity_product : ''}
+                                    barcode={newBarcode}
+                                    nama={oldData?.product_name ?? ''}
+                                    newPrice={newPricePercentage}
+                                    qty={oldData?.old_quantity_product ?? ''}
                                     handleSetNewPercentagePriceInput={handleSetNewPercentagePriceInput}
                                     handleSetCustomQuantityInput={handleSetCustomQuantityInput}
                                     handleIsQuantity={handleIsQuantity}
-                                    handleSetHarga={(harga: string) => setNewPriceBarcode(harga)}
-                                    handleSetQty={(qty: string) => setCustomQuantity(qty)}
+                                    handleSetHarga={setNewPriceBarcode}
+                                    handleSetQty={setCustomQuantity}
+                                    setCodeBarcode={setCodeBarcode} // Tambahkan setCodeBarcode di sini
                                 />
                             ) : (
                                 <ScanResultTagColorData
@@ -251,6 +259,7 @@ const CheckScanResult = () => {
                         setCodeBarcode={setCodeBarcode}
                         isQuantity={isQuantity}
                         getSelectedCategory={getSelectedCategory}
+                        initialBarcode={initialBarcode}
                     />
                 )}
                 {isBarcode && <ScanResultBarcodePrinted barcode={codeBarcode} newPrice={newPriceBarcode} oldPrice={oldPriceBarcode} category={selectedCategory} />}

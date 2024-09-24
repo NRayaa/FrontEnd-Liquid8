@@ -64,6 +64,9 @@ export const checkProduct = createApi({
                 method: 'POST',
             }),
         }),
+        getBarcodeProduct: builder.query<any, any>({
+            query: () => `/product_scan_search`,
+        }),
     }),
 });
 
@@ -80,4 +83,5 @@ export const {
     useDeleteScanResultMutation,
     useLazyGetNameQuery,
     usePartialStagingMutation,
+    useLazyGetBarcodeProductQuery,
 } = checkProduct;

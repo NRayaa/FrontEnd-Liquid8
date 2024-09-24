@@ -12,6 +12,7 @@ interface ScanResultNewBarcodeDataMultiProps {
     handleIsQuantity: () => void;
     handleSetHarga: (harga: string) => void;
     handleSetQty: (qty: string) => void;
+    setCodeBarcode: (barcode: string) => void; // Tambahkan setCodeBarcode di sini
 }
 
 const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps> = ({
@@ -25,9 +26,20 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
     handleIsQuantity,
     handleSetHarga,
     handleSetQty,
+    setCodeBarcode,
 }) => {
     const [inputQuantity, setInputQuantity] = useState<string>('');
     const [inputPrice, setInputPrice] = useState<string>('');
+    const [inputBarcode, setInputBarcode] = useState<string>(''); // State untuk input barcode
+
+    useEffect(() => {
+        setInputBarcode(barcode); // Set initial value dari props barcode
+    }, [barcode]);
+
+    const handleInputBarcode = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputBarcode(e.target.value); // Update value saat user mengedit
+        setCodeBarcode(e.target.value);  // Perbarui state di parent komponen
+    };
 
     useEffect(() => {
         setInputPrice(formatCurrency(parseFloat(newPrice)));
@@ -51,9 +63,16 @@ const ScanResultNewBarcodeDataMulti: React.FC<ScanResultNewBarcodeDataMultiProps
     return (
         <div className="flex flex-col gap-4">
             <h1 className="flex justify-center text-lg font-bold">{header}</h1>
-            <div hidden>
+            <div>
                 <label htmlFor="gridBarcode1">Barcode</label>
-                <input id="gridBarcode1" disabled type="text" placeholder="Enter Barcode" className="form-input" value={barcode} />
+                <input
+                    id="gridBarcode1"
+                    type="text"
+                    placeholder="Enter Barcode"
+                    className="form-input"
+                    value={inputBarcode} // Gunakan state inputBarcode
+                    onChange={handleInputBarcode} // User dapat mengedit barcode
+                />
             </div>
             <div>
                 <label htmlFor="gridNama1">Nama</label>

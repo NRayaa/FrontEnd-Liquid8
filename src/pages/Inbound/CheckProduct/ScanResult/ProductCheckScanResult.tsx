@@ -41,6 +41,7 @@ interface ProductCheckScanResult {
     isQuantity: boolean;
     getSelectedCategory: (selected: string) => void;
     setCodeBarcode: Dispatch<SetStateAction<string>>;
+    initialBarcode: string;
 }
 
 const ProductCheckScanResult: React.FC<ProductCheckScanResult> = ({
@@ -58,6 +59,7 @@ const ProductCheckScanResult: React.FC<ProductCheckScanResult> = ({
     isQuantity,
     getSelectedCategory,
     setCodeBarcode,
+    initialBarcode,
 }) => {
     const { data, isSuccess, refetch } = useGetCategoriesQuery('');
     const [newProduct, results] = useScanResultProductMutation();
@@ -102,12 +104,14 @@ const ProductCheckScanResult: React.FC<ProductCheckScanResult> = ({
 
     const handleSendLolos = (e: FormEvent) => {
         e.preventDefault();
-
-        setIsSending(true);
+    
+        // Gunakan initialBarcode jika barcode tidak diubah
+        const barcodeToSend = codeBarcode === initialBarcode ? initialBarcode : codeBarcode;
+    
         const body = {
             code_document: null,
             old_barcode_product: oldData.old_barcode_product,
-            new_barcode_product: codeBarcode,
+            new_barcode_product: barcodeToSend,  // Kirim barcode yang sesuai
             new_name_product: oldData.product_name,
             old_name_product: oldData.product_name,
             new_quantity_product: productQuantity,
@@ -120,28 +124,12 @@ const ProductCheckScanResult: React.FC<ProductCheckScanResult> = ({
             new_tag_product: tagColor?.name_color ?? '',
             deskripsi: '',
         };
-
-        setBarcodeStatus('LOLOS');
-        handleSetNewPriceProduct(formatRupiah(newPrice));
-
+    
         newProduct(body)
             .then((response) => {
-                if ('error' in response) {
-                    const error = response.error;
-                    if ((error as FetchBaseQueryError)?.status === 422) {
-                        const errorData = (error as FetchBaseQueryError).data as Record<string, unknown>;
-                        const errorMessage = Object.entries(errorData)
-                            .map(([key, value]) => `${key}: ${(value as string[]).join(', ')}`)
-                            .join(', ');
-
-                        toast.error(`Error: ${errorMessage}`);
-                    } else if ((error as SerializedError)?.message) {
-                        toast.error(`Error: ${(error as SerializedError).message}`);
-                    }
-                } else if ('data' in response) {
+                if ('data' in response) {
                     toast.success('Product checked successfully!');
                 }
-
                 setTimeout(() => setIsSending(false), 3000);
             })
             .catch((err) => {
@@ -150,6 +138,57 @@ const ProductCheckScanResult: React.FC<ProductCheckScanResult> = ({
                 toast.error('Something went wrong');
             });
     };
+    
+    // const handleSendLolos = (e: FormEvent) => {
+    //     e.preventDefault();
+
+    //     setIsSending(true);
+    //     const body = {
+    //         code_document: null,
+    //         old_barcode_product: oldData.old_barcode_product,
+    //         new_barcode_product: codeBarcode,
+    //         new_name_product: oldData.product_name,
+    //         old_name_product: oldData.product_name,
+    //         new_quantity_product: productQuantity,
+    //         new_price_product: newPrice,
+    //         old_price_product: oldData.product_price,
+    //         new_date_in_product: newDateProduct,
+    //         new_status_product: 'display',
+    //         condition: 'lolos',
+    //         new_category_product: selectedOption,
+    //         new_tag_product: tagColor?.name_color ?? '',
+    //         deskripsi: '',
+    //     };
+
+    //     setBarcodeStatus('LOLOS');
+    //     handleSetNewPriceProduct(formatRupiah(newPrice));
+
+    //     newProduct(body)
+    //         .then((response) => {
+    //             if ('error' in response) {
+    //                 const error = response.error;
+    //                 if ((error as FetchBaseQueryError)?.status === 422) {
+    //                     const errorData = (error as FetchBaseQueryError).data as Record<string, unknown>;
+    //                     const errorMessage = Object.entries(errorData)
+    //                         .map(([key, value]) => `${key}: ${(value as string[]).join(', ')}`)
+    //                         .join(', ');
+
+    //                     toast.error(`Error: ${errorMessage}`);
+    //                 } else if ((error as SerializedError)?.message) {
+    //                     toast.error(`Error: ${(error as SerializedError).message}`);
+    //                 }
+    //             } else if ('data' in response) {
+    //                 toast.success('Product checked successfully!');
+    //             }
+
+    //             setTimeout(() => setIsSending(false), 3000);
+    //         })
+    //         .catch((err) => {
+    //             console.log('Error Response: ', err);
+    //             setIsSending(false);
+    //             toast.error('Something went wrong');
+    //         });
+    // };
 
     const handleDamaged = (e: FormEvent) => {
         e.preventDefault();

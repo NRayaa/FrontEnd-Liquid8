@@ -149,7 +149,7 @@ const StorageReport = () => {
                 )}
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                        data={storageReport?.chart}
+                        data={storageReport?.chart?.category}
                         margin={{
                             top: 5,
                             right: 10,
@@ -182,6 +182,19 @@ const StorageReport = () => {
                     <p>Total Value</p>
                     <p className="text-2xl font-bold">{formatCurrency(storageReport?.total_all_price_category)}</p>
                 </div>
+            </div>
+            <div className="w-full flex justify-between mb-5 mt-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
+                <h3 className="text-2xl font-bold">Report Product Per-Color</h3>
+            </div>
+            <div className="flex w-full gap-4">
+                {storageReport?.chart?.tag_product.map((tag: any) => (
+                    <div key={tag.tag_product} className="w-full px-5 py-3 border border-gray-500 rounded-md flex flex-col gap-2">
+                        <p>Total Product {tag.tag_product}</p>
+                        <p className="text-2xl font-bold">{tag.total_tag_product.toLocaleString()}</p>
+                        <p>Total Value</p>
+                        <p className="text-xl font-bold">{formatCurrency(tag.total_price_tag_product)}</p>
+                    </div>
+                ))}
             </div>
             <div className="w-full flex flex-col gap-4 mt-10 border rounded-md py-5">
                 <div className="w-full flex flex-col gap-4 mt-10 border rounded-md py-5">
@@ -278,8 +291,8 @@ const StorageReport = () => {
                 {layout === 'grid' ? (
                     <div className="grid grid-cols-4 gap-4 w-full px-5">
                         {debouncedSearch ? (
-                            storageReport?.chart.filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
-                                storageReport?.chart
+                            storageReport?.chart?.category.filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                storageReport?.chart?.category
                                     .filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase()))
                                     .map((item: any) => (
                                         <div
@@ -299,7 +312,7 @@ const StorageReport = () => {
                                 </div>
                             )
                         ) : (
-                            storageReport?.chart.map((item: any) => (
+                            storageReport?.chart?.category.map((item: any) => (
                                 <div
                                     key={item.category_product}
                                     className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 justify-center flex-col border border-transparent transition-all hover:border-sky-300 box-border"
@@ -321,8 +334,8 @@ const StorageReport = () => {
                             <div className="w-1/6 flex-none text-center font-bold">Value Product</div>
                         </div>
                         {debouncedSearch ? (
-                            storageReport?.chart.filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
-                                storageReport?.chart
+                            storageReport?.chart?.category.filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase())).length > 0 ? (
+                                storageReport?.chart?.category
                                     .filter((item: any) => item.category_product.toLowerCase().includes(debouncedSearch.toLowerCase()))
                                     .map((item: any) => (
                                         <div key={item.category_product} className="w-full flex items-center h-10 px-5 hover:border-sky-500 border-b border-sky-200">
@@ -336,8 +349,8 @@ const StorageReport = () => {
                                     <div className="w-full flex-none text-center font-semibold">No Data Viewed.</div>
                                 </div>
                             )
-                        ) : storageReport?.chart.length > 0 ? (
-                            storageReport?.chart.map((item: any) => (
+                        ) : storageReport?.chart?.category.length > 0 ? (
+                            storageReport?.chart?.category.map((item: any) => (
                                 <div key={item.category_product} className="w-full flex items-center h-10 px-5 hover:border-sky-500 border-b border-sky-200">
                                     <div className="w-2/3 flex-none text-start font-semibold">{item.category_product}</div>
                                     <div className="w-1/6 flex-none text-center font-semibold">{item.total_category.toLocaleString()}</div>

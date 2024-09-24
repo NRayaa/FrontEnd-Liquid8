@@ -232,6 +232,9 @@ const Sidebar = () => {
                                                 <li>
                                                     <NavLink to="/inbound/check_product/scan_result">{'Scan Result'}</NavLink>
                                                 </li>
+                                                <li>
+                                                    <NavLink to="/inbound/check_product/scan_result_approve">{'Scan Result Approve'}</NavLink>
+                                                </li>
                                             </ul>
                                         </AnimateHeight>
                                     </li>
