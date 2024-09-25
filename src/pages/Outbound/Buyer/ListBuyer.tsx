@@ -163,7 +163,7 @@ const ListBuyer = () => {
                             {
                                 accessor: 'amount_transaction_buyer',
                                 title: 'Transaksi',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{formatRupiah(item.amount_transaction_buyer)}</span>,
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.amount_transaction_buyer}</span>,
                             },
                             {
                                 accessor: 'amount_purchase_buyer',
