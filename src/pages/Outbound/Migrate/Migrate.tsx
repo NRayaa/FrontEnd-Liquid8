@@ -1,6 +1,14 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAddMigrateMutation, useDeleteMigrateMutation, useGetColorCountQuery, useGetDisplayMigrateQuery, useGetListDestinationOptionQuery, useMigrateFinishMutation, useMigrateMutation } from '../../../store/services/migrateApi';
+import {
+    useAddMigrateMutation,
+    useDeleteMigrateMutation,
+    useGetColorCountQuery,
+    useGetDisplayMigrateQuery,
+    useGetListDestinationOptionQuery,
+    useMigrateFinishMutation,
+    useMigrateMutation,
+} from '../../../store/services/migrateApi';
 import toast from 'react-hot-toast';
 import { DataTable } from 'mantine-datatable';
 import Swal from 'sweetalert2';
@@ -20,7 +28,7 @@ const Migrate = () => {
         return getDisplayMigrate?.data.resource.data.migrates;
     }, [getDisplayMigrate]);
 
-    const showAlert = async ({ type, id }: any) => {
+    const showAlert = async ({ type, message, id }: any) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -88,6 +96,24 @@ const Migrate = () => {
                     }
                 });
         }
+        // Tambahkan penanganan error 422 di sini
+        if (type === 422) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error 422',
+                text: message || 'Input tidak valid!',
+                confirmButtonText: 'Tutup',
+            });
+        }
+        // Tambahkan penanganan error umum
+        if (type === 'error') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: message || 'Terjadi kesalahan',
+                confirmButtonText: 'Tutup',
+            });
+        }
         if (type === 15) {
             const toast = Swal.mixin({
                 toast: true,
@@ -101,17 +127,12 @@ const Migrate = () => {
                 padding: '10px 20px',
             });
         }
-        if (type == 20) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
+        if (type === 20) {
+            Swal.fire({
                 icon: 'success',
-                title: 'Data Berhasil Ditambah',
-                padding: '10px 20px',
+                title: 'Berhasil',
+                text: message || 'data berhasil disimpan!',
+                confirmButtonText: 'Tutup',
             });
         }
     };
@@ -143,7 +164,30 @@ const Migrate = () => {
 
     const handleCreateMigrate = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        showAlert({ type: 12 });
+        try {
+            const body = {
+                destiny_document_migrate: input.destination,
+                product_color: input.color,
+                product_total: input.total,
+            };
+
+            await createMigrate(body).unwrap(); 
+
+            setInput({
+                destination: '',
+                color: '',
+                total: 0,
+            });
+
+            showAlert({ type: 20 }); 
+        } catch (error: any) {
+            if (error.status === 422) {
+                const errorMessage = error.data?.data?.message || 'Terjadi kesalahan pada input data';
+                showAlert({ type: 422, message: errorMessage }); 
+            } else {
+                showAlert({ type: 'error', message: 'Terjadi kesalahan' });
+            }
+        }
     };
 
     useEffect(() => {
@@ -165,7 +209,7 @@ const Migrate = () => {
         }
         return [];
     }, [getDestination]);
-    
+
     useEffect(() => {
         if (getDisplayMigrate?.data.resource.destionation === 'disable') {
             setInput((prev) => ({ ...prev, destination: getDisplayMigrate?.data.resource.data.destiny_document_migrate ?? '' }));

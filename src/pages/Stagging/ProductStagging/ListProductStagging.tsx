@@ -13,6 +13,7 @@ import {
     useGetListProductStaggingQuery,
 } from '../../../store/services/staggingApi';
 import Swal from 'sweetalert2';
+import { debounce } from 'lodash';
 
 const ListProductStagging = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
@@ -78,34 +79,35 @@ const ListProductStagging = () => {
     const handleAddFilterStagging = async (id: number) => {
         if (loadingAdd === id || processedItems.includes(id)) return;
 
-        setLoadingAdd(id);
+        setLoadingAdd(id); 
         try {
-            await filterProductStagging(id).unwrap();
+            await filterProductStagging(id).unwrap(); 
             setProcessedItems((prevItems) => [...prevItems, id]); 
             refetch(); 
-            filterStagging.refetch(); 
+            filterStagging.refetch();
         } catch (err) {
-            console.error(err);
+            console.error(err); 
         } finally {
             setLoadingAdd(null); 
         }
     };
 
-    const handleDeleteProductStagging = async (id: number) => {
-        if (loadingDelete === id || !processedItems.includes(id)) return;
+    const handleDeleteProductStagging = debounce(async (id: number) => {
+        if (loadingDelete !== null) return; 
 
         setLoadingDelete(id); 
         try {
             await deletefilterProductStaggings(id).unwrap(); 
-            setProcessedItems((prevItems) => prevItems.filter((itemId) => itemId !== id));
             refetch(); 
             filterStagging.refetch(); 
+            toast.success('Item berhasil dihapus!');
         } catch (err) {
             console.error(err); 
+            toast.error('Gagal menghapus item.');
         } finally {
             setLoadingDelete(null); 
         }
-    };
+    }, 300); 
 
     const handleAddLeftTable = (item: ProductExpiredItem) => {
         handleAddFilterStagging(item.id);
@@ -137,7 +139,6 @@ const ListProductStagging = () => {
             filterStagging.refetch();
         }
     }, [debounceValue]);
-    
     useEffect(() => {
         if (debounceValue) {
             refetch();
@@ -376,14 +377,10 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                {loadingAdd !== item.id && !processedItems.includes(item.id) && (
+                                                {!processedItems.includes(item.id) && loadingAdd !== item.id && (
                                                     <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
                                                         Add
                                                     </button>
-                                                )}
-                                                {/* Loader untuk Add */}
-                                                {loadingAdd === item.id && (
-                                                    <div className="loader">Processing...</div> // Loader ketika add sedang berlangsung
                                                 )}
                                             </div>
                                         ),
@@ -427,15 +424,16 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center space-x-2">
-                                                {loadingDelete !== item.id && processedItems.includes(item.id) && (
-                                                    <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductStagging(item.id)}>
-                                                        Delete
+                                               {
+                                                    <button
+                                                        type="button"
+                                                        className={`btn btn-outline-danger ${loadingDelete === item.id ? 'cursor-not-allowed' : ''}`}
+                                                        onClick={() => handleDeleteProductStagging(item.id)}
+                                                        disabled={loadingDelete === item.id} 
+                                                    >
+                                                        {loadingDelete === item.id ? 'Processing...' : 'Delete'} 
                                                     </button>
-                                                )}
-                                                {/* Loader untuk Delete */}
-                                                {loadingDelete === item.id && (
-                                                    <div className="loader">Processing...</div> // Loader ketika delete sedang berlangsung
-                                                )}
+                                                }
                                             </div>
                                         ),
                                     },
