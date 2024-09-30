@@ -20,7 +20,7 @@ const ListProductStagging = () => {
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
     const debounceValue = useDebounce(searchLeftTable);
     const { data, isSuccess, refetch } = useGetListProductStaggingQuery({ page: leftTablePage, q: debounceValue });
-    const filterStagging = useGetFilterProductStaggingQuery({ page: rightTablePage, q: debounceValue });
+    const filterStagging = useGetFilterProductStaggingQuery({ page: rightTablePage });
     const [filterProductStagging, results] = useFilterProductStaggingMutation();
     const [deletefilterProductStaggings, resultsDeleteBundle] = useDeleteFilterProductStaggingsMutation();
     const [doneCheckAllProductStagging, resultsDone] = useDoneCheckAllProductStaggingMutation();
@@ -37,7 +37,7 @@ const ListProductStagging = () => {
                 const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
                 const link = document.createElement('a');
                 link.href = fileUrl;
-                link.setAttribute('download', fileName); 
+                link.setAttribute('download', fileName);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -80,26 +80,30 @@ const ListProductStagging = () => {
 
         setLoadingAdd(id);
         try {
-            await filterProductStagging(id);
-            setProcessedItems((prevItems) => [...prevItems, id]);
+            await filterProductStagging(id).unwrap();
+            setProcessedItems((prevItems) => [...prevItems, id]); 
+            refetch(); 
+            filterStagging.refetch(); 
         } catch (err) {
-            console.log(err);
+            console.error(err);
         } finally {
-            setLoadingAdd(null);
+            setLoadingAdd(null); 
         }
     };
 
     const handleDeleteProductStagging = async (id: number) => {
-        if (loadingDelete === id || processedItems.includes(id)) return;
+        if (loadingDelete === id || !processedItems.includes(id)) return;
 
-        setLoadingDelete(id);
+        setLoadingDelete(id); 
         try {
-            await deletefilterProductStaggings(id);
-            setProcessedItems((prevItems) => [...prevItems, id]);
+            await deletefilterProductStaggings(id).unwrap(); 
+            setProcessedItems((prevItems) => prevItems.filter((itemId) => itemId !== id));
+            refetch(); 
+            filterStagging.refetch(); 
         } catch (err) {
-            console.log(err);
+            console.error(err); 
         } finally {
-            setLoadingDelete(null);
+            setLoadingDelete(null); 
         }
     };
 
@@ -110,7 +114,6 @@ const ListProductStagging = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
-
             refetch();
             filterStagging.refetch();
         } else if (results.isError) {
@@ -127,6 +130,27 @@ const ListProductStagging = () => {
             toast.error(resultsDeleteBundle?.data?.data?.message ?? 'Error');
         }
     }, [resultsDeleteBundle]);
+
+    useEffect(() => {
+        if (!debounceValue) {
+            refetch();
+            filterStagging.refetch();
+        }
+    }, [debounceValue]);
+    
+    useEffect(() => {
+        if (debounceValue) {
+            refetch();
+            filterStagging.refetch();
+        }
+    }, [debounceValue]);
+
+    useEffect(() => {
+        if (!searchLeftTable) {
+            refetch();
+            filterStagging.refetch();
+        }
+    }, [searchLeftTable]);
 
     const showAlert = async ({ type }: any) => {
         if (type === 11) {
@@ -352,10 +376,14 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                {!processedItems.includes(item.id) && loadingAdd !== item.id && (
+                                                {loadingAdd !== item.id && !processedItems.includes(item.id) && (
                                                     <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
                                                         Add
                                                     </button>
+                                                )}
+                                                {/* Loader untuk Add */}
+                                                {loadingAdd === item.id && (
+                                                    <div className="loader">Processing...</div> // Loader ketika add sedang berlangsung
                                                 )}
                                             </div>
                                         ),
@@ -399,10 +427,14 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: ProductStaggingItem) => (
                                             <div className="flex items-center space-x-2">
-                                                {!processedItems.includes(item.id) && loadingDelete !== item.id && (
+                                                {loadingDelete !== item.id && processedItems.includes(item.id) && (
                                                     <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductStagging(item.id)}>
                                                         Delete
                                                     </button>
+                                                )}
+                                                {/* Loader untuk Delete */}
+                                                {loadingDelete === item.id && (
+                                                    <div className="loader">Processing...</div> // Loader ketika delete sedang berlangsung
                                                 )}
                                             </div>
                                         ),
