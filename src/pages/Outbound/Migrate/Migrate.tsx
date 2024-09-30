@@ -177,9 +177,9 @@ const Migrate = () => {
 
     useEffect(() => {
         if (colorData) {
-            const options = Object.entries(colorData).map(([color, count]) => ({
-                label: `${color} | ${count}`,
-                value: color,
+            const options = Object.entries(colorData).map(([name_color, fixed_price_color]) => ({
+                label: `${name_color} | ${fixed_price_color}`,
+                value: name_color,
             }));
             setColorOptions(options);
         }

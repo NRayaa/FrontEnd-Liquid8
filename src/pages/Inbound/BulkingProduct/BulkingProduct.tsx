@@ -5,11 +5,16 @@ import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useAddBulkingProductMutation } from '../../../store/services/productOldsApi';
 import toast from 'react-hot-toast';
 
+interface Resource {
+    barcode: string;
+    sources: string[];
+}
+
 const BulkingProduct = () => {
     const dispatch = useDispatch();
     const [file, setFile] = useState<File | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [errorResources, setErrorResources] = useState<string[]>([]);
+    const [errorResources, setErrorResources] = useState<Resource[]>([]);
     const [addBulkingProduct, { isLoading }] = useAddBulkingProductMutation();
 
     useEffect(() => {
@@ -34,20 +39,54 @@ const BulkingProduct = () => {
 
         try {
             const response = await addBulkingProduct(formData).unwrap();
-            toast.success(response?.data?.message || 'File uploaded successfully');
-            setErrorMessage(null);
-            setErrorResources([]);
+
+            // Cek apakah status adalah false
+            if (response.data.status === false) {
+                toast.error(response.data.message || 'File upload failed');
+                setErrorMessage(response.data.message || 'An unknown error occurred');
+                setErrorResources(response.data.resource || []);
+            } else {
+                toast.success(response.data.message || 'File uploaded successfully');
+                setErrorMessage(null);
+                setErrorResources([]);
+            }
         } catch (error: any) {
             toast.error('File upload failed');
-            if (error.data && error.data.message && error.data.resource) {
-                setErrorMessage(error.data.message);
-                setErrorResources(error.data.resource);
+            if (error.data && error.data.data && error.data.data.message && error.data.data.resource) {
+                setErrorMessage(error.data.data.message);
+                setErrorResources(error.data.data.resource);
             } else {
                 setErrorMessage('An unknown error occurred');
                 setErrorResources([]);
             }
         }
     };
+
+    // const handleSubmit = async () => {
+    //     if (!file) {
+    //         toast.error('Please select a file');
+    //         return;
+    //     }
+
+    //     const formData = new FormData();
+    //     formData.append('file', file);
+
+    //     try {
+    //         const response = await addBulkingProduct(formData).unwrap();
+    //         toast.success(response?.data?.message || 'File uploaded successfully');
+    //         setErrorMessage(null);
+    //         setErrorResources([]);
+    //     } catch (error: any) {
+    //         toast.error('File upload failed');
+    //         if (error.data && error.data.message && error.data.resource) {
+    //             setErrorMessage(error.data.message);
+    //             setErrorResources(error.data.resource);
+    //         } else {
+    //             setErrorMessage('An unknown error occurred');
+    //             setErrorResources([]);
+    //         }
+    //     }
+    // };
 
     return (
         <div>
@@ -97,9 +136,17 @@ const BulkingProduct = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {errorResources.map((resource, index) => (
+                                {/* {errorResources.map((resource, index) => (
                                     <tr key={index}>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{resource}</td>
+                                    </tr>
+                                ))} */}
+
+                                {errorResources.map((resource, index) => (
+                                    <tr key={index}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            Barcode: {resource.barcode}, Sources: {resource.sources.join(', ')}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
