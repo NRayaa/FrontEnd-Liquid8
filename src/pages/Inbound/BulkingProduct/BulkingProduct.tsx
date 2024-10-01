@@ -136,17 +136,9 @@ const BulkingProduct = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {/* {errorResources.map((resource, index) => (
+                           {errorResources.map((resource, index) => (
                                     <tr key={index}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{resource}</td>
-                                    </tr>
-                                ))} */}
-
-                                {errorResources.map((resource, index) => (
-                                    <tr key={index}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            Barcode: {resource.barcode}, Sources: {resource.sources.join(', ')}
-                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{JSON.stringify(resource || "")}</td>
                                     </tr>
                                 ))}
                             </tbody>
