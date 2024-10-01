@@ -41,20 +41,20 @@ const BulkingProduct = () => {
             const response = await addBulkingProduct(formData).unwrap();
 
             // Cek apakah status adalah false
-            if (response.data.status === false) {
-                toast.error(response.data.message || 'File upload failed');
-                setErrorMessage(response.data.message || 'An unknown error occurred');
-                setErrorResources(response.data.resource || []);
+            if (response?.data?.status === false) {
+                toast.error(response?.data?.message || 'File upload failed');
+                setErrorMessage(response?.data?.message || 'An unknown error occurred');
+                setErrorResources(response?.data?.resource || []);
             } else {
-                toast.success(response.data.message || 'File uploaded successfully');
+                toast.success(response?.data?.message || 'File uploaded successfully');
                 setErrorMessage(null);
                 setErrorResources([]);
             }
         } catch (error: any) {
             toast.error('File upload failed');
-            if (error.data && error.data.data && error.data.data.message && error.data.data.resource) {
-                setErrorMessage(error.data.data.message);
-                setErrorResources(error.data.data.resource);
+            if (error?.data && error?.data?.data && error?.data?.data?.message && error?.data?.data?.resource) {
+                setErrorMessage(error?.data?.data?.message);
+                setErrorResources(error?.data?.data?.resource);
             } else {
                 setErrorMessage('An unknown error occurred');
                 setErrorResources([]);
@@ -136,9 +136,9 @@ const BulkingProduct = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                           {errorResources.map((resource, index) => (
+                                {errorResources.map((resource, index) => (
                                     <tr key={index}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{JSON.stringify(resource || "")}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{JSON.stringify(resource || '')}</td>
                                     </tr>
                                 ))}
                             </tbody>
