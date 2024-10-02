@@ -126,43 +126,43 @@ const DataInput = () => {
         }
     };
 
-    const [data, setData] = useState<any[]>([]);
-    const [key, setKey] = useState<any[]>([]);
+    // const [data, setData] = useState<any[]>([]);
+    // const [key, setKey] = useState<any[]>([]);
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+    // const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = event.target.files?.[0];
+    //     if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const binaryStr = e.target?.result;
-            const workbook = XLSX.read(binaryStr, { type: 'binary' });
+    //     const reader = new FileReader();
+    //     reader.onload = (e) => {
+    //         const binaryStr = e.target?.result;
+    //         const workbook = XLSX.read(binaryStr, { type: 'binary' });
 
-            // Ambil data dari sheet pertama
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
+    //         // Ambil data dari sheet pertama
+    //         const sheetName = workbook.SheetNames[0];
+    //         const sheet = workbook.Sheets[sheetName];
 
-            // Konversi sheet ke format JSON
-            const jsonData: any[] = XLSX.utils.sheet_to_json(sheet);
-            setData(jsonData);
-        };
-        reader.readAsBinaryString(file);
-    };
+    //         // Konversi sheet ke format JSON
+    //         const jsonData: any[] = XLSX.utils.sheet_to_json(sheet);
+    //         setData(jsonData);
+    //     };
+    //     reader.readAsBinaryString(file);
+    // };
 
-    // Fungsi untuk memecah array menjadi beberapa bagian
-    const chunkArray = (array: any[], chunkSize: number) => {
-        const result = [];
-        for (let i = 0; i < array.length; i += chunkSize) {
-            result.push(array.slice(i, i + chunkSize));
-        }
-        return result;
-    };
+    // // Fungsi untuk memecah array menjadi beberapa bagian
+    // const chunkArray = (array: any[], chunkSize: number) => {
+    //     const result = [];
+    //     for (let i = 0; i < array.length; i += chunkSize) {
+    //         result.push(array.slice(i, i + chunkSize));
+    //     }
+    //     return result;
+    // };
 
-    // Memecah array menjadi beberapa array dengan maksimal 500 elemen per array
-    const chunkedData = chunkArray(data, 500);
+    // // Memecah array menjadi beberapa array dengan maksimal 500 elemen per array
+    // const chunkedData = chunkArray(data, 500);
 
-    // Lihat hasilnya
-    console.log(chunkedData);
+    // // Lihat hasilnya
+    // console.log(chunkedData);
 
     const fetchProductOlds = async () => {
         await detailProductOld({ codeDocument: documentCode, page });
@@ -219,7 +219,6 @@ const DataInput = () => {
                                             bg-primary w-[15%] h-1 absolute ltr:left-0 rtl:right-0 top-[30px] m-auto -z-[1] transition-[width]`}
                             ></div>
                             <ul className="mb-5 grid grid-cols-3">
-                                <input type="file" onChange={handleFileUpload} />
                                 <li className="mx-auto">
                                     <button
                                         type="button"
