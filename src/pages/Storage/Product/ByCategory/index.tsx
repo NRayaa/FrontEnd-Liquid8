@@ -124,7 +124,7 @@ const ProductByCategory = () => {
             <div className="panel mt-6 min-h-[450px]">
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">Product By Category</h5>
                 <div className="flex items-center justify-between mb-4">
-                    <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mb-4" onClick={handleExportData}>
+                    <button type="button" className="btn btn-lg lg:btn hover:bg-sky-600 btn-primary uppercase w-full md:w-auto lg:w-auto mb-4" onClick={handleExportData}>
                         Export data
                     </button>
                     <div className="relative w-[220px] ms-auto mb-4">

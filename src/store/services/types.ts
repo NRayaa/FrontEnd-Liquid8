@@ -803,6 +803,8 @@ interface GetFilterProductBundles {
             total_new_price: number;
             category: any;
             name_bundle: any;
+            color: any;
+            fixed_price: number;
             data: {
                 current_page: number;
                 data: ProductExpiredItem[];
