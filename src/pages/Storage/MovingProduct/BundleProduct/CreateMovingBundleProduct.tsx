@@ -34,7 +34,7 @@ const CreateMovingBundleProduct = () => {
     const [customDisplay, setCustomDisplay] = useState<any>('0');
 
     const [nameBundle, setNameBundle] = useState<string>('');
-    const [customPrice, setCustomPrice] = useState<string | undefined>('');
+    const [customPrice, setCustomPrice] = useState<number>(0);
     const [totalProductBundle, setTotalProductBundle] = useState<string>('');
     const [colorName, setColorName] = useState<string>('');
     const [isBarcodePrint, setIsBarcodePrint] = useState<boolean>(false);
@@ -114,62 +114,6 @@ const CreateMovingBundleProduct = () => {
         }
     }, [dataColorTag]);
 
-    // Fungsi handleCreateBundleColor
-    // const handleCreateBundleColor = async (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-
-    //     try {
-    //         // Generate barcode untuk bundle
-    //         const barcodeString = generateRandomStringFormatBundle();
-    //         setBarcode(barcodeString);
-
-    //         // Payload untuk API
-    //         const payload = {
-    //             name_bundle: nameBundle,
-    //             total_product_bundle: totalProductBundle,
-    //             price_custom: Number(customPrice), // Harga custom di-convert ke number
-    //             price_bundle: 0, // Misalkan Anda ingin mengatur price_bundle ke 0
-    //             category: null, // Kategori tidak dipilih
-    //             color_name: colorName, // Nama warna dipilih
-    //         };
-
-    //         // Memanggil API createBundle
-    //         await createBundle(payload);
-
-    //         // Tampilkan notifikasi sukses
-    //         toast.success('Bundle berhasil dibuat!');
-
-    //         // Cetak barcode jika kategori ada
-    //         setIsBarcodePrint(true);
-    //     } catch (err) {
-    //         console.log(err);
-    //         toast.error('Gagal membuat bundle.');
-    //     }
-    // };
-
-    const handleCreateBundleColor = async (e: { preventDefault: () => void }) => {
-        e.preventDefault();
-        try {
-            // Menghitung price_custom dan price_bundle
-            const totalProductBundle = 1; // Misalnya, ini berasal dari input Anda
-            const priceCustom = fixedPriceColor * totalProductBundle; // Harga custom
-            const priceBundle = priceCustom; // Jika harga bundle sama dengan harga custom
-
-            const body = {
-                name_bundle: 'Your Bundle Name', // Ganti sesuai input pengguna
-                total_product_bundle: totalProductBundle,
-                price_custom: priceCustom,
-                price_bundle: priceBundle,
-                category: null, // Atur sesuai kebutuhan
-                color_name: colorName, // Ganti sesuai input pengguna
-            };
-
-            await createBundle(body);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results.data.data.message);
@@ -213,17 +157,16 @@ const CreateMovingBundleProduct = () => {
             setIsCategory(true);
             setCategories(resource.category ?? []);
             setColorName('');
-            setCustomPrice(JSON.stringify(resource.total_new_price));
+            setCustomPrice(Math.trunc(resource.total_new_price));
         } else {
             setIsCategory(false);
-            if (resource && Array.isArray(resource.data) && resource.data.length > 0) {
-                const firstProduct = resource.data[0];
-                const firstTag = firstProduct?.new_tag_product?.[0];
-
-                setCustomPrice(firstTag?.fixed_price_color ?? '0');
-                setColorName(firstTag?.name_color ?? '');
+            if (resource && resource.category === null && resource.color && resource.fixed_price) {
+                setCustomPrice(Math.trunc(resource.fixed_price));
+                setColorName(resource.color);
+                setSelectedCategory('');
             } else {
-                setCustomPrice('0');
+                setSelectedCategory('');
+                setCustomPrice(0);
                 setColorName('');
             }
         }
@@ -296,7 +239,7 @@ const CreateMovingBundleProduct = () => {
                                         setSelectedCategory(selectedNameCategory);
                                         const totalNewPrice = Number(filterBundles?.data?.data.resource.total_new_price);
                                         const priceDiscount = totalNewPrice - (totalNewPrice * Number(e.target.value)) / 100;
-                                        setCustomPrice(JSON.stringify(priceDiscount));
+                                        setCustomPrice(Math.trunc(priceDiscount));
                                     }}
                                 >
                                     <option>Choose...</option>
@@ -314,7 +257,15 @@ const CreateMovingBundleProduct = () => {
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Custom Harga :
                             </label>
-                            <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={customPrice} onChange={(e) => setCustomPrice(e.target.value)} />
+                            <input
+                                id="categoryName"
+                                type="text"
+                                placeholder="Rp"
+                                className=" form-input w-[250px]"
+                                required
+                                value={customPrice}
+                                onChange={(e) => setCustomPrice(parseFloat(e.target.value))}
+                            />
                         </div>
                         <input
                             type="text"
@@ -323,93 +274,6 @@ const CreateMovingBundleProduct = () => {
                             value={searchLeftTable}
                             onChange={(e) => setSearchLeftTable(e.target.value)}
                         />
-                    </form>
-                    <form className="w-[800px] ml-8 mb-4" onSubmit={handleCreateBundleColor}>
-                        <button type="submit" className="btn btn-primary mb-4 px-16">
-                            Create Bundle Color
-                        </button>
-
-                        {/* Flex container untuk dua kolom */}
-                        <div className="flex space-x-4">
-                            {/* Kolom kiri untuk Bundle Name, Color Name, Custom Harga */}
-                            <div className="flex flex-col space-y-2 w-1/2">
-                                <div className="flex items-center justify-between mb-2">
-                                    <label htmlFor="createBundleColor" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Bundle Name:
-                                    </label>
-                                    <input id="createBundleColor" type="text" className="form-input w-[250px]" />
-                                </div>
-
-                                <div className="flex items-center justify-between mb-2">
-                                    <label htmlFor="colorName" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Color Name:
-                                    </label>
-                                    <input id="colorName" type="text" className="form-input w-[250px]" value={colorName} onChange={(e) => setColorName(e.target.value)} />
-                                </div>
-
-                                <div className="flex items-center justify-between mb-2">
-                                    <label htmlFor="createBundleCustomPrice" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Custom Harga:
-                                    </label>
-                                    <input
-                                        id="createBundleCustomPrice"
-                                        type="text"
-                                        className="form-input w-[250px]"
-                                        placeholder="Rp"
-                                        value={(fixedPriceColor ?? 0) * (totalProductBundle ? Number(totalProductBundle) : 0)} // Ensure both sides are numbers
-                                        readOnly
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Kolom kanan untuk Fixed Price dengan label dan dropdown sejajar */}
-                            <div className="flex flex-col w-1/2">
-                                <div className="flex items-center justify-between mb-2">
-                                    <label htmlFor="fixedPrice" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Color:
-                                    </label>
-                                    {/* <select id="fixedPrice" className="form-input w-[250px] ml-4">
-                                        <option>Select</option>
-                                        {colorOptions.map((option) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select> */}
-                                    <select
-                                        id="fixedPrice"
-                                        className="form-input w-[250px] ml-4"
-                                        onChange={(e) => {
-                                            const selectedColor = colorOptions.find((option) => option.value === e.target.value);
-                                            if (selectedColor) {
-                                                setFixedPriceColor(Number(selectedColor.label.split('|')[1].trim())); // Mengambil harga dari label
-                                            }
-                                        }}
-                                    >
-                                        <option>Select</option>
-                                        {colorOptions.map((option) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {/* Total input */}
-                                <div className="flex items-center justify-between mb-2">
-                                    <label htmlFor="totalPrice" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Total:
-                                    </label>
-                                    <input
-                                        id="totalProductBundle"
-                                        type="number"
-                                        className="form-input w-[250px]"
-                                        placeholder="Jumlah Produk"
-                                        value={totalProductBundle}
-                                        onChange={(e) => setTotalProductBundle(String(e.target.value))} // Setel total produk
-                                    />
-                                </div>
-                            </div>
-                        </div>
                     </form>
 
                     {isBarcodePrint && (
@@ -481,18 +345,7 @@ const CreateMovingBundleProduct = () => {
                                         accessor: 'harga',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => {
-                                            let price: string | undefined;
-                                            if (item.new_category_product !== null && item.new_category_product !== undefined) {
-                                                price = item.new_price_product;
-                                            } else if (item.new_tag_product !== null && item.new_tag_product !== undefined) {
-                                                price = item.fixed_price;
-                                            } else {
-                                                price = item.old_price_product;
-                                            }
-
-                                            return <span>{price !== undefined ? formatRupiah(price) : '0'}</span>;
-                                        },
+                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.old_price_product ?? '0')}</span>,
                                     },
                                     {
                                         accessor: 'action',
