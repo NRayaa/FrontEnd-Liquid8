@@ -1401,6 +1401,10 @@ interface GetShowSaleDocument {
             created_at: string;
             updated_at: string;
             sales: GetShowSaleDocumentItem[];
+            cardbox_qty: any;
+            cardbox_total_price: any;
+            cardbox_unit_price: any;
+            grand_total: any;
         };
     };
 }
@@ -1637,6 +1641,10 @@ interface SaleReportResponse {
         created_at: string;
         updated_at: string;
         voucher: number;
+        cardbox_qty: any;
+        cardbox_total_price: any;
+        cardbox_unit_price: any;
+        grand_total: any;
         sales: {
             id: number;
             code_document_sale: string;

@@ -385,15 +385,27 @@ const DetailCashier = () => {
                         </div>
                         <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
                             <div className="text-white-dark mr-2">VOUCHER :</div>
-                            <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.voucher === 'string' ? formatRupiah(ShowSale.voucher) : ''}</div>
+                            <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.voucher === 'string' ? formatRupiah(ShowSale.voucher) : formatRupiah('0')}</div>
                         </div>
                         <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">PRICE TOTAL :</div>
+                            <div className="text-white-dark mr-2">PRODUCT PRICE :</div>
                             <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.total_price_document_sale === 'string' ? formatRupiah(ShowSale.total_price_document_sale) : ''}</div>
                         </div>
                         <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
                             <div className="text-white-dark mr-2">BUYER :</div>
                             <div className="whitespace-nowrap">{ShowSale?.buyer_name_document_sale}</div>
+                        </div>
+                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                            <div className="text-white-dark mr-2">CARTON BOX :</div>
+                            <div className="whitespace-nowrap">
+                                {ShowSale?.cardbox_qty === null
+                                    ? 0
+                                    : `${ShowSale?.cardbox_qty} * @${formatRupiah(ShowSale?.cardbox_unit_price ?? '0')} = ${formatRupiah(ShowSale?.cardbox_total_price ?? '0')}`}
+                            </div>
+                        </div>
+                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                            <div className="text-white-dark mr-2">Total Price :</div>
+                            <div className="whitespace-nowrap">{formatRupiah(ShowSale?.grand_total ?? '0')}</div>
                         </div>
                     </div>
                 </div>
