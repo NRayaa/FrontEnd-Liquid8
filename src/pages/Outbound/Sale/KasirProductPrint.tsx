@@ -185,6 +185,11 @@ const ReportTable = () => {
                                         <td style={{ textAlign: 'right' }}>{formatCurrency(item.product_price_sale) || 0}</td>
                                     </tr>
                                 ))}
+                            <tr>
+                                <td colSpan={3} style={{ textAlign: 'center' }}>{`Carton Box @${formatCurrency(data?.buyer.cardbox_unit_price)}`}</td>
+                                <td>{data?.buyer.cardbox_qty}</td>
+                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.buyer.cardbox_total_price || 0)}</td>
+                            </tr>
                             <tr style={{ fontWeight: 'bold' }}>
                                 <td colSpan={4} style={{ textAlign: 'center' }}>
                                     Voucher

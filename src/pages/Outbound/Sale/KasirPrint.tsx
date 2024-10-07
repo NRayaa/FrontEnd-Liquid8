@@ -90,7 +90,7 @@ const ReportTable = () => {
         return formatted;
     }
 
-    const totalHarga: number | undefined = Math.ceil(data?.buyer?.total_price_document_sale ?? 0);
+    const totalHarga: number | undefined = Math.ceil(data?.buyer?.grand_total ?? 0);
     // const totalHarga: number | undefined = data?.buyer?.total_price_document_sale ?? 0;
     const totalHargaFormatted: string = Math.ceil(totalHarga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
     const totalHargaTerbilang: string = formatRupiah(totalHarga).toUpperCase();
@@ -197,18 +197,18 @@ const ReportTable = () => {
                                     </tr>
                                 ))}
                             <tr>
-                                <td>Voucher</td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
+                                <td>Carton Box</td>
+                                <td>{data?.buyer.cardbox_qty}</td>
+                                <td colSpan={2}>{`@${formatCurrency(data?.buyer.cardbox_unit_price)}`}</td>
+                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.buyer.cardbox_total_price || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td colSpan={4}>Voucher</td>
                                 <td style={{ textAlign: 'right' }}>- {formatCurrency(data?.buyer.voucher || 0)}</td>
                             </tr>
                             <tr style={{ fontWeight: 'bold' }}>
-                                <td>Total</td>
-                                <td>{data?.buyer.total_product_document_sale}</td>
-                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.data.category_report.total_price_before_discount || 0)}</td>
-                                <td> </td>
-                                <td style={{ textAlign: 'right' }}>{formatCurrency(Math.ceil(data?.buyer.total_price_document_sale || 0))}</td>
+                                <td colSpan={4}>Total</td>
+                                <td style={{ textAlign: 'right' }}>{formatCurrency(Math.ceil(data?.buyer.grand_total || 0))}</td>
                             </tr>
                         </tbody>
                     </table>

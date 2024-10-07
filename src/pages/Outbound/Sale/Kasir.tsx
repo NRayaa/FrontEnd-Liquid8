@@ -63,6 +63,14 @@ const Kasir = () => {
         voucher: '',
     });
 
+    const [carton, setCarton] = useState({
+        qty: '0',
+        unitPrice: '0',
+        totalPrice: '0',
+    });
+
+    const [grandTotal, setGrandTotal] = useState(0);
+
     const [currentId, setCurrentId] = useState<number | null>(null);
     const [inputs, setInputs] = useState<{ [key: number]: { [key: string]: string } }>({});
 
@@ -242,6 +250,8 @@ const Kasir = () => {
             const body = {
                 voucher: voucher,
                 total_price_document_sale: totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '',
+                cardbox_qty: carton.qty,
+                cardbox_unit_price: carton.unitPrice,
             };
             console.log('body', body);
             await saleFinish(body)
@@ -309,21 +319,6 @@ const Kasir = () => {
     const handleAddBuyerButtonClick = () => {
         setListBuyerOpen(false);
         setAddBuyerOpen(true);
-    };
-
-    const handleApplyVoucher = () => {
-        const voucherAmount = Number(voucher);
-        const total = listSaleData?.data.resource.total_sale ?? 0;
-
-        if (voucherAmount > 0 && total > 0) {
-            const discountedTotal = total - voucherAmount;
-            const finalTotal = discountedTotal > 0 ? discountedTotal : 0;
-            setTotalAfterDiscount(finalTotal);
-            console.log('Discount Applied:', finalTotal);
-        } else {
-            setTotalAfterDiscount(total);
-            console.log('Voucher Invalid:', total);
-        }
     };
 
     const showAlert = async ({ type, id }: any) => {
@@ -399,6 +394,28 @@ const Kasir = () => {
             }));
         }
     }, [listSaleData]);
+
+    useEffect(() => {
+        const total_price_carton = parseFloat(carton.qty) * parseFloat(carton.unitPrice);
+
+        setCarton((prev) => ({ ...prev, totalPrice: total_price_carton.toString() }));
+    }, [carton.qty, carton.unitPrice]);
+
+    useEffect(() => {
+        const totalProductPrice = totalAfterDiscount !== null ? totalAfterDiscount : listSaleData?.data.resource.total_sale ?? 0;
+        const grand_total_price = totalProductPrice + parseFloat(carton.totalPrice);
+
+        setGrandTotal(grand_total_price);
+    }, [carton.totalPrice]);
+
+    useEffect(() => {
+        if (isNaN(parseFloat(carton.qty))) {
+            setCarton((prev) => ({ ...prev, qty: '0' }));
+        }
+        if (isNaN(parseFloat(carton.unitPrice))) {
+            setCarton((prev) => ({ ...prev, unitPrice: '0' }));
+        }
+    }, [carton]);
 
     useEffect(() => {
         refetchListSale();
@@ -708,122 +725,194 @@ const Kasir = () => {
                             Sale
                         </button>
                     </div>
-                    <div className="grid grid-cols-2 space-x-6 items-end">
-                        <form className="w-[400px] cols-span-1 mb-4 ">
-                            <div className="flex items-center justify-between mb-2">
-                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Code Document:
-                                </label>
-                                <input id="categoryName" type="text" value={listSaleData?.data.resource.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
-                            </div>
-                            <div>
+                    <form className="w-2/3 flex flex-col mb-4 ">
+                        <div className="flex w-full gap-6">
+                            <div className="flex flex-col gap-0.5 w-full">
+                                <div className="flex items-center justify-between mb-2">
+                                    <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                        Code Document:
+                                    </label>
+                                    <input id="categoryName" type="text" value={listSaleData?.data.resource.code_document_sale ?? ''} className="mb-2 form-input w-[250px]" required />
+                                </div>
+                                <div>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                            Buyer :
+                                        </label>
+                                        <div className="relative flex w-[250px] mb-4">
+                                            <input
+                                                type="text"
+                                                className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                                placeholder="Search..."
+                                                name="name_buyer"
+                                                value={listSaleData?.data.resource.sale_buyer_name ? listSaleData?.data.resource.sale_buyer_name : inputBuyer.name_buyer}
+                                                onChange={handleInputChangeBuyer}
+                                                disabled={listSaleData?.data.resource.sale_buyer_name !== ''}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="h-7 w-7 absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
+                                                onClick={handleSearchBuyerButtonClick}
+                                                disabled={listSaleData?.data.resource.sale_buyer_name !== ''}
+                                            >
+                                                <IconSearch className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <label htmlFor="voucherAmount" className="text-[15px] font-semibold whitespace-nowrap">
+                                        Voucher Amount:
+                                    </label>
+                                    <input
+                                        id="voucher"
+                                        type="number"
+                                        name="voucher"
+                                        value={voucher}
+                                        onChange={(e) => setVoucher(e.target.value)}
+                                        className="form-input w-[250px]"
+                                        placeholder="Enter voucher amount"
+                                    />
+                                </div>
                                 <div className="flex items-center justify-between mb-4">
                                     <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                        Buyer :
+                                        TOTAL :
                                     </label>
-                                    <div className="relative flex w-[250px] mb-4">
-                                        <input
-                                            type="text"
-                                            className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
-                                            placeholder="Search..."
-                                            name="name_buyer"
-                                            value={listSaleData?.data.resource.sale_buyer_name ? listSaleData?.data.resource.sale_buyer_name : inputBuyer.name_buyer}
-                                            onChange={handleInputChangeBuyer}
-                                            disabled={listSaleData?.data.resource.sale_buyer_name !== ''}
-                                        />
-                                        <button
-                                            type="button"
-                                            className="h-7 w-7 absolute right-1.5 top-1/2 transform -translate-y-1/2 justify-center items-center border-green-500"
-                                            onClick={handleSearchBuyerButtonClick}
-                                            disabled={listSaleData?.data.resource.sale_buyer_name !== ''}
-                                        >
-                                            <IconSearch className="w-4 h-4" />
-                                        </button>
+                                    <input
+                                        id="categoryName"
+                                        type="text"
+                                        value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
+                                        // value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
+                                        placeholder="Rp"
+                                        className="form-input w-[250px] disabled:cursor-default"
+                                        required
+                                        disabled
+                                    />
+                                </div>
+                                <div>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <label htmlFor="categoryName" className={clsx('text-[15px] font-semibold whitespace-nowrap', !inputBuyer.id && '-mt-6')}>
+                                            Scan Product :
+                                        </label>
+                                        <div className="relative flex w-[250px] flex-col mb-4">
+                                            <input
+                                                type="text"
+                                                className="form-input disabled:cursor-not-allowed flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
+                                                placeholder="Search..."
+                                                onChange={(e) => setScanProduct(e.target.value)}
+                                                value={scanProduct}
+                                                name="sale_barcode"
+                                                disabled={!inputBuyer.id}
+                                            />
+                                            {!inputBuyer.id && <p className="text-gray-700 text-xs mt-1">*Silahkan pilih buyer dahulu</p>}
+                                            <button
+                                                type="button"
+                                                className={clsx(
+                                                    'h-7 w-7 absolute right-1.5 disabled:cursor-not-allowed transform -translate-y-1/2 justify-center items-center border-green-500',
+                                                    !inputBuyer.id ? 'top-4.5' : 'top-1/2'
+                                                )}
+                                                onClick={handleSearchButtonClick}
+                                                disabled={!inputBuyer.id}
+                                            >
+                                                <IconSearch className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="flex items-center justify-between mb-4">
-                                <label htmlFor="voucherAmount" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Voucher Amount:
-                                </label>
-                                <input
-                                    id="voucher"
-                                    type="number"
-                                    name="voucher"
-                                    value={voucher}
-                                    onChange={(e) => setVoucher(e.target.value)}
-                                    className="form-input w-[250px]"
-                                    placeholder="Enter voucher amount"
-                                />
-                                <button type="button" className="btn btn-primary ml-4" onClick={handleApplyVoucher}>
-                                    Apply Voucher
-                                </button>
-                            </div> */}
-                            <div className="flex items-center justify-between mb-4">
-                                <label htmlFor="voucherAmount" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Voucher Amount:
-                                </label>
-                                <input
-                                    id="voucher"
-                                    type="number"
-                                    name="voucher"
-                                    value={voucher}
-                                    onChange={(e) => setVoucher(e.target.value)}
-                                    className="form-input w-[250px]"
-                                    placeholder="Enter voucher amount"
-                                />
-                            </div>
-                            <div className="flex items-center justify-between mb-4">
-                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                    TOTAL :
-                                </label>
-                                <input
-                                    id="categoryName"
-                                    type="text"
-                                    value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
-                                    // value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
-                                    placeholder="Rp"
-                                    className="form-input w-[250px]"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <div className="flex items-center justify-between mb-4">
-                                    <label htmlFor="categoryName" className={clsx('text-[15px] font-semibold whitespace-nowrap', !inputBuyer.id && '-mt-6')}>
-                                        Scan Product :
-                                    </label>
-                                    <div className="relative flex w-[250px] flex-col mb-4">
+                            <div className="w-full">
+                                <div className="flex flex-col gap-2 w-full border rounded-md p-4">
+                                    <h3 className="text-lg font-bold">Carton Box</h3>
+                                    <div className="flex flex-col">
+                                        <label htmlFor="qty-box">Qty</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                className="form-input"
+                                                id="qty-box"
+                                                type="number"
+                                                onChange={(e) =>
+                                                    setCarton((prev) => ({
+                                                        ...prev,
+                                                        qty: e.target.value.length > 1 && e.target.value.startsWith('0') ? e.target.value.replace(/^0+/, '') : e.target.value,
+                                                    }))
+                                                }
+                                                value={carton.qty}
+                                                placeholder={'Carton Qty..'}
+                                            />
+                                            <button
+                                                disabled={parseFloat(carton.qty) === 0}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setCarton((prev) => ({ ...prev, qty: (parseFloat(prev.qty) - 1).toString() }));
+                                                }}
+                                                className="w-10 h-10 border disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent hover:bg-sky-100 rounded-md flex-none flex justify-center items-center border-black text-black"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="w-4 h-4"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                >
+                                                    <path d="M5 12h14" />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setCarton((prev) => ({ ...prev, qty: (parseFloat(prev.qty) + 1).toString() }));
+                                                }}
+                                                className="w-10 h-10 border rounded-md flex-none flex hover:bg-sky-100 justify-center items-center border-black text-black"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    className="w-4 h-4"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                >
+                                                    <path d="M5 12h14" />
+                                                    <path d="M12 5v14" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <label htmlFor="unit-price">Unit Price</label>
                                         <input
-                                            type="text"
-                                            className="form-input disabled:cursor-not-allowed flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
-                                            placeholder="Search..."
-                                            onChange={(e) => setScanProduct(e.target.value)}
-                                            value={scanProduct}
-                                            name="sale_barcode"
-                                            disabled={!inputBuyer.id}
+                                            className="form-input"
+                                            value={carton.unitPrice}
+                                            onChange={(e) =>
+                                                setCarton((prev) => ({
+                                                    ...prev,
+                                                    unitPrice: e.target.value.length > 1 && e.target.value.startsWith('0') ? e.target.value.replace(/^0+/, '') : e.target.value,
+                                                }))
+                                            }
+                                            id="unit-price"
+                                            type="number"
+                                            placeholder={'Rp 0'}
                                         />
-                                        {!inputBuyer.id && <p className="text-gray-700 text-xs mt-1">*Silahkan pilih buyer dahulu</p>}
-                                        <button
-                                            type="button"
-                                            className={clsx(
-                                                'h-7 w-7 absolute right-1.5 disabled:cursor-not-allowed transform -translate-y-1/2 justify-center items-center border-green-500',
-                                                !inputBuyer.id ? 'top-4.5' : 'top-1/2'
-                                            )}
-                                            onClick={handleSearchButtonClick}
-                                            disabled={!inputBuyer.id}
-                                        >
-                                            <IconSearch className="w-4 h-4" />
-                                        </button>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <label htmlFor="total-price">Total Price</label>
+                                        <input id="total-price" disabled value={formatRupiah(carton.totalPrice.toString())} className="disabled:cursor-default form-input" placeholder={'Rp 0'} />
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="mb-4">
-                                <button type="button" className="btn btn-primary uppercase px-6" onClick={handleAddSale}>
-                                    Add Sale
-                                </button>
-                            </div> */}
-                        </form>
-                    </div>
+                        </div>
+                        <div className="flex flex-col w-full">
+                            <label htmlFor="grand-price" className="text-lg font-semibold">
+                                Grand Total
+                            </label>
+                            <input id="grand-price" placeholder={'Rp 0'} value={formatRupiah(grandTotal.toString())} className="disabled:cursor-default form-input" disabled />
+                        </div>
+                    </form>
 
                     <div className="datatables">
                         <DataTable
