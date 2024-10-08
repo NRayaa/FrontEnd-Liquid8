@@ -17,6 +17,8 @@ import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import { useDropzone } from 'react-dropzone';
+import { useProductByCategoryQuery } from '../../../store/services/productNewApi';
+import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
 
 const MAX_FILES = 8;
 const MAX_FILE_SIZE_MB = 2;
@@ -37,6 +39,10 @@ const PalletGenerate = () => {
         category: '',
         totalProduct: '',
         barcode: '',
+        condition: '',
+        warehouse: '',
+        status: '',
+        brands: '',
     });
     const navigate = useNavigate();
     const palletLists = usePalletListsQuery({ page: 1, q: '' });
@@ -44,6 +50,14 @@ const PalletGenerate = () => {
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
     const [second, setSecond] = useState<File[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
+
+    // Fetch category data
+    const { data: categoryResponse } = useGetCategoriesQuery('');
+
+    const categoryData = useMemo(() => {
+        return categoryResponse?.data.resource || [];
+    }, [categoryResponse]);
 
     // Fungsi validasi dan handle file drop
     const onDrop = useCallback(
@@ -125,8 +139,12 @@ const PalletGenerate = () => {
         maxSize: MAX_FILE_SIZE_MB * 1024 * 1024, // Konversi dari MB ke byte
     });
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setInput((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        if (e.target.name === 'category') {
+            setSelectedCategory(e.target.value); // Update selected category state
+        } else {
+            setInput((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
+        }
     };
 
     const displayData = useMemo(() => {
@@ -168,6 +186,7 @@ const PalletGenerate = () => {
                     body.append('images[]', element);
                 }
             }
+            body.append('category_id', selectedCategory); // Add selected category to the payload
             body.append('name_palet', input.name);
             body.append('category_palet', input.name);
             body.append('total_price_palet', filterData?.total_new_price.toString() ?? '0');
@@ -242,12 +261,29 @@ const PalletGenerate = () => {
                             </label>
                             <input onChange={handleInputChange} name="name" value={input.name} id="categoryName" type="text" className="form-input w-[250px]" required />
                         </div>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categorySelect" className="text-[15px] font-semibold whitespace-nowrap">
+                                Kategori :
+                            </label>
+                            <select id="categorySelect" name="category" value={selectedCategory} onChange={handleInputChange} className="form-input w-[250px]" required>
+                                <option value="">Select Category</option>
+                                {categoryData.length > 0 ? (
+                                    categoryData.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name_category}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>No categories available</option>
+                                )}
+                            </select>
+                        </div>
+                        {/* <div className="flex items-center justify-between">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Kategori :
                             </label>
                             <input onChange={handleInputChange} name="category" value={input.category} id="categoryName" type="text" className="form-input w-[250px]" required />
-                        </div>
+                        </div> */}
                         <div className="flex items-center  justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Total Harga:
@@ -281,21 +317,26 @@ const PalletGenerate = () => {
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Warehouse :
                             </label>
-                            <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
+                            <input onChange={handleInputChange} name="warehouse" value={input.warehouse} id="categoryName" type="text" className="form-input w-[250px]" required />
                         </div>
                         <div className="flex items-center  justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Condition :
                             </label>
-                            <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
+                            <input onChange={handleInputChange} name="condition" value={input.condition} id="categoryName" type="text" className="form-input w-[250px]" required />
                         </div>
                         <div className="flex items-center  justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Status :
                             </label>
-                            <input disabled onChange={handleInputChange} name="barcode" value={input.barcode} id="categoryName" type="text" className="form-input w-[250px]" required />
+                            <input onChange={handleInputChange} name="status" value={input.status} id="categoryName" type="text" className="form-input w-[250px]" required />
                         </div>
-
+                        <div className="flex items-center  justify-between mb-2">
+                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                                Brands :
+                            </label>
+                            <input onChange={handleInputChange} name="brands" value={input.brands} id="categoryName" type="text" className="form-input w-[250px]" required />
+                        </div>
                         <button type="submit" className="btn btn-primary mt-4 px-16 uppercase">
                             Create Palet
                         </button>

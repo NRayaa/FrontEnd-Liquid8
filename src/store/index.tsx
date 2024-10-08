@@ -24,6 +24,7 @@ import { notificationsApi } from './services/notificationsApi';
 import { repairMovingProductsApi } from './services/repairMovingApi';
 import { analyticApi } from './services/analysticApi';
 import { staggingApi } from './services/staggingApi';
+import { bklApi } from './services/bklApi';
 
 const rootReducer = combineReducers({
     themeConfig: themeConfigSlice,
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [repairMovingProductsApi.reducerPath]: repairMovingProductsApi.reducer,
     [staggingApi.reducerPath]: staggingApi.reducer,
+    [bklApi.reducerPath]: bklApi.reducer,
 });
 
 export default configureStore({
@@ -81,6 +83,7 @@ export default configureStore({
             .concat(notificationsApi.middleware)
             .concat(repairMovingProductsApi.middleware)
             .concat(staggingApi.middleware)
+            .concat(bklApi.middleware)
 });
 
 export type IRootState = ReturnType<typeof rootReducer>;

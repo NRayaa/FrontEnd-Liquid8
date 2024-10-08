@@ -1999,6 +1999,67 @@ interface GetCheckProdukItem {
     updated_at: string;
 }
 
+interface BklSubItem {
+    id: number;
+    bundle_id: string;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: null | string;
+    new_tag_product: null | string;
+    created_at: null | string;
+    updated_at: null | string;
+}
+interface BklItem {
+    id: number;
+    code_document: string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    old_price_product: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string;
+    new_category_product: string;
+    new_tag_product: string;
+    new_discount: string;
+    display_price: string;
+    created_at: string;
+    updated_at: string;
+    user_id: number;
+    days_since_created: string;
+    days_since_updated: string;
+}
+interface BklResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: BklItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
 export type {
     UserDataItem,
     GenerateInboundDataProcessResponse,
@@ -2118,4 +2179,7 @@ export type {
     GetNameBody,
     GetCheckProdukItem,
     GetCheckProduk,
+    BklItem,
+    BklResponse,
+    BklSubItem,
 };

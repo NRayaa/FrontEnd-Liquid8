@@ -48,6 +48,25 @@ import ListScanResult from '../pages/Inbound/CheckProduct/ScanResult/ListScanRes
 import CheckScanResult from '../pages/Inbound/CheckProduct/ScanResult/CheckScanResult';
 import ListScanResultApprovement from '../pages/Inbound/CheckProduct/ScanResultApprovement/ListScanResultApprovement';
 import DetailScanResultApprovement from '../pages/Inbound/CheckProduct/ScanResultApprovement/DetailScanResultApprovement';
+import ListBkl from '../pages/Storage/Bkl/ListBkl';
+import ListKendaraan from '../pages/Storage/Pallet/kendaraan/ListKendaraan';
+import AddKendaraan from '../pages/Storage/Pallet/kendaraan/AddKendaraan';
+import DetailKendaraan from '../pages/Storage/Pallet/kendaraan/DetailKendaraan';
+import ListKondisi from '../pages/Storage/Pallet/kondisi/ListKondisi';
+import AddKondisi from '../pages/Storage/Pallet/kondisi/AddKondisi';
+import DetailKondisi from '../pages/Storage/Pallet/kondisi/DetailKondisi';
+import ListWarehouse from '../pages/Storage/Pallet/warehouse/ListWarehouse';
+import DetailWarehouse from '../pages/Storage/Pallet/warehouse/DetailWarehouse';
+import AddWarehouse from '../pages/Storage/Pallet/warehouse/AddWarehouse';
+import ListStatus from '../pages/Storage/Pallet/status/ListStatus';
+import AddStatus from '../pages/Storage/Pallet/status/AddStatus';
+import DetailStatus from '../pages/Storage/Pallet/status/DetailStatus';
+import AddMerk from '../pages/Storage/Pallet/merk/AddMerk';
+import ListMerk from '../pages/Storage/Pallet/merk/ListMerk';
+import DetailMerk from '../pages/Storage/Pallet/merk/DetailMerk';
+import CreateBkl from '../pages/Storage/Bkl/AddBkl';
+import AddBkl from '../pages/Storage/Bkl/AddBkl';
+import DetailBkl from '../pages/Storage/Bkl/DetailBkl';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -324,6 +343,81 @@ const routes = [
         element: <PalletDetail />,
         layout: 'default',
     },
+    {
+        path: '/storage/warehouse/',
+        element: <ListWarehouse />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/warehouse/create_warehouse',
+        element: <AddWarehouse />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/warehouse/detail_warehouse/:id',
+        element: <DetailWarehouse />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/kondisi/',
+        element: <ListKondisi />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/kondisi/create_kondisi',
+        element: <AddKondisi />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/kondisi/detail_kondisi/:id',
+        element: <DetailKondisi />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/status/',
+        element: <ListStatus />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/status/create_status',
+        element: <AddStatus />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/status/detail_status/:id',
+        element: <DetailStatus />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/merk/',
+        element: <ListMerk />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/merk/create_merk',
+        element: <AddMerk />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/merk/detail_merk/:id',
+        element: <DetailMerk />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/kendaraan/',
+        element: <ListKendaraan />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/kendaraan/create_kendaraan',
+        element: <AddKendaraan />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/kendaraan/detail_kendaraan/:id',
+        element: <DetailKendaraan />,
+        layout: 'default',
+    },
     // Repair Station
     {
         path: '/repair_station/list_product_repair',
@@ -527,6 +621,21 @@ const routes = [
     {
         path: '/inbound/check_product/scan_result_approve/detail/:id',
         element: <DetailScanResultApprovement />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/list_bkl',
+        element: <ListBkl />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/add_bkl',
+        element: <AddBkl />,
+        layout: 'default',
+    },
+    {
+        path: '/storage/expired_product/detail/:id',
+        element: <DetailBkl />,
         layout: 'default',
     },
 ];
