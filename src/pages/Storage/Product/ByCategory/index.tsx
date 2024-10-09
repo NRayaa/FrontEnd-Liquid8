@@ -28,10 +28,10 @@ const ProductByCategory = () => {
             document.body.appendChild(a);
             a.click();
             a.remove();
-            toast.success('Data Pallet berhasil diekspor ke Excel.');
+            toast.success(response.data.message || 'Data Product By Category berhasil diekspor ke Excel.');
         } catch (err) {
-            toast.error('Gagal mengekspor data Pallet.');
-            console.error('Error exporting Pallet to Excel:', err);
+            toast.error('Gagal mengekspor data Product By Category.');
+            console.error('Error exporting Product By Category to Excel:', err);
         }
     };
 

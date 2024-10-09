@@ -76,10 +76,10 @@ const DetailBundleProduct = () => {
             a.click();
             a.remove();
 
-            toast.success('Data Pallet berhasil diekspor ke Excel.');
+            toast.success('Data Bundle berhasil diekspor ke Excel.');
         } catch (err) {
-            toast.error('Gagal mengekspor data Pallet.');
-            console.error('Error exporting Pallet to Excel:', err);
+            toast.error('Gagal mengekspor data Bundle.');
+            console.error('Error exporting Bundle to Excel:', err);
         }
     };
 
@@ -120,11 +120,11 @@ const DetailBundleProduct = () => {
                 total_price_bundle: editFormData.total_price_bundle,
             };
             await updateDetailBundle({ id, body });
-            toast.success('Data Pallet berhasil diperbarui.');
+            toast.success('Data Bundle berhasil diperbarui.');
             refetch();
         } catch (error) {
-            toast.error('Gagal memperbarui data Pallet.');
-            console.error('Error updating Pallet:', error);
+            toast.error('Gagal memperbarui data Bundle.');
+            console.error('Error updating Bundle:', error);
         }
     };
 
