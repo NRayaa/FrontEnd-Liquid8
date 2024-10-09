@@ -2062,6 +2062,28 @@ interface BklResponse {
     };
 }
 
+interface BklFilterResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+                data: BklItem[];
+                first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: null | string;
+                path: string;
+                per_page: number;
+                prev_page_url: null | string;
+                to: number;
+                total: number;
+        };
+    };
+}
+
 
 export type {
     UserDataItem,
@@ -2185,4 +2207,5 @@ export type {
     BklItem,
     BklResponse,
     BklSubItem,
+    BklFilterResponse,
 };

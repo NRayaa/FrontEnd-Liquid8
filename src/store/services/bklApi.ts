@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { BklItem, BklResponse, BklSubItem, FilterProduct, GetFilterProductBundles, ProductExpired } from './types';
+import { BklFilterResponse, BklItem, BklResponse, BklSubItem, FilterProduct, GetFilterProductBundles, ProductExpired } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const bklApi = createApi({
@@ -18,7 +18,7 @@ export const bklApi = createApi({
                 method: 'POST',
             }),
         }),
-        getFilterProductBkl: builder.query<BklResponse, number>({
+        getFilterProductBkl: builder.query<BklFilterResponse, number>({
             query: (page) => `/bkl/filter_product?page=${page}`,
         }),
         deleteFilterProductBkls: builder.mutation<FilterProduct, number>({
