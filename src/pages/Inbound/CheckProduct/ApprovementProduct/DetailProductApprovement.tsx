@@ -56,7 +56,7 @@ const DetailProductApprovement = () => {
         }));
     };
 
-    const hanldeEditProduct = async () => {
+    const handleEditProduct = async () => {
         try {
             const body = {
                 code_document: dataDetailProduct?.code_document,
@@ -126,7 +126,7 @@ const DetailProductApprovement = () => {
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary px-16 uppercase mt-6" onClick={hanldeEditProduct}>
+                <button type="submit" className="btn btn-primary px-16 uppercase mt-6" onClick={handleEditProduct}>
                     Edit Product
                 </button>
             </div>

@@ -218,7 +218,7 @@ const DetailStaggingApprovement = () => {
                                 nama={input.old_name_product}
                                 oldPrice={input.old_price_product}
                                 hideRedirect={hideRedirect}
-                                hanldeEditProduct={handleChangeInput}
+                                handleEditProduct={handleChangeInput}
                                 disabled={true}
                             />
                         </div>
