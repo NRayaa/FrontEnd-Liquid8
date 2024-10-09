@@ -354,7 +354,7 @@ const DataInput = () => {
                                         <DataTable
                                             highlightOnHover
                                             className="whitespace-nowrap table-hover"
-                                            records={results?.data?.data.resource.data}
+                                            records={results?.data?.data.resource.data.data}
                                             columns={[
                                                 {
                                                     accessor: 'id',

@@ -323,25 +323,7 @@ interface DetailProductOld {
     data: {
         status: boolean;
         message: string;
-        resource: {
-            current_page: number;
-            data: ItemDetailOldsProduct[];
-            first_page_url: string;
-            from: number;
-            last_page: number;
-            last_page_url: string;
-            links: {
-                url: null | string;
-                label: string;
-                active: boolean;
-            }[];
-            next_page_url: string;
-            path: string;
-            per_page: number;
-            prev_page_url: null | number;
-            to: number;
-            total: number;
-        };
+        resource: any;
     };
 }
 interface ItemDetailOldsProduct {

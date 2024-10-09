@@ -133,18 +133,15 @@ const DetailListData = () => {
 
     const detailProductOlds: any = useMemo(() => {
         if (data?.data.resource !== null) {
-            if (data?.data?.resource?.data.length !== 0) {
-                return data?.data.resource.data;
+            if (data?.data?.resource?.data.data.length !== 0) {
+                return data?.data.resource.data.data;
             }
         }
     }, [data]);
 
     useEffect(() => {
-        if (data?.data?.resource?.data?.length) {
-            const barcodeData = data.data.resource.data.find((item) => item.custom_barcode);
-            if (barcodeData) {
-                setInitBarcode(barcodeData.custom_barcode);
-            }
+        if (data?.data?.resource?.custom_barcode) {
+            setInitBarcode(data?.data?.resource?.custom_barcode);
         }
     }, [data]);
 
@@ -292,8 +289,8 @@ const DetailListData = () => {
                                     ),
                                 },
                             ]}
-                            totalRecords={data?.data.resource.total ?? 0}
-                            recordsPerPage={data?.data.resource.per_page ?? 10}
+                            totalRecords={data?.data.resource.data.total ?? 0}
+                            recordsPerPage={data?.data.resource.data.per_page ?? 10}
                             page={page}
                             onPageChange={(prevPage) => setPage(prevPage)}
                         />
