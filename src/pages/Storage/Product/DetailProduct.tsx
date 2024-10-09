@@ -88,48 +88,6 @@ const DetailProduct = () => {
             .catch((err: any) => console.log(err));
     }, 1000);
 
-    // const handleChangeInput = async (e: ChangeEvent<HTMLInputElement>) => {
-    //     if (e.target.name === 'old_price_product') {
-    //         setInput((prevState) => ({
-    //             ...prevState,
-    //             [e.target.name]: e.target.value,
-    //         }));
-    //         const price = parseFloat(e.target.value);
-    //         if (price >= 100000) {
-    //             const randomBarcode = Math.floor(Math.random() * 90000) + 10000;
-    //             setInput((prevState) => ({
-    //                 ...prevState,
-    //                 new_barcode_product: `LQD${randomBarcode}`,
-    //             }));
-    //         } else if (price < 100000) {
-    //             setInput((prevState) => ({
-    //                 ...prevState,
-    //                 new_barcode_product: dataDetailProduct?.new_barcode_product ?? '',
-    //             }));
-    //             setCategory('');
-    //         }
-    //         handleLiveSearch(e.target.value !== '' ? e.target.value : '0');
-    //     } else if (e.target.name === 'diskon') {
-    //         setDiskon(parseFloat(e.target.value));
-    //     } else if (e.target.name === 'hargaDisplay') {
-    //         setHargaDisplay(parseFloat(e.target.value));
-    //     } else {
-    //         setInput((prevState) => ({
-    //             ...prevState,
-    //             [e.target.name]: e.target.value,
-    //         }));
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     if (diskon && input.new_price_product) {
-    //         setInput((prev) => ({
-    //             ...prev,
-    //             hargaDisplay: (parseFloat(input.new_price_product) - parseFloat(input.new_price_product) * (diskon / 100)).toString()
-    //         }));
-    //     }
-    // }, [diskon, input.new_price_product]);
-
     const handleChangeInput = async (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (name === 'old_price_product') {
@@ -184,7 +142,7 @@ const DetailProduct = () => {
         }
     }, [diskon, input.old_price_product]);
 
-    const hanldeEditProduct = async () => {
+    const handleEditProduct = async () => {
         try {
             const body = {
                 code_document: dataDetailProduct?.code_document,
@@ -202,7 +160,7 @@ const DetailProduct = () => {
                 new_tag_product: dataDetailProduct?.new_tag_product,
                 deskripsi: dataDetailProduct?.deskripsi,
                 _method: 'PUT',
-                new_discount: diskon,
+                new_discount: parseFloat(input.diskon) || 0 ,
                 display_price: input.hargaDisplay,
             };
             await editDetailProduct({ id, body });
@@ -275,7 +233,7 @@ const DetailProduct = () => {
                                 nama={input.old_name_product}
                                 oldPrice={input.old_price_product}
                                 hideRedirect={hideRedirect}
-                                hanldeEditProduct={handleChangeInput}
+                                handleEditProduct={handleChangeInput}
                             />
                         </div>
                         {parseFloat(input.old_price_product) >= 100000 && (
@@ -334,7 +292,7 @@ const DetailProduct = () => {
                     type="submit"
                     className="btn btn-primary px-16 uppercase mt-6"
                     onClick={() => {
-                        hanldeEditProduct();
+                        handleEditProduct();
                     }}
                 >
                     Edit Product

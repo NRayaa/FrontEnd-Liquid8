@@ -16,11 +16,13 @@ const ListBkl = () => {
 
     const dataBklProduct: any = useMemo(() => {
         if (isSuccess) {
-            return data.data.resource.data;
+            return data.data.resource.products.data;
         }
     }, [data]);
 
-    const totalBkl = isSuccess ? data.data.resource.total : 0;
+    const totalBkl = isSuccess ? data.data.resource.products.total : "0";
+    const totalPrice = isSuccess ? data.data.resource.tota_price : "0";
+
 
     const showAlert = async ({ type, id }: { type: number; id: number | undefined }) => {
         if (type === 11) {
@@ -124,7 +126,7 @@ const ListBkl = () => {
                     </div>
                     <div className="flex flex-col w-full ltr:ml-auto rtl:mr-auto mx-6">
                         <label className="font-bold">Total Price BKL</label>
-                        <input type="text" className="form-input w-full mt-2" placeholder="Total Price" />
+                        <input type="text" className="form-input w-full mt-2" placeholder="Total Price" value={formatRupiah(totalPrice)} readOnly/>
                     </div>
                 </div>
 
@@ -170,8 +172,8 @@ const ListBkl = () => {
                                 ),
                             },
                         ]}
-                        totalRecords={data?.data.resource.total ?? 0}
-                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        totalRecords={data?.data.resource.products.total ?? 0}
+                        recordsPerPage={data?.data.resource.products.per_page ?? 10}
                         page={page}
                         onPageChange={(prevPage) => setPage(prevPage)}
                     />

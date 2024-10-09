@@ -7,22 +7,22 @@ interface BarcodeData {
     qty: string | undefined;
     header: string | undefined;
     oldPrice: string | undefined;
-    hanldeEditProduct: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleEditProduct: (e: ChangeEvent<HTMLInputElement>) => void;
     hideRedirect: () => void;
     disabled?: boolean;
 }
 
-const BarcodeData: React.FC<BarcodeData> = ({ header, barcode, nama, harga, qty, oldPrice, hanldeEditProduct, disabled }) => {
+const BarcodeData: React.FC<BarcodeData> = ({ header, barcode, nama, harga, qty, oldPrice, handleEditProduct, disabled }) => {
     return (
         <div className="flex flex-col gap-4 w-full panel">
             <h2 className="text-lg font-medium">{header}</h2>
             <div>
                 <label htmlFor="gridBarcode1">Barcode</label>
-                <input id="gridBarcode1" type="text" placeholder="Enter Barcode" className="form-input" name="old_barcode_product" value={barcode} onChange={hanldeEditProduct} disabled={disabled}/>
+                <input id="gridBarcode1" type="text" placeholder="Enter Barcode" className="form-input" name="old_barcode_product" value={barcode} onChange={handleEditProduct} disabled={disabled}/>
             </div>
             <div>
                 <label htmlFor="gridNama1">Nama</label>
-                <input id="gridNama1" type="text" placeholder="Enter Nama" className="form-input" value={nama} name="old_name_product" onChange={hanldeEditProduct} disabled={disabled}/>
+                <input id="gridNama1" type="text" placeholder="Enter Nama" className="form-input" value={nama} name="old_name_product" onChange={handleEditProduct} disabled={disabled}/>
             </div>
             <div>
                 <label htmlFor="gridQTY1">QTY</label>
@@ -31,7 +31,7 @@ const BarcodeData: React.FC<BarcodeData> = ({ header, barcode, nama, harga, qty,
             <div>
                 <label htmlFor="gridNama3">Harga</label>
                 <div className="flex space-x-2">
-                    <input id="gridNama3" type="number" placeholder="Enter Nama" className="form-input" value={oldPrice} name="old_price_product" onChange={hanldeEditProduct} disabled={disabled}/>
+                    <input id="gridNama3" type="number" placeholder="Enter Nama" className="form-input" value={oldPrice} name="old_price_product" onChange={handleEditProduct} disabled={disabled}/>
                 </div>
             </div>
         </div>
