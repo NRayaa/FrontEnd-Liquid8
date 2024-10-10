@@ -3,7 +3,7 @@ import { DataTable } from 'mantine-datatable';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { useAddProductSaleMutation, useDeleteProductSaleMutation, useGetShowSaleQuery, usePutGaborMutation, useUpdatePriceMutation } from '../../../store/services/saleApi';
+import { useAddProductSaleMutation, useDeleteProductSaleMutation, useGetShowSaleQuery, usePutGaborMutation, useUpdateCartonMutation, useUpdatePriceMutation } from '../../../store/services/saleApi';
 import { GetShowSaleDocumentItem, SubSalesProductsProps } from '../../../store/services/types';
 import IconArchive from '../../../components/Icon/IconArchive';
 import { formatRupiah, useDebounce } from '../../../helper/functions';
@@ -34,7 +34,14 @@ const DetailCashier = () => {
     const [gabor, setGabor] = useState('');
     const [editId, setEditId] = useState('');
     const [putGabor, results] = usePutGaborMutation();
+    const [updateCarton] = useUpdateCartonMutation();
     const [updatePriceMutation, resultsUpdate] = useUpdatePriceMutation();
+
+    const [carton, setCarton] = useState({
+        qty: '0',
+        unitPrice: '0',
+        totalPrice: '0',
+    });
 
     const ShowSale = useMemo(() => {
         return ShowSaleData?.data.resource;
@@ -52,6 +59,29 @@ const DetailCashier = () => {
             sale_document_id: id,
         };
         await addProduct(body);
+    };
+
+    const handleUpdateCarton = async (e: FormEvent) => {
+        e.preventDefault();
+
+        const body = {
+            cardbox_qty: carton.qty,
+            cardbox_unit_price: carton.unitPrice,
+        };
+        await updateCarton({ id: ShowSale?.id, body: body })
+            .unwrap()
+            .then((res) => {
+                if (res.data.status) {
+                    toast.success(res.data.message);
+                    refetch();
+                } else {
+                    toast.error(res.data.message);
+                }
+            })
+            .catch((err) => {
+                toast.error('Something went wrong');
+                console.log(err);
+            });
     };
 
     const handleGabor = async (e: FormEvent, id: any) => {
@@ -179,6 +209,31 @@ const DetailCashier = () => {
                 });
         }
     };
+
+    useEffect(() => {
+        if (ShowSale) {
+            setCarton({
+                qty: ShowSale?.cardbox_qty,
+                unitPrice: ShowSale?.cardbox_unit_price,
+                totalPrice: ShowSale?.cardbox_total_price,
+            });
+        }
+    }, [ShowSale]);
+
+    useEffect(() => {
+        const total_price_carton = parseFloat(carton.qty) * parseFloat(carton.unitPrice);
+
+        setCarton((prev) => ({ ...prev, totalPrice: total_price_carton.toString() }));
+    }, [carton.qty, carton.unitPrice]);
+
+    useEffect(() => {
+        if (isNaN(parseFloat(carton.qty))) {
+            setCarton((prev) => ({ ...prev, qty: '0' }));
+        }
+        if (isNaN(parseFloat(carton.unitPrice))) {
+            setCarton((prev) => ({ ...prev, unitPrice: '0' }));
+        }
+    }, [carton]);
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -370,43 +425,133 @@ const DetailCashier = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Sale</h1>
             </div>
             <div>
-                <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
-                    <div className="bg-primary absolute mt-2 text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
-                        <IconArchive fill className="w-12 h-12" />
-                    </div>
-                    <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
-                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">DOC SALE :</div>
-                            <div className="whitespace-nowrap">{ShowSale?.code_document_sale}</div>
+                <div className="flex w-full gap-6">
+                    <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
+                        <div className="bg-primary absolute mt-2 text-white-light ltr:left-6 rtl:right-6 -top-8 w-16 h-16 rounded-md flex items-center justify-center mb-5 mx-auto">
+                            <IconArchive fill className="w-12 h-12" />
                         </div>
-                        <div className=" items-center text-lg w-full justify-between mb-2">
-                            <div className="text-white-dark">QTY :</div>
-                            <ul className="space-y-3 list-inside list-disc font-semibold">{ShowSale?.total_product_document_sale}</ul>
-                        </div>
-                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">VOUCHER :</div>
-                            <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.voucher === 'string' ? formatRupiah(ShowSale.voucher) : formatRupiah('0')}</div>
-                        </div>
-                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">PRODUCT PRICE :</div>
-                            <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.total_price_document_sale === 'string' ? formatRupiah(ShowSale.total_price_document_sale) : ''}</div>
-                        </div>
-                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">BUYER :</div>
-                            <div className="whitespace-nowrap">{ShowSale?.buyer_name_document_sale}</div>
-                        </div>
-                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">CARTON BOX :</div>
-                            <div className="whitespace-nowrap">
-                                {ShowSale?.cardbox_qty === null
-                                    ? 0
-                                    : `${ShowSale?.cardbox_qty} * @${formatRupiah(ShowSale?.cardbox_unit_price ?? '0')} = ${formatRupiah(ShowSale?.cardbox_total_price ?? '0')}`}
+                        <div className="xl:1/3 lg:w-2/5 sm:w-1/2">
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">DOC SALE :</div>
+                                <div className="whitespace-nowrap">{ShowSale?.code_document_sale}</div>
+                            </div>
+                            <div className=" items-center text-lg w-full justify-between mb-2">
+                                <div className="text-white-dark">QTY :</div>
+                                <ul className="space-y-3 list-inside list-disc font-semibold">{ShowSale?.total_product_document_sale}</ul>
+                            </div>
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">VOUCHER :</div>
+                                <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.voucher === 'string' ? formatRupiah(ShowSale.voucher) : formatRupiah('0')}</div>
+                            </div>
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">PRODUCT PRICE :</div>
+                                <div className="whitespace-nowrap"> {ShowSale && typeof ShowSale.total_price_document_sale === 'string' ? formatRupiah(ShowSale.total_price_document_sale) : ''}</div>
+                            </div>
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">BUYER :</div>
+                                <div className="whitespace-nowrap">{ShowSale?.buyer_name_document_sale}</div>
+                            </div>
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">CARTON BOX :</div>
+                                <div className="whitespace-nowrap">
+                                    {ShowSale?.cardbox_qty === null
+                                        ? 0
+                                        : `${ShowSale?.cardbox_qty} * @${formatRupiah(ShowSale?.cardbox_unit_price ?? '0')} = ${formatRupiah(ShowSale?.cardbox_total_price ?? '0')}`}
+                                </div>
+                            </div>
+                            <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
+                                <div className="text-white-dark mr-2">Total Price :</div>
+                                <div className="whitespace-nowrap">{formatRupiah(ShowSale?.grand_total ?? '0')}</div>
                             </div>
                         </div>
-                        <div className="justify-start grid xl:grid-cols-span-2 text-lg w-full mb-2">
-                            <div className="text-white-dark mr-2">Total Price :</div>
-                            <div className="whitespace-nowrap">{formatRupiah(ShowSale?.grand_total ?? '0')}</div>
-                        </div>
+                    </div>
+                    <div className="w-full">
+                        <form onSubmit={handleUpdateCarton} className="flex flex-col gap-2 w-[500px] mt-8 border rounded-md p-4 bg-white">
+                            <h3 className="text-lg font-bold">Carton Box</h3>
+                            <div className="flex flex-col">
+                                <label htmlFor="qty-box">Qty</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        className="form-input"
+                                        id="qty-box"
+                                        type="number"
+                                        onChange={(e) =>
+                                            setCarton((prev) => ({
+                                                ...prev,
+                                                qty: e.target.value.length > 1 && e.target.value.startsWith('0') ? e.target.value.replace(/^0+/, '') : e.target.value,
+                                            }))
+                                        }
+                                        value={carton.qty}
+                                        placeholder={'Carton Qty..'}
+                                    />
+                                    <button
+                                        disabled={parseFloat(carton.qty) === 0}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setCarton((prev) => ({ ...prev, qty: (parseFloat(prev.qty) - 1).toString() }));
+                                        }}
+                                        className="w-10 h-10 border disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent hover:bg-sky-100 rounded-md flex-none flex justify-center items-center border-black text-black"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-4 h-4"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M5 12h14" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setCarton((prev) => ({ ...prev, qty: (parseFloat(prev.qty) + 1).toString() }));
+                                        }}
+                                        className="w-10 h-10 border rounded-md flex-none flex hover:bg-sky-100 justify-center items-center border-black text-black"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            className="w-4 h-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M5 12h14" />
+                                            <path d="M12 5v14" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="unit-price">Unit Price</label>
+                                <input
+                                    className="form-input"
+                                    value={carton.unitPrice}
+                                    onChange={(e) =>
+                                        setCarton((prev) => ({
+                                            ...prev,
+                                            unitPrice: e.target.value.length > 1 && e.target.value.startsWith('0') ? e.target.value.replace(/^0+/, '') : e.target.value,
+                                        }))
+                                    }
+                                    id="unit-price"
+                                    type="number"
+                                    placeholder={'Rp 0'}
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="total-price">Total Price</label>
+                                <input id="total-price" disabled value={formatRupiah(carton.totalPrice.toString())} className="disabled:cursor-default form-input" placeholder={'Rp 0'} />
+                            </div>
+                            <button className="btn btn-info mt-3" type="submit" disabled={carton.qty === ShowSale?.cardbox_qty && carton.unitPrice === ShowSale?.cardbox_unit_price}>
+                                Update Carton
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <div className="flex justify-end">
