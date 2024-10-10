@@ -65,6 +65,13 @@ export const saleApi = createApi({
                 body,
             }),
         }),
+        updateCarton: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/sale-documents/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -80,4 +87,5 @@ export const {
     useUpdatePriceMutation,
     useDeleteProductSaleMutation,
     useAddProductSaleMutation,
+    useUpdateCartonMutation,
 } = saleApi;
