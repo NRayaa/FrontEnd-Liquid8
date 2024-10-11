@@ -4,19 +4,17 @@ import toast from 'react-hot-toast';
 import { useUpdatedBuyerMutation } from '../../../../store/services/buyerApi';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useUpdatedStatusMutation } from '../../../../store/services/palletApi';
 
 const DetailStatus = () => {
     const { state } = useLocation();
     const params = useParams();
     const navigate = useNavigate();
-    const [updateBuyer, results] = useUpdatedBuyerMutation();
+    const [updateStatus, results] = useUpdatedStatusMutation();
 
     const [input, setInput] = useState({
-        name_buyer: state?.name_buyer,
-        phone_buyer: state?.phone_buyer,
-        address_buyer: state?.address_buyer,
-        amount_transaction_buyer: state?.amount_transaction_buyer,
-        amount_purchase_buyer: state?.amount_purchase_buyer,
+        status_name: state?.status_name,
+        status_slug: state?.status_slug,
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -26,25 +24,22 @@ const DetailStatus = () => {
         }));
     };
 
-    const handleUpdateBuyer = async (e: { preventDefault: () => void }) => {
+    const handleUpdateStatus = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
             const { id } = params;
             const body = {
-                name_buyer: input.name_buyer,
-                phone_buyer: input.phone_buyer,
-                address_buyer: input.address_buyer,
-                amount_transaction_buyer: input.amount_transaction_buyer,
-                amount_purchase_buyer: input.amount_purchase_buyer,
+                status_name: input.status_name,
+                status_slug: input.status_slug,
             };
-            await updateBuyer({ id, body });
+            await updateStatus({ id, body });
         } catch (err) {}
     };
 
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
-            navigate('/buyer/buyer/list_buyer');
+            navigate('/storage/status');
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
         }
@@ -64,22 +59,22 @@ const DetailStatus = () => {
                     </Link>
                 </div>
 
-                <form className="w-[400px]" onSubmit={handleUpdateBuyer}>
+                <form className="w-[400px]" onSubmit={handleUpdateStatus}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
+                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="status_name" onChange={handleInputChange} value={input.status_name} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="status_slug" className="text-[15px] font-semibold whitespace-nowrap">
                             Slug :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="status_slug" type="text" className="form-input w-[250px]" required name="status_slug" onChange={handleInputChange} value={input.status_slug} />
                     </div>
-                    {/* <button type="submit" className="btn btn-primary mt-4 px-16">
+                    <button type="submit" className="btn btn-primary mt-4 px-16">
                         Update
-                    </button> */}
+                    </button>
                 </form>
             </div>
         </>
