@@ -159,42 +159,17 @@ const ListKendaraan = () => {
                             },
                             {
                                 accessor: 'name_buyer',
-                                title: 'Alamat',
+                                title: 'Panjang',
                                 render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
                             },
                             {
                                 accessor: 'name_buyer',
-                                title: 'Provinsi',
+                                title: 'Tinggi',
                                 render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
                             },
                             {
                                 accessor: 'name_buyer',
-                                title: 'Kota',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
-                            },
-                            {
-                                accessor: 'name_buyer',
-                                title: 'Kabupaten',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
-                            },
-                            {
-                                accessor: 'name_buyer',
-                                title: 'Kecamatan',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
-                            },
-                            {
-                                accessor: 'phone_buyer',
-                                title: 'No.HP',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.phone_buyer}</span>,
-                            },
-                            {
-                                accessor: 'name_buyer',
-                                title: 'Latitude',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
-                            },
-                            {
-                                accessor: 'name_buyer',
-                                title: 'Longitude',
+                                title: 'Lebar',
                                 render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
                             },
                             // {

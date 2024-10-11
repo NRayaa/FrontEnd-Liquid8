@@ -159,7 +159,42 @@ const ListWarehouse = () => {
                             },
                             {
                                 accessor: 'name_buyer',
-                                title: 'Slug',
+                                title: 'Alamat',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'Provinsi',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'Kota',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'Kabupaten',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'Kecamatan',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'No HP',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'Latitide',
+                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                            },
+                            {
+                                accessor: 'name_buyer',
+                                title: 'Longitude',
                                 render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
                             },
                             {

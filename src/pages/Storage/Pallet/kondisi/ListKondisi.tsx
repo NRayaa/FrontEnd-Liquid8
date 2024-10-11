@@ -8,16 +8,17 @@ import Swal from 'sweetalert2';
 import { useDebounce } from '../../../../helper/functions';
 import { useDeleteBuyerMutation, useExportToExcelBuyerMutation, useGetListBuyerQuery } from '../../../../store/services/buyerApi';
 import { Alert } from '../../../../commons';
-import { GetListBuyerItem } from '../../../../store/services/types';
 import { BreadCrumbs } from '../../../../components';
+import { useDeleteKondisiMutation, useGetListKondisiQuery } from '../../../../store/services/palletApi';
+import { GetListKondisiItem } from '../../../../store/services/types';
 
 const ListKondisi = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
-    const [deleteBuyer, results] = useDeleteBuyerMutation();
+    const { data, refetch, isError } = useGetListKondisiQuery({ page, q: searchDebounce });
+    const [deleteKondisi, results] = useDeleteKondisiMutation();
     const [exportToExcel] = useExportToExcelBuyerMutation();
 
     const listBuyer: any = useMemo(() => {
@@ -47,7 +48,8 @@ const ListKondisi = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteBuyer(id);
+                        await deleteKondisi(id);
+                        refetch();
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -137,9 +139,9 @@ const ListKondisi = () => {
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/kondisi/create_kondisi')}>
                             Add Kondisi
                         </button>
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                        {/* <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
                             Export Data
-                        </button>
+                        </button> */}
                     </div>
                 </div>
                 <div className="datatables">
@@ -150,32 +152,29 @@ const ListKondisi = () => {
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer.length + (index + 1)}</span>,
+                                render: (item: GetListKondisiItem, index: number) => <span>{(page - 1) * listBuyer.length + (index + 1)}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'condition_name',
                                 title: 'Nama',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListKondisiItem) => <span className="font-semibold">{item.condition_name}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'condition_slug',
                                 title: 'Slug',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListKondisiItem) => <span className="font-semibold">{item.condition_slug}</span>,
                             },
                             {
                                 accessor: 'action',
                                 title: 'Detail',
                                 titleClassName: '!text-center',
-                                render: (item: GetListBuyerItem) => (
+                                render: (item: GetListKondisiItem) => (
                                     <div className="flex items-center w-max mx-auto gap-2">
                                         <Link
                                             to={`/storage/kondisi/detail_kondisi/${item.id}`}
                                             state={{
-                                                name_buyer: item.name_buyer,
-                                                phone_buyer: item.phone_buyer,
-                                                address_buyer: item.address_buyer,
-                                                amount_transaction_buyer: item.amount_transaction_buyer,
-                                                amount_purchase_buyer: item.amount_purchase_buyer,
+                                                condition_name: item.condition_name,
+                                                condition_slug: item.condition_slug,
                                             }}
                                         >
                                             <button type="button" className="btn btn-outline-info">
@@ -189,10 +188,10 @@ const ListKondisi = () => {
                                 ),
                             },
                         ]}
-                        totalRecords={data?.data.resource.total ?? 0}
-                        recordsPerPage={data?.data.resource.per_page ?? 10}
-                        page={page}
-                        onPageChange={(prevPage) => setPage(prevPage)}
+                        // totalRecords={data?.data.resource.total ?? 0}
+                        // recordsPerPage={data?.data.resource.per_page ?? 10}
+                        // page={page}
+                        // onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>

@@ -1,19 +1,18 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAddBuyerMutation } from '../../../../store/services/buyerApi';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useAddStatusMutation } from '../../../../store/services/palletApi';
 
 const AddStatus = () => {
     const navigate = useNavigate();
-    const [createBuyer, results] = useAddBuyerMutation();
+    const [createBuyer, results] = useAddStatusMutation();
     const [isSubmitting, setIsSubmitting] = useState(false); 
 
     const [input, setInput] = useState({
-        name_buyer: '',
-        phone_buyer: '',
-        address_buyer: '',
+        status_name: '',
+        status_slug: '',
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,9 +30,8 @@ const AddStatus = () => {
 
         try {
             const body = {
-                name_buyer: input.name_buyer,
-                phone_buyer: input.phone_buyer,
-                address_buyer: input.address_buyer,
+                status_name: input.status_name,
+                status_slug: input.status_slug,
             };
             await createBuyer(body);
         } catch (err) {
@@ -44,7 +42,7 @@ const AddStatus = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
-            navigate('/buyer/buyer/list_buyer');
+            navigate('/storage/status');
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
             setIsSubmitting(false); 
@@ -53,7 +51,7 @@ const AddStatus = () => {
 
     return (
         <>
-            <BreadCrumbs base="Status" basePath="/status/status/list_status" sub="List Status" subPath="/status/status/list_status" current="Add Status" />
+            <BreadCrumbs base="Status" basePath="/storage/status" sub="List Status" subPath="/storage/status" current="Add Status" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
                 <div className="flex items-center justify-between mb-4">
@@ -70,13 +68,13 @@ const AddStatus = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
+                        <input id="categoryName" type="text" className="form-input w-[250px]" name="status_name" onChange={handleInputChange} value={input.status_name} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="slug" className="text-[15px] font-semibold whitespace-nowrap">
                             Slug :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="slug" type="text" className="form-input w-[250px]" name="status_slug" onChange={handleInputChange} value={input.status_slug} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16" disabled={isSubmitting}>
                         {isSubmitting ? 'Creating...' : 'Create'}

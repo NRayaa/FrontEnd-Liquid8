@@ -62,16 +62,16 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td className="px-6 py-4">{detailCheckData?.total_product_category}</td>
                     <td className="px-6 py-4"></td>
                 </tr>
-                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                {/* <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td className="px-6 py-4">6</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Staging By Category
                     </th>
                     <td className="px-6 py-4">{detailCheckData?.stagingProducts}</td>
                     <td className="px-6 py-4"></td>
-                </tr>
+                </tr> */}
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">7</td>
+                    <td className="px-6 py-4">6</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Data Damaged
                     </th>
@@ -79,7 +79,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td className="px-6 py-4">{detailCheckData?.percentage_damaged ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">8</td>
+                    <td className="px-6 py-4">7</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Data Abnormal
                     </th>
@@ -87,7 +87,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td className="px-6 py-4">{detailCheckData?.percentage_abnormal ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">9</td>
+                    <td className="px-6 py-4">8</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Discrepancy
                     </th>
@@ -95,7 +95,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td className="px-6 py-4">{detailCheckData?.percentage_discrepancy ?? '1'}%</td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">10</td>
+                    <td className="px-6 py-4">9</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Old Price Damaged
                     </th>
@@ -104,7 +104,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">11</td>
+                    <td className="px-6 py-4">10</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Old Price Lolos
                     </th>
@@ -113,7 +113,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">12</td>
+                    <td className="px-6 py-4">11</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Old Price Abnormal
                     </th>
@@ -122,7 +122,7 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">13</td>
+                    <td className="px-6 py-4">12</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Price
                     </th>
@@ -131,12 +131,64 @@ const TablePercentageItem: React.FC<TableHistoryCheckItem> = ({ detailCheckData 
                     <td></td>
                 </tr>
                 <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td className="px-6 py-4">14</td>
+                    <td className="px-6 py-4">13</td>
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Total Price Discrepancy
                     </th>
                     <td className="px-6 py-4">{formatRupiah(detailCheckData?.priceDiscrepancy.toString() || '0')}</td>
                     <td className="px-6 py-4">{detailCheckData?.price_percentage ?? '1'}%</td>
+                    <td></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">14</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Product Sale
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_product_sales}</td>
+                    <td className="px-6 py-4"></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">15</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Product Stagging
+                    </th>
+                    <td className="px-6 py-4">{detailCheckData?.total_product_stagings}</td>
+                    <td className="px-6 py-4"></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">16</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Damaged Staging
+                    </th>
+                    <td className="px-6 py-4">{formatRupiah(detailCheckData?.damagedStaging.total_old_price.toString() || '0')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.damagedStaging.price_percentage ?? '1'}%</td>
+                    <td></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">17</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Lolos Staging
+                    </th>
+                    <td className="px-6 py-4">{formatRupiah(detailCheckData?.lolosStaging.total_old_price.toString() || '0')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.lolosStaging.price_percentage ?? '1'}%</td>
+                    <td></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">18</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Abnormal Staging
+                    </th>
+                    <td className="px-6 py-4">{formatRupiah(detailCheckData?.abnormalStaging.total_old_price.toString() || '0')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.abnormalStaging.price_percentage ?? '1'}%</td>
+                    <td></td>
+                </tr>
+                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">19</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Total Lolos Sale
+                    </th>
+                    <td className="px-6 py-4">{formatRupiah(detailCheckData?.lolosSale.total_old_price.toString() || '0')}</td>
+                    <td className="px-6 py-4">{detailCheckData?.lolosSale.price_percentage ?? '1'}%</td>
                     <td></td>
                 </tr>
             </tbody>

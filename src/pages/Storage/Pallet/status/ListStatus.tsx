@@ -6,22 +6,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { useDebounce } from '../../../../helper/functions';
-import { useDeleteBuyerMutation, useExportToExcelBuyerMutation, useGetListBuyerQuery } from '../../../../store/services/buyerApi';
 import { Alert } from '../../../../commons';
-import { GetListBuyerItem } from '../../../../store/services/types';
+import { GetListStatusItem } from '../../../../store/services/types';
 import { BreadCrumbs } from '../../../../components';
+import { useDeleteStatusMutation, useGetListStatusQuery } from '../../../../store/services/palletApi';
 
 const ListStatus = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
-    const [deleteBuyer, results] = useDeleteBuyerMutation();
-    const [exportToExcel] = useExportToExcelBuyerMutation();
+    const { data, refetch, isError } = useGetListStatusQuery({ page, q: searchDebounce });
+    const [deleteStatus, results] = useDeleteStatusMutation();
 
-    const listBuyer: any = useMemo(() => {
-        return data?.data.resource.data;
+    const listStatus: any = useMemo(() => {
+        return data?.data.resource;
     }, [data]);
 
     const showAlert = async ({ type, id }: any) => {
@@ -47,7 +46,7 @@ const ListStatus = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteBuyer(id);
+                        await deleteStatus(id);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -78,24 +77,6 @@ const ListStatus = () => {
                 title: 'Data Berhasil Ditambah',
                 padding: '10px 20px',
             });
-        }
-    };
-
-    const handleExportData = async () => {
-        try {
-            const response = await exportToExcel({}).unwrap();
-            const url = response.data.resource;
-            const fileName = url.substring(url.lastIndexOf('/') + 1);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            toast.success('Data buyer berhasil diekspor ke Excel.');
-        } catch (err) {
-            toast.error('Gagal mengekspor data buyer.');
-            console.error('Error exporting buyer to Excel:', err);
         }
     };
 
@@ -137,45 +118,39 @@ const ListStatus = () => {
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/status/create_status')}>
                             Add Status
                         </button>
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
-                            Export Data
-                        </button>
                     </div>
                 </div>
                 <div className="datatables">
                     <DataTable
                         className="whitespace-nowrap table-hover"
-                        records={listBuyer}
+                        records={listStatus}
                         columns={[
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer.length + (index + 1)}</span>,
+                                render: (item: GetListStatusItem, index: number) => <span>{(page - 1) * listStatus.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'name_buyer',
                                 title: 'Nama',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListStatusItem) => <span className="font-semibold">{item.status_name}</span>,
                             },
                             {
                                 accessor: 'name_buyer',
                                 title: 'Slug',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListStatusItem) => <span className="font-semibold">{item.status_slug}</span>,
                             },
                             {
                                 accessor: 'action',
                                 title: 'Detail',
                                 titleClassName: '!text-center',
-                                render: (item: GetListBuyerItem) => (
+                                render: (item: GetListStatusItem) => (
                                     <div className="flex items-center w-max mx-auto gap-2">
                                         <Link
                                             to={`/storage/status/detail_status/${item.id}`}
                                             state={{
-                                                name_buyer: item.name_buyer,
-                                                phone_buyer: item.phone_buyer,
-                                                address_buyer: item.address_buyer,
-                                                amount_transaction_buyer: item.amount_transaction_buyer,
-                                                amount_purchase_buyer: item.amount_purchase_buyer,
+                                                status_name: item.status_name,
+                                                status_slug: item.status_slug,
                                             }}
                                         >
                                             <button type="button" className="btn btn-outline-info">
@@ -189,10 +164,6 @@ const ListStatus = () => {
                                 ),
                             },
                         ]}
-                        totalRecords={data?.data.resource.total ?? 0}
-                        recordsPerPage={data?.data.resource.per_page ?? 10}
-                        page={page}
-                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>

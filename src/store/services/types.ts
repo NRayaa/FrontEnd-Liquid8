@@ -492,6 +492,8 @@ interface GetRiwayatcheckItem {
     total_product_color: number;
     created_at: string;
     updated_at: string;
+    total_product_sales: number;
+    total_product_stagings: number;
     damaged: {
         products: HistorySubProductItem[];
         total_old_price: number;
@@ -507,8 +509,25 @@ interface GetRiwayatcheckItem {
         total_old_price: number;
         price_percentage: number;
     };
+    damagedStaging: {
+        total_old_price: number;
+        price_percentage: number;
+    };
+    abnormalStaging: {
+        total_old_price: number;
+        price_percentage: number;
+    };
+    lolosStaging: {
+        total_old_price: number;
+        price_percentage: number;
+    };
+    lolosSale: {
+        total_old_price: number;
+        price_percentage: number;
+    };
     priceDiscrepancy: number;
     price_percentage: number;
+
 }
 
 interface DetailGetRiwayatcheck {
@@ -2084,6 +2103,58 @@ interface BklFilterResponse {
     };
 }
 
+interface GetListStatusItem{
+    id: number,
+            status_name: string,
+            status_slug: string,
+            created_at: string,
+            updated_at: string,
+}
+
+interface GetListStatus {
+    data: {
+        status: boolean;
+        message: string;
+        resource: GetListStatusItem[]
+    };
+}
+
+interface GetListKondisiItem{
+    id: number,
+    condition_name: string,
+    condition_slug: string,
+    created_at: string,
+    updated_at: string,
+}
+
+interface GetListKondisi {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            data: GetListKondisiItem[]
+        }
+    };
+}
+
+interface GetListMerkItem{
+    id: number,
+    brand_name: string,
+    brand_slug: string,
+    created_at: string,
+    updated_at: string,
+}
+
+interface GetListMerk {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            data: GetListMerkItem[]
+        }
+    };
+}
+
 
 export type {
     UserDataItem,
@@ -2208,4 +2279,10 @@ export type {
     BklResponse,
     BklSubItem,
     BklFilterResponse,
+    GetListStatus,
+    GetListStatusItem,
+    GetListKondisi,
+    GetListKondisiItem,
+    GetListMerk,
+    GetListMerkItem,
 };

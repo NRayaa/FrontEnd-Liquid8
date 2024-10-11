@@ -4,19 +4,17 @@ import toast from 'react-hot-toast';
 import { useUpdatedBuyerMutation } from '../../../../store/services/buyerApi';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useUpdatedMerkMutation } from '../../../../store/services/palletApi';
 
 const DetailMerk = () => {
     const { state } = useLocation();
     const params = useParams();
     const navigate = useNavigate();
-    const [updateBuyer, results] = useUpdatedBuyerMutation();
+    const [updateMerk, results] = useUpdatedMerkMutation();
 
     const [input, setInput] = useState({
-        name_buyer: state?.name_buyer,
-        phone_buyer: state?.phone_buyer,
-        address_buyer: state?.address_buyer,
-        amount_transaction_buyer: state?.amount_transaction_buyer,
-        amount_purchase_buyer: state?.amount_purchase_buyer,
+        brand_name: state?.brand_name,
+        brand_slug: state?.brand_slug,
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -26,25 +24,22 @@ const DetailMerk = () => {
         }));
     };
 
-    const handleUpdateBuyer = async (e: { preventDefault: () => void }) => {
+    const handleUpdateMerk = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
             const { id } = params;
             const body = {
-                name_buyer: input.name_buyer,
-                phone_buyer: input.phone_buyer,
-                address_buyer: input.address_buyer,
-                amount_transaction_buyer: input.amount_transaction_buyer,
-                amount_purchase_buyer: input.amount_purchase_buyer,
+                brand_name: input.brand_name,
+                brand_slug: input.brand_slug,
             };
-            await updateBuyer({ id, body });
+            await updateMerk({ id, body });
         } catch (err) {}
     };
 
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
-            navigate('/buyer/buyer/list_buyer');
+            navigate('/storage/merk');
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
         }
@@ -64,22 +59,22 @@ const DetailMerk = () => {
                     </Link>
                 </div>
 
-                <form className="w-[400px]" onSubmit={handleUpdateBuyer}>
+                <form className="w-[400px]" onSubmit={handleUpdateMerk}>
                     <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="brand_name" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" required name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
+                        <input id="brand_name" type="text" className="form-input w-[250px]" required name="brand_name" onChange={handleInputChange} value={input.brand_name} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="brand_slug" className="text-[15px] font-semibold whitespace-nowrap">
                             Slug :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="brand_slug" type="text" className="form-input w-[250px]" required name="brand_slug" onChange={handleInputChange} value={input.brand_slug} />
                     </div>
-                    {/* <button type="submit" className="btn btn-primary mt-4 px-16">
+                    <button type="submit" className="btn btn-primary mt-4 px-16">
                         Update
-                    </button> */}
+                    </button>
                 </form>
             </div>
         </>

@@ -73,7 +73,49 @@ const DetailWarehouse = () => {
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
-                            Slug :
+                            Alamat :
+                        </label>
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                            Provinsi :
+                        </label>
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                            Kota :
+                        </label>
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                            Kabupaten :
+                        </label>
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                            Kecamatan :
+                        </label>
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                            No HP :
+                        </label>
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                            Latitude :
+                        </label>
+                        <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                            Longitude :
                         </label>
                         <input id="email" type="text" className="form-input w-[250px]" required name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
                     </div>

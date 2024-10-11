@@ -8,6 +8,9 @@ import {
     DisplayPallet,
     ExportToExcel,
     FilterDisplayPallet,
+    GetListKondisi,
+    GetListMerk,
+    GetListStatus,
     PaletLists,
     filterPalletLists,
 } from './types';
@@ -87,6 +90,75 @@ export const palletApi = createApi({
                 responseType: 'blob',
             }),
         }),
+        getListStatus: builder.query<GetListStatus, { page: number; q: string }>({
+            query: ({ page, q }) => `/product-statuses?page=${page}&q=${q}`,
+        }),
+        addStatus: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/product-statuses',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updatedStatus: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/product-statuses/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        deleteStatus: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-statuses/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        getListKondisi: builder.query<GetListKondisi, { page: number; q: string }>({
+            query: ({ page, q }) => `/product-conditions?page=${page}&q=${q}`,
+        }),
+        addKondisi: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/product-conditions',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updatedKondisi: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/product-conditions/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        deleteKondisi: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-conditions/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        getListMerk: builder.query<GetListMerk, { page: number; q: string }>({
+            query: ({ page, q }) => `/product-brands?page=${page}&q=${q}`,
+        }),
+        addMerk: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/product-brands',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updatedMerk: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/product-brands/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        deleteMerk: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/product-brands/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -104,4 +176,16 @@ export const {
     useUpdateDetailPalletMutation,
     useExportToExcelDetailPalletMutation,
     useUploadPalleteMutation,
+    useGetListStatusQuery,
+    useAddStatusMutation,
+    useUpdatedStatusMutation,
+    useDeleteStatusMutation,
+    useGetListKondisiQuery,
+    useAddKondisiMutation,
+    useUpdatedKondisiMutation,
+    useDeleteKondisiMutation,
+    useGetListMerkQuery,
+    useAddMerkMutation,
+    useUpdatedMerkMutation,
+    useDeleteMerkMutation,
 } = palletApi;

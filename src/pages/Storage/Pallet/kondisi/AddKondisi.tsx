@@ -4,16 +4,16 @@ import toast from 'react-hot-toast';
 import { useAddBuyerMutation } from '../../../../store/services/buyerApi';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useAddKondisiMutation } from '../../../../store/services/palletApi';
 
 const AddKondisi = () => {
     const navigate = useNavigate();
-    const [createBuyer, results] = useAddBuyerMutation();
+    const [create_kondisi, results] = useAddKondisiMutation();
     const [isSubmitting, setIsSubmitting] = useState(false); 
 
     const [input, setInput] = useState({
-        name_buyer: '',
-        phone_buyer: '',
-        address_buyer: '',
+        condition_name: '',
+        condition_slug: '',
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,11 +31,10 @@ const AddKondisi = () => {
 
         try {
             const body = {
-                name_buyer: input.name_buyer,
-                phone_buyer: input.phone_buyer,
-                address_buyer: input.address_buyer,
+                condition_name: input.condition_name,
+                condition_slug: input.condition_slug,
             };
-            await createBuyer(body);
+            await create_kondisi(body);
         } catch (err) {
             setIsSubmitting(false); 
         }
@@ -44,7 +43,7 @@ const AddKondisi = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
-            navigate('/buyer/buyer/list_buyer');
+            navigate('/storage/kondisi');
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
             setIsSubmitting(false); 
@@ -53,7 +52,7 @@ const AddKondisi = () => {
 
     return (
         <>
-            <BreadCrumbs base="Kondisi" basePath="/kondisi/kondisi/list_kondisi" sub="List Kondisi" subPath="/kondisi/kondisi/list_kondisi" current="Add Kondisi" />
+            <BreadCrumbs base="Kondisi" basePath="/storage/kondisi" sub="List Kondisi" subPath="/storage/kondisi" current="Add Kondisi" />
 
             <div className="panel mt-10 w-full min-h-[400px]">
                 <div className="flex items-center justify-between mb-4">
@@ -70,13 +69,13 @@ const AddKondisi = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
+                        <input id="categoryName" type="text" className="form-input w-[250px]" name="condition_name" onChange={handleInputChange} value={input.condition_name} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="condition_slug" className="text-[15px] font-semibold whitespace-nowrap">
                             Slug :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="condition_slug" type="text" className="form-input w-[250px]" name="condition_slug" onChange={handleInputChange} value={input.condition_slug} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16" disabled={isSubmitting}>
                         {isSubmitting ? 'Creating...' : 'Create'}

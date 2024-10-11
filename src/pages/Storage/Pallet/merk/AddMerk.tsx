@@ -1,19 +1,18 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAddBuyerMutation } from '../../../../store/services/buyerApi';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useAddMerkMutation } from '../../../../store/services/palletApi';
 
 const AddMerk = () => {
     const navigate = useNavigate();
-    const [createBuyer, results] = useAddBuyerMutation();
+    const [createMerk, results] = useAddMerkMutation();
     const [isSubmitting, setIsSubmitting] = useState(false); 
 
     const [input, setInput] = useState({
-        name_buyer: '',
-        phone_buyer: '',
-        address_buyer: '',
+        brand_name: '',
+        brand_slug: '',
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -23,7 +22,7 @@ const AddMerk = () => {
         }));
     };
 
-    const handleCreateBuyer = async (e: { preventDefault: () => void }) => {
+    const handleCreateMerk = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (isSubmitting) return;
 
@@ -31,11 +30,10 @@ const AddMerk = () => {
 
         try {
             const body = {
-                name_buyer: input.name_buyer,
-                phone_buyer: input.phone_buyer,
-                address_buyer: input.address_buyer,
+                brand_name: input.brand_name,
+                brand_slug: input.brand_slug,
             };
-            await createBuyer(body);
+            await createMerk(body);
         } catch (err) {
             setIsSubmitting(false); 
         }
@@ -44,7 +42,7 @@ const AddMerk = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
-            navigate('/buyer/buyer/list_buyer');
+            navigate('/storage/merk');
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
             setIsSubmitting(false); 
@@ -65,18 +63,18 @@ const AddMerk = () => {
                     </Link>
                 </div>
 
-                <form className="w-[400px]" onSubmit={handleCreateBuyer}>
+                <form className="w-[400px]" onSubmit={handleCreateMerk}>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="brand_name" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
+                        <input id="brand_name" type="text" className="form-input w-[250px]" name="brand_name" onChange={handleInputChange} value={input.brand_name} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="brand_slug" className="text-[15px] font-semibold whitespace-nowrap">
                             Slug :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="brand_slug" type="text" className="form-input w-[250px]" name="brand_slug" onChange={handleInputChange} value={input.brand_slug} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16" disabled={isSubmitting}>
                         {isSubmitting ? 'Creating...' : 'Create'}
