@@ -525,6 +525,10 @@ interface GetRiwayatcheckItem {
         total_old_price: number;
         price_percentage: number;
     };
+    lolosBundle: {
+        total_old_price: number;
+        price_percentage: number;
+    };
     priceDiscrepancy: number;
     price_percentage: number;
 
