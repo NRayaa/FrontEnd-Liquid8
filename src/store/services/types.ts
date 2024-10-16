@@ -494,6 +494,7 @@ interface GetRiwayatcheckItem {
     updated_at: string;
     total_product_sales: number;
     total_product_stagings: number;
+    total_product_bundle: number;
     damaged: {
         products: HistorySubProductItem[];
         total_old_price: number;
