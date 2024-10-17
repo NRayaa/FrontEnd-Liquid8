@@ -201,7 +201,7 @@ const ReportTable = () => {
                                     Total
                                 </td>
                                 <td>{data?.buyer?.total_product_document_sale} </td>
-                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.buyer?.total_price_document_sale || 0)}</td>
+                                <td style={{ textAlign: 'right' }}>{formatCurrency(data?.buyer?.grand_total || 0)}</td>
                             </tr>
                         </tbody>
                     </table>
