@@ -406,7 +406,7 @@ const Kasir = () => {
         const grand_total_price = totalProductPrice + parseFloat(carton.totalPrice);
 
         setGrandTotal(grand_total_price);
-    }, [carton.totalPrice]);
+    }, [carton.totalPrice, totalAfterDiscount]);
 
     useEffect(() => {
         if (isNaN(parseFloat(carton.qty))) {
