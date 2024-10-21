@@ -207,7 +207,9 @@ const ReportTable = () => {
                                 <td style={{ textAlign: 'right' }}>- {formatCurrency(data?.buyer.voucher || 0)}</td>
                             </tr>
                             <tr style={{ fontWeight: 'bold' }}>
-                                <td colSpan={4}>Total</td>
+                                <td>Total</td>
+                                <td>{data?.data.category_report.category_list.reduce((acc, item) => acc + item.total_quantity, 0)}</td>
+                                <td colSpan={2}></td>
                                 <td style={{ textAlign: 'right' }}>{formatCurrency(Math.ceil(data?.buyer.grand_total || 0))}</td>
                             </tr>
                         </tbody>
