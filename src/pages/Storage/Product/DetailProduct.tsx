@@ -18,7 +18,7 @@ const DetailProduct = () => {
     const { data, isSuccess, refetch, isError } = useDetailProductNewQuery(id);
     const productNew = useGetAllProductNewQuery({ page: 1, q: '' });
     const [editDetailProduct, results] = useEditDetailProductMutation();
-    const [showPrintButton, setShowPrintButton] = useState(false);
+    const [showPrintButton, setShowPrintButton] = useState(true);
     const [updatePriceByProductOld, resultsUpdate] = useLazyUpdatePriceByProductOldQuery();
     const [categories, setCategories] = useState<{ id: number; name_category: string; discount_category: number; max_price_category: number }[]>([]);
     const [category, setCategory] = useState('');
