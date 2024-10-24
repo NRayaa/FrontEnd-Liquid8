@@ -59,6 +59,7 @@ function generateRandomString(length: number) {
 
     return randomString;
 }
+
 function generateRandomBarcode(length: number) {
     const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let randomString = '';

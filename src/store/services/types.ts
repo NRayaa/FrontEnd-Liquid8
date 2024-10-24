@@ -495,6 +495,7 @@ interface GetRiwayatcheckItem {
     total_product_sales: number;
     total_product_stagings: number;
     total_product_bundle: number;
+    total_product_approve:number;
     damaged: {
         products: HistorySubProductItem[];
         total_old_price: number;
@@ -519,6 +520,18 @@ interface GetRiwayatcheckItem {
         price_percentage: number;
     };
     lolosStaging: {
+        total_old_price: number;
+        price_percentage: number;
+    };
+    damagedAp: {
+        total_old_price: number;
+        price_percentage: number;
+    };
+    abnormalAp: {
+        total_old_price: number;
+        price_percentage: number;
+    };
+    lolosAp: {
         total_old_price: number;
         price_percentage: number;
     };
