@@ -39,6 +39,12 @@ export const productInputApi = createApi({
                 body,
             }),
         }),
+        deleteProductInput: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `/product_inputs/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -50,4 +56,5 @@ export const {
     useDoneCheckAllProductInputMutation,
     useGetDetailProductInputQuery,
     useUpdateProductInputMutation,
+    useDeleteProductInputMutation,
 } = productInputApi;

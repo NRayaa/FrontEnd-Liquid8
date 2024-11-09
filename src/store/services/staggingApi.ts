@@ -60,6 +60,13 @@ export const staggingApi = createApi({
                 method: 'GET',
             }),
         }),
+        toLPRProductStagging: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/staging/move_to_lpr/${id}`,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -75,4 +82,5 @@ export const {
     useDeleteApprovementStaggingMutation,
     useGetDetailApprovementStaggingQuery,
     useExportToExcelListProductStagingMutation,
+    useToLPRProductStaggingMutation,
 } = staggingApi;

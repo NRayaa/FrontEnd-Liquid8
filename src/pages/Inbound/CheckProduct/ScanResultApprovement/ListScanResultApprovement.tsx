@@ -11,6 +11,7 @@ import {
     useFilterProductInputMutation,
     useGetFilterProductInputQuery,
     useGetListProductInputQuery,
+    useDeleteProductInputMutation,
 } from '../../../../store/services/producInputApi';
 
 const ListProductInput = () => {
@@ -23,6 +24,7 @@ const ListProductInput = () => {
     const [addFilterProductInput, results] = useFilterProductInputMutation();
     const [deletefilterProductInputs, resultsDeleteBundle] = useDeleteFilterProductInputsMutation();
     const [doneCheckAllProductInput, resultsDone] = useDoneCheckAllProductInputMutation();
+    const [deleteProductInput, resultsDelete] = useDeleteProductInputMutation();
     const [loadingAdd, setLoadingAdd] = useState<number | null>(null);
     const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
     const [processedItems, setProcessedItems] = useState<number[]>([]);
@@ -44,7 +46,6 @@ const ListProductInput = () => {
             return filterDataProductInput?.data.data.resource.data;
         }
     }, [filterDataProductInput.data, data]);
-    console.log(filterDataProductInput, filterProductsInput);
 
     const handleAddFilterProduct = async (id: number) => {
         if (loadingAdd === id || processedItems.includes(id)) return;
@@ -123,7 +124,7 @@ const ListProductInput = () => {
         }
     }, [searchLeftTable]);
 
-    const showAlert = async ({ type }: any) => {
+    const showAlert = async ({ type, id }: { type: any; id?: any }) => {
         if (type === 11) {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -159,7 +160,49 @@ const ListProductInput = () => {
                     }
                 });
         }
+        if (type === 12) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menhapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    if (result.value) {
+                        await deleteProductInput(id);
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
     };
+
+    useEffect(() => {
+        if (resultsDelete.isSuccess) {
+            toast.success(resultsDelete.data.data.message);
+            refetch();
+        } else if (resultsDelete.isError) {
+            const statusRes = 'status' in resultsDelete.error ? resultsDelete.error.status : 0;
+            if (statusRes === 403) {
+                toast.error('Your role is forbidden to access');
+            } else {
+                toast.error('Something went wrong');
+            }
+        }
+    }, [resultsDelete]);
 
     return (
         <div>
@@ -251,6 +294,9 @@ const ListProductInput = () => {
                                                         Detail
                                                     </button>
                                                 </Link>
+                                                <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 12, id: item.id })}>
+                                                    Delete
+                                                </button>
                                             </div>
                                         ),
                                     },

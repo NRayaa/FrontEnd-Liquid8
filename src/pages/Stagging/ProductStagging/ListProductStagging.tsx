@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { FormEvent, Fragment, useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { formatRupiah, generateRandomStringFormatBundle, useDebounce } from '../../../helper/functions';
-import { ProductExpiredItem, ProductStaggingItem } from '../../../store/services/types';
 import {
     useDeleteFilterProductStaggingsMutation,
     useDoneCheckAllProductStaggingMutation,
@@ -11,9 +10,11 @@ import {
     useFilterProductStaggingMutation,
     useGetFilterProductStaggingQuery,
     useGetListProductStaggingQuery,
+    useToLPRProductStaggingMutation,
 } from '../../../store/services/staggingApi';
 import Swal from 'sweetalert2';
 import { debounce } from 'lodash';
+import { Dialog, Tab, Transition } from '@headlessui/react';
 
 const ListProductStagging = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
@@ -25,10 +26,18 @@ const ListProductStagging = () => {
     const [filterProductStagging, results] = useFilterProductStaggingMutation();
     const [deletefilterProductStaggings, resultsDeleteBundle] = useDeleteFilterProductStaggingsMutation();
     const [doneCheckAllProductStagging, resultsDone] = useDoneCheckAllProductStaggingMutation();
+    const [moveToLPR, resultsToLPR] = useToLPRProductStaggingMutation();
     const [loadingAdd, setLoadingAdd] = useState<number | null>(null);
+    const [loadingLPR, setLoadingLPR] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
     const [processedItems, setProcessedItems] = useState<number[]>([]);
     const [exportToExcel, { isLoading: isExporting }] = useExportToExcelListProductStagingMutation();
+    const [toLPROpen, setToLPROpen] = useState(false);
+    const [input, setInput] = useState({
+        damaged: '',
+        abnormal: '',
+        id: '',
+    });
 
     const handleExportData = async () => {
         try {
@@ -79,39 +88,51 @@ const ListProductStagging = () => {
     const handleAddFilterStagging = async (id: number) => {
         if (loadingAdd === id || processedItems.includes(id)) return;
 
-        setLoadingAdd(id); 
+        setLoadingAdd(id);
         try {
-            await filterProductStagging(id).unwrap(); 
-            setProcessedItems((prevItems) => [...prevItems, id]); 
-            refetch(); 
+            await filterProductStagging(id).unwrap();
+            setProcessedItems((prevItems) => [...prevItems, id]);
+            refetch();
             filterStagging.refetch();
         } catch (err) {
-            console.error(err); 
+            console.error(err);
         } finally {
-            setLoadingAdd(null); 
+            setLoadingAdd(null);
+        }
+    };
+
+    const handleMoveToLPR = async (e: FormEvent, t: 'damaged' | 'abnormal') => {
+        e.preventDefault();
+        setLoadingLPR(true);
+        const body = {
+            status: t === 'abnormal' ? 'abnormal' : 'damaged',
+            description: t === 'abnormal' ? input.abnormal : input.damaged,
+        };
+        try {
+            await moveToLPR({ id: input.id, body });
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoadingLPR(false);
         }
     };
 
     const handleDeleteProductStagging = debounce(async (id: number) => {
-        if (loadingDelete !== null) return; 
+        if (loadingDelete !== null) return;
 
-        setLoadingDelete(id); 
+        setLoadingDelete(id);
         try {
-            await deletefilterProductStaggings(id).unwrap(); 
-            refetch(); 
-            filterStagging.refetch(); 
+            await deletefilterProductStaggings(id).unwrap();
+            refetch();
+            filterStagging.refetch();
             toast.success('Item berhasil dihapus!');
         } catch (err) {
-            console.error(err); 
+            console.error(err);
             toast.error('Gagal menghapus item.');
         } finally {
-            setLoadingDelete(null); 
+            setLoadingDelete(null);
         }
-    }, 300); 
-
-    const handleAddLeftTable = (item: ProductExpiredItem) => {
-        handleAddFilterStagging(item.id);
-    };
+    }, 300);
 
     useEffect(() => {
         if (results.isSuccess) {
@@ -132,6 +153,27 @@ const ListProductStagging = () => {
             toast.error(resultsDeleteBundle?.data?.data?.message ?? 'Error');
         }
     }, [resultsDeleteBundle]);
+
+    useEffect(() => {
+        if (resultsToLPR.isSuccess) {
+            toast.success(resultsToLPR?.data.data.message);
+            refetch();
+            filterStagging.refetch();
+            setToLPROpen(false);
+        } else if (resultsToLPR.isError) {
+            toast.error(resultsToLPR?.data?.data?.message ?? 'Error');
+        }
+    }, [resultsToLPR]);
+
+    useEffect(() => {
+        if (!toLPROpen) {
+            setInput({
+                abnormal: '',
+                damaged: '',
+                id: '',
+            });
+        }
+    }, [toLPROpen]);
 
     useEffect(() => {
         if (!debounceValue) {
@@ -193,6 +235,113 @@ const ListProductStagging = () => {
 
     return (
         <div>
+            <Transition appear show={toLPROpen} as={Fragment}>
+                <Dialog
+                    as="div"
+                    open={toLPROpen}
+                    onClose={() => {
+                        setToLPROpen(false);
+                    }}
+                >
+                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <div className="fixed inset-0" />
+                    </Transition.Child>
+                    <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                        <div className="flex items-start justify-center min-h-screen px-4">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel as="div" className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark">
+                                    <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
+                                        <div className="text-lg font-bold">Move Product to List Product Repair</div>
+                                    </div>
+                                    <Tab.Group>
+                                        <div className="mx-10 mb-5 sm:mb-0 mt-10">
+                                            <Tab.List className="mt-3 mb-6 flex gap-4 justify-center">
+                                                <Tab as={Fragment}>
+                                                    {({ selected }) => (
+                                                        <button
+                                                            className={`${
+                                                                selected ? 'bg-sky-400 !outline-none' : 'bg-sky-100'
+                                                            } -mb-[1px] block rounded text-black p-3.5 py-2 before:inline-block hover:bg-sky-400 hover:text-black`}
+                                                        >
+                                                            Damaged
+                                                        </button>
+                                                    )}
+                                                </Tab>
+                                                <Tab as={Fragment}>
+                                                    {({ selected }) => (
+                                                        <button
+                                                            className={`${
+                                                                selected ? 'bg-sky-400 !outline-none' : 'bg-sky-100'
+                                                            } -mb-[1px] block rounded text-black p-3.5 py-2 before:inline-block hover:bg-sky-400 hover:text-black`}
+                                                        >
+                                                            Abnormal
+                                                        </button>
+                                                    )}
+                                                </Tab>
+                                            </Tab.List>
+                                        </div>
+                                        <Tab.Panel>
+                                            <div>
+                                                <div className="flex items-start pt-5">
+                                                    <form onSubmit={(e) => handleMoveToLPR(e, 'damaged')} className="flex-auto">
+                                                        <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
+                                                        <textarea
+                                                            value={input.damaged}
+                                                            onChange={(e) => setInput((prev) => ({ ...prev, damaged: e.target.value }))}
+                                                            rows={4}
+                                                            className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                                            required
+                                                        ></textarea>
+                                                        <div className="flex justify-end">
+                                                            <button disabled={input.damaged.length === 0 || loadingLPR} type="submit" className="w-full btn btn-info mt-4">
+                                                                SEND
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </Tab.Panel>
+                                        <Tab.Panel>
+                                            <div>
+                                                <div className="flex items-start pt-5">
+                                                    <form onSubmit={(e) => handleMoveToLPR(e, 'abnormal')} className="flex-auto">
+                                                        <h5 className="mb-4 text-xl font-medium">Deskripsi :</h5>
+                                                        <textarea
+                                                            rows={4}
+                                                            value={input.abnormal}
+                                                            onChange={(e) => setInput((prev) => ({ ...prev, abnormal: e.target.value }))}
+                                                            className="form-textarea ltr:rounded-l-none rtl:rounded-r-none"
+                                                            required
+                                                        ></textarea>
+                                                        <div className="flex justify-end">
+                                                            <button disabled={input.abnormal.length === 0 || loadingLPR} type="submit" className="w-full btn btn-info mt-4">
+                                                                SEND
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </Tab.Panel>
+                                    </Tab.Group>
+                                    <div className="flex justify-end items-center mt-8">
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => setToLPROpen(false)}>
+                                            Kembali
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
             <ul className="flex space-x-2 rtl:space-x-reverse">
                 <li>
                     <Link to="/" className="text-primary hover:underline">
@@ -212,94 +361,6 @@ const ListProductStagging = () => {
                 <h1 className="text-lg font-semibold py-4">List Product Stagging</h1>
             </div>
             <div>
-                {/* <div className="flex items-start">
-                    <form className="w-[400px] mb-4 " onSubmit={handleCreateBundle}>
-                        <button type="submit" className="btn btn-primary mb-4 px-16">
-                            Create Bundle
-                        </button>
-                        <div className="flex items-center justify-between mb-2 mt-2">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Nama Bundle :
-                            </label>
-                            <input id="categoryName" type="text" className=" form-input w-[250px]" required value={nameBundle} onChange={(e) => setNameBundle(e.target.value)} />
-                        </div>
-                        <div className="flex items-center justify-between mb-2">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Total Harga :
-                            </label>
-                            <input
-                                disabled
-                                id="categoryName"
-                                type="text"
-                                placeholder="Rp"
-                                className="form-input w-[250px]"
-                                required
-                                value={formatRupiah(filterStagging?.data?.data?.resource?.total_new_price?.toString() ?? '0')}
-                            />
-                        </div>
-                        {!isCategory && (
-                            <div className="flex items-center justify-between mb-2 mt-2">
-                                <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Color Name:
-                                </label>
-                                <input id="Color Name" disabled type="text" className=" form-input w-[250px]" required value={colorName} />
-                            </div>
-                        )}
-                        {isCategory && (
-                            <div className="flex items-center justify-between mb-2">
-                                <label htmlFor="kategori" className="text-[15px] font-semibold whitespace-nowrap">
-                                    Kategori :
-                                </label>
-                                <select
-                                    id="gridState"
-                                    className="form-input w-[250px]"
-                                    onChange={(e) => {
-                                        const selectedNameCategory = e.target.selectedOptions[0].getAttribute('data-name-category');
-                                        setSelectedCategory(selectedNameCategory);
-                                        const totalNewPrice = Number(filterStagging?.data?.data.resource.total_new_price);
-                                        const priceDiscount = totalNewPrice - (totalNewPrice * Number(e.target.value)) / 100;
-                                        setCustomPrice(JSON.stringify(priceDiscount));
-                                    }}
-                                >
-                                    <option>Choose...</option>
-                                    {categories?.map((item: any, index: any) => {
-                                        return (
-                                            <option key={index} value={item.discount_category} data-name-category={item.name_category}>
-                                                {item.name_category} {item.discount_category + '%'}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                            </div>
-                        )}
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
-                                Custom Harga :
-                            </label>
-                            <input id="categoryName" type="text" placeholder="Rp" className=" form-input w-[250px]" required value={customPrice} onChange={(e) => setCustomPrice(e.target.value)} />
-                        </div>
-                        <input
-                            type="text"
-                            className="mt-4 form-input ltr:pl-9 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
-                            placeholder="Search..."
-                            value={searchLeftTable}
-                            onChange={(e) => setSearchLeftTable(e.target.value)}
-                        />
-                    </form>
-                    {isBarcodePrint && (
-                        <div className="ml-12">
-                            <BarcodePrinted
-                                barcode={barcode}
-                                category={nameBundle}
-                                newPrice={formatRupiah(customDisplay)}
-                                oldPrice={formatRupiah(filterStagging?.data?.data.resource.total_new_price.toString() ?? '0')}
-                                isBundle
-                            />
-                        </div>
-                    )}
-                </div>
-                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                </div> */}
                 <div>
                     <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                         <div className="flex md:items-center md:flex-row flex-col gap-2">
@@ -322,12 +383,12 @@ const ListProductStagging = () => {
                                 className="whitespace-nowrap table-hover "
                                 records={productStaggings}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductStaggingItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: any, index: number) => <span>{index + 1}</span> },
                                     {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductStaggingItem) => {
+                                        render: (item: any) => {
                                             let barcode: string | undefined;
 
                                             if (!item.new_category_product && !item.new_tag_product) {
@@ -346,19 +407,19 @@ const ListProductStagging = () => {
                                         title: 'Nama Produk',
                                         sortable: true,
                                         width: 220,
-                                        render: (item: ProductStaggingItem) => <p className="truncate">{item.new_name_product}</p>,
+                                        render: (item: any) => <p className="truncate">{item.new_name_product}</p>,
                                     },
                                     {
                                         accessor: 'category',
                                         title: 'Kategori',
                                         sortable: true,
-                                        render: (item: ProductStaggingItem) => <span>{item.new_category_product ? item.new_category_product : item.new_tag_product}</span>,
+                                        render: (item: any) => <span>{item.new_category_product ? item.new_category_product : item.new_tag_product}</span>,
                                     },
                                     {
                                         accessor: 'harga',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductStaggingItem, index: number) => {
+                                        render: (item: any, index: number) => {
                                             let price: string | undefined;
                                             if (item.new_category_product !== null && item.new_category_product !== undefined) {
                                                 price = item.new_price_product;
@@ -375,13 +436,23 @@ const ListProductStagging = () => {
                                         accessor: 'action',
                                         title: 'Opsi',
                                         titleClassName: '!text-center',
-                                        render: (item: ProductStaggingItem) => (
+                                        render: (item: any) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
                                                 {!processedItems.includes(item.id) && loadingAdd !== item.id && (
                                                     <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
                                                         Add
                                                     </button>
                                                 )}
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-danger"
+                                                    onClick={() => {
+                                                        setToLPROpen(true);
+                                                        setInput((prev) => ({ ...prev, id: item.id }));
+                                                    }}
+                                                >
+                                                    to LPR
+                                                </button>
                                             </div>
                                         ),
                                     },
@@ -398,12 +469,12 @@ const ListProductStagging = () => {
                                 className="whitespace-nowrap table-hover "
                                 records={filterStaggingProducts}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductStaggingItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: any, index: number) => <span>{index + 1}</span> },
                                     {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductStaggingItem) => {
+                                        render: (item: any) => {
                                             let barcode: string | undefined;
 
                                             if (!item.new_category_product && !item.new_tag_product) {
@@ -417,21 +488,21 @@ const ListProductStagging = () => {
                                             return <span>{barcode ?? ''}</span>;
                                         },
                                     },
-                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductStaggingItem) => <span>{item.new_name_product}</span> },
+                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: any) => <span>{item.new_name_product}</span> },
                                     {
                                         accessor: 'action',
                                         title: 'Opsi',
                                         titleClassName: '!text-center',
-                                        render: (item: ProductStaggingItem) => (
+                                        render: (item: any) => (
                                             <div className="flex items-center space-x-2">
-                                               {
+                                                {
                                                     <button
                                                         type="button"
                                                         className={`btn btn-outline-danger ${loadingDelete === item.id ? 'cursor-not-allowed' : ''}`}
                                                         onClick={() => handleDeleteProductStagging(item.id)}
-                                                        disabled={loadingDelete === item.id} 
+                                                        disabled={loadingDelete === item.id}
                                                     >
-                                                        {loadingDelete === item.id ? 'Processing...' : 'Delete'} 
+                                                        {loadingDelete === item.id ? 'Processing...' : 'Delete'}
                                                     </button>
                                                 }
                                             </div>
