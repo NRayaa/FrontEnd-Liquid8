@@ -47,7 +47,6 @@ import DetailStaggingApprovement from '../pages/Stagging/ApprovementStagging/Det
 import ListScanResult from '../pages/Inbound/CheckProduct/ScanResult/ListScanResult';
 import CheckScanResult from '../pages/Inbound/CheckProduct/ScanResult/CheckScanResult';
 import ListScanResultApprovement from '../pages/Inbound/CheckProduct/ScanResultApprovement/ListScanResultApprovement';
-import DetailScanResultApprovement from '../pages/Inbound/CheckProduct/ScanResultApprovement/DetailScanResultApprovement';
 import ListBkl from '../pages/Storage/Bkl/ListBkl';
 import ListKendaraan from '../pages/Storage/Pallet/kendaraan/ListKendaraan';
 import AddKendaraan from '../pages/Storage/Pallet/kendaraan/AddKendaraan';
@@ -67,6 +66,7 @@ import DetailMerk from '../pages/Storage/Pallet/merk/DetailMerk';
 import CreateBkl from '../pages/Storage/Bkl/AddBkl';
 import AddBkl from '../pages/Storage/Bkl/AddBkl';
 import DetailBkl from '../pages/Storage/Bkl/DetailBkl';
+import DetailProductInput from '../pages/Inbound/CheckProduct/ScanResultApprovement/DetailScanResultApprovement';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -614,13 +614,13 @@ const routes = [
         layout: 'default',
     },
     {
-        path: '/inbound/check_product/scan_result_approve',
+        path: '/inbound/check_product/product_input',
         element: <ListScanResultApprovement />,
         layout: 'default',
     },
     {
-        path: '/inbound/check_product/scan_result_approve/detail/:id',
-        element: <DetailScanResultApprovement />,
+        path: '/inbound/check_product/product_input/detail/:id',
+        element: <DetailProductInput />,
         layout: 'default',
     },
     {

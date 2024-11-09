@@ -29,7 +29,39 @@ export const colorTagApi = createApi({
                 body,
             }),
         }),
+        getAllColorTag2: builder.query<ColorTag, { page: number; q: string }>({
+            query: ({ page, q }) => `/color_tags2?page=${page}&q=${q}`,
+        }),
+        deleteColorTag2: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `/color_tags2/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        updateColorTag2: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/color_tags2/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        createColorTag2: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/color_tags2',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useGetAllColorTagQuery, useDeleteColorTagMutation, useUpdateColorTagMutation, useCreateColorTagMutation } = colorTagApi;
+export const {
+    useGetAllColorTagQuery,
+    useDeleteColorTagMutation,
+    useUpdateColorTagMutation,
+    useCreateColorTagMutation,
+    useGetAllColorTag2Query,
+    useDeleteColorTag2Mutation,
+    useUpdateColorTag2Mutation,
+    useCreateColorTag2Mutation,
+} = colorTagApi;
