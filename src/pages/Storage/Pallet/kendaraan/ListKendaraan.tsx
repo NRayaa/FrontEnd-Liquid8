@@ -8,19 +8,20 @@ import Swal from 'sweetalert2';
 import { useDebounce } from '../../../../helper/functions';
 import { useDeleteBuyerMutation, useExportToExcelBuyerMutation, useGetListBuyerQuery } from '../../../../store/services/buyerApi';
 import { Alert } from '../../../../commons';
-import { GetListBuyerItem } from '../../../../store/services/types';
+import { GetListVehicleItem } from '../../../../store/services/types';
 import { BreadCrumbs } from '../../../../components';
+import { useDeleteVehicleMutation, useGetListVehicleQuery } from '../../../../store/services/palletApi';
 
 const ListKendaraan = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
-    const [deleteBuyer, results] = useDeleteBuyerMutation();
+    const { data, refetch, isError } = useGetListVehicleQuery({ page, q: searchDebounce });
+    const [deleteVehicle, results] = useDeleteVehicleMutation();
     const [exportToExcel] = useExportToExcelBuyerMutation();
 
-    const listBuyer: any = useMemo(() => {
+    const listVehicle: any = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
@@ -47,7 +48,8 @@ const ListKendaraan = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteBuyer(id);
+                        await deleteVehicle(id);
+                        refetch(); 
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -137,60 +139,54 @@ const ListKendaraan = () => {
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/kendaraan/create_kendaraan')}>
                             Add Kendaraan
                         </button>
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                        {/* <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
                             Export Data
-                        </button>
+                        </button> */}
                     </div>
                 </div>
                 <div className="datatables">
                     <DataTable
                         className="whitespace-nowrap table-hover"
-                        records={listBuyer}
+                        records={listVehicle}
                         columns={[
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer.length + (index + 1)}</span>,
+                                render: (item: GetListVehicleItem, index: number) => <span>{(page - 1) * listVehicle.length + (index + 1)}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'vehicle_name',
                                 title: 'Nama',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListVehicleItem) => <span className="font-semibold">{item.vehicle_name}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'cargo_length',
                                 title: 'Panjang',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListVehicleItem) => <span className="font-semibold">{item.cargo_length}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'cargo_height',
                                 title: 'Tinggi',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListVehicleItem) => <span className="font-semibold">{item.cargo_height}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'cargo_width',
                                 title: 'Lebar',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListVehicleItem) => <span className="font-semibold">{item.cargo_width}</span>,
                             },
-                            // {
-                            //     accessor: 'address_buyer',
-                            //     title: 'Alamat',
-                            //     render: (item: GetListBuyerItem) => <span className="font-semibold">{item.address_buyer}</span>,
-                            // },
                             {
                                 accessor: 'action',
                                 title: 'Detail',
                                 titleClassName: '!text-center',
-                                render: (item: GetListBuyerItem) => (
+                                render: (item: GetListVehicleItem) => (
                                     <div className="flex items-center w-max mx-auto gap-2">
                                         <Link
                                             to={`/storage/kendaraan/detail_kendaraan/${item.id}`}
                                             state={{
-                                                name_buyer: item.name_buyer,
-                                                phone_buyer: item.phone_buyer,
-                                                address_buyer: item.address_buyer,
-                                                amount_transaction_buyer: item.amount_transaction_buyer,
-                                                amount_purchase_buyer: item.amount_purchase_buyer,
+                                                vehicle_name: item.vehicle_name,
+                                                cargo_length: item.cargo_length,
+                                                cargo_height: item.cargo_height,
+                                                cargo_width: item.cargo_width,
                                             }}
                                         >
                                             <button type="button" className="btn btn-outline-info">

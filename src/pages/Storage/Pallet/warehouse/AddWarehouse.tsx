@@ -1,19 +1,25 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAddBuyerMutation } from '../../../../store/services/buyerApi';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useAddWarehouseMutation } from '../../../../store/services/palletApi';
 
 const AddWarehouse = () => {
     const navigate = useNavigate();
-    const [createBuyer, results] = useAddBuyerMutation();
+    const [createWarehouse, results] = useAddWarehouseMutation();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [input, setInput] = useState({
-        name_buyer: '',
-        phone_buyer: '',
-        address_buyer: '',
+        nama: '',
+        alamat: '',
+        provinsi: '',
+        kota: '',
+        kabupaten: '',
+        kecamatan: '',
+        no_hp: '',
+        latitude: '',
+        longitude: '',
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,11 +37,17 @@ const AddWarehouse = () => {
 
         try {
             const body = {
-                name_buyer: input.name_buyer,
-                phone_buyer: input.phone_buyer,
-                address_buyer: input.address_buyer,
+                nama: input.nama,
+                alamat: input.alamat,
+                provinsi: input.provinsi,
+                kota: input.kota,
+                kabupaten: input.kabupaten,
+                kecamatan: input.kecamatan,
+                no_hp: input.no_hp,
+                latitude: input.latitude,
+                longitude: input.longitude,
             };
-            await createBuyer(body);
+            await createWarehouse(body);
         } catch (err) {
             setIsSubmitting(false);
         }
@@ -44,7 +56,7 @@ const AddWarehouse = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
-            navigate('/buyer/buyer/list_buyer');
+            navigate('/storage/warehouse');
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
             setIsSubmitting(false);
@@ -67,58 +79,58 @@ const AddWarehouse = () => {
 
                 <form className="w-[400px]" onSubmit={handleCreateBuyer}>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="nama" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
+                        <input id="nama" type="text" className="form-input w-[250px]" name="nama" onChange={handleInputChange} value={input.nama} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="alamat" className="text-[15px] font-semibold whitespace-nowrap">
                             Alamat :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="alamat" type="text" className="form-input w-[250px]" name="alamat" onChange={handleInputChange} value={input.alamat} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="provinsi" className="text-[15px] font-semibold whitespace-nowrap">
                             Provinsi :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="provinsi" type="text" className="form-input w-[250px]" name="provinsi" onChange={handleInputChange} value={input.provinsi} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="kota" className="text-[15px] font-semibold whitespace-nowrap">
                             Kota :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="kota" type="text" className="form-input w-[250px]" name="kota" onChange={handleInputChange} value={input.kota} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="kabupaten" className="text-[15px] font-semibold whitespace-nowrap">
                             Kabupaten :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="kabupaten" type="text" className="form-input w-[250px]" name="kabupaten" onChange={handleInputChange} value={input.kabupaten} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="kecamatan" className="text-[15px] font-semibold whitespace-nowrap">
                             Kecamatan :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="kecamatan" type="text" className="form-input w-[250px]" name="kecamatan" onChange={handleInputChange} value={input.kecamatan} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="no_hp" className="text-[15px] font-semibold whitespace-nowrap">
                             No HP :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="no_hp" type="text" className="form-input w-[250px]" name="no_hp" onChange={handleInputChange} value={input.no_hp} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="latitude" className="text-[15px] font-semibold whitespace-nowrap">
                             Latitude :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="latitude" type="text" className="form-input w-[250px]" name="latitude" onChange={handleInputChange} value={input.latitude} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="longitude" className="text-[15px] font-semibold whitespace-nowrap">
                             Langitude :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="longitude" type="text" className="form-input w-[250px]" name="longitude" onChange={handleInputChange} value={input.longitude} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16" disabled={isSubmitting}>
                         {isSubmitting ? 'Creating...' : 'Create'}

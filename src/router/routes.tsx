@@ -67,6 +67,11 @@ import DetailMerk from '../pages/Storage/Pallet/merk/DetailMerk';
 import CreateBkl from '../pages/Storage/Bkl/AddBkl';
 import AddBkl from '../pages/Storage/Bkl/AddBkl';
 import DetailBkl from '../pages/Storage/Bkl/DetailBkl';
+import MigrateCategory from '../pages/Outbound/MigrateCategory/MigrateCategory';
+import ListMigrateCategory from '../pages/Outbound/MigrateCategory/ListMigrateCategory';
+import DetailListMigrateCategory from '../pages/Outbound/MigrateCategory/DetailListMigrateCategory';
+import DetailMigrateCategory from '../pages/Outbound/MigrateCategory/DetailMigrateCategory';
+import CreateMigrateCategory from '../pages/Outbound/MigrateCategory/CreateMigrateCategory';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -478,6 +483,31 @@ const routes = [
     {
         path: '/outbound/migrate/list_destination/edit_destination/:id',
         element: <EditDestination />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/category_migrate/category_migrate',
+        element: <MigrateCategory />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/category_migrate/create_category_migrate',
+        element: <CreateMigrateCategory />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/category_migrate/category_migrate/:id',
+        element: <DetailMigrateCategory />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/category_migrate/list_category_migrate',
+        element: <ListMigrateCategory />,
+        layout: 'default',
+    },
+    {
+        path: '/outbound/category_migrate/list_category_migrate/:id',
+        element: <DetailListMigrateCategory />,
         layout: 'default',
     },
     {

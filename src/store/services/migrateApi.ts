@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetCountColor, GetDisplayMigrate, GetListDestination, GetListMigrate } from './types';
+import { GetCountColor, GetDisplayMigrate, GetListDestination, GetListMigrate, GetListMigrateCategory } from './types';
 import { baseQuery } from './prepareHeader';
 
 interface GetListMigrateIndex {
@@ -128,6 +128,9 @@ export const migrateApi = createApi({
                 responseType: 'blob',
             }),
         }),
+        getListMigrateCategory: builder.query<GetListMigrateCategory, { page: number; q: string }>({
+            query: ({ page, q }) => `/migrate-bulky?page=${page}&q=${q}`,
+        }),
     }),
 });
 
@@ -148,4 +151,5 @@ export const {
     useGetDisplayMigrateQuery,
     useGetListDestinationOptionQuery,
     useExportToExcelDetailListMigrateMutation,
+    useGetListMigrateCategoryQuery,
 } = migrateApi;

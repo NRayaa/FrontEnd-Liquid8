@@ -6,21 +6,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { useDebounce } from '../../../../helper/functions';
-import { useDeleteBuyerMutation, useExportToExcelBuyerMutation, useGetListBuyerQuery } from '../../../../store/services/buyerApi';
+import { useExportToExcelBuyerMutation } from '../../../../store/services/buyerApi';
 import { Alert } from '../../../../commons';
-import { GetListBuyerItem } from '../../../../store/services/types';
 import { BreadCrumbs } from '../../../../components';
+import { useDeleteWarehouseMutation, useGetListWarehouseQuery } from '../../../../store/services/palletApi';
+import { GetListWarehouseItem } from '../../../../store/services/types';
 
 const ListWarehouse = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const searchDebounce = useDebounce(search);
-    const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
-    const [deleteBuyer, results] = useDeleteBuyerMutation();
+    const { data, refetch, isError } = useGetListWarehouseQuery({ page, q: searchDebounce });
+    const [deleteWarehouse, results] = useDeleteWarehouseMutation();
     const [exportToExcel] = useExportToExcelBuyerMutation();
 
-    const listBuyer: any = useMemo(() => {
+    const listWarehouse: any = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
@@ -47,7 +48,7 @@ const ListWarehouse = () => {
                 })
                 .then(async (result) => {
                     if (result.value) {
-                        await deleteBuyer(id);
+                        await deleteWarehouse(id);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
                     }
@@ -137,80 +138,84 @@ const ListWarehouse = () => {
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/warehouse/create_warehouse')}>
                             Add Warehouse
                         </button>
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
+                        {/* <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
                             Export Data
-                        </button>
+                        </button> */}
                     </div>
                 </div>
                 <div className="datatables">
                     <DataTable
                         className="whitespace-nowrap table-hover"
-                        records={listBuyer}
+                        records={listWarehouse}
                         columns={[
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListBuyerItem, index: number) => <span>{(page - 1) * listBuyer.length + (index + 1)}</span>,
+                                render: (item: GetListWarehouseItem, index: number) => <span>{(page - 1) * listWarehouse.length + (index + 1)}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'nama',
                                 title: 'Nama',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.nama}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'alamat',
                                 title: 'Alamat',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.alamat}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'provinsi',
                                 title: 'Provinsi',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.provinsi}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'kota',
                                 title: 'Kota',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.kota}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'kabupaten',
                                 title: 'Kabupaten',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.kabupaten}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'kecamatan',
                                 title: 'Kecamatan',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.kecamatan}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'no_hp',
                                 title: 'No HP',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.no_hp}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'latitude',
                                 title: 'Latitide',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.latitude}</span>,
                             },
                             {
-                                accessor: 'name_buyer',
+                                accessor: 'longitude',
                                 title: 'Longitude',
-                                render: (item: GetListBuyerItem) => <span className="font-semibold">{item.name_buyer}</span>,
+                                render: (item: GetListWarehouseItem) => <span className="font-semibold">{item.longitude}</span>,
                             },
                             {
                                 accessor: 'action',
                                 title: 'Detail',
                                 titleClassName: '!text-center',
-                                render: (item: GetListBuyerItem) => (
+                                render: (item: GetListWarehouseItem) => (
                                     <div className="flex items-center w-max mx-auto gap-2">
                                         <Link
                                             to={`/storage/warehouse/detail_warehouse/${item.id}`}
                                             state={{
-                                                name_buyer: item.name_buyer,
-                                                phone_buyer: item.phone_buyer,
-                                                address_buyer: item.address_buyer,
-                                                amount_transaction_buyer: item.amount_transaction_buyer,
-                                                amount_purchase_buyer: item.amount_purchase_buyer,
+                                                nama: item.nama,
+                                                alamat: item.alamat,
+                                                provinsi: item.provinsi,
+                                                kota: item.kota,
+                                                kabupaten: item.kabupaten,
+                                                kecamatan: item.kecamatan,
+                                                no_hp: item.no_hp,
+                                                latitude: item.latitude,
+                                                longitude: item.longitude,
                                             }}
                                         >
                                             <button type="button" className="btn btn-outline-info">

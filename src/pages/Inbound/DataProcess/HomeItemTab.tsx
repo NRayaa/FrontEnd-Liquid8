@@ -9,9 +9,10 @@ interface HomeItemTab {
     dataGenerates: GeneratesData | undefined;
     handleRole: (roleActive: boolean) => void;
     handleMessage: (message: string) => void;
+    resetFileInput: () => void; 
 }
 
-const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataGenerates, handleRole, handleMessage }) => {
+const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataGenerates, handleRole, handleMessage, resetFileInput, }) => {
     const [file, setFile] = useState<File | null>(null);
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +46,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                     if (result.data.status) {
                         getGeneratesData(result);
                         toast.success(result.data.message);
+                        resetFileInput(); 
                     } else {
                         toast.error(result.data.message);
                     }
@@ -64,6 +66,11 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
             return dataGenerates?.data?.resource?.code_document;
         }
     }, [dataGenerates]);
+
+     const handleDelete = () => {
+        showAlert(11);
+        resetFileInput();
+    };
 
     return (
         <div className="flex gap-4 mt-6">
@@ -94,7 +101,7 @@ const HomeItemTab: React.FC<HomeItemTab> = ({ showAlert, getGeneratesData, dataG
                                 </td>
                                 <td>{documentCode}</td>
                                 <td className="text-center">
-                                    <button onClick={() => showAlert(11)} type="button" className="btn btn-outline-danger">
+                                    <button onClick={handleDelete} type="button" className="btn btn-outline-danger">
                                         Hapus
                                     </button>
                                 </td>
