@@ -1,19 +1,20 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAddBuyerMutation } from '../../../../store/services/buyerApi';
 import { BreadCrumbs } from '../../../../components';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
+import { useAddVehicleMutation } from '../../../../store/services/palletApi';
 
 const AddKendaraan = () => {
     const navigate = useNavigate();
-    const [createBuyer, results] = useAddBuyerMutation();
+    const [createVehicle, results] = useAddVehicleMutation();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [input, setInput] = useState({
-        name_buyer: '',
-        phone_buyer: '',
-        address_buyer: '',
+        vehicle_name: '',
+        cargo_length: '',
+        cargo_height: '',
+        cargo_width: '',
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,11 +32,12 @@ const AddKendaraan = () => {
 
         try {
             const body = {
-                name_buyer: input.name_buyer,
-                phone_buyer: input.phone_buyer,
-                address_buyer: input.address_buyer,
+                vehicle_name: input.vehicle_name,
+                cargo_length: input.cargo_length,
+                cargo_height: input.cargo_height,
+                cargo_width: input.cargo_width,
             };
-            await createBuyer(body);
+            await createVehicle(body);
         } catch (err) {
             setIsSubmitting(false);
         }
@@ -44,7 +46,7 @@ const AddKendaraan = () => {
     useEffect(() => {
         if (results.isSuccess) {
             toast.success(results?.data?.data?.message);
-            navigate('/buyer/buyer/list_buyer');
+            navigate('/storage/kendaraan');
         } else if (results.isError) {
             toast.error(results?.data?.data?.message);
             setIsSubmitting(false);
@@ -70,25 +72,25 @@ const AddKendaraan = () => {
                         <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                             Nama :
                         </label>
-                        <input id="categoryName" type="text" className="form-input w-[250px]" name="name_buyer" onChange={handleInputChange} value={input.name_buyer} />
+                        <input id="categoryName" type="text" className="form-input w-[250px]" name="vehicle_name" onChange={handleInputChange} value={input.vehicle_name} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
                             Panjang :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="email" type="text" className="form-input w-[250px]" name="cargo_height" onChange={handleInputChange} value={input.cargo_height} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="username" className="text-[15px] font-semibold whitespace-nowrap">
                             Tinggi :
                         </label>
-                        <input id="username" type="text" className="form-input w-[250px]" name="phone_buyer" onChange={handleInputChange} value={input.phone_buyer} />
+                        <input id="username" type="text" className="form-input w-[250px]" name="cargo_length" onChange={handleInputChange} value={input.cargo_length} />
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="email" className="text-[15px] font-semibold whitespace-nowrap">
+                        <label htmlFor="cargo_width" className="text-[15px] font-semibold whitespace-nowrap">
                             Lebar :
                         </label>
-                        <input id="email" type="text" className="form-input w-[250px]" name="address_buyer" onChange={handleInputChange} value={input.address_buyer} />
+                        <input id="cargo_width" type="text" className="form-input w-[250px]" name="cargo_width" onChange={handleInputChange} value={input.cargo_width} />
                     </div>
 
                     <button type="submit" className="btn btn-primary mt-4 px-16" disabled={isSubmitting}>

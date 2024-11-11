@@ -11,6 +11,8 @@ import {
     GetListKondisi,
     GetListMerk,
     GetListStatus,
+    GetListVehicle,
+    GetListWarehouse,
     PaletLists,
     filterPalletLists,
 } from './types';
@@ -159,6 +161,52 @@ export const palletApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        getListVehicle: builder.query<GetListVehicle, { page: number; q: string }>({
+            query: ({ page, q }) => `/vehicle-types?page=${page}&q=${q}`,
+        }),
+        addVehicle: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/vehicle-types',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updatedVehicle: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/vehicle-types/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        deleteVehicle: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/vehicle-types/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        getListWarehouse: builder.query<GetListWarehouse, { page: number; q: string }>({
+            query: ({ page, q }) => `/warehouses?page=${page}&q=${q}`,
+        }),
+        addWarehouse: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/warehouses',
+                method: 'POST',
+                body,
+            }),
+        }),
+        updatedWarehouse: builder.mutation<any, any>({
+            query: ({ id, body }) => ({
+                url: `/warehouses/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+        deleteWarehouse: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/warehouses/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -188,4 +236,12 @@ export const {
     useAddMerkMutation,
     useUpdatedMerkMutation,
     useDeleteMerkMutation,
+    useAddVehicleMutation,
+    useGetListVehicleQuery,
+    useUpdatedVehicleMutation,
+    useDeleteVehicleMutation,
+    useAddWarehouseMutation,
+    useGetListWarehouseQuery,
+    useUpdatedWarehouseMutation,
+    useDeleteWarehouseMutation,
 } = palletApi;

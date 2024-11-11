@@ -188,10 +188,10 @@ const ListKondisi = () => {
                                 ),
                             },
                         ]}
-                        // totalRecords={data?.data.resource.total ?? 0}
-                        // recordsPerPage={data?.data.resource.per_page ?? 10}
-                        // page={page}
-                        // onPageChange={(prevPage) => setPage(prevPage)}
+                        totalRecords={data?.data.resource.total ?? 0}
+                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>

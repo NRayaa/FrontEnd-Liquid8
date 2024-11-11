@@ -1329,6 +1329,38 @@ interface GetListMigrate {
     };
 }
 
+interface GetListMigrateCategory {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListMigrateCategoryItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+interface GetListMigrateCategoryItem {
+    id: number;
+    code_document_migrate: string;
+    destiny_document_migrate: string;
+    total_product_document_migrate: string;
+    total_price_document_migrate: string;
+    created_at: string;
+    updated_at: string;
+}
+
 interface GetListDestinationItem {
     id: number;
     shop_name: string;
@@ -2150,7 +2182,19 @@ interface GetListKondisi {
         status: boolean;
         message: string;
         resource: {
-            data: GetListKondisiItem[]
+            current_page: number;
+            data: GetListKondisiItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
         }
     };
 }
@@ -2168,10 +2212,91 @@ interface GetListMerk {
         status: boolean;
         message: string;
         resource: {
-            data: GetListMerkItem[]
+            current_page: number;
+            data: GetListMerkItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
         }
     };
 }
+
+interface GetListVehicleItem{
+    id: number,
+    vehicle_name: string,
+    cargo_length: number,
+    cargo_height: number,
+    cargo_width: number,
+    created_at: number,
+    updated_at: string,
+}
+
+interface GetListVehicle {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListVehicleItem[];
+            first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: null | string;
+                path: string;
+                per_page: number;
+                prev_page_url: null | string;
+                to: number;
+                total: number;
+        }
+    };
+}
+
+interface GetListWarehouseItem{
+    id: number,
+    nama: string,
+    alamat: string,
+    provinsi: string,
+    kota: string,
+    kabupaten: string,
+    kecamatan: string,
+    no_hp: string,
+    latitude: string,
+    longitude: string,
+    created_at: number,
+    updated_at: string,
+}
+
+interface GetListWarehouse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListWarehouseItem[];
+            first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: null | string;
+                path: string;
+                per_page: number;
+                prev_page_url: null | string;
+                to: number;
+                total: number;
+        }
+    };
+};
 
 
 export type {
@@ -2302,5 +2427,12 @@ export type {
     GetListKondisi,
     GetListKondisiItem,
     GetListMerk,
-    GetListMerkItem,
+    GetListMerkItem,    
+    GetListVehicle,
+    GetListVehicleItem,
+    GetListWarehouse,
+    GetListWarehouseItem,
+    GetListMigrateCategoryItem,
+    GetListMigrateCategory,
 };
+

@@ -13,7 +13,13 @@ export const inboundDataProcessApi = createApi({
                 body,
             }),
         }),
+        deleteGenerated: builder.mutation<any, any>({
+            query: () => ({
+                url: `/cleargenerate`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useMergedHeaderMutation } = inboundDataProcessApi;
+export const { useMergedHeaderMutation, useDeleteGeneratedMutation } = inboundDataProcessApi;

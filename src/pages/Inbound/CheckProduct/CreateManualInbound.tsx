@@ -60,6 +60,11 @@ const CreateManualInbound = () => {
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
+        const isCategorySelected = input.new_category_product !== '';
+        if (parseFloat(input.old_price_product) > 100000 && !isCategorySelected) {
+            toast.error('Please select a category before submitting.');
+            return; 
+        }
         try {
             const body = {
                 new_name_product: input.new_name_product,
@@ -121,7 +126,6 @@ const CreateManualInbound = () => {
             setIsSubmitDisabled(false);
         }
     }, [input.old_price_product, input.new_category_product, input.condition]);
-    
 
     if (results?.isError) {
         return <Alert message="Anda tidak berhak mengakses halaman ini" />;

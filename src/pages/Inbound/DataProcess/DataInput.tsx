@@ -10,43 +10,13 @@ import HomeItemTab from './HomeItemTab';
 import { GeneratesData } from '../../../helper/types';
 import { useLazyDetailProductOldQuery } from '../../../store/services/productOldsApi';
 import { formatRupiah } from '../../../helper/functions';
-import { useMergedHeaderMutation } from '../../../store/services/inboundDataProcessApi';
+import { useDeleteGeneratedMutation, useMergedHeaderMutation } from '../../../store/services/inboundDataProcessApi';
 import { DataTable } from 'mantine-datatable';
 import { ProductOldsItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 import * as XLSX from 'xlsx';
-
-const showAlert = async (type: number) => {
-    if (type === 11) {
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-secondary',
-                cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                popup: 'sweet-alerts',
-            },
-            buttonsStyling: false,
-        });
-        swalWithBootstrapButtons
-            .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true,
-                padding: '2em',
-            })
-            .then((result) => {
-                if (result.value) {
-                    swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                }
-            });
-    }
-};
+import { useDeleteAccountMutation } from '../../../store/services/listAkunApi';
 
 const DataInput = () => {
     const dispatch = useDispatch();
@@ -68,6 +38,11 @@ const DataInput = () => {
     const [productPrice, setProductPrice] = useState<string[]>();
 
     const [mergedHeader, mergeResults] = useMergedHeaderMutation();
+    const [file, setFile] = useState<File | null>(null);
+
+    const resetFileInput = () => {
+        setFile(null); 
+    };
 
     const getGeneratesData = (data: GeneratesData) => {
         setDataGenerates(data);
@@ -166,6 +141,46 @@ const DataInput = () => {
 
     const fetchProductOlds = async () => {
         await detailProductOld({ codeDocument: documentCode, page });
+    };
+
+    const [deleteGenerated] = useDeleteGeneratedMutation();
+
+    const showAlert = async (type: number) => {
+        if (type === 11) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-secondary',
+                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
+                    popup: 'sweet-alerts',
+                },
+                buttonsStyling: false,
+            });
+            swalWithBootstrapButtons
+                .fire({
+                    title: 'Yakin ingin menghapus item ini?',
+                    text: 'Data tidak bisa di kembalikan setelah di hapus',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yakin',
+                    cancelButtonText: 'Batalkan',
+                    reverseButtons: true,
+                    padding: '2em',
+                })
+                .then(async (result) => {
+                    if (result.value) {
+                        // Call the deleteGenerated API
+                        try {
+                            await deleteGenerated({}).unwrap(); // Call without id
+                            setDataGenerates(undefined); // Reset dataGenerates
+                            swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
+                        } catch (error) {
+                            swalWithBootstrapButtons.fire('Error!', 'There was a problem deleting your file.', 'error');
+                        }
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
+                    }
+                });
+        }
     };
 
     useEffect(() => {
@@ -272,10 +287,11 @@ const DataInput = () => {
                                 {activeTab3 === 1 && (
                                     <HomeItemTab
                                         showAlert={showAlert}
-                                        getGeneratesData={(data) => getGeneratesData(data)}
+                                        getGeneratesData={getGeneratesData}
                                         dataGenerates={dataGenerates}
                                         handleRole={handleRole}
                                         handleMessage={handleMessage}
+                                        resetFileInput={resetFileInput} // Pass the reset function
                                     />
                                 )}
                             </p>
