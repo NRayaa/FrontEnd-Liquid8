@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { BreadCrumbs } from '../../../../components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
+import { useUpdateColorTag2Mutation, useUpdateColorTagMutation } from '../../../../store/services/colorTagApi';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 
@@ -17,6 +17,7 @@ const EditTagWarna = () => {
     const navigate = useNavigate();
     const params = useParams();
     const [updateColorTag, results] = useUpdateColorTagMutation();
+    const [updateColorTag2, results2] = useUpdateColorTag2Mutation();
 
     const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
         setInput((prevState) => ({
@@ -36,7 +37,7 @@ const EditTagWarna = () => {
                 max_price_color: input.max_price_color,
                 fixed_price_color: input.fixed_price_color,
             };
-            await updateColorTag({ id: params.id, body });
+            state.type === 1 ? await updateColorTag({ id: params.id, body }) : await updateColorTag2({ id: params.id, body });
         } catch (err) {
             console.log(err);
         }
@@ -50,17 +51,28 @@ const EditTagWarna = () => {
             toast.error(results.data.data.message);
         }
     }, [results]);
+    useEffect(() => {
+        if (results2.isSuccess) {
+            toast.success(results2.data.data.message);
+            navigate('/storage/categorysetting/tag_warna');
+        } else if (results2.isError) {
+            toast.error(results2.data.data.message);
+        }
+    }, [results2]);
 
     if (results.isError) {
+        return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
+    }
+    if (results2.isError) {
         return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
     }
 
     return (
         <>
-            <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/storage/product" current="Edit Tag Warna" />
+            <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/storage/product" current={state.type === 1 ? 'Edit Tag Warna WMS' : 'Edit Tag Warna APK'} />
 
             <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Detail Tag Warna</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">{state.type === 1 ? 'Edit Tag Warna WMS' : 'Edit Tag Warna APK'}</h5>
                 <form className="w-[400px]" onSubmit={handleEditTagColor}>
                     <div className="flex items-center  justify-between mb-2">
                         <label htmlFor="tagColor" className="text-[15px] font-semibold whitespace-nowrap">
@@ -92,7 +104,7 @@ const EditTagWarna = () => {
                     </div>
                     <span className="text-[10px] text[#7A7A7A]">*note : MaxPrice merupakan inputan nullable</span>
                     <button type="submit" className="btn btn-primary mt-4 px-16">
-                        Edit
+                        Update
                     </button>
                 </form>
             </div>

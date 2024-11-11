@@ -24,19 +24,15 @@ const DetailApproveProductItem = () => {
         return data?.data.resource;
     }, [data]);
 
-    const condition = useMemo(() => {
-        const quality: any = data?.data.resource?.new_quality;
+    const findNotNull = (v: any) => {
+        if (v) {
+            const qualityObject = JSON.parse(v);
 
-        if (quality !== undefined) {
-            if (JSON.parse(quality).lolos !== null) {
-                return JSON.parse(quality).lolos;
-            } else if (JSON.parse(quality).damaged !== null) {
-                return JSON.parse(quality).damaged;
-            } else if (JSON.parse(quality).abnormal !== null) {
-                return JSON.parse(quality).abnormal;
-            }
+            const filteredEntries = Object.entries(qualityObject).find(([key, value]) => value !== null);
+
+            return filteredEntries?.[0] ?? '';
         }
-    }, [data?.data.resource?.new_quality]);
+    };
 
     useEffect(() => {
         if (isSuccess) {
@@ -69,7 +65,7 @@ const DetailApproveProductItem = () => {
                 old_price_product: dataDetailProduct?.old_price_product,
                 new_date_in_product: dataDetailProduct?.new_date_in_product,
                 new_status_product: dataDetailProduct?.new_status_product,
-                condition: condition,
+                condition: findNotNull(dataDetailProduct?.new_quality),
                 new_category_product: dataDetailProduct?.new_category_product,
                 new_tag_product: dataDetailProduct?.new_tag_product,
                 deskripsi: dataDetailProduct?.deskripsi,

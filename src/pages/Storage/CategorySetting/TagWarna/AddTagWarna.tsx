@@ -1,12 +1,14 @@
 import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react';
 import { BreadCrumbs } from '../../../../components';
-import { useCreateColorTagMutation } from '../../../../store/services/colorTagApi';
-import { useNavigate } from 'react-router-dom';
+import { useCreateColorTag2Mutation, useCreateColorTagMutation } from '../../../../store/services/colorTagApi';
+import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../../commons';
 
 const AddTagWarna = () => {
+    const { state } = useLocation();
     const [createColorTag, results] = useCreateColorTagMutation();
+    const [createColorTag2, results2] = useCreateColorTag2Mutation();
     const [input, setInput] = useState({
         hexa_code_color: '',
         name_color: '',
@@ -35,7 +37,7 @@ const AddTagWarna = () => {
                 fixed_price_color: input.fixed_price_color,
             };
 
-            await createColorTag(body);
+            state.type === 1 ? await createColorTag(body) : await createColorTag2(body);
         } catch (err) {
             console.log(err);
         }
@@ -49,19 +51,28 @@ const AddTagWarna = () => {
             toast.error(results?.data?.data?.message);
         }
     }, [results]);
+    useEffect(() => {
+        if (results2 && results2.isSuccess) {
+            toast.success(results2?.data?.data?.message);
+            navigate('/storage/categorysetting/tag_warna');
+        } else if (results2 && results2.isError) {
+            toast.error(results2?.data?.data?.message);
+        }
+    }, [results2]);
 
-    if (results.isError) {
+    if (results2.isError) {
+        return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
+    }
+    if (results2.isError) {
         return <Alert message={'anda tidak berhak mengakses halaman ini'} />;
     }
 
-    console.log(input.hexa_code_color);
-
     return (
         <>
-            <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/storage/product" current="Add Tag Warna" />
+            <BreadCrumbs base="Storage" basePath="storage/product" sub="Setting Kategori" subPath="/storage/product" current={state.type === 1 ? 'Add Tag Warna WMS' : 'Add Tag Warna APK'} />
 
             <div className="panel mt-10 w-full min-h-[400px]">
-                <h5 className="font-semibold text-lg dark:text-white-light mb-5">Tag Warna</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light mb-5">{state.type === 1 ? 'Add Tag Warna WMS' : 'Add Tag Warna APK'}</h5>
                 <form className="w-[400px]" onSubmit={handleCreateTagColor}>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="color" className="text-[15px] font-semibold whitespace-nowrap">
