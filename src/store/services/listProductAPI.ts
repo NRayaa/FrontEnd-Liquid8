@@ -28,4 +28,4 @@ export const listProductApi = createApi({
     }),
 });
 
-export const { useGetListProductRepairQuery, useGetProductItemQuery, useUpdateProductRepairMutation, useUpdateThrowsMutation} = listProductApi;
+export const { useGetListProductRepairQuery, useGetProductItemQuery, useUpdateProductRepairMutation, useUpdateThrowsMutation } = listProductApi;

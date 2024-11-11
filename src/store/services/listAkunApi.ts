@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetListAkun, } from './types';
+import { GetListAkun } from './types';
 import { baseQuery } from './prepareHeader';
 
 export const listAkunApi = createApi({
@@ -36,7 +36,39 @@ export const listAkunApi = createApi({
                 responseType: 'blob',
             }),
         }),
+        getListAccountPanel: builder.query<any, { page: number; q: string }>({
+            query: ({ page, q }) => `/panel-spv?page=${page}&q=${q}`,
+        }),
+        createAccountPanel: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/panel-spv',
+                method: 'POST',
+                body,
+            }),
+        }),
+        showAccountPanel: builder.query<any, any>({
+            query: (id) => ({
+                url: `/panel-spv/${id}`,
+                method: 'GET',
+            }),
+        }),
+        deleteAccountPanel: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/panel-spv/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useGetListAkunQuery, useCreateAccountMutation, useUpdateAccountMutation, useDeleteAccountMutation, useExportToExcelListAccountMutation } = listAkunApi;
+export const {
+    useGetListAkunQuery,
+    useCreateAccountMutation,
+    useUpdateAccountMutation,
+    useDeleteAccountMutation,
+    useExportToExcelListAccountMutation,
+    useGetListAccountPanelQuery,
+    useCreateAccountPanelMutation,
+    useDeleteAccountPanelMutation,
+    useShowAccountPanelQuery,
+} = listAkunApi;
