@@ -67,6 +67,9 @@ import CreateBkl from '../pages/Storage/Bkl/AddBkl';
 import AddBkl from '../pages/Storage/Bkl/AddBkl';
 import DetailBkl from '../pages/Storage/Bkl/DetailBkl';
 import DetailProductInput from '../pages/Inbound/CheckProduct/ScanResultApprovement/DetailScanResultApprovement';
+import ListAkunPanel from '../pages/Akun/AkunPanel/ListAkunPanel';
+import AddAkunPanel from '../pages/Akun/AkunPanel/AddAkunPanel';
+import EditAkunPanel from '../pages/Akun/AkunPanel/EditAkunPanel';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -509,6 +512,22 @@ const routes = [
     {
         path: '/akun/akun/list_akun/edit_akun/:id',
         element: <EditAkun />,
+        layout: 'default',
+    },
+    // Akun SPV
+    {
+        path: '/akun/akun/list_akun_panel',
+        element: <ListAkunPanel />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/akun/list_akun_panel/add_akun',
+        element: <AddAkunPanel />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/akun/list_akun_panel/edit_akun/:id',
+        element: <EditAkunPanel />,
         layout: 'default',
     },
     // Role
