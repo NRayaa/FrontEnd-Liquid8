@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { useDebounce } from '../../../../helper/functions';
-import { useDeleteBuyerMutation, useExportToExcelBuyerMutation, useGetListBuyerQuery } from '../../../../store/services/buyerApi';
+import { useDeleteBuyerMutation, useExportToExcelBuyerMutation } from '../../../../store/services/buyerApi';
 import { Alert } from '../../../../commons';
 import { BreadCrumbs } from '../../../../components';
 import { useDeleteKondisiMutation, useGetListKondisiQuery } from '../../../../store/services/palletApi';
@@ -21,7 +21,7 @@ const ListKondisi = () => {
     const [deleteKondisi, results] = useDeleteKondisiMutation();
     const [exportToExcel] = useExportToExcelBuyerMutation();
 
-    const listBuyer: any = useMemo(() => {
+    const listKondisi: any = useMemo(() => {
         return data?.data.resource.data;
     }, [data]);
 
@@ -147,12 +147,12 @@ const ListKondisi = () => {
                 <div className="datatables">
                     <DataTable
                         className="whitespace-nowrap table-hover"
-                        records={listBuyer}
+                        records={listKondisi}
                         columns={[
                             {
                                 accessor: 'No',
                                 title: 'No',
-                                render: (item: GetListKondisiItem, index: number) => <span>{(page - 1) * listBuyer.length + (index + 1)}</span>,
+                                render: (item: GetListKondisiItem, index: number) => <span>{(page - 1) * listKondisi.length + (index + 1)}</span>,
                             },
                             {
                                 accessor: 'condition_name',

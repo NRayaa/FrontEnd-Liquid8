@@ -807,6 +807,7 @@ interface DeleteBundleResponse {
         resource: null;
     };
 }
+
 interface FilterProduct {
     data: {
         status: boolean;
@@ -814,6 +815,7 @@ interface FilterProduct {
         resource: ProductExpiredItem;
     };
 }
+
 interface GetFilterProductBundles {
     data: {
         status: boolean;
@@ -2298,6 +2300,144 @@ interface GetListWarehouse {
     };
 };
 
+interface MigratedBulkyItem {
+    id: number;
+    user_id: number;
+    name_user: string;
+    code_document: string;
+    status_bulky: string;
+    created_at: string; 
+    updated_at: string; 
+}
+
+interface MigratedBulkyResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: MigratedBulkyItem[];
+            first_page_url: string;
+                from: number;
+                last_page: number;
+                last_page_url: string;
+                links: Links[];
+                next_page_url: null | string;
+                path: string;
+                per_page: number;
+                prev_page_url: null | string;
+                to: number;
+                total: number;
+        }    
+    };
+}
+
+interface MigratedBulkyProductItem {
+    id: number;
+    migrate_bulky_id: number;
+    new_product_id: number;
+    code_document: null | string;
+    old_barcode_product: string;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: string;
+    new_price_product: string;
+    old_price_product?: string;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: null | string;
+    new_category_product: string;
+    new_tag_product: null | any;
+    created_at: string;
+    updated_at: string;
+}
+
+interface FilterMigratedBulkyProduct {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            user_id: number;
+            name_user: string;
+            code_document: string;
+            status_bulky: string;
+            created_at: string;
+            updated_at: string;
+            migrate_bulky_products: MigratedBulkyProductItem[];
+        };
+    };
+}
+
+interface GetFilterMigratedBulkyProduct {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            total_new_price: number;
+            category: any;
+            name_bundle: any;
+            color: any;
+            fixed_price: number;
+            migrate_bulky_products: MigratedBulkyProductItem[];
+        };
+    };
+}
+
+interface CreateMigratedBulkyProduct {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            name_bundle: string;
+            total_price_bundle: string;
+            total_price_custom_bundle: string;
+            total_product_bundle: string;
+            barcode_bundle: string;
+            updated_at: string;
+            created_at: string;
+            id: number;
+        };
+    };
+}
+
+interface DetailMigratedCategoryResponse {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            id: number;
+            user_id: number;
+            name_user: string;
+            code_document: string | null;
+            status_bulky: string;
+            created_at: string;
+            updated_at: string;
+            migrate_bulky_products: MigratedCategoryItem[];
+        };
+    };
+}
+
+interface MigratedCategoryItem {
+    id: number;
+    migrate_bulky_id: number;
+    new_product_id: number;
+    code_document: string | null;
+    old_barcode_product: string | null;
+    new_barcode_product: string;
+    new_name_product: string;
+    new_quantity_product: number;
+    new_price_product: string;
+    old_price_product: string | null;
+    new_date_in_product: string;
+    new_status_product: string;
+    new_quality: string; // Consider using a specific structure if this is JSON
+    new_category_product: string;
+    new_tag_product: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
 
 export type {
     UserDataItem,
@@ -2434,5 +2574,13 @@ export type {
     GetListWarehouseItem,
     GetListMigrateCategoryItem,
     GetListMigrateCategory,
+    MigratedBulkyResponse,
+    MigratedBulkyItem,
+    FilterMigratedBulkyProduct,
+    GetFilterMigratedBulkyProduct,
+    MigratedBulkyProductItem,
+    CreateMigratedBulkyProduct,
+    DetailMigratedCategoryResponse,
+    MigratedCategoryItem,
 };
 

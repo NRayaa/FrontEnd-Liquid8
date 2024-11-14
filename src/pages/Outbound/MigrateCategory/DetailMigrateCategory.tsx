@@ -7,14 +7,15 @@ import toast from 'react-hot-toast';
 import { useAddDetailBundleProductMutation, useDeleteDetailBundleProductMutation, useDetailBundleProductQuery, useExportToExcelDetailBundleMutation, useUpdateDetailBundleMutation } from '../../../store/services/bundleProductApi';
 import { formatRupiah, useDebounce } from '../../../helper/functions';
 import { useGetDisplayExpiredQuery } from '../../../store/services/productNewApi';
-import { NewProductItem, ProductExpiredItem } from '../../../store/services/types';
+import { MigratedCategoryItem, ProductExpiredItem } from '../../../store/services/types';
 import IconSquareCheck from '../../../components/Icon/IconSquareCheck';
 import BarcodePrinted from '../../RepairStation/ListProductRepair/BarcodePrinted';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import { useDetailProductMigrateCategoryQuery } from '../../../store/services/migrateApi';
 
 const DetailMigrateCategory = () => {
     const { id }: any = useParams();
-    const { data, isSuccess, refetch } = useDetailBundleProductQuery(id);
+    const { data, isSuccess, refetch } = useDetailProductMigrateCategoryQuery(id);
     const [exportToExcel, results] = useExportToExcelDetailBundleMutation();
     const [searchProductBundle, setSearchProductBundle] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,17 +85,17 @@ const DetailMigrateCategory = () => {
         total_price_bundle: '',
     });
 
-    useEffect(() => {
-        if (isSuccess && data) {
-            const resource = data.data.resource;
-            setEditFormData({
-                name_bundle: resource.name_bundle,
-                category: resource.category,
-                total_price_custom_bundle: resource.total_price_custom_bundle,
-                total_price_bundle: resource.total_price_bundle,
-            });
-        }
-    }, [data, isSuccess]);
+    // useEffect(() => {
+    //     if (isSuccess && data) {
+    //         const resource = data.data.resource;
+    //         setEditFormData({
+    //             name_bundle: resource.name_bundle,
+    //             category: resource.category,
+    //             total_price_custom_bundle: resource.total_price_custom_bundle,
+    //             total_price_bundle: resource.total_price_bundle,
+    //         });
+    //     }
+    // }, [data, isSuccess]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -319,11 +320,11 @@ const DetailMigrateCategory = () => {
                 <h1 className="text-lg font-semibold py-4">Detail Product Migrate Category </h1>
             </div>
             <div>
-                <div className="flex gap-4 items-center mb-4 divide-x divide-gray-500">
+                {/* <div className="flex gap-4 items-center mb-4 divide-x divide-gray-500">
                     <form className="w-[400px]" onSubmit={handleSaveEdit}>
-                        {/* <button type="submit" className="btn btn-primary mb-4 px-16">
+                        <button type="submit" className="btn btn-primary mb-4 px-16">
                         Create Bundle
-                    </button> */}
+                    </button>
                         <div className="flex items-center justify-between ">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Barcode Bundle :
@@ -388,7 +389,7 @@ const DetailMigrateCategory = () => {
                             isBundle
                         />
                     </div>
-                </div>
+                </div> */}
                 <div className="panel">
                     <div className="flex items-center justify-between mb-4">
                         <Link to="/outbound/category_migrate/category_migrate">
@@ -407,24 +408,24 @@ const DetailMigrateCategory = () => {
                     </div>
                     <div className="datatables xl:col-span-3">
                         <DataTable
-                            records={detailDataBundle?.product_bundles}
+                            records={detailDataBundle?.migrate_bulky_products}
                             columns={[
-                                { accessor: 'id', title: 'No', sortable: true, render: (item: NewProductItem, index: number) => <span>{index + 1}</span> },
-                                { accessor: 'code_document', title: 'Code Document', sortable: true, render: (item: NewProductItem) => <span>{item.code_document}</span> },
-                                { accessor: 'new_barcode_product', title: 'Barcode', sortable: true, render: (item: NewProductItem) => <span>{item.new_barcode_product}</span> },
-                                { accessor: 'new_category_product', title: 'Kategori', sortable: true, render: (item: NewProductItem) => <span>{item.new_category_product}</span> },
-                                { accessor: 'new_name_product', title: 'Nama', sortable: true, render: (item: NewProductItem) => <span>{item.new_name_product}</span> },
-                                { accessor: 'new_price_product', title: 'Harga', sortable: true, render: (item: NewProductItem) => <span>{formatRupiah(item.new_price_product ?? '0')}</span> },
+                                { accessor: 'id', title: 'No', sortable: true, render: (item: MigratedCategoryItem, index: number) => <span>{index + 1}</span> },
+                                { accessor: 'code_document', title: 'Code Document', sortable: true, render: (item: MigratedCategoryItem) => <span>{item.code_document}</span> },
+                                { accessor: 'new_barcode_product', title: 'Barcode', sortable: true, render: (item: MigratedCategoryItem) => <span>{item.new_barcode_product}</span> },
+                                { accessor: 'new_category_product', title: 'Kategori', sortable: true, render: (item: MigratedCategoryItem) => <span>{item.new_category_product}</span> },
+                                { accessor: 'new_name_product', title: 'Nama', sortable: true, render: (item: MigratedCategoryItem) => <span>{item.new_name_product}</span> },
+                                { accessor: 'new_price_product', title: 'Harga', sortable: true, render: (item: MigratedCategoryItem) => <span>{formatRupiah(item.new_price_product ?? '0')}</span> },
                                 {
                                     accessor: 'status',
                                     title: 'Status',
                                     sortable: true,
-                                    render: (item: NewProductItem) => <span className="badge whitespace-nowrap bg-primary">{item.new_status_product}</span>,
+                                    render: (item: MigratedCategoryItem) => <span className="badge whitespace-nowrap bg-primary">{item.new_status_product}</span>,
                                 },
                                 {
                                     accessor: 'Aksi',
                                     title: 'Aksi',
-                                    render: (item: NewProductItem) => (
+                                    render: (item: MigratedCategoryItem) => (
                                         <div className="flex items-center w-max mx-auto gap-6">
                                             <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                                 Remove
