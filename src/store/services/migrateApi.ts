@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { GetCountColor, GetDisplayMigrate, GetListDestination, GetListMigrate, GetListMigrateCategory } from './types';
+import { CreateBundle, CreateMigratedBulkyProduct, DetailBundleResponse, DetailMigratedCategoryResponse, FilterMigratedBulkyProduct, FilterProduct, GetCountColor, GetDisplayMigrate, GetFilterMigratedBulkyProduct, GetFilterProductBundles, GetListDestination, GetListMigrate, GetListMigrateCategory, MigratedBulkyProductItem, MigratedBulkyResponse, ProductExpired } from './types';
 import { baseQuery } from './prepareHeader';
 
 interface GetListMigrateIndex {
@@ -128,8 +128,33 @@ export const migrateApi = createApi({
                 responseType: 'blob',
             }),
         }),
-        getListMigrateCategory: builder.query<GetListMigrateCategory, { page: number; q: string }>({
+        getListMigrateCategory: builder.query<MigratedBulkyResponse, { page: number; q: string }>({
             query: ({ page, q }) => `/migrate-bulky?page=${page}&q=${q}`,
+        }),
+        filterProductMigrateCategory: builder.mutation<FilterProduct, number>({
+            query: (id) => ({
+                url: `/migrate-bulky-product/${id}/add`,
+                method: 'GET',
+            }),
+        }),
+        getFilterProductMigrateCategory: builder.query<GetFilterMigratedBulkyProduct, number>({
+            query: () => `/migrate-bulky-product`,
+        }),
+        deleteFilterProductMigrateCategory: builder.mutation<FilterMigratedBulkyProduct, number>({
+            query: (id) => ({
+                url: `/migrate-bulky-product/${id}/delete`,
+                method: 'DELETE',
+            }),
+        }),
+        createFilterProductMigrateCategory: builder.mutation<CreateMigratedBulkyProduct, any>({
+            query: (body) => ({
+                url: '/migrate-bulky-finish',
+                method: 'POST',
+                body,
+            }),
+        }),
+        detailProductMigrateCategory: builder.query<DetailMigratedCategoryResponse, number>({
+            query: (id) => `/migrate-bulky/${id}`,
         }),
     }),
 });
@@ -152,4 +177,9 @@ export const {
     useGetListDestinationOptionQuery,
     useExportToExcelDetailListMigrateMutation,
     useGetListMigrateCategoryQuery,
+    useFilterProductMigrateCategoryMutation,
+    useGetFilterProductMigrateCategoryQuery,
+    useDeleteFilterProductMigrateCategoryMutation,
+    useCreateFilterProductMigrateCategoryMutation,
+    useDetailProductMigrateCategoryQuery,
 } = migrateApi;

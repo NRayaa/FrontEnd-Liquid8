@@ -1,31 +1,31 @@
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
 import { formatRupiah, generateRandomStringFormatBundle, useDebounce } from '../../../helper/functions';
-import { useGetDisplayExpiredQuery } from '../../../store/services/productNewApi';
-import {
-    useCreateBundleMutation,
-    useDeleteFilterProductBundlesMutation,
-    useFilterProductBundleMutation,
-    useGetBundleProductsQuery,
-    useGetFilterProductBundlesQuery,
-} from '../../../store/services/bundleProductApi';
+import { useProductByCategoryQuery } from '../../../store/services/productNewApi';
+import { useGetBundleProductsQuery } from '../../../store/services/bundleProductApi';
 import { useGetAllColorTagQuery } from '../../../store/services/colorTagApi';
-import { ProductExpiredItem } from '../../../store/services/types';
+import { MigratedBulkyProductItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
 import BarcodePrinted from '../../RepairStation/ListProductRepair/BarcodePrinted';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
+import {
+    useCreateFilterProductMigrateCategoryMutation,
+    useDeleteFilterProductMigrateCategoryMutation,
+    useFilterProductMigrateCategoryMutation,
+    useGetFilterProductMigrateCategoryQuery,
+} from '../../../store/services/migrateApi';
 
 const CreateMigrateCategory = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
     const [rightTablePage, setRightTablePage] = useState<number>(1);
     const [searchLeftTable, setSearchLeftTable] = useState<string>('');
     const debounceValue = useDebounce(searchLeftTable);
-    const { data, isSuccess, refetch } = useGetDisplayExpiredQuery({ page: leftTablePage, q: debounceValue });
-    const filterBundles = useGetFilterProductBundlesQuery(rightTablePage);
-    const [filterProductBundle, results] = useFilterProductBundleMutation();
-    const [deleteFilterProductBundles, resultsDeleteBundle] = useDeleteFilterProductBundlesMutation();
-    const [createBundle, resultsCreateBundle] = useCreateBundleMutation();
+    const { data, isSuccess, refetch } = useProductByCategoryQuery({ page: leftTablePage, q: debounceValue });
+    const filterMigrated = useGetFilterProductMigrateCategoryQuery(rightTablePage);
+    const [filterProductBundle, results] = useFilterProductMigrateCategoryMutation();
+    const [deleteFilterProductMigrated, resultsDeleteBundle] = useDeleteFilterProductMigrateCategoryMutation();
+    const [createBundle, resultsCreateBundle] = useCreateFilterProductMigrateCategoryMutation();
     const navigate = useNavigate();
     const bundleLists = useGetBundleProductsQuery({ page: 1, q: '' });
     const [isCategory, setIsCategory] = useState<boolean>(false);
@@ -44,7 +44,6 @@ const CreateMigrateCategory = () => {
     const searchDebounce = useDebounce(search);
     const { data: colorTags, refetch: refetchColorTags } = useGetAllColorTagQuery({ page, q: searchDebounce });
     const [colorOptions, setColorOptions] = useState<{ label: string; value: string }[]>([]);
-    const [fixedPriceColor, setFixedPriceColor] = useState<number>(0); // Menyimpan harga tetap warna
 
     const expiredProducts = useMemo(() => {
         if (isSuccess) {
@@ -52,11 +51,12 @@ const CreateMigrateCategory = () => {
         }
     }, [data]);
 
-    const filterBundlesProducts: any = useMemo(() => {
-        if (filterBundles.isSuccess) {
-            return filterBundles.data.data.resource.data.data;
+    const filterMigratedProducts: any = useMemo(() => {
+        if (filterMigrated.isSuccess) {
+            return filterMigrated.data.data.resource.migrate_bulky_products;
         }
-    }, [filterBundles.data, data]);
+    }, [filterMigrated.data, data]);
+    console.log('filterMigratedProducts', filterMigratedProducts);
 
     const handleAddFilterBundle = async (id: number) => {
         try {
@@ -68,13 +68,13 @@ const CreateMigrateCategory = () => {
 
     const handleDeleteProductBundle = async (id: number) => {
         try {
-            await deleteFilterProductBundles(id);
+            await deleteFilterProductMigrated(id);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const handleAddLeftTable = (item: ProductExpiredItem) => {
+    const handleAddLeftTable = (item: MigratedBulkyProductItem) => {
         handleAddFilterBundle(item.id);
         setTotalProductBundle(item.new_quantity_product ?? '');
     };
@@ -84,15 +84,7 @@ const CreateMigrateCategory = () => {
         try {
             const barcodeString = generateRandomStringFormatBundle();
             setBarcode(barcodeString);
-            const body = {
-                name_bundle: nameBundle,
-                total_price_bundle: filterBundles?.data?.data.resource.total_new_price ?? '0',
-                total_price_custom_bundle: Number(customPrice),
-                total_product_bundle: filterBundlesProducts?.length,
-                barcode_bundle: barcodeString,
-                category: selectedCategory,
-                name_color: colorName,
-            };
+            const body = {};
 
             await createBundle(body);
         } catch (err) {
@@ -119,17 +111,17 @@ const CreateMigrateCategory = () => {
             toast.success(results.data.data.message);
 
             refetch();
-            filterBundles.refetch();
+            filterMigrated.refetch();
         } else if (results.isError) {
             toast.error(results?.data?.data?.message ?? 'Error');
         }
-    }, [results, filterBundles.isSuccess]);
+    }, [results, filterMigrated.isSuccess]);
 
     useEffect(() => {
         if (resultsDeleteBundle.isSuccess) {
             toast.success(resultsDeleteBundle?.data.data.message);
             refetch();
-            filterBundles.refetch();
+            filterMigrated.refetch();
         } else if (resultsDeleteBundle.isError) {
             toast.error(resultsDeleteBundle?.data?.data?.message ?? 'Error');
         }
@@ -143,7 +135,7 @@ const CreateMigrateCategory = () => {
                 setIsBarcodePrint(true);
                 setCustomDisplay(customPrice);
             } else {
-                navigate('/storage/moving_product/bundle');
+                navigate('/outbound/category_migrate/category_migrate');
             }
         } else if (resultsCreateBundle.isError) {
             toast.error(resultsCreateBundle?.data?.data?.message ?? 'Error');
@@ -151,7 +143,7 @@ const CreateMigrateCategory = () => {
     }, [resultsCreateBundle]);
 
     useEffect(() => {
-        const resource = filterBundles?.data?.data?.resource;
+        const resource = filterMigrated?.data?.data?.resource;
 
         if (resource && resource.total_new_price >= 100000 && resource.category !== null) {
             setIsCategory(true);
@@ -170,7 +162,7 @@ const CreateMigrateCategory = () => {
                 setColorName('');
             }
         }
-    }, [filterBundles?.data?.data?.resource]);
+    }, [filterMigrated?.data?.data?.resource]);
 
     return (
         <div>
@@ -213,7 +205,7 @@ const CreateMigrateCategory = () => {
                                 barcode={barcode}
                                 category={nameBundle}
                                 newPrice={formatRupiah(customDisplay)}
-                                oldPrice={formatRupiah(filterBundles?.data?.data.resource.total_new_price.toString() ?? '0')}
+                                oldPrice={formatRupiah(filterMigrated?.data?.data.resource.total_new_price.toString() ?? '0')}
                                 isBundle
                             />
                         </div>
@@ -231,7 +223,7 @@ const CreateMigrateCategory = () => {
                                 <IconArrowBackward className="flex mx-2" fill={true} /> Back
                             </button>
                         </Link>
-                        <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterBundles.data?.data.resource.data.total} </span>
+                        {/* <span className="flex justify-end mr-64 text-sm font-semibold">Total Barang : {filterMigrated.data?.data.resource.total} </span> */}
                     </div>
                     <div className="grid grid-cols-5 gap-4">
                         <div className="datatables xl:col-span-3">
@@ -240,12 +232,12 @@ const CreateMigrateCategory = () => {
                                 className="whitespace-nowrap table-hover "
                                 records={expiredProducts}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: MigratedBulkyProductItem, index: number) => <span>{index + 1}</span> },
                                     {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => {
+                                        render: (item: MigratedBulkyProductItem) => {
                                             let barcode: string | undefined;
 
                                             if (!item.new_category_product && !item.new_tag_product) {
@@ -264,25 +256,25 @@ const CreateMigrateCategory = () => {
                                         title: 'Nama Produk',
                                         sortable: true,
                                         width: 220,
-                                        render: (item: ProductExpiredItem) => <p className="truncate">{item.new_name_product}</p>,
+                                        render: (item: MigratedBulkyProductItem) => <p className="truncate">{item.new_name_product}</p>,
                                     },
                                     {
                                         accessor: 'category',
                                         title: 'Kategori',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => <span>{item.new_category_product ? item.new_category_product : item.new_tag_product}</span>,
+                                        render: (item: MigratedBulkyProductItem) => <span>{item.new_category_product ? item.new_category_product : item.new_tag_product}</span>,
                                     },
                                     {
                                         accessor: 'harga',
                                         title: 'Harga',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem, index: number) => <span>{formatRupiah(item.old_price_product ?? '0')}</span>,
+                                        render: (item: MigratedBulkyProductItem, index: number) => <span>{formatRupiah(item.old_price_product ?? '0')}</span>,
                                     },
                                     {
                                         accessor: 'action',
                                         title: 'Opsi',
                                         titleClassName: '!text-center',
-                                        render: (item: ProductExpiredItem) => (
+                                        render: (item: MigratedBulkyProductItem) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
                                                 <button type="button" className="btn btn-outline-info" onClick={() => handleAddLeftTable(item)}>
                                                     Add
@@ -301,14 +293,14 @@ const CreateMigrateCategory = () => {
                             <DataTable
                                 highlightOnHover
                                 className="whitespace-nowrap table-hover "
-                                records={filterBundlesProducts}
+                                records={filterMigratedProducts}
                                 columns={[
-                                    { accessor: 'id', title: 'No', sortable: true, render: (item: ProductExpiredItem, index: number) => <span>{index + 1}</span> },
+                                    { accessor: 'id', title: 'No', sortable: true, render: (item: MigratedBulkyProductItem, index: number) => <span>{index + 1}</span> },
                                     {
                                         accessor: 'barcode',
                                         title: 'Barcode LQD',
                                         sortable: true,
-                                        render: (item: ProductExpiredItem) => {
+                                        render: (item: MigratedBulkyProductItem) => {
                                             let barcode: string | undefined;
 
                                             if (!item.new_category_product && !item.new_tag_product) {
@@ -322,12 +314,12 @@ const CreateMigrateCategory = () => {
                                             return <span>{barcode ?? ''}</span>;
                                         },
                                     },
-                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: ProductExpiredItem) => <span>{item.new_name_product}</span> },
+                                    { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: MigratedBulkyProductItem) => <span>{item.new_name_product}</span> },
                                     {
                                         accessor: 'action',
                                         title: 'Opsi',
                                         titleClassName: '!text-center',
-                                        render: (item: ProductExpiredItem) => (
+                                        render: (item: MigratedBulkyProductItem) => (
                                             <div className="flex items-center space-x-2">
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductBundle(item.id)}>
                                                     Delete

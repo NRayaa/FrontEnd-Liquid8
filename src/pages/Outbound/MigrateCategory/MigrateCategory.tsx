@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDeleteBundleProductMutation, useGetBundleProductsQuery } from '../../../store/services/bundleProductApi';
 import IconPlus from '../../../components/Icon/IconPlus';
-import { BundleItem } from '../../../store/services/types';
+import { MigratedBulkyItem } from '../../../store/services/types';
 import { formatRupiah } from '../../../helper/functions';
 import { useGetListMigrateCategoryQuery } from '../../../store/services/migrateApi';
 
@@ -127,31 +127,29 @@ const MigrateCategory = () => {
                     <DataTable
                         records={dataBundleProduct}
                         columns={[
-                            { accessor: 'id', title: 'No', sortable: true, render: (item: BundleItem, index: number) => <span>{(page - 1) * dataBundleProduct?.length + (index + 1)}</span> },
-                            { accessor: 'barcode', title: 'Barcode', sortable: true, render: (item: BundleItem) => <span>{item?.barcode_bundle}</span> },
-                            { accessor: 'firstName', title: 'Nama Produk', sortable: true, render: (item: BundleItem) => <span>{item?.name_bundle}</span> },
-                            { accessor: 'Total Barang', title: 'Total Barang', sortable: true, render: (item: BundleItem) => <span>{item?.total_product_bundle}</span> },
-                            { accessor: 'Total Price', title: 'Total Harga', sortable: true, render: (item: BundleItem) => <span>{formatRupiah(item?.total_price_custom_bundle)}</span> },
+                            { accessor: 'id', title: 'No', sortable: true, render: (item: MigratedBulkyItem, index: number) => <span>{(page - 1) * dataBundleProduct?.length + (index + 1)}</span> },
+                            { accessor: 'Nama User', title: 'Nama User', sortable: true, render: (item: MigratedBulkyItem) => <span>{item?.name_user}</span> },
+                            { accessor: 'Code Document', title: 'Code Document', sortable: true, render: (item: MigratedBulkyItem) => <span>{item?.code_document}</span> },
                             {
                                 accessor: 'status',
                                 title: 'Status',
                                 sortable: true,
-                                render: (item: BundleItem) => <span className="badge whitespace-nowrap bg-primary">{item.product_bundles[0].new_status_product}</span>,
+                                render: (item: MigratedBulkyItem) => <span className="badge whitespace-nowrap bg-primary">{item.status_bulky}</span>,
                             },
                             {
                                 accessor: 'action',
                                 title: 'Opsi',
                                 titleClassName: '!text-center',
-                                render: (item: BundleItem) => (
+                                render: (item: MigratedBulkyItem) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <Link to={`/outbound/category_migrate/category_migrate/${item.id}`}>
                                             <button type="button" className="btn btn-outline-info">
                                                 DETAIL
                                             </button>
                                         </Link>
-                                        <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
+                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
                                             UNMIGRATE
-                                        </button>
+                                        </button> */}
                                     </div>
                                 ),
                             },

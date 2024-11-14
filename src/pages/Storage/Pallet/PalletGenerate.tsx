@@ -7,6 +7,10 @@ import {
     useDisplayPalletListsQuery,
     useFilterPalletMutation,
     useFilterProductListsQuery,
+    useGetListKondisiQuery,
+    useGetListMerkQuery,
+    useGetListStatusQuery,
+    useGetListWarehouseQuery,
     usePalletListsQuery,
     useUploadPalleteMutation,
 } from '../../../store/services/palletApi';
@@ -19,10 +23,11 @@ import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import { useDropzone } from 'react-dropzone';
 import { useProductByCategoryQuery } from '../../../store/services/productNewApi';
 import { useGetCategoriesQuery } from '../../../store/services/categoriesApi';
+import Select from 'react-select';
 
 const MAX_FILES = 8;
 const MAX_FILE_SIZE_MB = 2;
-const TOAST_DELAY_MS = 500; // Delay antar toast dalam milidetik
+const TOAST_DELAY_MS = 500;
 
 const PalletGenerate = () => {
     const [pageLeftTable, setPageLeftTable] = useState<number>(1);
@@ -39,10 +44,12 @@ const PalletGenerate = () => {
         category: '',
         totalProduct: '',
         barcode: '',
-        condition: '',
+        description: '',
+        is_active: '1', // Defaultnya mungkin aktif
         warehouse: '',
+        condition: '',
         status: '',
-        brands: '',
+        brands: [] as string[], // Ubah ini jadi array untuk mendukung banyak pilihan
     });
     const navigate = useNavigate();
     const palletLists = usePalletListsQuery({ page: 1, q: '' });
@@ -58,6 +65,37 @@ const PalletGenerate = () => {
     const categoryData = useMemo(() => {
         return categoryResponse?.data.resource || [];
     }, [categoryResponse]);
+
+    const { data: warehouseResponse } = useGetListWarehouseQuery({ page: 1, q: '' });
+
+    const warehouseData = useMemo(() => {
+        return warehouseResponse?.data.resource.data || []; // Safely access and fallback to empty array
+    }, [warehouseResponse]);
+
+    const { data: brandsResponse } = useGetListMerkQuery({ page: 1, q: '' });
+
+    const brandsData = useMemo(() => {
+        return brandsResponse?.data.resource.data || []; // Safely access and fallback to empty array
+    }, [brandsResponse]);
+
+    const brandsOptions = useMemo(() => {
+        return brandsData.map((brand) => ({
+            value: brand.id.toString(), // Change to string
+            label: brand.brand_name,
+        }));
+    }, [brandsData]);
+
+    const { data: statusResponse } = useGetListStatusQuery({ page: 1, q: '' });
+
+    const statusData = useMemo(() => {
+        return statusResponse?.data.resource || []; // Safely access and fallback to empty array
+    }, [statusResponse]);
+
+    const { data: conditionResponse } = useGetListKondisiQuery({ page: 1, q: '' });
+
+    const conditionData = useMemo(() => {
+        return conditionResponse?.data.resource.data || []; // Safely access and fallback to empty array
+    }, [conditionResponse]);
 
     // Fungsi validasi dan handle file drop
     const onDrop = useCallback(
@@ -140,10 +178,24 @@ const PalletGenerate = () => {
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        if (e.target.name === 'category') {
-            setSelectedCategory(e.target.value); // Update selected category state
+        const { name, value } = e.target;
+
+        if (name === 'category') {
+            setSelectedCategory(value);
+        } else if (name === 'warehouse') {
+            setInput((prevState) => ({ ...prevState, warehouse: value }));
+        } else if (name === 'brands') {
+            // Ensure we are working with string types here
+            if (e.target instanceof HTMLSelectElement) {
+                const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value); // Keep values as strings
+                setInput((prevState) => ({ ...prevState, brands: selectedValues })); // Set brands as a string array
+            }
+        } else if (name === 'status') {
+            setInput((prevState) => ({ ...prevState, status: value }));
+        } else if (name === 'condition') {
+            setInput((prevState) => ({ ...prevState, condition: value }));
         } else {
-            setInput((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
+            setInput((prevState) => ({ ...prevState, [name]: value }));
         }
     };
 
@@ -186,12 +238,21 @@ const PalletGenerate = () => {
                     body.append('images[]', element);
                 }
             }
-            body.append('category_id', selectedCategory); // Add selected category to the payload
+            body.append('category_id', selectedCategory);
             body.append('name_palet', input.name);
-            body.append('category_palet', input.name);
+            body.append('category_palet', input.category); // Pastikan ini disesuaikan
             body.append('total_price_palet', filterData?.total_new_price.toString() ?? '0');
             body.append('total_product_palet', filterData?.data?.total.toString() ?? '0');
             body.append('palet_barcode', input.barcode);
+            body.append('description', input.description);
+            body.append('is_active', input.is_active);
+            body.append('warehouse_id', input.warehouse);
+            body.append('product_condition_id', input.condition);
+            body.append('product_status_id', input.status);
+            body.append('is_sale', '0'); // Default is_sale
+            input.brands.forEach((brandId) => {
+                body.append('product_brand_ids[]', brandId); // Menambahkan setiap ID brand yang dipilih
+            });
             await createPallete(body);
         } catch (err) {
             console.log(err);
@@ -313,30 +374,84 @@ const PalletGenerate = () => {
                                 required
                             />
                         </div>
-                        <div className="flex items-center  justify-between mb-2">
-                            <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="categorySelect" className="text-[15px] font-semibold whitespace-nowrap">
                                 Warehouse :
                             </label>
-                            <input onChange={handleInputChange} name="warehouse" value={input.warehouse} id="categoryName" type="text" className="form-input w-[250px]" required />
+                            <select id="warehouseSelect" name="warehouse" value={input.warehouse} onChange={handleInputChange} className="form-input w-[250px]" required>
+                                <option value="">Select Warehouse</option>
+                                {warehouseData.length > 0 ? (
+                                    warehouseData.map((warehouse) => (
+                                        <option key={warehouse.id} value={warehouse.id}>
+                                            {warehouse.nama} {/* Adjust field names based on your API response structure */}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>No warehouses available</option>
+                                )}
+                            </select>
                         </div>
                         <div className="flex items-center  justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Condition :
                             </label>
-                            <input onChange={handleInputChange} name="condition" value={input.condition} id="categoryName" type="text" className="form-input w-[250px]" required />
+                            <select id="conditionSelect" name="condition" value={input.condition} onChange={handleInputChange} className="form-input w-[250px]" required>
+                                <option value="">Select condition</option>
+                                {conditionData.length > 0 ? (
+                                    conditionData.map((condition) => (
+                                        <option key={condition.id} value={condition.id}>
+                                            {condition.condition_name} {/* Adjust field names based on your API response structure */}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>No conditions available</option>
+                                )}
+                            </select>{' '}
                         </div>
                         <div className="flex items-center  justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Status :
                             </label>
-                            <input onChange={handleInputChange} name="status" value={input.status} id="categoryName" type="text" className="form-input w-[250px]" required />
+                            <select id="statusSelect" name="status" value={input.status} onChange={handleInputChange} className="form-input w-[250px]" required>
+                                <option value="">Select status</option>
+                                {statusData.length > 0 ? (
+                                    statusData.map((status) => (
+                                        <option key={status.id} value={status.id}>
+                                            {status.status_name} {/* Adjust field names based on your API response structure */}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>No statuses available</option>
+                                )}
+                            </select>{' '}
                         </div>
-                        <div className="flex items-center  justify-between mb-2">
+                        <div className="flex items-center justify-between mb-2">
+                            <label htmlFor="brands" className="text-[15px] font-semibold">
+                                Brands:
+                            </label>
+                            <Select
+                                id="brands"
+                                options={brandsOptions}
+                                isMulti
+                                isSearchable={false}
+                                value={input.brands
+                                    .map((id) => brandsOptions.find((option) => option.value === id.toString()))
+                                    .filter((option): option is { value: string; label: string } => option !== undefined)}
+                                onChange={(selectedOptions) => {
+                                    const selectedValues = selectedOptions.map((option) => option.value); // Keep selected values as strings
+                                    setInput((prevState) => ({ ...prevState, brands: selectedValues })); // Update brands as a string array
+                                }}
+                                className="w-[250px]"
+                                required
+                            />
+                        </div>
+
+                        {/* <div className="flex items-center  justify-between mb-2">
                             <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                 Brands :
                             </label>
                             <input onChange={handleInputChange} name="brands" value={input.brands} id="categoryName" type="text" className="form-input w-[250px]" required />
-                        </div>
+                        </div> */}
                         <button type="submit" className="btn btn-primary mt-4 px-16 uppercase">
                             Create Palet
                         </button>
