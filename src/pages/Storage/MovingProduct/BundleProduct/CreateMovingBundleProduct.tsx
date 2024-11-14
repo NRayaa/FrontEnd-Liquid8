@@ -139,12 +139,7 @@ const CreateMovingBundleProduct = () => {
         if (resultsCreateBundle.isSuccess) {
             toast.success(resultsCreateBundle?.data.data.message);
             bundleLists?.refetch();
-            if (categories.length !== 0) {
-                setIsBarcodePrint(true);
-                setCustomDisplay(customPrice);
-            } else {
-                navigate('/storage/moving_product/bundle');
-            }
+            navigate('/storage/moving_product/bundle');
         } else if (resultsCreateBundle.isError) {
             toast.error(resultsCreateBundle?.data?.data?.message ?? 'Error');
         }
