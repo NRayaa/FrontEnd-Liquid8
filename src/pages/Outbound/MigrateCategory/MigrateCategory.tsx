@@ -1,19 +1,14 @@
 import { DataTable } from 'mantine-datatable';
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { useEffect, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useDeleteBundleProductMutation, useGetBundleProductsQuery } from '../../../store/services/bundleProductApi';
 import IconPlus from '../../../components/Icon/IconPlus';
 import { MigratedBulkyItem } from '../../../store/services/types';
-import { formatRupiah } from '../../../helper/functions';
 import { useGetListMigrateCategoryQuery } from '../../../store/services/migrateApi';
 
 const MigrateCategory = () => {
     const [page, setPage] = useState<number>(1);
     const [search, setSearch] = useState<string>('');
     const { data, isSuccess, refetch } = useGetListMigrateCategoryQuery({ page, q: search });
-    const [deleteBundleProduct, results] = useDeleteBundleProductMutation();
 
     const dataBundleProduct: any = useMemo(() => {
         if (isSuccess) {
@@ -21,76 +16,9 @@ const MigrateCategory = () => {
         }
     }, [data]);
 
-    const showAlert = async ({ type, id }: { type: number; id: number | undefined }) => {
-        if (type === 11) {
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-secondary',
-                    cancelButton: 'btn btn-dark ltr:mr-3 rtl:ml-3',
-                    popup: 'sweet-alerts',
-                },
-                buttonsStyling: false,
-            });
-            swalWithBootstrapButtons
-                .fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'No, cancel!',
-                    reverseButtons: true,
-                    padding: '2em',
-                })
-                .then(async (result) => {
-                    if (result.value) {
-                        await deleteBundleProduct(id);
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
-                    }
-                });
-        }
-        if (type === 15) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Berhasil Dikirim',
-                padding: '10px 20px',
-            });
-        }
-        if (type == 20) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            toast.fire({
-                icon: 'success',
-                title: 'Data Berhasil Ditambah',
-                padding: '10px 20px',
-            });
-        }
-    };
-
     useEffect(() => {
-        if (results.isSuccess) {
-            toast.success(results.data.data.message);
-            refetch();
-        } else if (results.isError) {
-            const statusRes = 'status' in results.error ? results.error.status : 0;
-            if (statusRes === 403) {
-                toast.error('Your role is forbidden to access');
-            } else {
-                toast.error('Something went wrong');
-            }
-        }
-    }, [results]);
+        refetch();
+    }, [page, search, refetch]);
 
     return (
         <div>
@@ -120,7 +48,13 @@ const MigrateCategory = () => {
                         </Link>
                     </div>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
-                        <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <input
+                            type="text"
+                            className="form-input w-auto"
+                            placeholder="Search..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)} // Trigger refetch on input change
+                        />
                     </div>
                 </div>
                 <div className="datatables panel xl:col-span-2">
@@ -147,9 +81,6 @@ const MigrateCategory = () => {
                                                 DETAIL
                                             </button>
                                         </Link>
-                                        {/* <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>
-                                            UNMIGRATE
-                                        </button> */}
                                     </div>
                                 ),
                             },
