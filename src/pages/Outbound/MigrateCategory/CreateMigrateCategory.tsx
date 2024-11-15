@@ -3,7 +3,6 @@ import { DataTable } from 'mantine-datatable';
 import { Link, useNavigate } from 'react-router-dom';
 import { formatRupiah, generateRandomStringFormatBundle, useDebounce } from '../../../helper/functions';
 import { useProductByCategoryQuery } from '../../../store/services/productNewApi';
-import { useGetBundleProductsQuery } from '../../../store/services/bundleProductApi';
 import { useGetAllColorTagQuery } from '../../../store/services/colorTagApi';
 import { MigratedBulkyProductItem } from '../../../store/services/types';
 import toast from 'react-hot-toast';
@@ -15,6 +14,7 @@ import {
     useFilterProductMigrateCategoryMutation,
     useGetFilterProductMigrateCategoryQuery,
 } from '../../../store/services/migrateApi';
+import { useGetBundleProductsQuery } from '../../../store/services/bundleProductApi';
 
 const CreateMigrateCategory = () => {
     const [leftTablePage, setLeftTablePage] = useState<number>(1);
@@ -23,19 +23,19 @@ const CreateMigrateCategory = () => {
     const debounceValue = useDebounce(searchLeftTable);
     const { data, isSuccess, refetch } = useProductByCategoryQuery({ page: leftTablePage, q: debounceValue });
     const filterMigrated = useGetFilterProductMigrateCategoryQuery(rightTablePage);
-    const [filterProductBundle, results] = useFilterProductMigrateCategoryMutation();
-    const [deleteFilterProductMigrated, resultsDeleteBundle] = useDeleteFilterProductMigrateCategoryMutation();
-    const [createBundle, resultsCreateBundle] = useCreateFilterProductMigrateCategoryMutation();
+    const [filterProductMigrated, results] = useFilterProductMigrateCategoryMutation();
+    const [deleteFilterProductMigrated, resultsDeleteMigrated] = useDeleteFilterProductMigrateCategoryMutation();
+    const [createMigrated, resultsCreateMigrated] = useCreateFilterProductMigrateCategoryMutation();
     const navigate = useNavigate();
-    const bundleLists = useGetBundleProductsQuery({ page: 1, q: '' });
+    const MigratedLists = useGetBundleProductsQuery({ page: 1, q: '' });
     const [isCategory, setIsCategory] = useState<boolean>(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState<any>();
     const [customDisplay, setCustomDisplay] = useState<any>('0');
 
-    const [nameBundle, setNameBundle] = useState<string>('');
+    const [nameMigrated, setNameMigrated] = useState<string>('');
     const [customPrice, setCustomPrice] = useState<number>(0);
-    const [totalProductBundle, setTotalProductBundle] = useState<string>('');
+    const [totalProductMigrated, setTotalProductMigrated] = useState<string>('');
     const [colorName, setColorName] = useState<string>('');
     const [isBarcodePrint, setIsBarcodePrint] = useState<boolean>(false);
     const [barcode, setBarcode] = useState<string>('');
@@ -58,15 +58,15 @@ const CreateMigrateCategory = () => {
     }, [filterMigrated.data, data]);
     console.log('filterMigratedProducts', filterMigratedProducts);
 
-    const handleAddFilterBundle = async (id: number) => {
+    const handleAddFilterMigrated = async (id: number) => {
         try {
-            await filterProductBundle(id);
+            await filterProductMigrated(id);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const handleDeleteProductBundle = async (id: number) => {
+    const handleDeleteProductMigrated = async (id: number) => {
         try {
             await deleteFilterProductMigrated(id);
         } catch (err) {
@@ -75,18 +75,18 @@ const CreateMigrateCategory = () => {
     };
 
     const handleAddLeftTable = (item: MigratedBulkyProductItem) => {
-        handleAddFilterBundle(item.id);
-        setTotalProductBundle(item.new_quantity_product ?? '');
+        handleAddFilterMigrated(item.id);
+        setTotalProductMigrated(item.new_quantity_product ?? '');
     };
 
-    const handleCreateBundle = async (e: { preventDefault: () => void }) => {
+    const handleCreateMigrated = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
             const barcodeString = generateRandomStringFormatBundle();
             setBarcode(barcodeString);
             const body = {};
 
-            await createBundle(body);
+            await createMigrated(body);
         } catch (err) {
             console.log(err);
         }
@@ -118,29 +118,29 @@ const CreateMigrateCategory = () => {
     }, [results, filterMigrated.isSuccess]);
 
     useEffect(() => {
-        if (resultsDeleteBundle.isSuccess) {
-            toast.success(resultsDeleteBundle?.data.data.message);
+        if (resultsDeleteMigrated.isSuccess) {
+            toast.success(resultsDeleteMigrated?.data.data.message);
             refetch();
             filterMigrated.refetch();
-        } else if (resultsDeleteBundle.isError) {
-            toast.error(resultsDeleteBundle?.data?.data?.message ?? 'Error');
+        } else if (resultsDeleteMigrated.isError) {
+            toast.error(resultsDeleteMigrated?.data?.data?.message ?? 'Error');
         }
-    }, [resultsDeleteBundle]);
+    }, [resultsDeleteMigrated]);
 
     useEffect(() => {
-        if (resultsCreateBundle.isSuccess) {
-            toast.success(resultsCreateBundle?.data.data.message);
-            bundleLists?.refetch();
+        if (resultsCreateMigrated.isSuccess) {
+            toast.success(resultsCreateMigrated?.data.data.message);
+            MigratedLists?.refetch();
             if (categories.length !== 0) {
                 setIsBarcodePrint(true);
                 setCustomDisplay(customPrice);
             } else {
                 navigate('/outbound/category_migrate/category_migrate');
             }
-        } else if (resultsCreateBundle.isError) {
-            toast.error(resultsCreateBundle?.data?.data?.message ?? 'Error');
+        } else if (resultsCreateMigrated.isError) {
+            toast.error(resultsCreateMigrated?.data?.data?.message ?? 'Error');
         }
-    }, [resultsCreateBundle]);
+    }, [resultsCreateMigrated]);
 
     useEffect(() => {
         const resource = filterMigrated?.data?.data?.resource;
@@ -186,7 +186,7 @@ const CreateMigrateCategory = () => {
             </div>
             <div>
                 <div className="flex items-start">
-                    <form className="w-[400px] mb-4 " onSubmit={handleCreateBundle}>
+                    <form className="w-[400px] mb-4 " onSubmit={handleCreateMigrated}>
                         <button type="submit" className="btn btn-primary mb-4 px-16">
                             Create Migrate Category
                         </button>
@@ -203,7 +203,7 @@ const CreateMigrateCategory = () => {
                         <div className="ml-12">
                             <BarcodePrinted
                                 barcode={barcode}
-                                category={nameBundle}
+                                category={nameMigrated}
                                 newPrice={formatRupiah(customDisplay)}
                                 oldPrice={formatRupiah(filterMigrated?.data?.data.resource.total_new_price.toString() ?? '0')}
                                 isBundle
@@ -321,7 +321,7 @@ const CreateMigrateCategory = () => {
                                         titleClassName: '!text-center',
                                         render: (item: MigratedBulkyProductItem) => (
                                             <div className="flex items-center space-x-2">
-                                                <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductBundle(item.id)}>
+                                                <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteProductMigrated(item.id)}>
                                                     Delete
                                                 </button>
                                             </div>
