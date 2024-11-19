@@ -188,7 +188,6 @@ const ProductCheck: React.FC<ProductCheck> = ({
             };
             setBarcodeStatus('abnormal');
             handleSetNewPriceProduct(formatRupiah(newPrice));
-            await newProduct(body);
             const response = await newProduct(body);
             console.log('API Response:', response);
             // resetProductCheckShow();
