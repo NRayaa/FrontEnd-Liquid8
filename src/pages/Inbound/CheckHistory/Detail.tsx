@@ -21,6 +21,7 @@ const DetailCheckHistory = () => {
     const [exportToExcel, results] = useExportToExcelMutation();
     const [productSelected, setProductSelected] = useState<'LOLOS' | 'DAMAGED' | 'ABNORMAL' | 'DISCREPANCY' | string>('LOLOS');
     const [page, setPage] = useState<number>(1);
+    const [isExporting, setIsExporting] = useState(false);
 
     const productType = ['LOLOS', 'DAMAGED', 'ABNORMAL', 'DISCREPANCY'];
 
@@ -32,12 +33,15 @@ const DetailCheckHistory = () => {
 
     const handleExportData = async () => {
         try {
+            setIsExporting(true);
             const body = {
                 code_document: detailCheckData?.code_document,
             };
             await exportToExcel(body);
         } catch (err) {
             console.log(err);
+        } finally {
+            setIsExporting(false); 
         }
     };
 
@@ -124,8 +128,8 @@ const DetailCheckHistory = () => {
                             <IconArrowBackward className="flex mx-2" fill={true} /> Back
                         </button>
                     </Link>
-                    <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
-                        Export data
+                    <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData} disabled={isExporting}>
+                        {isExporting ? 'Exporting...' : 'Export Data'}
                     </button>
                 </div>
                 <TablePercentageItem detailCheckData={detailCheckData} />

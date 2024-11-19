@@ -201,7 +201,6 @@ const ListProductRepair = () => {
                 new_category_product: input?.new_category_product,
             };
             await updateProductRepair({ id, body });
-            console.log('DATA SENT', body);
         } catch (err) {
             console.error(err);
         }

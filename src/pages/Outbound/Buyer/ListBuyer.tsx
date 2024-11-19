@@ -17,7 +17,7 @@ const ListBuyer = () => {
     const searchDebounce = useDebounce(search);
     const { data, refetch, isError } = useGetListBuyerQuery({ page, q: searchDebounce });
     const [deleteBuyer, results] = useDeleteBuyerMutation();
-    const [exportToExcel] = useExportToExcelBuyerMutation();
+    const [exportToExcel, { isLoading: isExporting }] = useExportToExcelBuyerMutation();
 
     const listBuyer: any = useMemo(() => {
         return data?.data.resource.data;
@@ -135,8 +135,8 @@ const ListBuyer = () => {
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/buyer/buyer/list_buyer/add_buyer')}>
                             Add Buyer
                         </button>
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
-                            Export Data
+                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData} disabled={isExporting}>
+                            {isExporting ? 'Exporting...' : 'Export Data'}
                         </button>
                     </div>
                 </div>

@@ -14,7 +14,7 @@ const ListProduct = () => {
     const searchDebounce = useDebounce(search);
     const { data, isSuccess, refetch, isError } = useGetExpiredProductsQuery({ page, q: searchDebounce });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
-    const [exportToExcel] = useExportToExcelSlowMovingListProductMutation();
+    const [exportToExcel, { isLoading: isExporting }] = useExportToExcelSlowMovingListProductMutation();
 
     const expiredProducts: any = useMemo(() => {
         if (isSuccess) {
@@ -134,8 +134,8 @@ const ListProduct = () => {
             <div className="panel mt-6 dark:text-white-light mb-5">
                 <h1 className="text-lg font-bold flex justify-start py-4">List Data Product</h1>
                 <div className="flex items-center justify-between">
-                    <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
-                        Export Data
+                    <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData} disabled={isExporting}>
+                        {isExporting ? 'Exporting...' : 'Export Data'}
                     </button>
                     <div className="ltr:ml-auto rtl:mr-auto mx-6">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />

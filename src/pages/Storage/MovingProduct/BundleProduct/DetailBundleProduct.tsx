@@ -21,7 +21,7 @@ import toast from 'react-hot-toast';
 const DetailBundleProduct = () => {
     const { id }: any = useParams();
     const { data, isSuccess, refetch } = useDetailBundleProductQuery(id);
-    const [exportToExcel, results] = useExportToExcelDetailBundleMutation();
+    const [exportToExcel, {data: results, isLoading: isExporting }] = useExportToExcelDetailBundleMutation();
     const [searchProductBundle, setSearchProductBundle] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [pageProduct, setPageProduct] = useState<number>(1);
@@ -406,8 +406,8 @@ const DetailBundleProduct = () => {
                             <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
                                 Add
                             </button>
-                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
-                                Export data
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData} disabled={isExporting}>
+                                {isExporting ? 'Exporting...' : 'Export Data'}
                             </button>
                         </div>
                     </div>

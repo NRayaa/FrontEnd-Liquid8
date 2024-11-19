@@ -46,7 +46,6 @@ const PalletDetail = () => {
         }
     }, [listProduct]);
 
-    console.log(productNewData);
 
     const detailDataPallet = useMemo(() => {
         if (isSuccess) {
@@ -154,7 +153,6 @@ const PalletDetail = () => {
             await uploadFile(images)
                 .unwrap()
                 .then((res: any) => {
-                    console.log('success:', res);
                     setSecond([]);
                     setIsUploadOpen(false);
                 })

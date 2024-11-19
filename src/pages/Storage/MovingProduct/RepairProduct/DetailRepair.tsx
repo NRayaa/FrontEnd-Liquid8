@@ -8,7 +8,7 @@ import {
     useGetShowRepairMovingProductsQuery,
     useUpdateReprairMutation,
     useUpdateThrowsDetailMutation,
-      useExportToExcelDetailRepairMutation
+    useExportToExcelDetailRepairMutation,
 } from '../../../../store/services/repairMovingApi';
 import IconArrowBackward from '../../../../components/Icon/IconArrowBackward';
 import BarcodePrinted from '../../../Inbound/CheckProduct/BarcodePrinted';
@@ -28,7 +28,7 @@ const DetailRepair = () => {
     const [updateRepair, resultUpdateRepair] = useUpdateReprairMutation();
     const navigate = useNavigate();
     const [input, setInput] = useState({ barcode: '', name: '', qty: 0, price: 0, category: '' });
-    const [exportToExcel] = useExportToExcelDetailRepairMutation();
+    const [exportToExcel, { isLoading: isExporting }] = useExportToExcelDetailRepairMutation();
 
     const detailDataBundle = useMemo(() => {
         if (isSuccess) {
@@ -41,14 +41,14 @@ const DetailRepair = () => {
         try {
             const response = await exportToExcel({ id }).unwrap();
             const url = response.data.resource;
-            const fileName = url.substring(url.lastIndexOf('/') + 1); 
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
             const a = document.createElement('a');
             a.href = url;
-            a.download = fileName; 
+            a.download = fileName;
             document.body.appendChild(a);
             a.click();
             a.remove();
-    
+
             toast.success('Data detail repair berhasil diekspor ke Excel.');
         } catch (err) {
             toast.error('Gagal mengekspor data detail repair.');
@@ -241,8 +241,8 @@ const DetailRepair = () => {
                             {/* <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto mr-4" onClick={handleSearchButtonClick}>
                                 Add
                             </button> */}
-                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
-                                Export data
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData} disabled={isExporting}>
+                                {isExporting ? 'Exporting...' : 'Export Data'}
                             </button>
                         </div>
                     </div>

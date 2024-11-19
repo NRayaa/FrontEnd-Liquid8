@@ -16,7 +16,7 @@ const ListAkun = () => {
     const { data: listAkunData, refetch, isError } = useGetListAkunQuery({ page, q: search });
     const { data: listRoleData, refetch: listRefetch } = useGetListRoleQuery(undefined);
     const [deleteAccount, results] = useDeleteAccountMutation();
-    const [exportToExcel] = useExportToExcelListAccountMutation();
+    const [exportToExcel, { isLoading: isExporting }] = useExportToExcelListAccountMutation();
 
     const listAkun: any = useMemo(() => {
         return listAkunData?.data.resource.data;
@@ -133,8 +133,8 @@ const ListAkun = () => {
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/akun/akun/list_akun/add_akun')}>
                             Add Akun
                         </button>
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
-                            Export Data
+                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData} disabled={isExporting}>
+                            {isExporting ? 'Exporting...' : 'Export Data'}
                         </button>
                     </div>
                 </div>

@@ -20,6 +20,7 @@ const BarcodeExport: React.FC<BarcodePrint> = ({ id, oldPrice, newPrice, barcode
     const { data } = useExportDumpQuery(id);
     const [deleteListDump] = useDeleteListDumpMutation();
     const navigate = useNavigate();
+    const [isExporting, setIsExporting] = useState(false);
 
     const showAlertDelete = async ({ type, id }: { type: number; id: number | undefined }) => {
         if (type === 11) {
@@ -88,8 +89,11 @@ const BarcodeExport: React.FC<BarcodePrint> = ({ id, oldPrice, newPrice, barcode
     };
 
     const handlePrint = async () => {
+        setIsExporting(true);
         window.open(await data.data.resource);
+        setIsExporting(false);
     };
+
     return (
         <div>
             <div style={{ width: '7cm', height: '4cm', display: 'flex', justifyContent: 'start', alignItems: 'start', fontFamily: 'sans-serif' }} className="print-container">
@@ -118,8 +122,8 @@ const BarcodeExport: React.FC<BarcodePrint> = ({ id, oldPrice, newPrice, barcode
                 </div>
             </div>
             <div className="flex gap-x-2">
-                <button onClick={handlePrint} className="py-2 px-8 bg-primary text-white rounded-full mt-6">
-                    Export Data
+                <button onClick={handlePrint} className="py-2 px-8 bg-primary text-white rounded-full mt-6" disabled={isExporting}>
+                    {isExporting ? 'Exporting...' : 'Export Data'}
                 </button>
                 <button onClick={() => showAlertDelete({ type: 11, id: id })} className="py-2 px-8 bg-danger text-white rounded-full mt-6">
                     Hapus
