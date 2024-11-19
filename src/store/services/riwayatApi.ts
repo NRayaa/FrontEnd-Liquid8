@@ -25,7 +25,7 @@ export const riwayatApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        exportToExcel: builder.mutation<ExportToExcel, { code_document: string | undefined }>({
+        exportToExcel: builder.mutation<ExportToExcel, any>({
             query: (body) => ({
                 url: '/history/exportToExcel',
                 method: 'POST',

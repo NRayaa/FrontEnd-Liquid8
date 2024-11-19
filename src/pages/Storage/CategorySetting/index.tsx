@@ -15,7 +15,7 @@ const CategorySetting = () => {
     const searchDebounce = useDebounce(search);
     const { data, refetch, isError } = useGetCategoriesQuery(searchDebounce);
     const [deleteCategory, results] = useDeleteCategoryMutation();
-    const [exportToExcel] = useExportToExcelSubCategoryMutation();
+    const [exportToExcel, { isLoading: isExporting }] = useExportToExcelSubCategoryMutation();
 
     const handleExportData = async () => {
         try {
@@ -146,8 +146,8 @@ const CategorySetting = () => {
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/storage/categorysetting/add_category')}>
                             Add Data
                         </button>
-                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData}>
-                            Export Data
+                        <button type="button" className="btn btn-primary uppercase px-6" onClick={handleExportData} disabled={isExporting}>
+                            {isExporting ? 'Exporting...' : 'Export Data'}
                         </button>
                     </div>
                 </div>

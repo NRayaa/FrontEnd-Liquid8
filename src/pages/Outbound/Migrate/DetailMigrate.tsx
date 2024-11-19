@@ -17,7 +17,7 @@ const DetailMigrate = () => {
     });
     const { id }: any = useParams();
     const { data: ShowMigrateData } = useGetShowMigrateQuery(id);
-    const [exportToExcel] = useExportToExcelDetailListMigrateMutation();
+    const [exportToExcel, { isLoading: isExporting }] = useExportToExcelDetailListMigrateMutation();
 
     const ShowMigrate = useMemo(() => {
         return ShowMigrateData?.data.resource;
@@ -90,8 +90,8 @@ const DetailMigrate = () => {
                             </button>
                         </Link>
                         <div className="flex items-center justify-between mb-4">
-                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData}>
-                                Export data
+                            <button type="button" className="btn btn-lg lg:btn btn-primary uppercase w-full md:w-auto lg:w-auto" onClick={handleExportData} disabled={isExporting}>
+                                {isExporting ? 'Exporting...' : 'Export Data'}
                             </button>
                         </div>
                     </div>

@@ -40,7 +40,7 @@ const StorageReport = () => {
     const router = useNavigate();
     const debouncedSearch = useDebounce(search);
     const { data: dataStorageReport, isSuccess: isSuccessStorageReport, refetch: refetchStorageReport } = useGetStorageReportQuery(undefined);
-    const [exportToExcel] = useLazyExportGenerateExcelStorageReportQuery();
+    const [exportToExcel, { isLoading: isExporting }] = useLazyExportGenerateExcelStorageReportQuery();
 
     const storageReport: any = useMemo(() => {
         if (isSuccessStorageReport) {
@@ -281,8 +281,8 @@ const StorageReport = () => {
                                 </div>
                             </div>
                             <div className="flex justify-end" style={{ width: '40%' }}>
-                                <button onClick={handleExportData} className="px-3 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                                    Export Data
+                                <button className="px-3 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600" onClick={handleExportData} disabled={isExporting}>
+                                    {isExporting ? 'Exporting...' : 'Export Data'}
                                 </button>
                             </div>
                         </div>

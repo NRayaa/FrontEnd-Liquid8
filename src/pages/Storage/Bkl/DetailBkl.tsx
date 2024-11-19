@@ -8,7 +8,6 @@ import { formatRupiah } from '../../../helper/functions';
 const DetailBkl = () => {
     const { id } = useParams();
     const { data, isSuccess, isError } = useGetDetailBklQuery(id);
-    console.log("data",data)
 
     const dataBklProduct: any = useMemo(() => {
         if (isSuccess) {
