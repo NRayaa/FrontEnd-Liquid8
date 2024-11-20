@@ -40,7 +40,6 @@ const BarcodePrinted: React.FC<BarcodePrint> = ({ oldPrice, newPrice, barcode, c
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Barcode fontOptions="bold" textMargin={3} fontSize={14} font="sans-serif" value={barcode} width={1} height={46} />
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                            <img src={LogoLiquid} alt="barcode" style={{ marginTop: '-10px' }} width={80} />
                             <div style={{ height: 26, border: '2px solid black', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                                 <p style={{ fontWeight: 'bold', fontSize: 10 }}>{category}</p>
                             </div>
