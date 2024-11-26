@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import 'tippy.js/dist/tippy.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteAccountPanelMutation, useGetListAccountPanelQuery } from '../../../store/services/listAkunApi';
-import { GetListRoleItem } from '../../../store/services/types';
-import { useGetListRoleQuery } from '../../../store/services/listRoleApi';
 import toast from 'react-hot-toast';
 import { Alert } from '../../../commons';
 import Swal from 'sweetalert2';
@@ -98,8 +96,11 @@ const ListAkunPanel = () => {
                 <h5 className="font-semibold text-lg dark:text-white-light mb-5">List Barcode Akun</h5>
                 <div className="mb-4 flex justify-end">
                     <div className="flex items-center justify-between">
+                        <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/akun/akun/list_akun_panel/add_barcode_akun')}>
+                            Add User
+                        </button>
                         <button type="button" className="btn btn-primary uppercase px-6 mr-4" onClick={() => navigate('/akun/akun/list_akun_panel/add_akun')}>
-                            Add Barcode Akun
+                            Create Barcode
                         </button>
                     </div>
                 </div>
@@ -115,13 +116,18 @@ const ListAkunPanel = () => {
                             },
                             {
                                 accessor: 'name',
-                                title: 'Nama',
-                                render: (item: any) => <span className="font-semibold">{item.username}</span>,
+                                title: 'Barcode',
+                                render: (item: any) => <span className="font-semibold">{item.format}</span>,
                             },
                             {
                                 accessor: 'barcode',
-                                title: 'Barcode',
-                                render: (item: any) => <span className="font-semibold">{item.format_barcode}</span>,
+                                title: 'Total User',
+                                render: (item: any) => <span className="font-semibold">{item.total_user}</span>,
+                            },
+                            {
+                                accessor: 'barcode',
+                                title: 'Total Scan',
+                                render: (item: any) => <span className="font-semibold">{item.total_scan}</span>,
                             },
                             {
                                 accessor: 'Aksi',
@@ -129,8 +135,13 @@ const ListAkunPanel = () => {
                                 render: (item: any) => (
                                     <div className="flex items-center w-max mx-auto gap-6">
                                         <Link to={`/akun/akun/list_akun_panel/edit_akun/${item.id}`}>
-                                            <button type="button" className="btn btn-outline-info">
+                                            <button type="button" className="btn btn-outline-warning">
                                                 Edit
+                                            </button>
+                                        </Link>
+                                        <Link to={`/akun/akun/list_akun_panel/detail_akun/${item.id}`}>
+                                            <button type="button" className="btn btn-outline-info">
+                                                Detail
                                             </button>
                                         </Link>
                                         <button type="button" className="btn btn-outline-danger" onClick={() => showAlert({ type: 11, id: item.id })}>

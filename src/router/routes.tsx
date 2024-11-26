@@ -75,6 +75,8 @@ import DetailProductInput from '../pages/Inbound/CheckProduct/ScanResultApprovem
 import ListAkunPanel from '../pages/Akun/AkunPanel/ListAkunPanel';
 import AddAkunPanel from '../pages/Akun/AkunPanel/AddAkunPanel';
 import EditAkunPanel from '../pages/Akun/AkunPanel/EditAkunPanel';
+import DetailAkunPanel from '../pages/Akun/AkunPanel/DetailAkunPanel';
+import AddBarcodeAkunPanel from '../pages/Akun/AkunPanel/AddBarcodeAkunPanel';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -551,6 +553,11 @@ const routes = [
         layout: 'default',
     },
     {
+        path: '/akun/akun/list_akun_panel/detail_akun/:id',
+        element: <DetailAkunPanel />,
+        layout: 'default',
+    },
+    {
         path: '/akun/akun/list_akun_panel/add_akun',
         element: <AddAkunPanel />,
         layout: 'default',
@@ -558,6 +565,11 @@ const routes = [
     {
         path: '/akun/akun/list_akun_panel/edit_akun/:id',
         element: <EditAkunPanel />,
+        layout: 'default',
+    },
+    {
+        path: '/akun/akun/list_akun_panel/add_barcode_akun',
+        element: <AddBarcodeAkunPanel />,
         layout: 'default',
     },
     // Role

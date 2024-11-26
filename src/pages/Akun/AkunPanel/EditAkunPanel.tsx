@@ -1,41 +1,32 @@
 import React, { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
 import { BreadCrumbs } from '../../../components';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useCreateAccountPanelMutation, useShowAccountPanelQuery } from '../../../store/services/listAkunApi';
+import { useCreateAccountPanelMutation, useShowAccountPanelQuery, useUpdateAccountPanelMutation } from '../../../store/services/listAkunApi';
 import toast from 'react-hot-toast';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 
 const AddAkunPanel = () => {
     const params = useParams();
-    const [updateAccountPanel, results] = useCreateAccountPanelMutation();
+    const [updateAccountPanel, results] = useUpdateAccountPanelMutation();
     const { data: detail, refetch } = useShowAccountPanelQuery(params.id);
 
     const dataDetailAccount: any = useMemo(() => {
         return detail?.data.resource;
     }, [detail]);
 
-    const [input, setInput] = useState({
-        name: '',
-        user_id: '',
-        format_barcode: '',
-    });
+    const [input, setInput] = useState('');
     const navigate = useNavigate();
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setInput((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value,
-        }));
-    };
 
     const handleUpdateAccountBarcode = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         try {
+            const { id } = params;
             const body = {
-                user_id: input.user_id,
-                format_barcode: input.format_barcode,
+                format: input,
+                total_user: dataDetailAccount?.total_user,
+                total_scan: dataDetailAccount?.total_scan,
             };
-            await updateAccountPanel(body);
+            await updateAccountPanel({ body, id });
         } catch (err) {}
     };
 
@@ -51,11 +42,7 @@ const AddAkunPanel = () => {
 
     useEffect(() => {
         if (dataDetailAccount) {
-            setInput({
-                name: dataDetailAccount.name,
-                user_id: dataDetailAccount.user_id,
-                format_barcode: dataDetailAccount.format_barcode,
-            });
+            setInput(dataDetailAccount.format);
         }
     }, [dataDetailAccount]);
 
@@ -73,31 +60,11 @@ const AddAkunPanel = () => {
                 </div>
 
                 <form className="w-[400px]" onSubmit={handleUpdateAccountBarcode}>
-                    <div className="flex items-center  justify-between mb-2">
-                        <label htmlFor="userId" className="text-[15px] font-semibold whitespace-nowrap">
-                            Nama :
-                        </label>
-                        <button className="form-input w-[250px] justify-between flex items-center capitalize disabled:cursor-not-allowed" disabled type="button">
-                            {input.name}
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-4 h-4"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="m6 9 6 6 6-6" />
-                            </svg>
-                        </button>
-                    </div>
                     <div className="flex items-center justify-between mb-2">
                         <label htmlFor="format_barcode" className="text-[15px] font-semibold whitespace-nowrap">
                             Barcode :
                         </label>
-                        <input id="format_barcode" type="text" className="form-input w-[250px]" required name="format_barcode" onChange={handleInputChange} value={input.format_barcode} />
+                        <input id="format_barcode" type="text" className="form-input w-[250px]" required name="format_barcode" onChange={(e) => setInput(e.target.value)} value={input} />
                     </div>
                     <button type="submit" className="btn btn-primary mt-4 px-16">
                         Update

@@ -37,25 +37,45 @@ export const listAkunApi = createApi({
             }),
         }),
         getListAccountPanel: builder.query<any, { page: number; q: string }>({
-            query: ({ page, q }) => `/panel-spv?page=${page}&q=${q}`,
+            query: ({ page, q }) => `/format-barcodes?page=${page}&q=${q}`,
         }),
         createAccountPanel: builder.mutation<any, any>({
             query: (body) => ({
-                url: '/panel-spv',
+                url: '/format-barcodes',
                 method: 'POST',
+                body,
+            }),
+        }),
+        updateAccountPanel: builder.mutation<any, any>({
+            query: ({ body, id }) => ({
+                url: `/format-barcodes/${id}`,
+                method: 'PUT',
                 body,
             }),
         }),
         showAccountPanel: builder.query<any, any>({
             query: (id) => ({
-                url: `/panel-spv/${id}`,
+                url: `/format-barcodes/${id}`,
                 method: 'GET',
             }),
         }),
         deleteAccountPanel: builder.mutation<any, any>({
             query: (id) => ({
-                url: `/panel-spv/${id}`,
+                url: `/format-barcodes/${id}`,
                 method: 'DELETE',
+            }),
+        }),
+        deleteAccountBarcodePanel: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/panel-spv/format-delete/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+        createAccountBarcodePanel: builder.mutation<any, any>({
+            query: (body) => ({
+                url: '/panel-spv/add-barcode',
+                method: 'POST',
+                body,
             }),
         }),
     }),
@@ -71,4 +91,7 @@ export const {
     useCreateAccountPanelMutation,
     useDeleteAccountPanelMutation,
     useShowAccountPanelQuery,
+    useUpdateAccountPanelMutation,
+    useDeleteAccountBarcodePanelMutation,
+    useCreateAccountBarcodePanelMutation,
 } = listAkunApi;
