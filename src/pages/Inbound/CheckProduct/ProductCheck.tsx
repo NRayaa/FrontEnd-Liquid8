@@ -305,6 +305,9 @@ const ProductCheck: React.FC<ProductCheck> = ({
                     toast.error(results.data?.data.message);
                     showAlert(11);
                 }
+                if (results.data?.data.message === 'The new barcode already exists') {
+                    toast.error('Please Re-Scan, Something went wrong');
+                }
                 toast.error(results.data?.data.message);
             }
         } else if (results.isError) {

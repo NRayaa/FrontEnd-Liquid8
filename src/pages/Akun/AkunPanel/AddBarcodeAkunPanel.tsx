@@ -172,7 +172,7 @@ const AddBarcodeAkunPanel = () => {
                             >
                                 <Dialog.Panel as="div" className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark">
                                     <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
-                                        <div className="text-lg font-bold">Pilih Buyer</div>
+                                        <div className="text-lg font-bold">Pilih User</div>
                                     </div>
                                     <div className="mb-4 flex justify-between">
                                         <div className="relative w-[220px]">
