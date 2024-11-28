@@ -41,6 +41,7 @@ const Kasir = () => {
     const validScan = useDebounce(scanProduct, 1000);
     const [voucher, setVoucher] = useState<string>('');
     const [totalAfterDiscount, setTotalAfterDiscount] = useState<number | null>(null);
+    const [discount, setDiscount] = useState<string>('');
 
     const listSale = useMemo(() => {
         return listSaleData?.data.resource.data;
@@ -205,24 +206,48 @@ const Kasir = () => {
         }));
     };
 
+    // const handleAddSale = async (barcode_value: string) => {
+    //     try {
+    //         const body = {
+    //             sale_barcode: barcode_value,
+    //             buyer_id: inputBuyer.id,
+    //             voucher: input.voucher,
+    //         };
+    //         await addSale(body)
+    //             .unwrap()
+    //             .then((res) => {
+    //                 toast.success(res.data.message);
+    //                 setScanProduct('');
+    //                 setInput((prev) => ({ ...prev, sale_barcode: '' }));
+    //                 navigate('/outbound/sale/kasir');
+    //                 refetchListSale();
+    //             })
+    //             .catch((err) => toast.error(err.data.data.message));
+    //     } catch (err) {}
+    // };
     const handleAddSale = async (barcode_value: string) => {
         try {
             const body = {
                 sale_barcode: barcode_value,
                 buyer_id: inputBuyer.id,
                 voucher: input.voucher,
+                new_discount_sale: listSaleData?.data?.resource?.data[0]?.new_discount_sale || discount || '0', // Ambil diskon dari data atau dari state
             };
+
             await addSale(body)
                 .unwrap()
                 .then((res) => {
                     toast.success(res.data.message);
                     setScanProduct('');
                     setInput((prev) => ({ ...prev, sale_barcode: '' }));
+                    setDiscount(''); // Reset discount after successful sale
                     navigate('/outbound/sale/kasir');
                     refetchListSale();
                 })
                 .catch((err) => toast.error(err.data.data.message));
-        } catch (err) {}
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     const handleAddBuyer = async (e: { preventDefault: () => void }) => {
@@ -728,6 +753,21 @@ const Kasir = () => {
                     <form className="w-2/3 flex flex-col mb-4 ">
                         <div className="flex w-full gap-6">
                             <div className="flex flex-col gap-0.5 w-full">
+                                <div className="flex items-center justify-between mb-4">
+                                    <label htmlFor="new_discount_sale" className="text-[15px] font-semibold whitespace-nowrap">
+                                        Discount:
+                                    </label>
+                                    <input
+                                        id="new_discount_sale"
+                                        type="number"
+                                        name="new_discount_sale"
+                                        value={listSaleData?.data?.resource?.data[0]?.new_discount_sale || discount}
+                                        onChange={(e) => setDiscount(e.target.value)} // Set discount state hanya jika tidak disabled
+                                        className="form-input w-[250px]"
+                                        placeholder="Enter discount amount"
+                                        disabled={!!listSaleData?.data?.resource?.data[0]?.new_discount_sale} // Disabled jika ada diskon yang sudah ada
+                                    />
+                                </div>
                                 <div className="flex items-center justify-between mb-2">
                                     <label htmlFor="categoryName" className="text-[15px] font-semibold whitespace-nowrap">
                                         Code Document:
@@ -804,7 +844,7 @@ const Kasir = () => {
                                                 name="sale_barcode"
                                                 disabled={!inputBuyer.id}
                                             />
-                                            {!inputBuyer.id && <p className="text-gray-700 text-xs mt-1">*Silahkan pilih buyer dahulu</p>}
+                                            {!inputBuyer.id && <p className="text-gray-700 text-xs mt-1">*Silahkan pilih buyer & isi diskon dahulu</p>}
                                             <button
                                                 type="button"
                                                 className={clsx(

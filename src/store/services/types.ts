@@ -1239,6 +1239,7 @@ interface GetListSaleItem {
     update_price_sale: string;
     product_qty_sale?: string;
     product_barcode_sale?: string;
+    new_discount_sale?:string;
     status_sale?: string;
     created_at: string;
     updated_at: string;
@@ -1251,6 +1252,7 @@ interface GetListSale {
         resource: {
             code_document_sale: string;
             sale_buyer_id: number;
+            new_discount_sale: string;
             current_page: number;
             data: GetListSaleItem[];
             first_page_url: string;

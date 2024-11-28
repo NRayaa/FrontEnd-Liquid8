@@ -16,6 +16,7 @@ const DetailDump = () => {
             return data.data.resource;
         }
     }, [data]);
+    
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
