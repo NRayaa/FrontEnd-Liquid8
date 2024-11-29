@@ -759,10 +759,15 @@ const Kasir = () => {
                                     </label>
                                     <input
                                         id="new_discount_sale"
-                                        type="number"
+                                        type="text"
                                         name="new_discount_sale"
                                         value={listSaleData?.data?.resource?.data[0]?.new_discount_sale || discount}
-                                        onChange={(e) => setDiscount(e.target.value)} // Set discount state hanya jika tidak disabled
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*\.?\d*$/.test(value)) {
+                                                setDiscount(value);
+                                            }
+                                        }} 
                                         className="form-input w-[250px]"
                                         placeholder="Enter discount amount"
                                         disabled={!!listSaleData?.data?.resource?.data[0]?.new_discount_sale} // Disabled jika ada diskon yang sudah ada
@@ -822,7 +827,6 @@ const Kasir = () => {
                                         id="categoryName"
                                         type="text"
                                         value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
-                                        // value={formatRupiah(totalAfterDiscount !== null ? totalAfterDiscount.toString() : listSaleData?.data.resource.total_sale.toString() ?? '')}
                                         placeholder="Rp"
                                         className="form-input w-[250px] disabled:cursor-default"
                                         required
