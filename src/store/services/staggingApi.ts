@@ -39,7 +39,7 @@ export const staggingApi = createApi({
         doneCheckAllApprovementStagging: builder.mutation<any, any>({
             query: () => ({
                 url: '/stagingTransactionApprove',
-                method: 'GET',
+                method: 'POST',
             }),
         }),
         deleteApprovementStagging: builder.mutation<FilterProductStagging, number>({
