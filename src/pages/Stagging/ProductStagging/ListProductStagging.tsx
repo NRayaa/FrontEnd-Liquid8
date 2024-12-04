@@ -27,9 +27,9 @@ const ListProductStagging = () => {
     const [deletefilterProductStaggings, resultsDeleteBundle] = useDeleteFilterProductStaggingsMutation();
     const [doneCheckAllProductStagging, resultsDone] = useDoneCheckAllProductStaggingMutation();
     const [moveToLPR, resultsToLPR] = useToLPRProductStaggingMutation();
-    const [loadingAdd, setLoadingAdd] = useState<number | null>(null);
+    const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
     const [loadingLPR, setLoadingLPR] = useState(false);
-    const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
+    const [loadingDelete, setLoadingDelete] = useState(false);
     const [processedItems, setProcessedItems] = useState<number[]>([]);
     const [exportToExcel, { isLoading: isExporting }] = useExportToExcelListProductStagingMutation();
     const [toLPROpen, setToLPROpen] = useState(false);
@@ -86,9 +86,7 @@ const ListProductStagging = () => {
     }, [filterStagging.data, data]);
 
     const handleAddFilterStagging = async (id: number) => {
-        if (loadingAdd === id || processedItems.includes(id)) return;
-
-        setLoadingAdd(id);
+        setLoadingAdd(true);
         try {
             await filterProductStagging(id).unwrap();
             setProcessedItems((prevItems) => [...prevItems, id]);
@@ -97,7 +95,7 @@ const ListProductStagging = () => {
         } catch (err) {
             console.error(err);
         } finally {
-            setLoadingAdd(null);
+            setLoadingAdd(false);
         }
     };
 
@@ -120,7 +118,7 @@ const ListProductStagging = () => {
     const handleDeleteProductStagging = debounce(async (id: number) => {
         if (loadingDelete !== null) return;
 
-        setLoadingDelete(id);
+        setLoadingDelete(true);
         try {
             await deletefilterProductStaggings(id).unwrap();
             refetch();
@@ -130,7 +128,7 @@ const ListProductStagging = () => {
             console.error(err);
             toast.error('Gagal menghapus item.');
         } finally {
-            setLoadingDelete(null);
+            setLoadingDelete(false);
         }
     }, 300);
 
@@ -438,11 +436,9 @@ const ListProductStagging = () => {
                                         titleClassName: '!text-center',
                                         render: (item: any) => (
                                             <div className="flex items-center w-max mx-auto gap-6">
-                                                {!processedItems.includes(item.id) && loadingAdd !== item.id && (
-                                                    <button type="button" className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
-                                                        Add
-                                                    </button>
-                                                )}
+                                                <button type="button" disabled={loadingAdd} className="btn btn-outline-info" onClick={() => handleAddFilterStagging(item.id)}>
+                                                    Add
+                                                </button>
                                                 <button
                                                     type="button"
                                                     className="btn btn-outline-danger"
@@ -498,11 +494,11 @@ const ListProductStagging = () => {
                                                 {
                                                     <button
                                                         type="button"
-                                                        className={`btn btn-outline-danger ${loadingDelete === item.id ? 'cursor-not-allowed' : ''}`}
+                                                        className={`btn btn-outline-danger ${loadingDelete ? 'cursor-not-allowed' : ''}`}
                                                         onClick={() => handleDeleteProductStagging(item.id)}
-                                                        disabled={loadingDelete === item.id}
+                                                        disabled={loadingDelete}
                                                     >
-                                                        {loadingDelete === item.id ? 'Processing...' : 'Delete'}
+                                                        {loadingDelete ? 'Processing...' : 'Delete'}
                                                     </button>
                                                 }
                                             </div>
