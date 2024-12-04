@@ -345,9 +345,7 @@ const DetailCashier = () => {
                                     </div>
                                     <div className="max-h-[290px] overflow-y-scroll rounded-md mt-5">
                                         <DataTable
-                                            highlightOnHover
-                                            className="whitespace-nowrap table-hover"
-                                            records={productNewData}
+                                           records={productNewData}
                                             columns={[
                                                 {
                                                     accessor: 'No',
@@ -581,8 +579,6 @@ const DetailCashier = () => {
                     </div>
                     <div className="datatables xl:col-span-3">
                         <DataTable
-                            highlightOnHover
-                            className="whitespace-nowrap table-hover "
                             records={ShowSale?.sales}
                             columns={[
                                 {
