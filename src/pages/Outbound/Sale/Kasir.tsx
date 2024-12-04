@@ -206,25 +206,6 @@ const Kasir = () => {
         }));
     };
 
-    // const handleAddSale = async (barcode_value: string) => {
-    //     try {
-    //         const body = {
-    //             sale_barcode: barcode_value,
-    //             buyer_id: inputBuyer.id,
-    //             voucher: input.voucher,
-    //         };
-    //         await addSale(body)
-    //             .unwrap()
-    //             .then((res) => {
-    //                 toast.success(res.data.message);
-    //                 setScanProduct('');
-    //                 setInput((prev) => ({ ...prev, sale_barcode: '' }));
-    //                 navigate('/outbound/sale/kasir');
-    //                 refetchListSale();
-    //             })
-    //             .catch((err) => toast.error(err.data.data.message));
-    //     } catch (err) {}
-    // };
     const handleAddSale = async (barcode_value: string) => {
         try {
             const body = {
@@ -516,8 +497,6 @@ const Kasir = () => {
                                         </div>
                                         <div className="max-h-[290px] overflow-y-scroll rounded-md mt-5">
                                             <DataTable
-                                                highlightOnHover
-                                                className="whitespace-nowrap table-hover"
                                                 records={listBuyerData}
                                                 columns={[
                                                     {
@@ -677,8 +656,6 @@ const Kasir = () => {
                                         </div>
                                         <div className="max-h-[290px] overflow-y-scroll rounded-md mt-5">
                                             <DataTable
-                                                highlightOnHover
-                                                className="whitespace-nowrap table-hover"
                                                 records={productNewData}
                                                 columns={[
                                                     {
@@ -767,7 +744,7 @@ const Kasir = () => {
                                             if (/^\d*\.?\d*$/.test(value)) {
                                                 setDiscount(value);
                                             }
-                                        }} 
+                                        }}
                                         className="form-input w-[250px]"
                                         placeholder="Enter discount amount"
                                         disabled={!!listSaleData?.data?.resource?.data[0]?.new_discount_sale} // Disabled jika ada diskon yang sudah ada
