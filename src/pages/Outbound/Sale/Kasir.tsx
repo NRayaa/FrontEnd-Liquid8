@@ -694,7 +694,7 @@ const Kasir = () => {
                                                     {
                                                         accessor: 'name',
                                                         title: 'Nama',
-                                                        render: (item: SubSalesProductsProps) => <span className="font-semibold">{item.name}</span>,
+                                                        render: (item: SubSalesProductsProps) => <span className="font-semibold max-w-[500px] truncate">{item.name}</span>,
                                                     },
                                                     {
                                                         accessor: 'category',
@@ -971,7 +971,7 @@ const Kasir = () => {
                                 {
                                     accessor: 'product_name_sale',
                                     title: 'Name',
-                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_name_sale}</span>,
+                                    render: (item: GetListSaleItem) => <span className="font-semibold max-w-[500px] truncate">{item.product_name_sale}</span>,
                                 },
                                 {
                                     accessor: 'product_price_sale',
