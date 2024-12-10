@@ -28,6 +28,9 @@ export const productOldsApi = createApi({
         latestPrice: builder.query<any, string>({
             query: (price) => `/get-latestPrice?old_price_product=${price}`,
         }),
+        userScanDocument: builder.query<any, string>({
+            query: (codeDocument) => `/user_scan_webs/${codeDocument}`,
+        }),
         addBulkingProduct: builder.mutation<any, any>({
             query: (body) => ({
                 url: '/excelOld',
@@ -59,4 +62,16 @@ export const productOldsApi = createApi({
     }),
 });
 
-export const { useProductOldsQuery, useDetailProductOldQuery, useAddProductMutation, useDeleteProductOldMutation, useLazyDetailProductOldQuery, useLatestPriceQuery, useAddBulkingProductMutation, useAddBulkingColorMutation, useChangeBarcodeDocumentMutation, useDeleteBarcodeDocumentMutation } = productOldsApi;
+export const {
+    useProductOldsQuery,
+    useDetailProductOldQuery,
+    useAddProductMutation,
+    useDeleteProductOldMutation,
+    useLazyDetailProductOldQuery,
+    useLatestPriceQuery,
+    useAddBulkingProductMutation,
+    useAddBulkingColorMutation,
+    useChangeBarcodeDocumentMutation,
+    useDeleteBarcodeDocumentMutation,
+    useUserScanDocumentQuery,
+} = productOldsApi;

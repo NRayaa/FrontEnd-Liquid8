@@ -1,20 +1,29 @@
 import { DataTable } from 'mantine-datatable';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import IconArrowBackward from '../../../components/Icon/IconArrowBackward';
 import IconNotesEdit from '../../../components/Icon/IconNotesEdit';
 import IconArrowForward from '../../../components/Icon/IconArrowForward';
-import { useChangeBarcodeDocumentMutation, useDeleteBarcodeDocumentMutation, useDeleteProductOldMutation, useDetailProductOldQuery } from '../../../store/services/productOldsApi';
+import {
+    useChangeBarcodeDocumentMutation,
+    useDeleteBarcodeDocumentMutation,
+    useDeleteProductOldMutation,
+    useDetailProductOldQuery,
+    useUserScanDocumentQuery,
+} from '../../../store/services/productOldsApi';
 import { formatRupiah } from '../../../helper/functions';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { Dialog, Transition } from '@headlessui/react';
 
 const DetailListData = () => {
     const { state } = useLocation();
     const [page, setPage] = useState<number>(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { data, refetch } = useDetailProductOldQuery({ codeDocument: state.codeDocument, page });
+    const { data: dataScan, refetch: refetchScan } = useUserScanDocumentQuery(state.codeDocument);
     const [deleteProductOld, results] = useDeleteProductOldMutation();
     const [changeBarcodeDocument, { isLoading }] = useChangeBarcodeDocumentMutation();
     const [initBarcode, setInitBarcode] = useState<string>('');
@@ -139,6 +148,14 @@ const DetailListData = () => {
         }
     }, [data]);
 
+    const dataDetailScan: any = useMemo(() => {
+        return dataScan?.data.resource.summary;
+    }, [dataScan]);
+
+    const dataDetailUser: any[] = useMemo(() => {
+        return dataScan?.data.resource.data;
+    }, [dataScan]);
+
     useEffect(() => {
         if (data?.data?.resource?.custom_barcode) {
             setInitBarcode(data?.data?.resource?.custom_barcode);
@@ -165,6 +182,85 @@ const DetailListData = () => {
 
     return (
         <div>
+            <Transition appear show={isModalOpen} as={Fragment}>
+                <Dialog
+                    as="div"
+                    open={isModalOpen}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                    }}
+                >
+                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <div className="fixed inset-0" />
+                    </Transition.Child>
+                    <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                        <div className="flex items-start justify-center min-h-screen px-4">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel as="div" className="panel border-0 p-5 rounded-lg overflow-hidden my-8 w-full max-w-5xl text-black dark:text-white-dark">
+                                    <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between">
+                                        <div className="text-lg font-bold">Detail Scan</div>
+                                    </div>
+                                    <div className="w-full flex items-center rounded border border-sky-400 mb-5">
+                                        <div className="flex flex-col w-full px-5 py-2">
+                                            <p className="text-sm underline underline-offset-2">Total User</p>
+                                            <p className="text-lg font-semibold">{dataDetailScan?.count_user}</p>
+                                        </div>
+                                        <div className="flex flex-col w-full px-5 py-2 border-l border-sky-400/80">
+                                            <p className="text-sm underline underline-offset-2">Total Scan Today</p>
+                                            <p className="text-lg font-semibold">{dataDetailScan?.total_scans_today}</p>
+                                        </div>
+                                        <div className="flex flex-col w-full px-5 py-2 border-l border-sky-400/80">
+                                            <p className="text-sm underline underline-offset-2">Total Scan All</p>
+                                            <p className="text-lg font-semibold">{dataDetailScan?.total_scans_all}</p>
+                                        </div>
+                                    </div>
+                                    <div className="datatables">
+                                        <DataTable
+                                            className="whitespace-nowrap table-hover"
+                                            records={dataDetailUser}
+                                            columns={[
+                                                {
+                                                    accessor: 'No',
+                                                    title: 'No',
+                                                    render: (item: any, index: number) => <span>{index + 1}</span>,
+                                                },
+                                                {
+                                                    accessor: 'name',
+                                                    title: 'UserName',
+                                                    render: (item: any) => <span className="font-semibold">{item.username}</span>,
+                                                },
+                                                {
+                                                    accessor: 'barcode',
+                                                    title: 'Total Scan',
+                                                    render: (item: any) => <span className="font-semibold">{item.total_scans}</span>,
+                                                },
+                                                {
+                                                    accessor: 'barcode',
+                                                    title: 'Date',
+                                                    render: (item: any) => <span className="font-semibold">{item.scan_date}</span>,
+                                                },
+                                            ]}
+                                        />
+                                    </div>
+                                    <div className="flex justify-end items-center mt-8">
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => setIsModalOpen(false)}>
+                                            Kembali
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
             <ul className="flex space-x-2 rtl:space-x-reverse">
                 <li>
                     <Link to="/" className="text-primary hover:underline">
@@ -178,8 +274,6 @@ const DetailListData = () => {
                     <span> Detail List Data </span>
                 </li>
             </ul>
-            {/* <div className="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
-            </div> */}
             <div className="panel mt-6">
                 <div className="flex flex-wrap w-full justify-start mb-5">
                     <div className="border border-gray-500/20 panel xl:1/3 lg:w-2/5 sm:w-full ss:w-full rounded-md shadow-[rgb(31_45_61_/_10%)_0px_2px_10px_1px] dark:shadow-[0_2px_11px_0_rgb(6_8_24_/_39%)] p-6 pt-12 mt-8 relative">
@@ -225,13 +319,16 @@ const DetailListData = () => {
                         </form>
                     </div>
                 </div>
-                <div className="flex md:items-center md:flex-row flex-col mb-5 mx-6 gap-5">
-                    <div className="ltr:ml-auto rtl:mr-auto flex gap-6">
-                        <Link to="/inbound/check_product/list_data">
-                            <button type="button" className=" px-2 btn btn-outline-danger">
-                                <IconArrowBackward className="flex mx-2" fill={true} /> Back
-                            </button>
-                        </Link>
+                <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+                    <Link to="/inbound/check_product/list_data">
+                        <button type="button" className=" px-2 btn btn-outline-danger">
+                            <IconArrowBackward className="flex mx-2" fill={true} /> Back
+                        </button>
+                    </Link>
+                    <div className="flex gap-4 items-center ml-auto">
+                        <button type="button" onClick={() => setIsModalOpen(true)} className=" px-2 btn btn-outline-success">
+                            Detail Scan
+                        </button>
                         <Link to="/inbound/check_product/multi_check" state={{ codeDocument: state.codeDocument }}>
                             <button type="button" className=" px-2 btn btn-outline-info">
                                 <IconArrowForward className="flex mx-2" fill={true} /> Continue
