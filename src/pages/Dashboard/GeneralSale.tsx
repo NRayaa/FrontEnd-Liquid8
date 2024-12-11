@@ -10,12 +10,13 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { Dialog, Transition } from '@headlessui/react';
 import { id } from 'date-fns/locale';
-import { useGetGeneralSalesQuery } from '../../store/services/analysticApi';
+import { useGetGeneralSalesQuery, useLazyExportMonthlyAnalyticSaleQuery, useLazyExportYearlyAnalyticSaleQuery } from '../../store/services/analysticApi';
 import { useGetShowSaleQuery } from '../../store/services/saleApi';
 import { GetShowSaleDocumentItem } from '../../store/services/types';
 import { DataTable } from 'mantine-datatable';
 import IconArchive from '../../components/Icon/IconArchive';
 import { Alert } from '../../commons';
+import toast from 'react-hot-toast';
 
 const ContentLegend = (props: any) => {
     const { payload } = props;
@@ -81,6 +82,8 @@ const GeneralSale = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedSaleId, setSelectedSaleId] = useState<string | undefined>(undefined);
+    const [exportMonthly, { isLoading: isExportLoading }] = useLazyExportMonthlyAnalyticSaleQuery();
+    const [exportYearly, { isLoading: isExportLoadingYearly }] = useLazyExportYearlyAnalyticSaleQuery();
 
     const openModal = (id: string) => {
         setSelectedSaleId(id);
@@ -144,6 +147,51 @@ const GeneralSale = () => {
         },
         [searchParams[0], router]
     );
+
+    // const handleExportMonthly = () => {
+    //     const fromDate = state[0].startDate ? format(state[0].startDate, 'dd-MM-yyyy') : '';
+    //     const toDate = state[0].endDate ? format(state[0].endDate, 'dd-MM-yyyy') : '';
+    //     exportMonthly({ from: fromDate, to: toDate });
+    // };
+
+    const handleExportMonthly = async () => {
+        try {
+            const fromDate = state[0].startDate ? format(state[0].startDate, 'dd-MM-yyyy') : '';
+            const toDate = state[0].endDate ? format(state[0].endDate, 'dd-MM-yyyy') : '';
+            const response = await exportMonthly({ from: fromDate, to: toDate }).unwrap();
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success(response.data.message || 'Data General Sale berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data General Sale.');
+            console.error('Error exporting General Sale to Excel:', err);
+        }
+    };
+
+    const handleExportYearly = async () => {
+        try {
+            const year = state[0].startDate ? format(state[0].startDate, 'yyyy') : '';
+            const response = await exportYearly(year).unwrap(); // Changed to exportYearlyAnalyticSale
+            const url = response.data.resource;
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            toast.success(response.data.message || 'Data General Sale berhasil diekspor ke Excel.');
+        } catch (err) {
+            toast.error('Gagal mengekspor data General Sale.');
+            console.error('Error exporting General Sale to Excel:', err);
+        }
+    };
 
     useEffect(() => {
         handleCurrentId(layout);
@@ -282,7 +330,7 @@ const GeneralSale = () => {
                 </ResponsiveContainer>
             </div>
             <div className="w-full flex flex-col gap-4 mt-10 border rounded-md p-5">
-                <div className="flex w-1/2 items-center gap-5">
+                <div className="flex w-full items-center gap-5">
                     <label htmlFor="search" className="relative w-full flex items-center mb-0">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -358,7 +406,17 @@ const GeneralSale = () => {
                             </svg>
                         </button>
                     </div>
+                    <div className="relative w-full flex justify-end">
+                        {/* New export buttons for year and month */}
+                        <button onClick={handleExportYearly} className="btn btn-lg lg:btn btn-primary uppercase ml-4" disabled={isExportLoadingYearly}>
+                            {isExportLoading ? 'Exporting...' : 'Export Year Data'}
+                        </button>
+                        <button onClick={handleExportMonthly} className="btn btn-lg lg:btn btn-primary uppercase ml-4" disabled={isExportLoading}>
+                            {isExportLoading ? 'Exporting...' : 'Export Month Data'}
+                        </button>
+                    </div>
                 </div>
+
                 {layout === 'grid' ? (
                     <div className="grid grid-cols-4 gap-4 w-full">
                         {debouncedSearch ? (
