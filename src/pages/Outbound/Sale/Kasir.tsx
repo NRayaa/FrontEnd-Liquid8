@@ -671,8 +671,7 @@ const Kasir = () => {
                                                     {
                                                         accessor: 'name',
                                                         title: 'Nama',
-                                                        width: '25%',
-                                                        render: (item: SubSalesProductsProps) => <span className="font-semibold max-w-10px">{item.name}</span>,
+                                                        render: (item: SubSalesProductsProps) => <span className="font-semibold max-w-[250px] block">{item.name}</span>,
                                                     },
                                                     {
                                                         accessor: 'category',
@@ -953,7 +952,7 @@ const Kasir = () => {
                                 {
                                     accessor: 'product_name_sale',
                                     title: 'Name',
-                                    render: (item: GetListSaleItem) => <span className="font-semibold">{item.product_name_sale}</span>,
+                                    render: (item: GetListSaleItem) => <span className="font-semibold max-w-[250px] block">{item.product_name_sale}</span>,
                                 },
                                 {
                                     accessor: 'product_price_sale',
@@ -967,7 +966,7 @@ const Kasir = () => {
                                                 value={inputs[item.id]?.product_price_sale ?? item.product_price_sale}
                                                 className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                                             />
-                                            <button className="btn w-full btn-outline-primary mt-4 px-16" onClick={() => handleGabor(item.id)}>
+                                            <button className="btn w-full btn-outline-primary mt-4 px-3" onClick={() => handleGabor(item.id)}>
                                                 Send
                                             </button>
                                         </div>
@@ -985,7 +984,7 @@ const Kasir = () => {
                                                 value={inputs[item.id]?.update_price_sale ?? item.product_price_sale}
                                                 className="form-input flex-1 ltr:pl-4 rtl:pr-9 ltr:sm:pr-4 rtl:sm:pl-4 ltr:pr-9 rtl:pl-9 peer sm:bg-transparent bg-gray-100 placeholder:tracking-widest"
                                             />
-                                            <button className="btn w-full btn-outline-primary mt-4 px-16" onClick={() => handleUpdate(item.id)}>
+                                            <button className="btn w-full btn-outline-primary mt-4 px-3" onClick={() => handleUpdate(item.id)}>
                                                 Update
                                             </button>
                                         </div>
