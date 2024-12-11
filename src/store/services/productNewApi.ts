@@ -43,6 +43,9 @@ export const productNewApi = createApi({
         productByColor: builder.query<any, { q: string; page: number }>({
             query: ({ q, page }) => `/product_byColor?page=${page}&q=${q}`,
         }),
+        productByColorAPK: builder.query<any, { q: string; page: number }>({
+            query: ({ q, page }) => `/product_byColor2?page=${page}&q=${q}`,
+        }),
         updatePriceByProductOld: builder.query<any, string | undefined>({
             query: (oldProduct) => `/get-latestPrice?old_price_product=${oldProduct}`,
         }),
@@ -79,6 +82,7 @@ export const productNewApi = createApi({
 });
 
 export const {
+    useProductByColorAPKQuery,
     useGetAllProductNewQuery,
     useGetSaleProductsQuery,
     useDeleteProductNewMutation,
@@ -95,5 +99,5 @@ export const {
     useExportToExcelSlowMovingListProductMutation,
     useGetRepairLeftQuery,
     useGetRepairRightQuery,
-  useLazyUpdatePriceByProductOldRepairQuery,
+    useLazyUpdatePriceByProductOldRepairQuery,
 } = productNewApi;

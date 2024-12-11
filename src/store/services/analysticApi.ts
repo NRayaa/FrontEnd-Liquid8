@@ -27,14 +27,27 @@ export const analyticApi = createApi({
         exportGenerateExcelStorageReport: builder.query<any, any>({
             query: () => `/generateExcel_StorageReport`,
         }),
-        exportMonthlyAnalyticSale: builder.query<any,{ from: any; to: any }>({
-            query: ({ from, to}) => `/dashboard/monthly-analytic-sales/export?from=${from}&to=${to}`,
+        exportMonthlyAnalyticSale: builder.query<any, { from: any; to: any }>({
+            query: ({ from, to }) => `/dashboard/monthly-analytic-sales/export?from=${from}&to=${to}`,
         }),
-        exportYearlyAnalyticSale: builder.query<any,any>({
+        exportYearlyAnalyticSale: builder.query<any, any>({
             query: (y) => `/dashboard/yearly-analytic-sales/export?y=${y}`,
+        }),
+        countStaging: builder.query<any, any>({
+            query: () => `/countStaging`,
         }),
     }),
 });
 
-export const { useGetSummaryTransactionQuery, useGetSummarySalesQuery, useGetAnalyticSalesMonthlyQuery, useGetAnalyticSalesYearlyQuery, useGetGeneralSalesQuery, useGetStorageReportQuery, useLazyExportGenerateExcelStorageReportQuery, useLazyExportMonthlyAnalyticSaleQuery, useLazyExportYearlyAnalyticSaleQuery } =
-    analyticApi;
+export const {
+    useCountStagingQuery,
+    useGetSummaryTransactionQuery,
+    useGetSummarySalesQuery,
+    useGetAnalyticSalesMonthlyQuery,
+    useGetAnalyticSalesYearlyQuery,
+    useGetGeneralSalesQuery,
+    useGetStorageReportQuery,
+    useLazyExportGenerateExcelStorageReportQuery,
+    useLazyExportMonthlyAnalyticSaleQuery,
+    useLazyExportYearlyAnalyticSaleQuery,
+} = analyticApi;
