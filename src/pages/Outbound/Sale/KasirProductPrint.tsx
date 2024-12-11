@@ -169,7 +169,7 @@ const ReportTable = () => {
                             <tr>
                                 <th>No</th>
                                 <th>Barcode</th>
-                                <th>Nama Barang</th>
+                                <th style={{ width: '30%' }}>Nama Barang</th> {/* Adjusted width for Nama Barang */}
                                 <th>QTY</th>
                                 <th>Sale Price</th>
                             </tr>
@@ -180,7 +180,7 @@ const ReportTable = () => {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{item.product_barcode_sale}</td>
-                                        <td>{item.product_name_sale}</td>
+                                        <td style={{ width: '30%' }}>{item.product_name_sale}</td> {/* Adjusted width for Nama Barang */}
                                         <td>{item.product_qty_sale}</td>
                                         <td style={{ textAlign: 'right' }}>{formatCurrency(item.product_price_sale) || 0}</td>
                                     </tr>
