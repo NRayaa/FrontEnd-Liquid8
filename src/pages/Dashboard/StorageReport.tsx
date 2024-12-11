@@ -4,7 +4,7 @@ import { formatCurrency, useDebounce } from '../../helper/functions';
 import { clsx } from '@mantine/core';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
-import { useGetStorageReportQuery, useLazyExportGenerateExcelStorageReportQuery } from '../../store/services/analysticApi';
+import { useCountStagingQuery, useGetStorageReportQuery, useLazyExportGenerateExcelStorageReportQuery } from '../../store/services/analysticApi';
 import toast from 'react-hot-toast';
 
 const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
@@ -40,6 +40,7 @@ const StorageReport = () => {
     const router = useNavigate();
     const debouncedSearch = useDebounce(search);
     const { data: dataStorageReport, isSuccess: isSuccessStorageReport, refetch: refetchStorageReport } = useGetStorageReportQuery(undefined);
+    const { data: dataCountStaging, isSuccess: isSuccessCountStaging } = useCountStagingQuery(undefined);
     const [exportToExcel, { isLoading: isExporting }] = useLazyExportGenerateExcelStorageReportQuery();
 
     const storageReport: any = useMemo(() => {
@@ -47,6 +48,12 @@ const StorageReport = () => {
             return dataStorageReport?.data.resource;
         }
     }, [dataStorageReport]);
+
+    const countStaging: any = useMemo(() => {
+        if (isSuccessCountStaging) {
+            return dataCountStaging?.data.resource;
+        }
+    }, [dataCountStaging]);
 
     const clearSearch = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -181,6 +188,19 @@ const StorageReport = () => {
                 <div className="w-full px-5 py-3 border border-gray-500 rounded-md flex flex-col gap-2">
                     <p>Total Value</p>
                     <p className="text-2xl font-bold">{formatCurrency(storageReport?.total_all_price_category)}</p>
+                </div>
+            </div>
+            <div className="w-full flex justify-between mb-5 mt-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
+                <h3 className="text-2xl font-bold">Report Product Staging</h3>
+            </div>
+            <div className="flex w-full gap-4">
+                <div className="w-full px-5 py-3 border border-gray-500 rounded-md flex flex-col gap-2">
+                    <p>Total Product</p>
+                    <p className="text-2xl font-bold">{countStaging?.total_product.toLocaleString()}</p>
+                </div>
+                <div className="w-full px-5 py-3 border border-gray-500 rounded-md flex flex-col gap-2">
+                    <p>Total Value</p>
+                    <p className="text-2xl font-bold">{formatCurrency(countStaging?.total_price)}</p>
                 </div>
             </div>
             <div className="w-full flex justify-between mb-5 mt-5 items-center sticky top-14 py-5 bg-white/5 backdrop-blur-sm z-10">
