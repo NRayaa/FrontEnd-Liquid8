@@ -1,6 +1,6 @@
 import { useGetSaleReportQuery } from '../../../store/services/saleApi';
 import { useParams } from 'react-router-dom';
-import LogoLiquid from '/assets/images/logo-barcode.png';
+import LogoLiquid from '/assets/images/bulky-black.png';
 import { formatCurrency, formatDate, formatTimestamp } from '../../../helper/functions';
 
 const ReportTable = () => {
