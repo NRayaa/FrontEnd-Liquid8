@@ -156,7 +156,7 @@ const ListAkun = () => {
                             {
                                 accessor: 'role.role_name',
                                 title: 'Role',
-                                render: (item: GetListAkunItem) => <span className="font-semibold">{item.role.role_name}</span>,
+                                render: (item: any) => <span className="font-semibold">{item.role.role_name}</span>,
 
                                 // render: (item: GetListAkunItem) => <span className="font-semibold">{item.role_id}</span>,
                             },
