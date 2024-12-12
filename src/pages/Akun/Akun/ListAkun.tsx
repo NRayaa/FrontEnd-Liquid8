@@ -154,9 +154,23 @@ const ListAkun = () => {
                                 render: (item: GetListAkunItem) => <span className="font-semibold">{item.name}</span>,
                             },
                             {
-                                accessor: 'role_id',
+                                accessor: 'role.role_name',
                                 title: 'Role',
-                                render: (item: GetListAkunItem) => <span className="font-semibold">{mapRoleIdToName(item.role_id)}</span>,
+                                render: (item: any) => <span className="font-semibold">{item.role.role_name}</span>,
+
+                                // render: (item: GetListAkunItem) => <span className="font-semibold">{item.role_id}</span>,
+                            },
+                            {
+                                accessor: 'format_barcode_name',
+                                title: 'Format',
+                                render: (item: any) => <span className="font-semibold">{item.format_barcode_name ?? '-'}</span>,
+
+                                // render: (item: GetListAkunItem) => <span className="font-semibold">{item.role_id}</span>,
+                            },
+                            {
+                                accessor: 'total_scans',
+                                title: 'Total Scan',
+                                render: (item: any) => <span className="font-semibold">{item.total_scans ?? '-'}</span>,
 
                                 // render: (item: GetListAkunItem) => <span className="font-semibold">{item.role_id}</span>,
                             },

@@ -18,7 +18,7 @@ const ProductByColor = () => {
     const [searchAPK, setSearchAPK] = useState<string>('');
     const debounceValueAPK = useDebounce(searchAPK);
     const { data, isError, refetch, isSuccess } = useProductByColorQuery({ page, q: debounceValue });
-    const { data: dataAPK, isError: isErrorAPK, refetch: refetchAPK, isSuccess: isSuccessAPK } = useProductByColorAPKQuery({ page, q: debounceValue });
+    const { data: dataAPK, isError: isErrorAPK, refetch: refetchAPK, isSuccess: isSuccessAPK } = useProductByColorAPKQuery({ page: pageAPK, q: debounceValueAPK });
     const [deleteProductNew, results] = useDeleteProductNewMutation();
 
     const showAlert = async ({ type, id }: any) => {
@@ -257,8 +257,8 @@ const ProductByColor = () => {
                                                 textAlignment: 'center',
                                             },
                                         ]}
-                                        totalRecords={data?.data.resource.total ?? 0}
-                                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                                        totalRecords={data?.data.resource.data.total ?? 0}
+                                        recordsPerPage={data?.data.resource.data.per_page ?? 10}
                                         page={page}
                                         onPageChange={(prevPage) => setPage(prevPage)}
                                         minHeight={200}
@@ -376,10 +376,10 @@ const ProductByColor = () => {
                                                 textAlignment: 'center',
                                             },
                                         ]}
-                                        totalRecords={data?.data.resource.total ?? 0}
-                                        recordsPerPage={data?.data.resource.per_page ?? 10}
-                                        page={page}
-                                        onPageChange={(prevPage) => setPage(prevPage)}
+                                        totalRecords={dataAPK?.data.resource.data.total ?? 0}
+                                        recordsPerPage={dataAPK?.data.resource.data.per_page ?? 10}
+                                        page={pageAPK}
+                                        onPageChange={(prevPage) => setPageAPK(prevPage)}
                                         minHeight={200}
                                     />
                                 </div>
