@@ -31,14 +31,14 @@ export const saleApi = createApi({
         }),
         putGabor: builder.mutation<any, any>({
             query: ({ id, body }) => ({
-                url: `/sales/${id}`,
+                url: `/sales/gabor/${id}`,
                 method: 'PUT',
                 body,
             }),
         }),
         updatePrice: builder.mutation<any, any>({
             query: ({ id, body }) => ({
-                url: `/update_price_sales/${id}`,
+                url: `/sales/update-price/${id}`,
                 method: 'PUT',
                 body,
             }),
