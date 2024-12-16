@@ -640,7 +640,11 @@ const Sidebar = () => {
                                     </AnimateHeight>
                                 </li>
                                 <li className="menu nav-item">
-                                    <button type="button" className={`${currentMenu === 'list_category_migrate' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('list_category_migrate')}>
+                                    <button
+                                        type="button"
+                                        className={`${currentMenu === 'list_category_migrate' ? 'active' : ''} nav-link group w-full`}
+                                        onClick={() => toggleMenu('list_category_migrate')}
+                                    >
                                         <div className="flex items-center">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -726,6 +730,20 @@ const Sidebar = () => {
                                             </li>
                                         </ul>
                                     </AnimateHeight>
+                                </li>
+                                <li className="menu nav-item">
+                                    <NavLink to="/b2b/b2b/list_b2b" className="group">
+                                        <div className="flex items-center">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                {/* Bulky product icon instead of the previous one */}
+                                                <path
+                                                    d="M6 2C5.44772 2 5 2.44772 5 3V5H4C2.34315 5 1 6.34315 1 8V18C1 19.6569 2.34315 21 4 21H20C21.6569 21 23 19.6569 23 18V8C23 6.34315 21.6569 5 20 5H19V3C19 2.44772 18.5523 2 18 2H6ZM4 7H20C20.5534 7 21 7.44772 21 8V18C21 18.5523 20.5534 19 20 19H4C3.44665 19 3 18.5523 3 18V8C3 7.44772 3.44665 7 4 7ZM7 10H17V12H7V10ZM7 14H17V16H7V14Z"
+                                                    fill="currentColor"
+                                                />
+                                            </svg>
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{'B2B'}</span>
+                                        </div>
+                                    </NavLink>
                                 </li>
                                 <li className="menu nav-item">
                                     <NavLink to="/buyer/buyer/list_buyer" className="group">

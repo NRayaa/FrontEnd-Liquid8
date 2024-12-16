@@ -2440,6 +2440,39 @@ interface MigratedCategoryItem {
     updated_at: string;
 }
 
+interface GetListB2BItem {
+    id: number;
+    code_document_bulky: string;
+    total_product_bulky: string;
+    total_old_price_bulky: string;
+    discount_bulky: string;
+    after_price_bulky: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface GetListB2B {
+    data: {
+        status: boolean;
+        message: string;
+        resource: {
+            current_page: number;
+            data: GetListB2BItem[];
+            first_page_url: string;
+            from: null | string;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        };
+    };
+}
+
 
 export type {
     UserDataItem,
@@ -2584,5 +2617,7 @@ export type {
     CreateMigratedBulkyProduct,
     DetailMigratedCategoryResponse,
     MigratedCategoryItem,
+    GetListB2BItem,
+    GetListB2B
 };
 

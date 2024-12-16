@@ -1,6 +1,6 @@
 import { useGetSaleReportQuery } from '../../../store/services/saleApi';
 import { useParams } from 'react-router-dom';
-import LogoLiquid from '/assets/images/bulky-black.png';
+import LogoBulky from '/assets/images/bulky-black.png';
 import { formatCurrency, formatDate, formatTimestamp } from '../../../helper/functions';
 
 const ReportTable = () => {
@@ -132,7 +132,7 @@ const ReportTable = () => {
                             </tr>
                         </table>
                     </div>
-                    <img src={LogoLiquid} alt="barcode" style={{ marginTop: '-10px' }} width={120} />
+                    <img src={LogoBulky} alt="barcode" style={{ marginTop: '-10px' }} width={120} />
                 </div>
                 <div style={{ marginTop: 16, marginBottom: 16 }}>
                     <h3 style={{ fontSize: 12 }}>A. Identitas Buyer</h3>
