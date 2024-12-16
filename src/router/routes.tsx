@@ -77,6 +77,9 @@ import AddAkunPanel from '../pages/Akun/AkunPanel/AddAkunPanel';
 import EditAkunPanel from '../pages/Akun/AkunPanel/EditAkunPanel';
 import DetailAkunPanel from '../pages/Akun/AkunPanel/DetailAkunPanel';
 import AddBarcodeAkunPanel from '../pages/Akun/AkunPanel/AddBarcodeAkunPanel';
+import ListB2B from '../pages/Outbound/B2B/ListB2B';
+import DetailB2B from '../pages/Outbound/B2B/DetailB2B';
+import AddB2B from '../pages/Outbound/B2B/AddB2B';
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const DataInput = lazy(() => import('../pages/Inbound/DataProcess/DataInput'));
 const ListData = lazy(() => import('../pages/Inbound/CheckProduct/ListData'));
@@ -592,6 +595,22 @@ const routes = [
     {
         path: '/buyer/buyer/list_buyer/detail_buyer/:id',
         element: <DetailBuyer />,
+        layout: 'default',
+    },
+     // b2b
+     {
+        path: '/b2b/b2b/list_b2b',
+        element: <ListB2B />,
+        layout: 'default',
+    },
+    {
+        path: '/b2b/b2b/list_b2b/add_b2b',
+        element: <AddB2B />,
+        layout: 'default',
+    },
+    {
+        path: '/b2b/b2b/list_b2b/detail_b2b/:id',
+        element: <DetailB2B />,
         layout: 'default',
     },
     {
