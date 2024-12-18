@@ -24,7 +24,7 @@ const ListProductStagging = () => {
     const { data, isSuccess, refetch } = useGetListProductStaggingQuery({ page: leftTablePage, q: debounceValue });
     const filterStagging = useGetFilterProductStaggingQuery({ page: rightTablePage });
     const [filterProductStagging, results] = useFilterProductStaggingMutation();
-    const [deletefilterProductStaggings, resultsDeleteBundle] = useDeleteFilterProductStaggingsMutation();
+    const [deletefilterProductStaggings, resultsDeleteFilterProductStaggings] = useDeleteFilterProductStaggingsMutation();
     const [doneCheckAllProductStagging, resultsDone] = useDoneCheckAllProductStaggingMutation();
     const [moveToLPR, resultsToLPR] = useToLPRProductStaggingMutation();
     const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
@@ -116,14 +116,14 @@ const ListProductStagging = () => {
     };
 
     const handleDeleteProductStagging = debounce(async (id: number) => {
-        if (loadingDelete !== null) return;
+        if (loadingDelete) return; // Periksa jika loadingDelete sudah true
 
         setLoadingDelete(true);
         try {
             await deletefilterProductStaggings(id).unwrap();
             refetch();
             filterStagging.refetch();
-            toast.success('Item berhasil dihapus!');
+            // toast.success('Item berhasil dihapus!');
         } catch (err) {
             console.error(err);
             toast.error('Gagal menghapus item.');
@@ -143,14 +143,14 @@ const ListProductStagging = () => {
     }, [results, filterStagging.isSuccess]);
 
     useEffect(() => {
-        if (resultsDeleteBundle.isSuccess) {
-            toast.success(resultsDeleteBundle?.data.data.message);
+        if (resultsDeleteFilterProductStaggings.isSuccess) {
+            toast.success(resultsDeleteFilterProductStaggings?.data.data.message);
             refetch();
             filterStagging.refetch();
-        } else if (resultsDeleteBundle.isError) {
-            toast.error(resultsDeleteBundle?.data?.data?.message ?? 'Error');
+        } else if (resultsDeleteFilterProductStaggings.isError) {
+            toast.error(resultsDeleteFilterProductStaggings?.data?.data?.message ?? 'Error');
         }
-    }, [resultsDeleteBundle]);
+    }, [resultsDeleteFilterProductStaggings]);
 
     useEffect(() => {
         if (resultsToLPR.isSuccess) {
