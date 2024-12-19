@@ -116,7 +116,7 @@ const ListProductStagging = () => {
     };
 
     const handleDeleteProductStagging = debounce(async (id: number) => {
-        if (loadingDelete) return; // Periksa jika loadingDelete sudah true
+        if (loadingDelete) return; 
 
         setLoadingDelete(true);
         try {
