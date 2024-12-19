@@ -2158,7 +2158,7 @@ interface BklFilterResponse {
 }
 
 interface GetListStatusItem{
-    id: number,
+            id: number,
             status_name: string,
             status_slug: string,
             created_at: string,
@@ -2169,7 +2169,21 @@ interface GetListStatus {
     data: {
         status: boolean;
         message: string;
-        resource: GetListStatusItem[]
+        resource: {
+            current_page: number;
+            data: GetListStatusItem[];
+            first_page_url: string;
+            from: number;
+            last_page: number;
+            last_page_url: string;
+            links: Links[];
+            next_page_url: null | string;
+            path: string;
+            per_page: number;
+            prev_page_url: null | string;
+            to: number;
+            total: number;
+        }
     };
 }
 

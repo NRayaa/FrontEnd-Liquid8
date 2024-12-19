@@ -20,8 +20,9 @@ const ListStatus = () => {
     const [deleteStatus, results] = useDeleteStatusMutation();
 
     const listStatus: any = useMemo(() => {
-        return data?.data.resource;
+        return data?.data?.resource?.data;
     }, [data]);
+
 
     const showAlert = async ({ type, id }: any) => {
         if (type === 11) {
@@ -133,7 +134,7 @@ const ListStatus = () => {
                             {
                                 accessor: 'name_buyer',
                                 title: 'Nama',
-                                render: (item: GetListStatusItem) => <span className="font-semibold">{item.status_name}</span>,
+                                render: (item: GetListStatusItem) => <span className="font-semibold">{item?.status_name}</span>,
                             },
                             {
                                 accessor: 'name_buyer',
@@ -164,6 +165,10 @@ const ListStatus = () => {
                                 ),
                             },
                         ]}
+                        totalRecords={data?.data.resource.total ?? 0}
+                        recordsPerPage={data?.data.resource.per_page ?? 10}
+                        page={page}
+                        onPageChange={(prevPage) => setPage(prevPage)}
                     />
                 </div>
             </div>
