@@ -88,7 +88,7 @@ const PalletGenerate = () => {
     const { data: statusResponse } = useGetListStatusQuery({ page: 1, q: '' });
 
     const statusData = useMemo(() => {
-        return statusResponse?.data.resource || []; // Safely access and fallback to empty array
+        return statusResponse?.data?.resource?.data || []; // Safely access and fallback to empty array
     }, [statusResponse]);
 
     const { data: conditionResponse } = useGetListKondisiQuery({ page: 1, q: '' });
