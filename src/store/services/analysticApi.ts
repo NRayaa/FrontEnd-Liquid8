@@ -36,6 +36,9 @@ export const analyticApi = createApi({
         countStaging: builder.query<any, any>({
             query: () => `/countStaging`,
         }),
+        exportExcelStorageReport: builder.query<any, any>({
+            query: () => `/dashboard/storage-report/export`,
+        }),
     }),
 });
 
@@ -50,4 +53,5 @@ export const {
     useLazyExportGenerateExcelStorageReportQuery,
     useLazyExportMonthlyAnalyticSaleQuery,
     useLazyExportYearlyAnalyticSaleQuery,
+    useLazyExportExcelStorageReportQuery,
 } = analyticApi;

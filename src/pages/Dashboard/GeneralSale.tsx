@@ -156,8 +156,11 @@ const GeneralSale = () => {
 
     const handleExportMonthly = async () => {
         try {
-            const fromDate = state[0].startDate ? format(state[0].startDate, 'dd-MM-yyyy') : '';
-            const toDate = state[0].endDate ? format(state[0].endDate, 'dd-MM-yyyy') : '';
+            // const fromDate = state[0].startDate ? format(state[0].startDate, 'dd-MM-yyyy') : '';
+            // const toDate = state[0].endDate ? format(state[0].endDate, 'dd-MM-yyyy') : '';
+            const fromDate = state[0].startDate ? format(state[0].startDate, 'dd-MM-yyyy') : format(new Date(new Date().getFullYear(), new Date().getMonth(), 1), 'dd-MM-yyyy');
+            const toDate = state[0].endDate ? format(state[0].endDate, 'dd-MM-yyyy') : format(new Date(), 'dd-MM-yyyy');
+
             const response = await exportMonthly({ from: fromDate, to: toDate }).unwrap();
             const url = response.data.resource;
             const fileName = url.substring(url.lastIndexOf('/') + 1);
@@ -176,7 +179,9 @@ const GeneralSale = () => {
 
     const handleExportYearly = async () => {
         try {
-            const year = state[0].startDate ? format(state[0].startDate, 'yyyy') : '';
+            // const year = state[0].startDate ? format(state[0].startDate, 'yyyy') : '';
+            const year = state[0].startDate ? format(state[0].startDate, 'yyyy') : format(new Date(), 'yyyy');
+
             const response = await exportYearly(year).unwrap(); // Changed to exportYearlyAnalyticSale
             const url = response.data.resource;
             const fileName = url.substring(url.lastIndexOf('/') + 1);

@@ -4,7 +4,7 @@ import { formatCurrency, useDebounce } from '../../helper/functions';
 import { clsx } from '@mantine/core';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
-import { useCountStagingQuery, useGetStorageReportQuery, useLazyExportGenerateExcelStorageReportQuery } from '../../store/services/analysticApi';
+import { useCountStagingQuery, useGetStorageReportQuery, useLazyExportExcelStorageReportQuery } from '../../store/services/analysticApi';
 import toast from 'react-hot-toast';
 
 const ContentTooltip = ({ active, payload, label }: { active: boolean | undefined; payload: any; label: string }) => {
@@ -41,7 +41,7 @@ const StorageReport = () => {
     const debouncedSearch = useDebounce(search);
     const { data: dataStorageReport, isSuccess: isSuccessStorageReport, refetch: refetchStorageReport } = useGetStorageReportQuery(undefined);
     const { data: dataCountStaging, isSuccess: isSuccessCountStaging } = useCountStagingQuery(undefined);
-    const [exportToExcel, { isLoading: isExporting }] = useLazyExportGenerateExcelStorageReportQuery();
+    const [exportToExcel, { isLoading: isExporting }] = useLazyExportExcelStorageReportQuery();
 
     const storageReport: any = useMemo(() => {
         if (isSuccessStorageReport) {
